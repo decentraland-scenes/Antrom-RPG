@@ -1,17 +1,17 @@
-// import { ReactEcsRenderer } from "@dcl/sdk/react-ecs";
+import ReactEcs, { UiEntity, ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 
-// import { UiEntity } from "@dcl/sdk/react-ecs";
+function exampleBannerUi(): ReactEcs.JSX.Element {
+  return <UiEntity></UiEntity>
+}
 
-// function exampleBannerUi() {
-//     return (
-//         <UiEntity>
-//         </UiEntity>
-//     )
-
-// }
+class GameController {
+  start(): void {}
+}
 
 export function main(): void {
   // all the initializing logic
-  // const gmaeController = new GameController()
-  // ReactEcsRenderer.setUiRenderer(exampleBannerUi)
+  const game = new GameController()
+  game.start()
+
+  ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }
