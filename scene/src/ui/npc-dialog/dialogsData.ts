@@ -21,14 +21,14 @@ export const BONE_TRADER_DIALOGS: Dialog[] = [
   {
     id: 'bone-trader-1',
     text: `My son said I'm a hoarder, and I have way too much BONES.`,
-    portraitSource: 'images/pfp/advBoneTrader.png',
+    portraitSource: 'assets/images/pfp/advBoneTrader.png',
     isQuestion: false,
     buttons: []
   },
   {
     id: 'bone-trader-2',
     text: `Might you be interested in making a purchase?`,
-    portraitSource: 'images/pfp/advBoneTrader.png',
+    portraitSource: 'assets/images/pfp/advBoneTrader.png',
     isQuestion: true,
     buttons: [
       {
@@ -48,7 +48,7 @@ export const BONE_TRADER_DIALOGS: Dialog[] = [
   {
     id: 'bone-trader-yes',
     text: `Thank you!`,
-    portraitSource: 'images/pfp/advBoneTrader.png',
+    portraitSource: 'assets/images/pfp/advBoneTrader.png',
     isQuestion: false,
     buttons: [],
     isEndOfDialog: true
@@ -56,7 +56,7 @@ export const BONE_TRADER_DIALOGS: Dialog[] = [
   {
     id: 'bone-trader-no',
     text: `Have a great day!`,
-    portraitSource: 'images/pfp/advBoneTrader.png',
+    portraitSource: 'assets/images/pfp/advBoneTrader.png',
     buttons: [],
     isQuestion: false,
     isEndOfDialog: true
@@ -65,7 +65,7 @@ export const BONE_TRADER_DIALOGS: Dialog[] = [
 
 export const npcDialogsSprites: Record<string, Sprite> = {
   background: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 22,
     y: 756,
@@ -73,7 +73,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 246
   },
   click_on_bg_icon: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 792,
     y: 383,
@@ -81,7 +81,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 60
   },
   available_button: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 509,
     y: 611,
@@ -89,7 +89,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 46
   },
   unavailable_button: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 509,
     y: 661,
@@ -97,7 +97,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 46
   },
   f_icon_avaialable: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 730,
     y: 610,
@@ -105,7 +105,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 26
   },
   e_icon_avaialable: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 695,
     y: 610,
@@ -113,7 +113,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 26
   },
   f_icon_unavaialable: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 800,
     y: 610,
@@ -121,7 +121,7 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 26
   },
   e_icon_unavaialable: {
-    atlasSrc: 'images/NPC_dialogue_spritesheet.png',
+    atlasSrc: 'assets/images/NPC_dialogue_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 765,
     y: 610,

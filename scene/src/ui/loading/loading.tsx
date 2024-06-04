@@ -19,7 +19,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
     }}
     uiBackground={{
       textureMode: 'stretch',
-      texture: { src: 'images/nightmare.png' }
+      texture: { src: 'assets/images/nightmare.png' }
     }}
   >
     <UiEntity
@@ -30,7 +30,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
       }}
       uiBackground={{
         textureMode: 'stretch',
-        texture: { src: 'images/Hide_seek.png' }
+        texture: { src: 'assets/images/Hide_seek.png' }
       }}
     />
     <UiEntity
@@ -40,7 +40,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
         display: isLoading ? 'flex' : 'none'
       }}
       uiBackground={{
-        texture: { wrapMode: 'repeat', src: 'images/zombieLoading.png' }
+        texture: { wrapMode: 'repeat', src: 'assets/images/zombieLoading.png' }
       }}
     />
     <UiEntity
@@ -50,7 +50,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
         display: isLoading ? 'none' : 'flex',
         alignItems: 'flex-end'
       }}
-      uiBackground={{ texture: { src: 'images/classic.png' } }}
+      uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
       onMouseDown={() => {
         isVisible = false
       }}

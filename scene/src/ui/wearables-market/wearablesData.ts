@@ -43,7 +43,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 0
   },
   [Wearables.W_MAGE]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 512,
     y: 0,
@@ -51,7 +51,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_MAGE_HAT]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 384,
     y: 0,
@@ -59,7 +59,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_MAGE_STAFF]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 640,
     y: 0,
@@ -67,7 +67,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_RANGER]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 128,
     y: 128,
@@ -75,7 +75,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_RANGER_HOOD]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 0,
     y: 128,
@@ -83,7 +83,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_RANGER_BOW]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 768,
     y: 0,
@@ -91,7 +91,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_BERSERKER]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 128,
     y: 0,
@@ -99,7 +99,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_BERSERKER_AXE]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 256,
     y: 0,
@@ -107,7 +107,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
     h: 128
   },
   [Wearables.W_BERSERKER_HELM]: {
-    atlasSrc: 'images/wearables_spritesheet.png',
+    atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
     x: 0,
     y: 0,
@@ -118,7 +118,7 @@ export const wearablesSprites: Record<Wearables, Sprite> = {
 
 export const wearablesMarketSprites: Record<string, Sprite> = {
   background: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 95,
     y: 100,
@@ -126,7 +126,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 685
   },
   exit_icon: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 180,
     y: 888,
@@ -134,7 +134,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 38
   },
   selected_frame: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 1237,
     y: 883,
@@ -142,7 +142,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 160
   },
   purchase: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 219,
     y: 883,
@@ -150,7 +150,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   purchase_unavailable: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 499,
     y: 883,
@@ -158,7 +158,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   purchase_clicked: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 779,
     y: 883,
@@ -166,7 +166,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   left: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 0,
     y: 883,
@@ -174,7 +174,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   left_unavailable: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 60,
     y: 883,
@@ -182,7 +182,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   left_clicked: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 120,
     y: 883,
@@ -190,7 +190,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   right: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 1059,
     y: 883,
@@ -198,7 +198,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   right_unavailable: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 1119,
     y: 883,
@@ -206,7 +206,7 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   right_clicked: {
-    atlasSrc: 'images/apprenticemarket_spritesheet.png',
+    atlasSrc: 'assets/images/apprenticemarket_spritesheet.png',
     atlasSize: { x: 1402, y: 1044 },
     x: 1179,
     y: 883,

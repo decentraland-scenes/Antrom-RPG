@@ -62,7 +62,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
         }}
         uiBackground={{
           textureMode: 'stretch',
-          texture: { src: 'images/eventQuests/questInProgress.png' }
+          texture: { src: 'assets/images/eventQuests/questInProgress.png' }
         }}
         onMouseDown={openQuestLog}
       />
@@ -91,7 +91,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           uiBackground={{
             textureMode: 'stretch',
             texture: {
-              src: 'images/eventQuests/questMenuUI2.png'
+              src: 'assets/images/eventQuests/questMenuUI2.png'
             }
           }}
         >
@@ -110,7 +110,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             uiBackground={{
               textureMode: 'stretch',
               texture: {
-                src: 'images/callanQuest/2.png'
+                src: 'assets/images/callanQuest/2.png'
               }
             }}
           />
@@ -209,7 +209,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
                   uiBackground={{
                     textureMode: 'stretch',
                     texture: {
-                      src: 'images/eventQuests/checkProgressButton.png'
+                      src: 'assets/images/eventQuests/checkProgressButton.png'
                     }
                   }}
                   onMouseDown={showProgress}
@@ -236,7 +236,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
                   uiBackground={{
                     textureMode: 'stretch',
                     texture: {
-                      src: 'images/eventQuests/Abandon_Quest.png'
+                      src: 'assets/images/eventQuests/Abandon_Quest.png'
                     }
                   }}
                   onMouseDown={changeVisibility}
@@ -258,8 +258,8 @@ const uiComponent = (): ReactEcs.JSX.Element => (
                   texture: {
                     src:
                       stageNeeded === stageProgress
-                        ? 'images/eventQuests/claimRewardActive.png'
-                        : 'images/eventQuests/claimRewardInactive.png'
+                        ? 'assets/images/eventQuests/claimRewardActive.png'
+                        : 'assets/images/eventQuests/claimRewardInactive.png'
                   }
                 }}
               />
@@ -275,7 +275,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             }}
             uiBackground={{
               textureMode: 'stretch',
-              texture: { src: 'images/eventQuests/exitButton.png' }
+              texture: { src: 'assets/images/eventQuests/exitButton.png' }
             }}
             onMouseDown={changeVisibility}
           />

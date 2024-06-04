@@ -4,8 +4,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon1Avail.png',
-      'images/chooseDungeon/dungeon1Unavail.png'
+      'assets/images/chooseDungeon/dungeon1Avail.png',
+      'assets/images/chooseDungeon/dungeon1Unavail.png'
     ],
     id: 'dungeon1'
   },
@@ -14,8 +14,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon2Avail.png',
-      'images/chooseDungeon/dungeon2Unavail.png'
+      'assets/images/chooseDungeon/dungeon2Avail.png',
+      'assets/images/chooseDungeon/dungeon2Unavail.png'
     ],
     id: 'dungeon2'
   },
@@ -24,8 +24,8 @@ export const DUNGEONS: Option[] = [
     available: false,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon3Avail.png',
-      'images/chooseDungeon/dungeon3Unavail.png'
+      'assets/images/chooseDungeon/dungeon3Avail.png',
+      'assets/images/chooseDungeon/dungeon3Unavail.png'
     ],
     id: 'dungeon3'
   },
@@ -34,8 +34,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon4Avail.png',
-      'images/chooseDungeon/dungeon4Unavail.png'
+      'assets/images/chooseDungeon/dungeon4Avail.png',
+      'assets/images/chooseDungeon/dungeon4Unavail.png'
     ],
     id: 'dungeon4'
   },
@@ -44,8 +44,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon5Avail.png',
-      'images/chooseDungeon/dungeon5Unavail.png'
+      'assets/images/chooseDungeon/dungeon5Avail.png',
+      'assets/images/chooseDungeon/dungeon5Unavail.png'
     ],
     id: 'dungeon5'
   },
@@ -54,8 +54,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon6Avail.png',
-      'images/chooseDungeon/dungeon6Unavail.png'
+      'assets/images/chooseDungeon/dungeon6Avail.png',
+      'assets/images/chooseDungeon/dungeon6Unavail.png'
     ],
     id: 'dungeon6'
   },
@@ -64,8 +64,8 @@ export const DUNGEONS: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/dungeon7Avail.png',
-      'images/chooseDungeon/dungeon7Unavail.png'
+      'assets/images/chooseDungeon/dungeon7Avail.png',
+      'assets/images/chooseDungeon/dungeon7Unavail.png'
     ],
     id: 'dungeon7'
   }
@@ -77,8 +77,8 @@ export const DIFFICULTIES: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/easy.png',
-      'images/chooseDungeon/easyUnavail.png'
+      'assets/images/chooseDungeon/easy.png',
+      'assets/images/chooseDungeon/easyUnavail.png'
     ],
     id: 'easy'
   },
@@ -87,8 +87,8 @@ export const DIFFICULTIES: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/medium.png',
-      'images/chooseDungeon/mediumUnavail.png'
+      'assets/images/chooseDungeon/medium.png',
+      'assets/images/chooseDungeon/mediumUnavail.png'
     ],
     id: 'medium'
   },
@@ -97,8 +97,8 @@ export const DIFFICULTIES: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/hard.png',
-      'images/chooseDungeon/hardUnavail.png'
+      'assets/images/chooseDungeon/hard.png',
+      'assets/images/chooseDungeon/hardUnavail.png'
     ],
     id: 'hard'
   },
@@ -107,8 +107,8 @@ export const DIFFICULTIES: Option[] = [
     available: true,
     selected: false,
     imgSources: [
-      'images/chooseDungeon/nightmare.png',
-      'images/chooseDungeon/nightmareUnavail.png'
+      'assets/images/chooseDungeon/nightmare.png',
+      'assets/images/chooseDungeon/nightmareUnavail.png'
     ],
     id: 'nightmare'
   }

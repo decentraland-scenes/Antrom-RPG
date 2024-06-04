@@ -71,7 +71,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           }}
           uiBackground={{
             textureMode: 'center',
-            texture: { src: 'images/dungeon.png' }
+            texture: { src: 'assets/images/dungeon.png' }
           }}
           onMouseDown={openDungeonSelection}
         />
@@ -99,7 +99,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           }}
           uiBackground={{
             textureMode: 'stretch',
-            texture: { src: 'images/DungeonTokens.png' }
+            texture: { src: 'assets/images/DungeonTokens.png' }
           }}
         >
           <Label
@@ -135,7 +135,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           uiBackground={{
             textureMode: 'stretch',
             texture: {
-              src: 'images/chooseDungeon/dungeonInfoFrame.png'
+              src: 'assets/images/chooseDungeon/dungeonInfoFrame.png'
             }
           }}
         >
@@ -151,7 +151,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             uiBackground={{
               textureMode: 'center',
               texture: {
-                src: 'images/chooseDungeon/back.png'
+                src: 'assets/images/chooseDungeon/back.png'
               }
             }}
             onMouseDown={changeInfo}
@@ -170,7 +170,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           uiBackground={{
             textureMode: 'stretch',
             texture: {
-              src: 'images/chooseDungeon/dungeonSelectionFrame.png'
+              src: 'assets/images/chooseDungeon/dungeonSelectionFrame.png'
             }
           }}
         >
@@ -193,7 +193,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               }}
               uiBackground={{
                 textureMode: 'stretch',
-                texture: { src: 'images/chooseDungeon/arrowLeft.png' }
+                texture: { src: 'assets/images/chooseDungeon/arrowLeft.png' }
               }}
               onMouseDown={scrollLeft}
             />
@@ -224,7 +224,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               }}
               uiBackground={{
                 textureMode: 'stretch',
-                texture: { src: 'images/chooseDungeon/arrowRight.png' }
+                texture: { src: 'assets/images/chooseDungeon/arrowRight.png' }
               }}
               onMouseDown={scrollRight}
             />
@@ -273,8 +273,8 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               textureMode: 'stretch',
               texture: {
                 src: isPlayable
-                  ? 'images/chooseDungeon/playAvail.png'
-                  : 'images/chooseDungeon/playUnavail.png'
+                  ? 'assets/images/chooseDungeon/playAvail.png'
+                  : 'assets/images/chooseDungeon/playUnavail.png'
               }
             }}
             onMouseDown={playDungeon}
@@ -288,7 +288,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             }}
             uiBackground={{
               textureMode: 'stretch',
-              texture: { src: 'images/chooseDungeon/exitButton.png' }
+              texture: { src: 'assets/images/chooseDungeon/exitButton.png' }
             }}
             onMouseDown={changeVisibility}
           />
@@ -301,7 +301,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             }}
             uiBackground={{
               textureMode: 'stretch',
-              texture: { src: 'images/chooseDungeon/help.png' }
+              texture: { src: 'assets/images/chooseDungeon/help.png' }
             }}
             onMouseDown={changeInfo}
           />
@@ -351,7 +351,7 @@ function OptionButton(props: OptionWithArray): ReactEcs.JSX.Element {
         }}
         uiBackground={{
           textureMode: 'stretch',
-          texture: { src: 'images/chooseDungeon/selectionIcon.png' }
+          texture: { src: 'assets/images/chooseDungeon/selectionIcon.png' }
         }}
       />
     </UiEntity>
@@ -414,9 +414,9 @@ export function loadingDungeonSystem(dt: number): void {
 
 function getLoadingImage(): string {
   if (selectedDungeon === 'dungeon2') {
-    return 'images/Loading_The_Cave.png'
+    return 'assets/images/Loading_The_Cave.png'
   }
-  return 'images/Loading_The_Dungeon.png'
+  return 'assets/images/Loading_The_Dungeon.png'
 }
 
 function playDungeon(): void {

@@ -13,7 +13,7 @@ export enum Items {
 
 export const resourcesMarketSprites: Record<string, Sprite> = {
   background: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 0,
     y: 60,
@@ -21,7 +21,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 974
   },
   selected_frame: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 558,
     y: 1032,
@@ -29,7 +29,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 160
   },
   max_button: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 260,
     y: 0,
@@ -37,7 +37,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 40
   },
   max_button_clicked: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 345,
     y: 0,
@@ -45,7 +45,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 40
   },
   purchase_button: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 430,
     y: 0,
@@ -53,7 +53,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   purchase_button_clicked: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 990,
     y: 0,
@@ -61,7 +61,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   purchase_button_unavailable: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 710,
     y: 0,
@@ -69,7 +69,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   sell_button: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 720,
     y: 1034,
@@ -77,7 +77,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   sell_button_clicked: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 1000,
     y: 1034,
@@ -85,7 +85,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   sell_button_unavailable: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 0,
     y: 1094,
@@ -93,7 +93,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 60
   },
   purchase_with_mana_button: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 0,
     y: 1034,
@@ -101,7 +101,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 54
   },
   purchase_with_mana_button_clicked: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 250,
     y: 1034,
@@ -110,7 +110,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
   },
 
   berry: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 0,
     y: 0,
@@ -118,7 +118,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 256
   },
   bone: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 256,
     y: 0,
@@ -126,7 +126,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 256
   },
   coins: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 768,
     y: 0,
@@ -134,7 +134,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 256
   },
   token: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 1280,
     y: 0,
@@ -142,7 +142,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 256
   },
   mana_coin: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 180,
     y: 0,
@@ -150,7 +150,7 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
     h: 39
   },
   exit_icon: {
-    atlasSrc: 'images/resourcemarket_spritesheet.png',
+    atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
     x: 219,
     y: 0,
@@ -169,7 +169,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 0
   },
   [Items.I_BERRY]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 0,
     y: 0,
@@ -177,7 +177,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_BONE]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 256,
     y: 0,
@@ -185,7 +185,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_COIN]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 768,
     y: 0,
@@ -193,7 +193,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_TOKEN]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 1280,
     y: 0,
@@ -201,7 +201,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_MEAT]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 768,
     y: 512,
@@ -209,7 +209,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_WOOD]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 512,
     y: 512,
@@ -217,7 +217,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     h: 256
   },
   [Items.I_IRON]: {
-    atlasSrc: 'images/item_spritesheet.png',
+    atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 0,
     y: 768,
