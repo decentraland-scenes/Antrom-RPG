@@ -3,7 +3,7 @@ import { canvasInfo } from '.'
 import { npcDialogsSprites } from './dialogsData'
 import type { Dialog, DialogButton } from './dialogsData'
 
-import { getUvs } from './utils'
+import { getUvs } from '../utils/utils'
 import ReactEcs, {
   Button,
   ReactEcsRenderer,

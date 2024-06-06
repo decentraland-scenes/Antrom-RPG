@@ -1,4 +1,4 @@
-import type { Sprite } from './utils'
+import type { Sprite } from '../utils/utils'
 
 export type DialogButton = {
   label: string
