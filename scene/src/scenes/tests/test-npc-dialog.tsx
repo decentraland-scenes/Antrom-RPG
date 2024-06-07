@@ -4,7 +4,6 @@ import type { Dialog } from '../../ui/npc-dialog/dialogsData'
 
 import NpcDialog from '../../ui/npc-dialog/npcDialog'
 
-
 export class UI {
   public isLoading: boolean
   public isVisible: boolean
@@ -25,7 +24,9 @@ export class UI {
   }
 
   goToDialog(dialogId: string): void {
-  this.dialogIndex = this.assignedDialogs.findIndex((dialog) => dialog.id === dialogId)
+    this.dialogIndex = this.assignedDialogs.findIndex(
+      (dialog) => dialog.id === dialogId
+    )
   }
 
   assignDialog(dialogs: Dialog[]): void {
@@ -50,9 +51,9 @@ export class UI {
         isVisible={this.isVisible}
         nextMessage={this.nextMessage.bind(this)}
         goToDialog={this.goToDialog.bind(this)}
-        dialogIndex={this.dialogIndex} 
-        assignedDialogs={this.assignedDialogs}      
-        />
+        dialogIndex={this.dialogIndex}
+        assignedDialogs={this.assignedDialogs}
+      />
     )
   }
 }
