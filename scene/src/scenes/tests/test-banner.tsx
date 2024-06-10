@@ -12,6 +12,5 @@ export function main(): void {
   // all the initializing logic
   const game = new GameController()
   game.start()
-
   ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }
