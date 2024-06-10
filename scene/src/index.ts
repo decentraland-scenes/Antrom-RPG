@@ -6,4 +6,4 @@ getCanvasInfo()
 // export * from './scenes/main'
 
 // tests scenes
-export * from './scenes/tests/test-quest-log'
+export * from './scenes/tests/test-resources-market'

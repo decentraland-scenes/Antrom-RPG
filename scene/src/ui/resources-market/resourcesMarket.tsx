@@ -1,41 +1,179 @@
-import ReactEcs, { Input, ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo } from '.'
+import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
+import type { Sprite } from '../utils/utils'
+import { Tab, canvasInfo, getUvs } from '../utils/utils'
 import {
-  ITEMS,
-  type InventoryItem,
-  type Items,
-  RESOURCES_INVENTORY,
-  RESOURCES_MARKET,
-  type ResourcesDataType,
-  initialMarketResourcesData,
-  resourcesMarketSprites
+  resourcesMarketSprites,
+  type InventoryItem
 } from './resourcesData'
-import { type Sprite, Tab, getUvs } from './utils'
-import { engine } from '@dcl/sdk/ecs'
-import { MarketResources } from './components/definitions'
+
 
 const ASPECT_RATIO = 0.7
 const WIDTH_FACTOR = 0.5
 const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 const SIZE_ITEM_FACTOR = 0.1
 
-let MutableMarketResources: ResourcesDataType
-
-export function setupResourcesMarket(): void {
-  const ResourcesMarketEntity = engine.addEntity()
-  MarketResources.create(ResourcesMarketEntity, initialMarketResourcesData)
-  if (MarketResources.has(ResourcesMarketEntity)) {
-    MutableMarketResources = MarketResources.getMutable(ResourcesMarketEntity)
-  }
-  ReactEcsRenderer.setUiRenderer(uiComponent)
+export type ResourcesMarketProps = {
+  isVisible: boolean
+  balance: number
+  tradeClicked: boolean
+  isSelling: boolean
+  itemsArray: InventoryItem[]
+  totalPrice: number
+  buttonMaxSprite: Sprite
+  selectedQuantity: number
+  selectedItem?: InventoryItem
+  changeVisibility: () => void
+  selectItem: (arg: InventoryItem) => void
+  updatePrice: (arg: string) => void
+  mouseDownMax: () => void
+  mouseUpMax: (arg:InventoryItem) => void
+  setSelling: (arg: boolean) => void
+  tradeDown: () => void
+  updateInventory: () => void
+  isUnavailable: () => boolean
+  addItemToResourcesInventory: () => void
 }
 
-const uiComponent = (): ReactEcs.JSX.Element => (
+
+function ResourcesMarket({isVisible, balance, tradeClicked, isSelling, itemsArray, totalPrice, buttonMaxSprite, selectedQuantity, selectedItem,
+  changeVisibility, selectItem, updatePrice, mouseDownMax, mouseUpMax, setSelling, tradeDown,
+  updateInventory, isUnavailable, addItemToResourcesInventory
+}:ResourcesMarketProps): ReactEcs.JSX.Element {
+  function TradeButton(): ReactEcs.JSX.Element {
+    let normalSprite: Sprite
+    let clickedSprite: Sprite
+    let unavailableSprite: Sprite
+
+    if (isSelling) {
+      normalSprite = resourcesMarketSprites.sell_button
+      clickedSprite = resourcesMarketSprites.sell_button_clicked
+      unavailableSprite = resourcesMarketSprites.sell_button_unavailable
+    } else {
+      if (selectedItem?.item.withMana !== undefined) {
+        normalSprite = resourcesMarketSprites.purchase_with_mana_button
+        clickedSprite = resourcesMarketSprites.purchase_with_mana_button_clicked
+        unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
+      } else {
+        normalSprite = resourcesMarketSprites.purchase_button
+        clickedSprite = resourcesMarketSprites.purchase_button_clicked
+        unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
+      }
+    }
+    return (
+      <UiEntity
+        uiTransform={{
+          positionType: 'relative',
+          width: '50%',
+          height: '10%'
+        }}
+      >
+        <UiEntity
+          uiTransform={{
+            positionType: 'relative',
+            width: '100%',
+            height: '100%',
+            display: isUnavailable() ? 'flex' : 'none'
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(unavailableSprite),
+            texture: {
+              src: unavailableSprite.atlasSrc
+            }
+          }}
+        />
+        <UiEntity
+          uiTransform={{
+            positionType: 'relative',
+            width: '100%',
+            height: '100%',
+            display: !isUnavailable() ? 'flex' : 'none'
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(
+              tradeClicked ? clickedSprite : normalSprite
+            ),
+            texture: {
+              src: clickedSprite.atlasSrc
+            }
+          }}
+          onMouseDown={tradeDown}
+          onMouseUp={() => (tradeClicked = false)}
+        />
+      </UiEntity>
+    )
+  }
+
+  function ItemButton(inventoryItem: InventoryItem): ReactEcs.JSX.Element {
+
+  return (
+    <UiEntity
+      uiTransform={{
+        width: '100%',
+        height: '100%',
+        display:
+          (inventoryItem.amount !== undefined &&
+          inventoryItem.amount > 0) ||
+          !isSelling
+            ? 'flex'
+            : 'none'
+      }}
+      uiBackground={{
+        textureMode: 'stretch',
+        uvs: getUvs(inventoryItem.item.sprite),
+        texture: { src: inventoryItem.item.sprite.atlasSrc }
+      }}
+      onMouseDown={() => {
+        selectItem(inventoryItem)
+      }}
+    >
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          width: '115%',
+          height: '115%',
+          position: { left: '-5%', top: '-5%' },
+          display:
+            selectedItem?.item.id ===
+            inventoryItem.item.id
+              ? 'flex'
+              : 'none'
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          uvs: getUvs(resourcesMarketSprites.selected_frame),
+          texture: {
+            src: resourcesMarketSprites.selected_frame.atlasSrc
+          }
+        }}
+      />
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          width: '100%',
+          height: '100%',
+          display: isSelling ? 'flex' : 'none'
+        }}
+        uiText={{
+          value:
+            inventoryItem.amount !== undefined
+              ? inventoryItem.amount.toString()
+              : '',
+          textAlign: 'bottom-right',
+          fontSize: 20
+        }}
+      />
+    </UiEntity>
+  )
+  }
+
+  return (
   <UiEntity
     uiTransform={{
       width: canvasInfo.width,
       height: canvasInfo.height,
-      display: MutableMarketResources.isVisible ? 'flex' : 'none',
+      display: isVisible ? 'flex' : 'none',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center'
@@ -73,14 +211,14 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           uiBackground={{}}
         >
           <Tab
-            condition={MutableMarketResources.isSelling}
+            condition={isSelling}
             trueSprite={resourcesMarketSprites.purchase_button}
             falseSprite={resourcesMarketSprites.purchase_button_clicked}
             callback={setSelling}
             callbackValue={false}
           />
           <Tab
-            condition={MutableMarketResources.isSelling}
+            condition={isSelling}
             trueSprite={resourcesMarketSprites.sell_button_clicked}
             falseSprite={resourcesMarketSprites.sell_button}
             callback={setSelling}
@@ -95,7 +233,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             margin: { right: '10%' }
           }}
           uiText={{
-            value: MutableMarketResources.balance.toString(),
+            value: balance.toString(),
             textAlign: 'middle-right'
           }}
         />
@@ -108,7 +246,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             padding: { top: '1%' }
           }}
         >
-          {MutableMarketResources.itemsArray.map((resource, index) => (
+          {itemsArray.map((resource, index) => (
             <UiEntity
               key={index}
               uiTransform={{
@@ -117,7 +255,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
                 margin: { right: '8.75%', bottom: '4%', top: '1.5%' }
               }}
             >
-              <ItemButton inventoryItem={resource} />
+              <ItemButton item={resource.item} amount={resource.amount} />
             </UiEntity>
           ))}
         </UiEntity>
@@ -130,7 +268,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           alignItems: 'center',
           margin: { top: '17.5%', left: '2%' },
           display:
-            MutableMarketResources.selectedItem !== undefined ? 'flex' : 'none'
+            selectedItem !== undefined ? 'flex' : 'none'
         }}
       >
         <UiEntity
@@ -140,7 +278,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             flexDirection: 'row'
           }}
           uiText={{
-            value: MutableMarketResources.selectedItem?.item?.name ?? '',
+            value: selectedItem?.item?.name ?? '',
             textAlign: 'middle-center',
             fontSize: 16
           }}
@@ -153,7 +291,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             alignItems: 'flex-start',
             margin: { top: '25%' },
             display:
-              MutableMarketResources.selectedItem !== undefined
+              selectedItem !== undefined
                 ? 'flex'
                 : 'none'
           }}
@@ -166,7 +304,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               alignItems: 'center',
               margin: { left: '4%', right: '9%' },
               display:
-                MutableMarketResources.selectedItem !== undefined
+                selectedItem !== undefined
                   ? 'flex'
                   : 'none'
             }}
@@ -175,7 +313,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               onChange={(value) => {
                 updatePrice(value)
               }}
-              value={MutableMarketResources.selectedQuantity.toString()}
+              value={selectedQuantity.toString()}
               uiTransform={{
                 width: '100%',
                 height: '20%',
@@ -191,20 +329,20 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               uiBackground={{
                 textureMode: 'stretch',
                 uvs:
-                  MutableMarketResources.selectedItem !== undefined
-                    ? getUvs(MutableMarketResources.buttonMaxSprite)
+                  selectedItem !== undefined
+                    ? getUvs(buttonMaxSprite)
                     : [],
                 texture: {
                   src:
-                    MutableMarketResources.selectedItem !== undefined
-                      ? MutableMarketResources.buttonMaxSprite?.atlasSrc
+                    selectedItem !== undefined
+                      ? buttonMaxSprite?.atlasSrc
                       : ''
                 }
               }}
               onMouseDown={mouseDownMax}
               onMouseUp={() => {
-                if (MutableMarketResources.selectedItem !== undefined) {
-                  mouseUpMax(MutableMarketResources.selectedItem)
+                if (selectedItem !== undefined) {
+                  mouseUpMax(selectedItem)
                 }
               }}
             />
@@ -219,13 +357,13 @@ const uiComponent = (): ReactEcs.JSX.Element => (
             uiBackground={{
               textureMode: 'stretch',
               uvs:
-                MutableMarketResources.selectedItem?.item !== undefined
-                  ? getUvs(MutableMarketResources.selectedItem.item.sprite)
+                selectedItem?.item !== undefined
+                  ? getUvs(selectedItem.item.sprite)
                   : [],
               texture: {
                 src:
-                  MutableMarketResources.selectedItem?.item.sprite !== undefined
-                    ? MutableMarketResources.selectedItem.item.sprite.atlasSrc
+                  selectedItem?.item.sprite !== undefined
+                    ? selectedItem.item.sprite.atlasSrc
                     : ''
               }
             }}
@@ -235,17 +373,17 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               positionType: 'relative',
               width: '30%',
               height: '10%',
-              display: MutableMarketResources.isSelling ? 'flex' : 'none',
+              display: isSelling ? 'flex' : 'none',
               margin: { top: '17.5%', right: '5%' }
             }}
             uiText={{
               textAlign: 'middle-right',
               value:
-                MutableMarketResources.selectedItem?.item.sellPrice !==
+                selectedItem?.item.sellPrice !==
                 undefined
                   ? (
-                      MutableMarketResources.selectedItem.item.sellPrice *
-                      MutableMarketResources.selectedQuantity
+                      selectedItem.item.sellPrice *
+                      selectedQuantity
                     ).toString()
                   : ''
             }}
@@ -255,16 +393,16 @@ const uiComponent = (): ReactEcs.JSX.Element => (
               positionType: 'relative',
               width: '30%',
               height: '10%',
-              display: MutableMarketResources.isSelling ? 'none' : 'flex',
+              display: isSelling ? 'none' : 'flex',
               margin: { top: '17.5%', right: '10%' }
             }}
             uiText={{
-              value: MutableMarketResources.totalPrice.toString(),
+              value: totalPrice.toString(),
               textAlign: 'middle-right'
             }}
           />
         </UiEntity>
-        <TradeButton inventoryItem={MutableMarketResources.selectedItem} />
+        <TradeButton inventoryItem={selectedItem} />
       </UiEntity>
       <UiEntity
         uiTransform={{
@@ -273,7 +411,7 @@ const uiComponent = (): ReactEcs.JSX.Element => (
           width: canvasInfo.width * WIDTH_FACTOR * 0.04,
           height: canvasInfo.width * WIDTH_FACTOR * 0.04 * ASPECT_RATIO,
           display:
-            MutableMarketResources.selectedItem?.item.withMana !== undefined
+            selectedItem?.item.withMana !== undefined
               ? 'flex'
               : 'none'
         }}
@@ -302,307 +440,8 @@ const uiComponent = (): ReactEcs.JSX.Element => (
         onMouseDown={changeVisibility}
       />
     </UiEntity>
-  </UiEntity>
-)
-
-function ItemButton(props: {
-  inventoryItem: InventoryItem
-}): ReactEcs.JSX.Element {
-  return (
-    <UiEntity
-      uiTransform={{
-        width: '100%',
-        height: '100%',
-        display:
-          (props.inventoryItem.amount !== undefined &&
-            props.inventoryItem.amount > 0) ||
-          !MutableMarketResources.isSelling
-            ? 'flex'
-            : 'none'
-      }}
-      uiBackground={{
-        textureMode: 'stretch',
-        uvs: getUvs(props.inventoryItem.item.sprite),
-        texture: { src: props.inventoryItem.item.sprite.atlasSrc }
-      }}
-      onMouseDown={() => {
-        selectItem(props)
-      }}
-    >
-      <UiEntity
-        uiTransform={{
-          positionType: 'absolute',
-          width: '115%',
-          height: '115%',
-          position: { left: '-5%', top: '-5%' },
-          display:
-            MutableMarketResources.selectedItem?.item.id ===
-            props.inventoryItem.item.id
-              ? 'flex'
-              : 'none'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(resourcesMarketSprites.selected_frame),
-          texture: {
-            src: resourcesMarketSprites.selected_frame.atlasSrc
-          }
-        }}
-      />
-      <UiEntity
-        uiTransform={{
-          positionType: 'absolute',
-          width: '100%',
-          height: '100%',
-          display: MutableMarketResources.isSelling ? 'flex' : 'none'
-        }}
-        uiText={{
-          value:
-            props.inventoryItem.amount !== undefined
-              ? props.inventoryItem.amount.toString()
-              : '',
-          textAlign: 'bottom-right',
-          fontSize: 20
-        }}
-      />
-    </UiEntity>
+  </UiEntity> 
   )
 }
 
-function TradeButton(): ReactEcs.JSX.Element {
-  let normalSprite: Sprite
-  let clickedSprite: Sprite
-  let unavailableSprite: Sprite
-
-  if (MutableMarketResources.isSelling) {
-    normalSprite = resourcesMarketSprites.sell_button
-    clickedSprite = resourcesMarketSprites.sell_button_clicked
-    unavailableSprite = resourcesMarketSprites.sell_button_unavailable
-  } else {
-    if (MutableMarketResources.selectedItem?.item.withMana !== undefined) {
-      normalSprite = resourcesMarketSprites.purchase_with_mana_button
-      clickedSprite = resourcesMarketSprites.purchase_with_mana_button_clicked
-      unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
-    } else {
-      normalSprite = resourcesMarketSprites.purchase_button
-      clickedSprite = resourcesMarketSprites.purchase_button_clicked
-      unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
-    }
-  }
-  return (
-    <UiEntity
-      uiTransform={{
-        positionType: 'relative',
-        width: '50%',
-        height: '10%'
-      }}
-    >
-      <UiEntity
-        uiTransform={{
-          positionType: 'relative',
-          width: '100%',
-          height: '100%',
-          display: isUnavailable() ? 'flex' : 'none'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(unavailableSprite),
-          texture: {
-            src: unavailableSprite.atlasSrc
-          }
-        }}
-      />
-      <UiEntity
-        uiTransform={{
-          positionType: 'relative',
-          width: '100%',
-          height: '100%',
-          display: !isUnavailable() ? 'flex' : 'none'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(
-            MutableMarketResources.tradeClicked ? clickedSprite : normalSprite
-          ),
-          texture: {
-            src: clickedSprite.atlasSrc
-          }
-        }}
-        onMouseDown={tradeDown}
-        onMouseUp={() => (MutableMarketResources.tradeClicked = false)}
-      />
-    </UiEntity>
-  )
-}
-
-function selectItem(props: { inventoryItem: InventoryItem }): void {
-  MutableMarketResources.selectedItem = props.inventoryItem
-  MutableMarketResources.selectedQuantity = 1
-  updatePrice()
-}
-
-function updatePrice(value?: string): void {
-  if (value !== undefined) {
-    const formattedValue = value.replace(' ', '')
-    if (!Number.isNaN(Number(formattedValue))) {
-      MutableMarketResources.selectedQuantity = Number(formattedValue)
-    } else {
-      MutableMarketResources.selectedQuantity = 1
-    }
-  }
-
-  let unitPrice: number | undefined
-
-  if (MutableMarketResources.selectedItem !== undefined) {
-    if (MutableMarketResources.isSelling) {
-      unitPrice = MutableMarketResources.selectedItem.item.sellPrice
-    } else {
-      unitPrice = MutableMarketResources.selectedItem.item.buyPrice
-    }
-    if (unitPrice !== undefined) {
-      MutableMarketResources.totalPrice =
-        MutableMarketResources.selectedQuantity * unitPrice
-    } else {
-      MutableMarketResources.totalPrice = 0
-    }
-  }
-}
-
-function mouseDownMax(): void {
-  MutableMarketResources.buttonMaxSprite =
-    resourcesMarketSprites.max_button_clicked
-}
-
-function mouseUpMax(item: InventoryItem): void {
-  MutableMarketResources.buttonMaxSprite = resourcesMarketSprites.max_button
-  if (MutableMarketResources.isSelling && item.amount !== undefined) {
-    MutableMarketResources.selectedQuantity = item.amount
-  }
-  if (!MutableMarketResources.isSelling && item.item.buyPrice !== undefined) {
-    MutableMarketResources.selectedQuantity = Math.floor(
-      MutableMarketResources.balance / item.item.buyPrice
-    )
-  }
-  updatePrice()
-}
-
-function setSelling(state: boolean): void {
-  if (MutableMarketResources.isSelling !== state) {
-    MutableMarketResources.selectedItem = undefined
-    MutableMarketResources.isSelling = state
-    if (state) {
-      MutableMarketResources.itemsArray = RESOURCES_INVENTORY
-    } else {
-      MutableMarketResources.itemsArray = RESOURCES_MARKET
-    }
-  }
-}
-
-function tradeDown(): void {
-  if (MutableMarketResources.selectedItem !== undefined) {
-    if (MutableMarketResources.isSelling) {
-      if (
-        MutableMarketResources.selectedItem?.item.sellPrice !== undefined &&
-        MutableMarketResources.selectedItem.amount !== undefined
-      ) {
-        if (
-          MutableMarketResources.selectedItem.amount >=
-          MutableMarketResources.selectedQuantity
-        ) {
-          MutableMarketResources.balance =
-            MutableMarketResources.balance +
-            MutableMarketResources.selectedItem.item.sellPrice *
-              MutableMarketResources.selectedQuantity
-        } else {
-          return
-        }
-      }
-    } else {
-      if (MutableMarketResources.selectedItem.item.buyPrice !== undefined) {
-        if (
-          MutableMarketResources.balance -
-            MutableMarketResources.selectedItem.item.buyPrice *
-              MutableMarketResources.selectedQuantity >=
-          0
-        ) {
-          MutableMarketResources.balance =
-            MutableMarketResources.balance -
-            MutableMarketResources.selectedItem.item.buyPrice *
-              MutableMarketResources.selectedQuantity
-        } else {
-          return
-        }
-      }
-    }
-    updateInventory()
-  }
-  MutableMarketResources.tradeClicked = true
-}
-
-function updateInventory(): void {
-  const existingItemIndex = RESOURCES_INVENTORY.findIndex(
-    (resourcesInventoryItem) =>
-      resourcesInventoryItem.item.id ===
-      MutableMarketResources.selectedItem?.item.id
-  )
-  const existingItem = RESOURCES_INVENTORY[existingItemIndex]
-
-  if (MutableMarketResources.isSelling) {
-    if (existingItem?.amount !== undefined) {
-      if (existingItem.amount - MutableMarketResources.selectedQuantity <= 0) {
-        RESOURCES_INVENTORY.splice(existingItemIndex, 1)
-      }
-      existingItem.amount -= MutableMarketResources.selectedQuantity
-    }
-  } else {
-    if (existingItem !== undefined) {
-      if (existingItem.amount !== undefined) {
-        existingItem.amount += MutableMarketResources.selectedQuantity
-      } else {
-        existingItem.amount = MutableMarketResources.selectedQuantity
-      }
-    } else {
-      addItemToResourcesInventory()
-    }
-  }
-}
-
-function isUnavailable(): boolean {
-  if (MutableMarketResources.selectedItem !== undefined) {
-    if (MutableMarketResources.isSelling) {
-      if (
-        MutableMarketResources.selectedItem.amount !== undefined &&
-        MutableMarketResources.selectedItem.amount >=
-          MutableMarketResources.selectedQuantity
-      ) {
-        return false
-      } else {
-        return true
-      }
-    } else {
-      if (MutableMarketResources.totalPrice > MutableMarketResources.balance) {
-        return true
-      } else {
-        return false
-      }
-    }
-  } else {
-    return false
-  }
-}
-
-function changeVisibility(): void {
-  MutableMarketResources.isVisible = !MutableMarketResources.isVisible
-}
-
-function addItemToResourcesInventory(): void {
-  if (MutableMarketResources.selectedItem !== undefined) {
-    const key = MutableMarketResources.selectedItem.item.id
-    if (key in ITEMS) {
-      RESOURCES_INVENTORY.push({
-        item: ITEMS[key as Items],
-        amount: MutableMarketResources.selectedQuantity
-      })
-    }
-  }
-}
+export default ResourcesMarket
