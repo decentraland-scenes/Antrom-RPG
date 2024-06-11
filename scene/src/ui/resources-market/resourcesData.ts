@@ -1,4 +1,4 @@
-import type { Sprite } from "../utils/utils"
+import type { Sprite } from '../utils/utils'
 
 export enum Items {
   I_UNSELECTED = 'unselected',

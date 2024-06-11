@@ -3,10 +3,10 @@ import QuestLog from '../../ui/quest-log/questLog'
 import { QUEST_STAGES } from '../../ui/quest-log/questsData'
 import { engine } from '@dcl/sdk/ecs'
 
-const TIME_SHOW_PROGRESS:number = 5
+const TIME_SHOW_PROGRESS: number = 5
 
 export class UI {
-  public timer:number 
+  public timer: number
   public isInfo: boolean
   public isVisible: boolean
   public selectedStage: string
@@ -51,17 +51,16 @@ export class UI {
 
   showingProgressSystem(dt: number): void {
     console.log('The system is still active')
-    if(this.isProgressVisible) {
+    if (this.isProgressVisible) {
       if (this.timer - dt <= 0) {
-          this.isProgressVisible = false
-          } else {
-            this.timer = this.timer - dt
-            console.log(this.timer)
-          }
+        this.isProgressVisible = false
+      } else {
+        this.timer = this.timer - dt
+        console.log(this.timer)
+      }
     } else {
       this.hideProgress()
     }
-    
   }
 
   showProgress(): void {
@@ -73,8 +72,6 @@ export class UI {
   hideProgress(): void {
     engine.removeSystem(this.showingProgressSystem.bind(this))
   }
-
-
 
   QuestLogUI(): ReactEcs.JSX.Element {
     return (

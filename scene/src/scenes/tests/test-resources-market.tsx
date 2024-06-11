@@ -1,10 +1,18 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import { ITEMS, RESOURCES_INVENTORY, RESOURCES_MARKET, resourcesMarketSprites } from '../../ui/resources-market/resourcesData'
-import type { InventoryItem, Items} from '../../ui/resources-market/resourcesData'
+import {
+  ITEMS,
+  RESOURCES_INVENTORY,
+  RESOURCES_MARKET,
+  resourcesMarketSprites
+} from '../../ui/resources-market/resourcesData'
+import type {
+  InventoryItem,
+  Items
+} from '../../ui/resources-market/resourcesData'
 import ResourcesMarket from '../../ui/resources-market/resourcesMarket'
 import type { Sprite } from '../../ui/utils/utils'
 
-const BALANCE:number = 300
+const BALANCE: number = 300
 
 export class UI {
   public isVisible: boolean
@@ -15,8 +23,9 @@ export class UI {
   public totalPrice: number
   public buttonMaxSprite: Sprite
   public selectedQuantity: number
-  public selectedItem?: InventoryItem
-  
+  public selectedItem: InventoryItem | undefined
+  public selectedItemQuantity: number | undefined
+
   constructor() {
     this.isVisible = true
     this.balance = BALANCE
@@ -36,11 +45,11 @@ export class UI {
   }
 
   selectItem(inventoryItem: InventoryItem): void {
-    console.log('select item id:', inventoryItem.item.id)
     this.selectedItem = inventoryItem
     this.selectedQuantity = 1
+    this.selectedItemQuantity = inventoryItem.amount
     this.updatePrice()
-    console.log(this.selectedItem.item.id)
+    console.log(this.selectedItem)
   }
 
   updatePrice(value?: string): void {
@@ -64,8 +73,7 @@ export class UI {
         unitPrice = this.selectedItem.item.buyPrice
       }
       if (unitPrice !== undefined) {
-        this.totalPrice =
-          this.selectedQuantity * unitPrice
+        this.totalPrice = this.selectedQuantity * unitPrice
       } else {
         this.totalPrice = 0
       }
@@ -73,8 +81,7 @@ export class UI {
   }
 
   mouseDownMax(): void {
-  this.buttonMaxSprite =
-    resourcesMarketSprites.max_button_clicked
+    this.buttonMaxSprite = resourcesMarketSprites.max_button_clicked
   }
 
   mouseUpMax(item: InventoryItem): void {
@@ -83,9 +90,7 @@ export class UI {
       this.selectedQuantity = item.amount
     }
     if (!this.isSelling && item.item.buyPrice !== undefined) {
-      this.selectedQuantity = Math.floor(
-        this.balance / item.item.buyPrice
-      )
+      this.selectedQuantity = Math.floor(this.balance / item.item.buyPrice)
     }
     this.updatePrice.bind(this)
   }
@@ -104,19 +109,14 @@ export class UI {
 
   tradeDown(): void {
     if (this.selectedItem !== undefined) {
-      if (this.isSelling) {
-        if (
-          this.selectedItem?.item.sellPrice !== undefined &&
-          this.selectedItem.amount !== undefined
-        ) {
-          if (
-            this.selectedItem.amount >=
-            this.selectedQuantity
-          ) {
-            this.balance =
-              this.balance +
-              this.selectedItem.item.sellPrice *
-                this.selectedQuantity
+      if (this.isSelling && this.selectedItemQuantity !== undefined) {
+        if (this.selectedItemQuantity >= this.selectedQuantity) {
+          this.balance = this.balance + this.totalPrice
+          this.selectedItemQuantity -= this.selectedQuantity
+          console.log('quedan: ', this.selectedItemQuantity)
+        } else {
+          if (this.selectedItemQuantity <= 0) {
+            this.selectedItem = undefined
           } else {
             return
           }
@@ -125,20 +125,18 @@ export class UI {
         if (this.selectedItem.item.buyPrice !== undefined) {
           if (
             this.balance -
-              this.selectedItem.item.buyPrice *
-                this.selectedQuantity >=
+              this.selectedItem.item.buyPrice * this.selectedQuantity >=
             0
           ) {
             this.balance =
               this.balance -
-              this.selectedItem.item.buyPrice *
-                this.selectedQuantity
+              this.selectedItem.item.buyPrice * this.selectedQuantity
           } else {
             return
           }
         }
       }
-      this.updateInventory.bind(this)
+      this.updateInventory()
     }
     this.tradeClicked = true
   }
@@ -146,17 +144,24 @@ export class UI {
   updateInventory(): void {
     const existingItemIndex = RESOURCES_INVENTORY.findIndex(
       (resourcesInventoryItem) =>
-        resourcesInventoryItem.item.id ===
-        this.selectedItem?.item.id
+        resourcesInventoryItem.item.id === this.selectedItem?.item.id
     )
     const existingItem = RESOURCES_INVENTORY[existingItemIndex]
 
     if (this.isSelling) {
-      if (existingItem?.amount !== undefined) {
-        if (existingItem.amount - this.selectedQuantity <= 0) {
-          RESOURCES_INVENTORY.splice(existingItemIndex, 1)
+      if (
+        this.selectedItem?.amount !== undefined &&
+        this.selectedItem.amount >= this.selectedQuantity
+      ) {
+        if (existingItem?.amount !== undefined) {
+          if (existingItem.amount - this.selectedQuantity <= 0) {
+            RESOURCES_INVENTORY.splice(existingItemIndex, 1)
+          }
+          existingItem.amount -= this.selectedQuantity
+          // if (this.selectedItem?.amount !== undefined) {
+          //   this.selectedItem.amount -= this.selectedQuantity
+          // }
         }
-        existingItem.amount -= this.selectedQuantity
       }
     } else {
       if (existingItem !== undefined) {
@@ -166,9 +171,13 @@ export class UI {
           existingItem.amount = this.selectedQuantity
         }
       } else {
-        this.addItemToResourcesInventory.bind(this)
+        this.addItemToResourcesInventory()
       }
     }
+  }
+
+  tradeUp(): void {
+    this.tradeClicked = false
   }
 
   isUnavailable(): boolean {
@@ -176,8 +185,7 @@ export class UI {
       if (this.isSelling) {
         if (
           this.selectedItem.amount !== undefined &&
-          this.selectedItem.amount >=
-            this.selectedQuantity
+          this.selectedItem.amount >= this.selectedQuantity
         ) {
           return false
         } else {
@@ -209,25 +217,25 @@ export class UI {
 
   ResourcesMarketUI(): ReactEcs.JSX.Element {
     return (
-      <ResourcesMarket 
+      <ResourcesMarket
         isVisible={this.isVisible}
         balance={this.balance}
-        tradeClicked={this.tradeClicked} 
-        isSelling={this.isSelling} 
-        itemsArray={this.itemsArray} 
-        totalPrice={this.totalPrice} 
-        buttonMaxSprite={this.buttonMaxSprite} 
-        selectedQuantity={0} 
+        tradeClicked={this.tradeClicked}
+        isSelling={this.isSelling}
+        itemsArray={this.itemsArray}
+        totalPrice={this.totalPrice}
+        buttonMaxSprite={this.buttonMaxSprite}
+        selectedQuantity={this.selectedQuantity}
         changeVisibility={this.changeVisibility.bind(this)}
-        selectItem={this.selectItem.bind(this)} 
-        updatePrice={this.updatePrice.bind(this)} 
-        mouseDownMax={this.mouseDownMax.bind(this)} 
-        mouseUpMax={this.mouseUpMax.bind(this)} 
-        setSelling={this.setSelling.bind(this)} 
-        tradeDown={this.tradeDown.bind(this)} 
-        updateInventory={this.updateInventory.bind(this)} 
-        isUnavailable={this.isUnavailable.bind(this)} 
-        addItemToResourcesInventory={this.addItemToResourcesInventory.bind(this)}
+        selectItem={this.selectItem.bind(this)}
+        updatePrice={this.updatePrice.bind(this)}
+        mouseDownMax={this.mouseDownMax.bind(this)}
+        mouseUpMax={this.mouseUpMax.bind(this)}
+        setSelling={this.setSelling.bind(this)}
+        tradeDown={this.tradeDown.bind(this)}
+        tradeUp={this.tradeUp.bind(this)}
+        isUnavailable={this.isUnavailable.bind(this)}
+        selectedItem={this.selectedItem}
       />
     )
   }

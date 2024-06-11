@@ -79,8 +79,7 @@ function QuestLog({
           uiTransform={{
             width: canvasInfo.width * 0.1,
             height: canvasInfo.width * 0.1 * 0.216,
-            display:
-              isVisible ? 'none' : 'flex',
+            display: isVisible ? 'none' : 'flex',
             positionType: 'absolute',
             position: { top: '25%', right: '0.5%' }
           }}
@@ -96,8 +95,7 @@ function QuestLog({
             positionType: 'relative',
             width: '100%',
             height: '100%',
-            display:
-              isVisible  ? 'flex' : 'none',
+            display: isVisible ? 'flex' : 'none',
             justifyContent: 'center',
             alignItems: 'center'
           }}
@@ -107,8 +105,7 @@ function QuestLog({
               positionType: 'relative',
               width: canvasInfo.width * 0.3,
               height: (canvasInfo.width * 0.5) / 1.33,
-              display:
-                isInfo ? 'none' : 'flex',
+              display: isInfo ? 'none' : 'flex',
               flexDirection: 'column',
               justifyContent: 'flex-start',
               alignItems: 'center'
@@ -193,7 +190,7 @@ function QuestLog({
                     textAlign: 'top-left'
                   }}
                 />
-                
+
                 <UiEntity
                   uiTransform={{
                     width: '80%',
@@ -204,21 +201,21 @@ function QuestLog({
                   }}
                 >
                   <UiEntity
-                  uiTransform={{
-                    positionType: 'relative',
-                    width: '80%',
-                    height: '100%',
-                    margin: { left: '10%', top: '10%' },
-                    display: isProgressVisible ? 'flex' : 'none',
-                    flexDirection: 'column',
-                    alignSelf: 'flex-start'
-                  }}
-                  uiText={{
-                    value: progress,
-                    fontSize: 14,
-                    textAlign: 'top-left'
-                  }}
-                />
+                    uiTransform={{
+                      positionType: 'relative',
+                      width: '80%',
+                      height: '100%',
+                      margin: { left: '10%', top: '10%' },
+                      display: isProgressVisible ? 'flex' : 'none',
+                      flexDirection: 'column',
+                      alignSelf: 'flex-start'
+                    }}
+                    uiText={{
+                      value: progress,
+                      fontSize: 14,
+                      textAlign: 'top-left'
+                    }}
+                  />
                   <Button
                     value=""
                     variant="secondary"
