@@ -53,10 +53,9 @@ export class UI {
   }
 
   updatePrice(value?: string): void {
-    console.log('update price')
-
     if (value !== undefined) {
       const formattedValue = value.replace(' ', '')
+      console.log(formattedValue)
       if (!Number.isNaN(Number(formattedValue))) {
         this.selectedQuantity = Number(formattedValue)
       } else {
@@ -86,8 +85,8 @@ export class UI {
 
   mouseUpMax(item: InventoryItem): void {
     this.buttonMaxSprite = resourcesMarketSprites.max_button
-    if (this.isSelling && item.amount !== undefined) {
-      this.selectedQuantity = item.amount
+    if (this.isSelling && this.selectedItemQuantity !== undefined) {
+      this.selectedQuantity = this.selectedItemQuantity
     }
     if (!this.isSelling && item.item.buyPrice !== undefined) {
       this.selectedQuantity = Math.floor(this.balance / item.item.buyPrice)
@@ -108,37 +107,31 @@ export class UI {
   }
 
   tradeDown(): void {
-    if (this.selectedItem !== undefined) {
-      if (this.isSelling && this.selectedItemQuantity !== undefined) {
+    if (this.selectedItem !== undefined && this.selectedItemQuantity !== undefined) {
+      if (this.isSelling) {
         if (this.selectedItemQuantity >= this.selectedQuantity) {
           this.balance = this.balance + this.totalPrice
           this.selectedItemQuantity -= this.selectedQuantity
-          console.log('quedan: ', this.selectedItemQuantity)
         } else {
           if (this.selectedItemQuantity <= 0) {
             this.selectedItem = undefined
-          } else {
-            return
           }
         }
+        if (this.selectedItemQuantity === 0) {
+          this.selectedItem = undefined
+        }
       } else {
-        if (this.selectedItem.item.buyPrice !== undefined) {
-          if (
-            this.balance -
-              this.selectedItem.item.buyPrice * this.selectedQuantity >=
-            0
-          ) {
-            this.balance =
-              this.balance -
-              this.selectedItem.item.buyPrice * this.selectedQuantity
+        if (this.totalPrice !== undefined) {
+          if (this.balance - this.totalPrice >= 0) {
+            this.balance = this.balance - this.totalPrice
           } else {
             return
           }
         }
       }
       this.updateInventory()
+      this.tradeClicked = true
     }
-    this.tradeClicked = true
   }
 
   updateInventory(): void {
