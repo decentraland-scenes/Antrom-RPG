@@ -1,18 +1,14 @@
-import { engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
-import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import type { TimerProps } from './timerData'
 
-export function setupTimer(): void {
-  ReactEcsRenderer.setUiRenderer(uiComponent)
-}
-let hours: string | undefined
-let minutes: string = ''
-let seconds: string = ''
-
-const uiComponent = (): ReactEcs.JSX.Element => (
+function Timer({hours, minutes, seconds}:TimerProps): ReactEcs.JSX.Element {
+    
+    
+  return(
   <UiEntity
     uiTransform={{
-      position: { top: '30%', left: '1.5%' },
+      position: { top: '60%', left: '1.5%' },
       positionType: 'absolute',
       width: 100,
       height: 'auto',
@@ -75,19 +71,10 @@ const uiComponent = (): ReactEcs.JSX.Element => (
     />
   </UiEntity>
 )
-
-engine.addSystem(timerSystem)
-
-// This INITIAL_TIME must be saved when quest or event starts
-const INITIAL_TIME = new Date()
-export function timerSystem(dt: number): void {
-  const now = new Date()
-  const difference = -(INITIAL_TIME.getTime() - now.getTime())
-  const formatNumber = (num: number): string => num.toString().padStart(2, '0')
-
-  seconds = formatNumber(Math.floor((difference / 1000) % 60))
-  minutes = formatNumber(Math.floor((difference / (1000 * 60)) % 60))
-  if (Math.floor(difference / (1000 * 60 * 60)) > 0) {
-    hours = formatNumber(Math.floor(difference / (1000 * 60 * 60)))
-  }
 }
+
+
+
+
+
+export default Timer

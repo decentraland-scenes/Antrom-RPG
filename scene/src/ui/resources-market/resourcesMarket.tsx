@@ -1,33 +1,14 @@
 import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
 import type { Sprite } from '../utils/utils'
 import { Tab, canvasInfo, getUvs } from '../utils/utils'
-import { resourcesMarketSprites, type InventoryItem } from './resourcesData'
+import { type ResourcesMarketProps, resourcesMarketSprites, type InventoryItem } from './resourcesData'
 
 const ASPECT_RATIO = 0.7
 const WIDTH_FACTOR = 0.5
 const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 const SIZE_ITEM_FACTOR = 0.1
 
-export type ResourcesMarketProps = {
-  isVisible: boolean
-  balance: number
-  tradeClicked: boolean
-  isSelling: boolean
-  itemsArray: InventoryItem[]
-  totalPrice: number
-  buttonMaxSprite: Sprite
-  selectedQuantity: number
-  selectedItem: InventoryItem | undefined
-  changeVisibility: () => void
-  selectItem: (arg: InventoryItem) => void
-  updatePrice: (arg: string) => void
-  mouseDownMax: () => void
-  mouseUpMax: (arg: InventoryItem) => void
-  setSelling: (arg: boolean) => void
-  tradeDown: () => void
-  tradeUp: () => void
-  isUnavailable: () => boolean
-}
+
 
 function ResourcesMarket({
   isVisible,

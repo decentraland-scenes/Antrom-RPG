@@ -322,3 +322,24 @@ export type InventoryItem = {
   item: Item
   amount?: number
 }
+
+export type ResourcesMarketProps = {
+  isVisible: boolean
+  balance: number
+  tradeClicked: boolean
+  isSelling: boolean
+  itemsArray: InventoryItem[]
+  totalPrice: number
+  buttonMaxSprite: Sprite
+  selectedQuantity: number
+  selectedItem: InventoryItem | undefined
+  changeVisibility: () => void
+  selectItem: (arg: InventoryItem) => void
+  updatePrice: (arg: string) => void
+  mouseDownMax: () => void
+  mouseUpMax: (arg: InventoryItem) => void
+  setSelling: (arg: boolean) => void
+  tradeDown: () => void
+  tradeUp: () => void
+  isUnavailable: () => boolean
+}
