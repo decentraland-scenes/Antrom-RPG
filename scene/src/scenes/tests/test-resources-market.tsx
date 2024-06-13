@@ -107,7 +107,10 @@ export class UI {
   }
 
   tradeDown(): void {
-    if (this.selectedItem !== undefined && this.selectedItemQuantity !== undefined) {
+    if (
+      this.selectedItem !== undefined &&
+      this.selectedItemQuantity !== undefined
+    ) {
       if (this.isSelling) {
         if (this.selectedItemQuantity >= this.selectedQuantity) {
           this.balance = this.balance + this.totalPrice
