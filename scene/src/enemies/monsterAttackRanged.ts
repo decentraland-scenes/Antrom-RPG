@@ -1,14 +1,16 @@
 
-import { Vector3 } from "@dcl/sdk/math";
-import { type MonsterOligar } from "./monster"
-import { Transform, engine } from "@dcl/sdk/ecs"
+import { Quaternion, Vector3 } from "@dcl/sdk/math";
+import { MonsterOligar } from "./monster"
+import { Animator, Billboard, Transform, engine } from "@dcl/sdk/ecs"
+import { flattenJSON } from "three/src/animation/AnimationUtils";
+
 
 // Configuration constants
 const MOVE_SPEED = 1
 const ROT_SPEED = 1
-// const MAX_DISTANCE = 20
+const MAX_DISTANCE = 20
 
-type MonsterAttackConfig = {
+interface MonsterAttackConfig {
     moveSpeed?: number
     rotSpeed?: number
     engageDistance?: number
@@ -16,22 +18,19 @@ type MonsterAttackConfig = {
 }
 
 export class MonsterAttackRanged {
-    private readonly monster: MonsterOligar
-    // private transform
-    // private playerCamera: Camera
-    private readonly moveSpeed: number
-    private readonly rotSpeed: number
-    private readonly engageDistance: number
-    private readonly createdAt: Date
-    private readonly onAttack?: () => void
-    private readonly refreshTimer: number
-    private readonly isIdle?: boolean
-    private readonly hasBeenHit: boolean = true
-    private readonly stopDistance: number = 5
+    private monster: MonsterOligar
+    private moveSpeed: number
+    private rotSpeed: number
+    private engageDistance: number
+    private createdAt: Date
+    private onAttack?: () => void
+    private refreshTimer: number
+    private isIdle?: boolean
+    private hasBeenHit: boolean = true
+    private stopDistance: number = 5
 
     constructor(
         monster: MonsterOligar,
-        // playerCamera: Camera,
         config: MonsterAttackConfig = {}
     ) {
         const {
@@ -41,33 +40,27 @@ export class MonsterAttackRanged {
             engageDistance = 9,
         } = config
         this.monster = monster
-        // this.transform = Transform.getMutable(this.monster.entity)
-        // this.playerCamera = playerCamera
         this.moveSpeed = moveSpeed
         this.rotSpeed = rotSpeed
         this.engageDistance = engageDistance
         this.onAttack = onAttack
         this.createdAt = new Date()
         this.refreshTimer = 0.5
-        engine.addSystem(this.attackSystem)
     }
-
-    attackSystem = (dt: number): void => {
+    attackSystem = (dt: number) => {
          const playerPos = Transform.get(engine.PlayerEntity).position
          const monsterPos = Transform.getMutable(this.monster.entity).position
          const distanceToPlayer = Vector3.distance(playerPos,monsterPos)
-         const moveMonsterTowardsPlayer = (playerPos: Vector3, monsterPos: Vector3, dt: any): void => {
+         const moveMonsterTowardsPlayer = (playerPos: Vector3, monsterPos: Vector3, dt: any) => {
                 const directionToPlayer = Vector3.normalize(Vector3.subtract(playerPos, monsterPos) as Vector3)
                 const newPosition = Vector3.add(monsterPos, Vector3.scale(directionToPlayer, this.moveSpeed * 2 * dt) as Vector3)
-                console.log("the new position is:", newPosition)
-                // newPosition.y = Camera.instance.position.y - 2 // Adjust Y-coordinate to ensure the monster is on the ground
-                // this.transform.lookAt(playerPos)
+                Transform.getMutable(this.monster.entity).position = newPosition
+                Transform.getMutable(this.monster.entity).rotation = Quaternion.fromLookAt(newPosition, playerPos)
             }
         if (this.hasBeenHit && distanceToPlayer > this.stopDistance) {
             moveMonsterTowardsPlayer(playerPos, monsterPos, dt)
-            // this.monster.walkClip?.play()
-            console.log("RUN")
-
+            //Animator.getClip(this.monster.entity, this.monster.walkClip).playing = true
+            Animator.playSingleAnimation(this.monster.entity, this.monster.walkClip, false)
         }
 
     }

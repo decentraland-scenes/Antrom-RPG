@@ -12,5 +12,8 @@ export function main(): void {
   // all the initializing logic
   const game = new GameController()
   game.start()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  
+  
   ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }
