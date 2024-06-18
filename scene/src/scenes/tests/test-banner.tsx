@@ -25,7 +25,16 @@ export class UI {
 }
 
 export function main(): void {
-  // all the initializing logic
-  const gameUI = new UI()
-  gameUI.bannerUI()
+  // Seba
+  // // all the initializing logic
+  // const gameUI = new UI()
+  // gameUI.bannerUI()
+
+
+  // Giorgio
+  // const game = new GameController()
+  // game.start()
+
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }
