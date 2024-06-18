@@ -13,14 +13,15 @@ export class UI {
   constructor() {
     this.seconds = ''
     this.minutes = ''
-    const uiComponent = (): ReactEcs.JSX.Element => [this.TimerUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.TimerUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
   timerSystem(dt: number): void {
     const now = new Date()
     const difference = -(INITIAL_TIME.getTime() - now.getTime())
-    const formatNumber = (num: number): string => num.toString().padStart(2, '0')
+    const formatNumber = (num: number): string =>
+      num.toString().padStart(2, '0')
 
     this.seconds = formatNumber(Math.floor((difference / 1000) % 60))
     this.minutes = formatNumber(Math.floor((difference / (1000 * 60)) % 60))
@@ -35,7 +36,7 @@ export class UI {
 
   TimerUI(): ReactEcs.JSX.Element {
     return (
-      <Timer hours={this.hours} minutes={this.minutes} seconds={this.seconds}/>
+      <Timer hours={this.hours} minutes={this.minutes} seconds={this.seconds} />
     )
   }
 }

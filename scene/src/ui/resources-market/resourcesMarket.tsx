@@ -1,14 +1,16 @@
 import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
 import type { Sprite } from '../utils/utils'
 import { Tab, canvasInfo, getUvs } from '../utils/utils'
-import { type ResourcesMarketProps, resourcesMarketSprites, type InventoryItem } from './resourcesData'
+import {
+  type ResourcesMarketProps,
+  resourcesMarketSprites,
+  type InventoryItem
+} from './resourcesData'
 
 const ASPECT_RATIO = 0.7
 const WIDTH_FACTOR = 0.5
 const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 const SIZE_ITEM_FACTOR = 0.1
-
-
 
 function ResourcesMarket({
   isVisible,

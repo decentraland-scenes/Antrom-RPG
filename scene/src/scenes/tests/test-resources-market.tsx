@@ -36,7 +36,7 @@ export class UI {
     this.buttonMaxSprite = resourcesMarketSprites.max_button
     this.selectedQuantity = 1
     this.selectedItem = undefined
-    const uiComponent = (): ReactEcs.JSX.Element => [this.ResourcesMarketUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.ResourcesMarketUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 

@@ -15,7 +15,7 @@ export class UI {
     this.isVisible = true
     this.dialogIndex = 0
     this.assignedDialogs = []
-    const uiComponent = (): ReactEcs.JSX.Element => [this.DialogUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.DialogUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 

@@ -13,7 +13,7 @@ export class UI {
     this.isLoading = true
     this.isVisible = true
     this.timer = TIME_TO_LOAD
-    const uiComponent = (): ReactEcs.JSX.Element => [this.LoadingUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.LoadingUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 

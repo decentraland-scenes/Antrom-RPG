@@ -27,7 +27,7 @@ export class UI {
     this.difficulty = ''
     this.isPlayable = false
     this.timer = 2
-    const uiComponent = (): ReactEcs.JSX.Element => [this.DungeonUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.DungeonUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 

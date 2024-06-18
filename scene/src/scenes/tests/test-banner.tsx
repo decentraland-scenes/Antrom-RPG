@@ -9,7 +9,7 @@ export class UI {
   public isBannerVisible: boolean = true
   public bannerPosition: BannerPosition = BannerPosition.BP_CENTER_TOP
   constructor() {
-    const uiComponent = (): ReactEcs.JSX.Element => [this.bannerUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.bannerUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
@@ -25,7 +25,13 @@ export class UI {
 }
 
 export function main(): void {
-  // all the initializing logic
-  const gameUI = new UI()
-  gameUI.bannerUI()
+  // Seba
+  // // all the initializing logic
+  // const gameUI = new UI()
+  // gameUI.bannerUI()
+  // Giorgio
+  // const game = new GameController()
+  // game.start()
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }

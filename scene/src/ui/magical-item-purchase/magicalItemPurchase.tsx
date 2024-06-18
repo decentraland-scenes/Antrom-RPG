@@ -1,6 +1,9 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { canvasInfo, getUvs } from '../utils/utils'
-import type { MagicalItemButtonProp, MagicalItemsMarketProp } from './magicalItemPurchaseData'
+import type {
+  MagicalItemButtonProp,
+  MagicalItemsMarketProp
+} from './magicalItemPurchaseData'
 import {
   HEIGTH_FACTOR,
   WEARABLES_TO_SHOW,
@@ -41,7 +44,7 @@ function MagicalItemsMarket({
           texture: { src: magicalItem.sprite.atlasSrc }
         }}
         onMouseDown={() => {
-          selectMagicalItem({magicalItem})
+          selectMagicalItem({ magicalItem })
         }}
       >
         <UiEntity
@@ -50,7 +53,8 @@ function MagicalItemsMarket({
             width: '115%',
             height: '115%',
             position: { left: '-7.5%', top: '-7.5%' },
-            display: selectedMagicalItem?.id === magicalItem.id ? 'flex' : 'none'
+            display:
+              selectedMagicalItem?.id === magicalItem.id ? 'flex' : 'none'
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -176,7 +180,8 @@ function MagicalItemsMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                selectedMagicalItem !== null &&
+                selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               width: '100%',
@@ -185,7 +190,8 @@ function MagicalItemsMarket({
             }}
             uiText={{
               value:
-                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                selectedMagicalItem !== null &&
+                selectedMagicalItem !== undefined
                   ? selectedMagicalItem.name
                   : '',
               fontSize: 15,
@@ -195,7 +201,8 @@ function MagicalItemsMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                selectedMagicalItem !== null &&
+                selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               width: canvasInfo.width * WIDTH_FACTOR * 0.12,
@@ -204,13 +211,15 @@ function MagicalItemsMarket({
             uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(
-                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                selectedMagicalItem !== null &&
+                  selectedMagicalItem !== undefined
                   ? selectedMagicalItem.sprite
                   : undefined
               ),
               texture: {
                 src:
-                  selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                  selectedMagicalItem !== null &&
+                  selectedMagicalItem !== undefined
                     ? selectedMagicalItem.sprite.atlasSrc
                     : ''
               }
@@ -219,7 +228,8 @@ function MagicalItemsMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                selectedMagicalItem !== null &&
+                selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               margin: { top: '25%' },
