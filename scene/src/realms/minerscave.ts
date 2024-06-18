@@ -82,6 +82,7 @@ export class MinersCave {
     })
     executeTask(async () => {
       const time = await getWorldTime({})
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       time.seconds < 6.25 * 60 * 60 || time.seconds > 19.85 * 60 * 60
       console.log(time.seconds)
     })
@@ -127,21 +128,21 @@ export class MinersCave {
     ]
   }
 
-  buildCave() {
+  buildCave():void  {
     utils.timers.setTimeout(() => {
       // buildCaveBuilderScene()
       // loader.showLoaderCave(15000)
       utils.timers.setTimeout(() => {
         // createQuestTimerText()
         // quest.turnOnKingQuestTimer()
-        movePlayerTo({
+        void movePlayerTo({
           newRelativePosition: Vector3.create(69.38, 17.73, -24.05)
         })
       }, 15000)
     }, 50)
   }
 
-  removeAllEntities() {
+  removeAllEntities():void  {
     engine.removeEntity(this.cave)
     engine.removeEntity(this.ladder)
     this.gems_entities.forEach((gem) => {
