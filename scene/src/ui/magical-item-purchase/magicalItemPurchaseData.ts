@@ -15,8 +15,7 @@ export type CraftCost = {
 }
 
 export enum MagicalItems {
-  W_UNSELECTED = 'unselected',
-  
+  W_UNSELECTED = 'unselected'
 }
 
 export const magicalItemsSprites: Record<MagicalItems, Sprite> = {
@@ -138,9 +137,7 @@ export const MAGICAL_ITEMS: Record<MagicalItems, MagicalItem> = {
   }
 }
 
-export const MAGICAL_ITEMS_MARKET: MagicalItem[] = [
-  MAGICAL_ITEMS.unselected
-]
+export const MAGICAL_ITEMS_MARKET: MagicalItem[] = [MAGICAL_ITEMS.unselected]
 
 export const ASPECT_RATIO = 0.57
 export const WIDTH_FACTOR = 0.5

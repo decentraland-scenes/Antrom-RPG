@@ -1,228 +1,229 @@
-import { Character } from "./character"
+// import { Character } from './character'
 
-//health increase by 10%
-const HEALTH_MULTIPLIER = 1.05
-//attack increase by 20%
-const ATTACK_MULTIPLIER = 1.11
-enum ITEM_GLBS {
-    SWORD = "models/KnightSword.glb",
-    AXE = "models/KnightAxe.glb",
-}
+// // WORK IN PROGRESS
 
-export class Player extends Character {
-    static instance: Player
-    static globalHasSkill: boolean = true
-    static globalHasSkillActive: boolean = false
+// // health increase by 10%
+// const HEALTH_MULTIPLIER = 1.05
+// // attack increase by 20%
+// const ATTACK_MULTIPLIER = 1.11
+// enum ITEM_GLBS {
+//   SWORD = 'assets/models/KnightSword.glb',
+//   AXE = 'assets/models/KnightAxe.glb'
+// }
 
-    //public attackAnimation?: () => void
-    public questTime: number
-    public lastLogin: number
-    public username: string = ''
-    public playerDataFetchError!: boolean
-    public consecutiveLoginDays: number
-    //public items: Item[]
-    // public inventory: PlayerInventory
-    // public playerAvatar: PlayerAvatar
+// export class Player extends Character {
+//   static instance: Player
+//   static globalHasSkill: boolean = true
+//   static globalHasSkillActive: boolean = false
 
-    public swordInventoryCount: number
+//   // public attackAnimation?: () => void
+//   public questTime: number
+//   public lastLogin: number
+//   public username: string = ''
+//   public playerDataFetchError!: boolean
+//   public consecutiveLoginDays: number
+//   // public items: Item[]
+//   // public inventory: PlayerInventory
+//   // public playerAvatar: PlayerAvatar
 
-    //HSU
-    // public HSU1InventoryCount: ui.UICounter
+//   public swordInventoryCount: number
 
-    // //HSU
-    // public fmBodyInventoryCount: ui.UICounter
-    // public fmHeadInventoryCount: ui.UICounter
+//   // HSU
+//   // public HSU1InventoryCount: ui.UICounter
 
-    public polisher1: number
-    public polisher2: number
-    public polisher3: number
-    public polisher4: number
-    public polisherReward1: number
-    public polisherReward2: number
-    public polisherReward3: number
-    public polisherReward4: number
-    public bossKill2InventoryCount: ui.UICounter
-    public isChoppingTree: boolean
-    public isShakingTree: boolean
-    public isFishing: boolean
-    public isMining: boolean
-    public levels: LevelManager
-    private swordUI: ui.SmallIcon
-    private shieldUI: ui.SmallIcon
-    private helmetUI: ui.SmallIcon
-    private defenseLabel: ui.CornerLabel
-    public onInitDone: (player: Player) => void
-    public hasInit: boolean
-    public attackBuff?: number
-    public luckBuff?: number
-    public defBuff?: number
-    public critRateBuff?: number
-    public critDamageBuff?: number
-    public magicBuff?: number
+//   // //HSU
+//   // public fmBodyInventoryCount: ui.UICounter
+//   // public fmHeadInventoryCount: ui.UICounter
 
-    public petManager: PetManager
-    public avatarModelList?: string[]
+//   public polisher1: number
+//   public polisher2: number
+//   public polisher3: number
+//   public polisher4: number
+//   public polisherReward1: number
+//   public polisherReward2: number
+//   public polisherReward3: number
+//   public polisherReward4: number
+//   public bossKill2InventoryCount: ui.UICounter
+//   public isChoppingTree: boolean
+//   public isShakingTree: boolean
+//   public isFishing: boolean
+//   public isMining: boolean
+//   public levels: LevelManager
+//   private readonly swordUI: ui.SmallIcon
+//   private readonly shieldUI: ui.SmallIcon
+//   private readonly helmetUI: ui.SmallIcon
+//   private readonly defenseLabel: ui.CornerLabel
+//   public onInitDone: (player: Player) => void
+//   public hasInit: boolean
+//   public attackBuff?: number
+//   public luckBuff?: number
+//   public defBuff?: number
+//   public critRateBuff?: number
+//   public critDamageBuff?: number
+//   public magicBuff?: number
 
-    // public healthBarNew: UIBarManager
-    // public expBar: UIBarManager
+//   public petManager: PetManager
+//   public avatarModelList?: string[]
 
-    public hpEvent: Function
-    public xpEvent: Function
-    public lvEvent: Function
-    equiped: string = ITEM_GLBS.SWORD
-    public race: number
-    public class: number
-    public alliance: number
+//   // public healthBarNew: UIBarManager
+//   // public expBar: UIBarManager
 
-    static getInstance(): Player {
-        if (!this.instance) {
-            this.instance = new this(1, 0, 1, 100)
-        }
-        return this.instance
-    }
+//   public hpEvent: Function
+//   public xpEvent: Function
+//   public lvEvent: Function
+//   equiped: string = ITEM_GLBS.SWORD
+//   public race: number
+//   public class: number
+//   public alliance: number
 
-    static setGlobalHasSkill(value: boolean) {
-        Player.globalHasSkill = value
-    }
+//   static getInstance(): Player {
+//     if (!this.instance) {
+//       this.instance = new this(1, 0, 1, 100)
+//     }
+//     return this.instance
+//   }
 
-    static setGlobalHasSkillActive(value: boolean) {
-        Player.globalHasSkillActive = value
-    }
+//   static setGlobalHasSkill(value: boolean) {
+//     Player.globalHasSkill = value
+//   }
 
-    constructor(attack: number, xp: number, level: number, health: number = 1) {
-        super(attack, xp, level, health)
-        this.levels = new LevelManager()
-        this.levels.setLevel(LEVEL_TYPES.PLAYER, level, xp)
-        this.inventory = new PlayerInventory()
-        this.petManager = new PetManager()
+//   static setGlobalHasSkillActive(value: boolean) {
+//     Player.globalHasSkillActive = value
+//   }
 
-        this.avatarModelList = ["models/BaseCharacter.glb"]
+//   constructor(attack: number, xp: number, level: number, health: number = 1) {
+//     super(attack, xp, level, health)
+//     this.levels = new LevelManager()
+//     this.levels.setLevel(LEVEL_TYPES.PLAYER, level, xp)
+//     this.inventory = new PlayerInventory()
+//     this.petManager = new PetManager()
 
-        this.levels.onUpdate = ({ type, level, xp, total, levelChange }) => {
-            switch (type) {
-                case LEVEL_TYPES.PLAYER:
-                    if (levelChange) {
-                        this.handlePlayerLevelUp(level)
-                    } else {
-                        this.updateXpBar()
-                    }
-                    return
-            }
-            this.writeDataToServer()
-        }
+//     this.avatarModelList = ['assets/models/BaseCharacter.glb']
 
-        this.fmBodyInventoryCount = new ui.UICounter(
-            0,
-            -6000,
-            410,
-            Color4.Yellow(),
-            40
-        )
-        this.fmHeadInventoryCount = new ui.UICounter(
-            0,
-            -6000,
-            410,
-            Color4.Yellow(),
-            40
-        )
+//     this.levels.onUpdate = ({ type, level, xp, total, levelChange }) => {
+//       switch (type) {
+//         case LEVEL_TYPES.PLAYER:
+//           if (levelChange) {
+//             this.handlePlayerLevelUp(level)
+//           } else {
+//             this.updateXpBar()
+//           }
+//           return
+//       }
+//       this.writeDataToServer()
+//     }
 
-        this.swordInventoryCount = 0
-        this.bossKill2InventoryCount = new ui.UICounter(
-            this.level,
-            -200,
-            620,
-            Color4.Red(),
-            40
-        )
-        this.bossKill2InventoryCount.hide()
+//     this.fmBodyInventoryCount = new ui.UICounter(
+//       0,
+//       -6000,
+//       410,
+//       Color4.Yellow(),
+//       40
+//     )
+//     this.fmHeadInventoryCount = new ui.UICounter(
+//       0,
+//       -6000,
+//       410,
+//       Color4.Yellow(),
+//       40
+//     )
 
-        this.items = []
+//     this.swordInventoryCount = 0
+//     this.bossKill2InventoryCount = new ui.UICounter(
+//       this.level,
+//       -200,
+//       620,
+//       Color4.Red(),
+//       40
+//     )
+//     this.bossKill2InventoryCount.hide()
 
-        this.defenseLabel = new ui.CornerLabel(``, -8850, 0)
-        this.defenseLabel.hide()
-        this.luckBuff = 0
-        this.critRateBuff = 1
-        this.critDamageBuff = 100
-        this.attackBuff = 0
-        this.magicBuff = 0
-        this.defBuff = 0
-        this.lastLogin = 0
-        this.consecutiveLoginDays = 0
-        this.questTime = 99999
-        // this.lvEvent(this.level)
-        StatusHUD.updateLv(this.level)
-        executeTask(async () => {
-            await WriteUserUsername()
-        })
-    }
+//     this.items = []
 
-    async CreatePlayerAvatar(shape?: GLTFShape) {
-        const { userId } = await getUserData()
-        this.playerAvatar = new PlayerAvatar(
-            userId,
-            shape || new GLTFShape("models/Knight.glb")
-        )
-    }
+//     this.defenseLabel = new ui.CornerLabel(``, -8850, 0)
+//     this.defenseLabel.hide()
+//     this.luckBuff = 0
+//     this.critRateBuff = 1
+//     this.critDamageBuff = 100
+//     this.attackBuff = 0
+//     this.magicBuff = 0
+//     this.defBuff = 0
+//     this.lastLogin = 0
+//     this.consecutiveLoginDays = 0
+//     this.questTime = 99999
+//     // this.lvEvent(this.level)
+//     StatusHUD.updateLv(this.level)
+//     executeTask(async () => {
+//       await WriteUserUsername()
+//     })
+//   }
 
-    SwapModel(shape: GLTFShape) {
-        if (this.playerAvatar) {
-            this.playerAvatar.swapModel(shape)
-        } else {
-            executeTask(() => this.CreatePlayerAvatar(shape))
-        }
-    }
+//   async CreatePlayerAvatar(shape?: GLTFShape) {
+//     const { userId } = await getUserData()
+//     this.playerAvatar = new PlayerAvatar(
+//       userId,
+//       shape || new GLTFShape('assets/models/Knight.glb')
+//     )
+//   }
 
-    getDefensePercent(): number {
-        const defense =
-            super.getDefensePercent() + this.defBuff ||
-            0 +
-                this.items.reduce((accm, item: Item) => {
-                    const buff: buffItem[] | buffItem = item.buff
+//   SwapModel(shape: GLTFShape) {
+//     if (this.playerAvatar) {
+//       this.playerAvatar.swapModel(shape)
+//     } else {
+//       executeTask(async () => {
+//         await this.CreatePlayerAvatar(shape)
+//       })
+//     }
+//   }
 
-                    if (item.type === itemTypes.SHIELD) {
-                        if (Array.isArray(buff)) {
-                            const wearable = WearablesConfig.mapping[item.name]
-                            if (
-                                wearable &&
-                                wearable.duplicates !== undefined &&
-                                wearable.duplicates > 0 &&
-                                wearable.dStats &&
-                                wearable.dStats.defBuff
-                            )
-                                accm +=
-                                    wearable.dStats.defBuff *
-                                    wearable.duplicates
-                            //@ts-ignore
-                            const b = buff.find((buff) => buff.type)
-                            if (b) {
-                                return accm + b.value
-                            }
-                            return accm
-                        }
-                        return accm + buff.value
-                    }
-                    return accm
-                }, 0)
-        const safeDefense = defense >= 1 ? 0.99 : defense
-        const percentageDef = safeDefense * 100
-        this.defenseLabel.set(`Player Defense: ${percentageDef}%`)
-        setTimeout(2000, () => this.defenseLabel.hide())
-        this.defenseLabel.show()
-        return safeDefense
-    }
+//   getDefensePercent(): number {
+//     const defense =
+//       super.getDefensePercent() + this.defBuff ||
+//       0 +
+//         this.items.reduce((accm, item: Item) => {
+//           const buff: buffItem[] | buffItem = item.buff
 
-    attackAnimation() {
-        //log("attack animation")
-        this.playerAvatar?.playAttack()
-    }
+//           if (item.type === itemTypes.SHIELD) {
+//             if (Array.isArray(buff)) {
+//               const wearable = WearablesConfig.mapping[item.name]
+//               if (
+//                 wearable &&
+//                 wearable.duplicates !== undefined &&
+//                 wearable.duplicates > 0 &&
+//                 wearable.dStats?.defBuff
+//               )
+//                 accm += wearable.dStats.defBuff * wearable.duplicates
+//               // @ts-expect-error
+//               const b = buff.find((buff) => buff.type)
+//               if (b) {
+//                 return accm + b.value
+//               }
+//               return accm
+//             }
+//             return accm + buff.value
+//           }
+//           return accm
+//         }, 0)
+//     const safeDefense = defense >= 1 ? 0.99 : defense
+//     const percentageDef = safeDefense * 100
+//     this.defenseLabel.set(`Player Defense: ${percentageDef}%`)
+//     setTimeout(2000, () => this.defenseLabel.hide())
+//     this.defenseLabel.show()
+//     return safeDefense
+//   }
 
-    impactAnimation() {
-        //log("attack animation")
-        this.playerAvatar?.playImpact()
-    }
+//   attackAnimation() {
+//     // log("attack animation")
+//     this.playerAvatar?.playAttack()
+//   }
 
-    addAvatarModel(model: string, weight: number = 0) {
-        this.avatarModelList.push(model)
-        executeTask(() => AddAvatarModels(model, weight))
-    }
-}
+//   impactAnimation() {
+//     // log("attack animation")
+//     this.playerAvatar?.playImpact()
+//   }
+
+//   addAvatarModel(model: string, weight: number = 0) {
+//     this.avatarModelList.push(model)
+//     executeTask(() => AddAvatarModels(model, weight))
+//   }
+// }

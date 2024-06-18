@@ -29,7 +29,7 @@ export class UI {
     this.buttonSprite = PURCHASE_SPRITE
     this.wearablesToShow = APPRENTICE_WEARABLES
 
-    const uiComponent = (): ReactEcs.JSX.Element => [this.WearablesMarketUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.WearablesMarketUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 

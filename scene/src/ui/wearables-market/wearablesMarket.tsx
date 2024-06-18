@@ -41,7 +41,7 @@ function WearablesMarket({
           texture: { src: wearable.sprite.atlasSrc }
         }}
         onMouseDown={() => {
-          selectWearable({wearable})
+          selectWearable({ wearable })
         }}
       >
         <UiEntity

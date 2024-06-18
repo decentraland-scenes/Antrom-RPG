@@ -26,7 +26,7 @@ export class UI {
     this.stageProgress = 0
     this.progress = ''
     this.isProgressVisible = false
-    const uiComponent = (): ReactEcs.JSX.Element => [this.QuestLogUI()]
+    const uiComponent = (): ReactEcs.JSX.Element[] => [this.QuestLogUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
