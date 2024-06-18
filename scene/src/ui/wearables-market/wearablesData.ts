@@ -320,26 +320,6 @@ export const APPRENTICE_WEARABLES: Wearable[] = [
   WEARABLES.berserker_helm
 ]
 
-export type WearablesDataType = {
-  isVisible: boolean
-  selectedWearable: Wearable
-  backgroundSprite: Sprite
-  clickedPurchaseSprite: Sprite
-  purchaseSprite: Sprite
-  leftButton: Sprite
-  rightButton: Sprite
-}
-
-export const initialWearablesData: WearablesDataType = {
-  isVisible: true,
-  selectedWearable: WEARABLES.unselected,
-  backgroundSprite: wearablesMarketSprites.background,
-  clickedPurchaseSprite: wearablesMarketSprites.purchase_clicked,
-  purchaseSprite: wearablesMarketSprites.purchase,
-  leftButton: wearablesMarketSprites.left_unavailable,
-  rightButton: wearablesMarketSprites.right_unavailable
-}
-
 export const ASPECT_RATIO = 0.57
 export const WIDTH_FACTOR = 0.5
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO

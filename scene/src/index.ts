@@ -6,4 +6,4 @@ getCanvasInfo()
 // export * from './scenes/main'
 
 // tests scenes
-export * from './scenes/tests/test-timer'
+export * from './scenes/tests/test-wearables-market'
