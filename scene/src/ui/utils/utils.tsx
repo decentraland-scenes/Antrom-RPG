@@ -1,8 +1,8 @@
-import type { Coords } from '@dcl/sdk/ecs'
+import { UiCanvasInformation, engine, type Coords } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 export function getUvs(sprite: Sprite | undefined): number[] {
-  if (sprite !== null && sprite !== undefined) {
+  if (sprite !== undefined) {
     const A: Coords = {
       x: sprite.x / sprite.atlasSize.x,
       y: 1 - (sprite.y + sprite.h) / sprite.atlasSize.y
@@ -30,7 +30,7 @@ export function Tab(props: {
   condition: boolean
   trueSprite: Sprite
   falseSprite: Sprite
-  callback: CallableFunction
+  callback: (value: boolean) => void
   callbackValue: boolean
 }): ReactEcs.JSX.Element {
   return (
@@ -61,4 +61,20 @@ export type Sprite = {
   y: number
   w: number
   h: number
+}
+
+export const canvasInfo = {
+  width: 0,
+  height: 0
+}
+
+export function getCanvasInfo(): void {
+  engine.addSystem(() => {
+    const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+    if (uiCanvasInfo === null) return
+
+    canvasInfo.width = uiCanvasInfo.width
+    canvasInfo.height = uiCanvasInfo.height
+  })
 }

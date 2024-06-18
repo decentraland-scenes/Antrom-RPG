@@ -1,33 +1,33 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { canvasInfo, getUvs } from '../utils/utils'
-import type { WearableButtonProp, WearablesMarketProps } from './wearablesData'
+import type { MagicalItemButtonProp, MagicalItemsMarketProp } from './magicalItemPurchaseData'
 import {
   HEIGTH_FACTOR,
   WEARABLES_TO_SHOW,
   WIDTH_FACTOR,
-  wearablesMarketSprites
-} from './wearablesData'
+  magicalItemsMarketSprites
+} from './magicalItemPurchaseData'
 
-function WearablesMarket({
+function MagicalItemsMarket({
   isVisible,
-  selectedWearable,
+  selectedMagicalItem,
   backgroundSprite,
   leftButton,
   rightButton,
   buttonSprite,
   scrollPosition,
-  wearablesToShow,
+  magicalItemsToShow,
   changeVisibility,
   scrollLeft,
   scrollRight,
   upScrollButtons,
   tradeDown,
   tradeUp,
-  selectWearable
-}: WearablesMarketProps): ReactEcs.JSX.Element {
-  function WearableButton({
-    wearable
-  }: WearableButtonProp): ReactEcs.JSX.Element {
+  selectMagicalItem
+}: MagicalItemsMarketProp): ReactEcs.JSX.Element {
+  function MagicalItemButton({
+    magicalItem
+  }: MagicalItemButtonProp): ReactEcs.JSX.Element {
     return (
       <UiEntity
         uiTransform={{
@@ -37,11 +37,11 @@ function WearablesMarket({
         }}
         uiBackground={{
           textureMode: 'stretch',
-          uvs: getUvs(wearable.sprite),
-          texture: { src: wearable.sprite.atlasSrc }
+          uvs: getUvs(magicalItem.sprite),
+          texture: { src: magicalItem.sprite.atlasSrc }
         }}
         onMouseDown={() => {
-          selectWearable({wearable})
+          selectMagicalItem({magicalItem})
         }}
       >
         <UiEntity
@@ -50,13 +50,13 @@ function WearablesMarket({
             width: '115%',
             height: '115%',
             position: { left: '-7.5%', top: '-7.5%' },
-            display: selectedWearable?.id === wearable.id ? 'flex' : 'none'
+            display: selectedMagicalItem?.id === magicalItem.id ? 'flex' : 'none'
           }}
           uiBackground={{
             textureMode: 'stretch',
-            uvs: getUvs(wearablesMarketSprites.selected_frame),
+            uvs: getUvs(magicalItemsMarketSprites.selected_frame),
             texture: {
-              src: wearablesMarketSprites.selected_frame.atlasSrc
+              src: magicalItemsMarketSprites.selected_frame.atlasSrc
             }
           }}
         />
@@ -98,9 +98,9 @@ function WearablesMarket({
             flexWrap: 'wrap'
           }}
         >
-          {wearablesToShow
+          {magicalItemsToShow
             .slice(scrollPosition * (WEARABLES_TO_SHOW - 1), WEARABLES_TO_SHOW)
-            .map((wearable, index) => (
+            .map((magicalItem, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -109,7 +109,7 @@ function WearablesMarket({
                   margin: { right: '10.2%', bottom: '4.5%' }
                 }}
               >
-                <WearableButton wearable={wearable} />
+                <MagicalItemButton magicalItem={magicalItem} />
               </UiEntity>
             ))}
         </UiEntity>
@@ -122,9 +122,9 @@ function WearablesMarket({
           }}
           uiBackground={{
             textureMode: 'stretch',
-            uvs: getUvs(wearablesMarketSprites.exit_icon),
+            uvs: getUvs(magicalItemsMarketSprites.exit_icon),
             texture: {
-              src: wearablesMarketSprites.exit_icon.atlasSrc
+              src: magicalItemsMarketSprites.exit_icon.atlasSrc
             }
           }}
           onMouseDown={changeVisibility}
@@ -176,7 +176,7 @@ function WearablesMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedWearable !== null && selectedWearable !== undefined
+                selectedMagicalItem !== null && selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               width: '100%',
@@ -185,8 +185,8 @@ function WearablesMarket({
             }}
             uiText={{
               value:
-                selectedWearable !== null && selectedWearable !== undefined
-                  ? selectedWearable.name
+                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                  ? selectedMagicalItem.name
                   : '',
               fontSize: 15,
               textAlign: 'middle-center'
@@ -195,7 +195,7 @@ function WearablesMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedWearable !== null && selectedWearable !== undefined
+                selectedMagicalItem !== null && selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               width: canvasInfo.width * WIDTH_FACTOR * 0.12,
@@ -204,14 +204,14 @@ function WearablesMarket({
             uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(
-                selectedWearable !== null && selectedWearable !== undefined
-                  ? selectedWearable.sprite
+                selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                  ? selectedMagicalItem.sprite
                   : undefined
               ),
               texture: {
                 src:
-                  selectedWearable !== null && selectedWearable !== undefined
-                    ? selectedWearable.sprite.atlasSrc
+                  selectedMagicalItem !== null && selectedMagicalItem !== undefined
+                    ? selectedMagicalItem.sprite.atlasSrc
                     : ''
               }
             }}
@@ -219,7 +219,7 @@ function WearablesMarket({
           <UiEntity
             uiTransform={{
               display:
-                selectedWearable !== null && selectedWearable !== undefined
+                selectedMagicalItem !== null && selectedMagicalItem !== undefined
                   ? 'flex'
                   : 'none',
               margin: { top: '25%' },
@@ -245,4 +245,4 @@ function WearablesMarket({
   )
 }
 
-export default WearablesMarket
+export default MagicalItemsMarket

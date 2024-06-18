@@ -1,4 +1,4 @@
-import type { Sprite } from './utils'
+import type { Sprite } from '../utils/utils'
 
 export enum Items {
   I_UNSELECTED = 'unselected',
@@ -323,7 +323,7 @@ export type InventoryItem = {
   amount?: number
 }
 
-export type ResourcesDataType = {
+export type ResourcesMarketProps = {
   isVisible: boolean
   balance: number
   tradeClicked: boolean
@@ -332,16 +332,14 @@ export type ResourcesDataType = {
   totalPrice: number
   buttonMaxSprite: Sprite
   selectedQuantity: number
-  selectedItem?: InventoryItem
-}
-
-export const initialMarketResourcesData: ResourcesDataType = {
-  isVisible: true,
-  balance: 200,
-  tradeClicked: false,
-  isSelling: true,
-  itemsArray: RESOURCES_INVENTORY,
-  totalPrice: 0,
-  buttonMaxSprite: resourcesMarketSprites.max_button,
-  selectedQuantity: 1
+  selectedItem: InventoryItem | undefined
+  changeVisibility: () => void
+  selectItem: (arg: InventoryItem) => void
+  updatePrice: (arg: string) => void
+  mouseDownMax: () => void
+  mouseUpMax: (arg: InventoryItem) => void
+  setSelling: (arg: boolean) => void
+  tradeDown: () => void
+  tradeUp: () => void
+  isUnavailable: () => boolean
 }
