@@ -1,42 +1,37 @@
 /* eslint-disable @typescript-eslint/no-loss-of-precision */
+import * as utils from '@dcl-sdk/utils'
 import { engine } from '@dcl/ecs/dist/runtime/initialization'
 import {
   Animator,
   AudioSource,
-  Entity,
   GltfContainer,
   InputAction,
   Material,
-  MaterialTransparencyMode,
   MeshCollider,
   MeshRenderer,
   PointerEventType,
   PointerEvents,
   Transform,
-  inputSystem,
-  removeEntityWithChildren
+  inputSystem
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as npc from 'dcl-npc-toolkit'
-import { RealmController } from '../controllers/realm.controller'
 import { openDialogWindow } from 'dcl-npc-toolkit'
-import { GetPlayerDungeonEasyLeaderBoard } from '../api/api'
-import * as utils from '@dcl-sdk/utils'
 import { movePlayerTo, openExternalUrl } from '~system/RestrictedActions'
-import { setCurrentActiveScene } from '../instances'
-import { BerryTree, Items, Rock, Tree } from '../mineables'
+import { GetPlayerDungeonEasyLeaderBoard } from '../api/api'
 import { type GameController } from '../controllers/game.controller'
 import {
-  trewsKill,
   garrisonCreatedOnce,
-  jailKey,
   jailGuards,
-  jailOpenOnce
+  jailKey,
+  jailOpenOnce,
+  trewsKill
 } from '../counters'
+import { setCurrentActiveScene } from '../instances'
 import {
-  ScoreBoardText,
   buildLeaderBoard
 } from '../leaderboard/buildLeaderBoard'
+import { BerryTree, Items, Rock, Tree } from '../mineables'
 
 export class Antrom {
   // BuildBuilderSceneAntrom
