@@ -1,12 +1,6 @@
-import type { Sprite } from './utils'
 import type { Item } from '../resources-market/resourcesData'
 import { ITEMS } from '../resources-market/resourcesData'
-
-export const ASPECT_RATIO = 0.57
-export const WIDTH_FACTOR = 0.5
-export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
-export const ITEM_SIZE_FACTOR = 0.12
-export const WEARABLES_TO_SHOW = 9
+import type { Sprite } from '../utils/utils'
 
 export type Wearable = {
   name: string
@@ -326,22 +320,33 @@ export const APPRENTICE_WEARABLES: Wearable[] = [
   WEARABLES.berserker_helm
 ]
 
-export type WearablesDataType = {
+export const ASPECT_RATIO = 0.57
+export const WIDTH_FACTOR = 0.5
+export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
+export const ITEM_SIZE_FACTOR = 0.12
+export const WEARABLES_TO_SHOW = 9
+export const PURCHASE_SPRITE: Sprite = wearablesMarketSprites.purchase
+export const CLICKED_PURCHASE_SPRITE: Sprite =
+  wearablesMarketSprites.purchase_clicked
+
+export type WearablesMarketProps = {
   isVisible: boolean
-  selectedWearable: Wearable
+  selectedWearable: Wearable | undefined
   backgroundSprite: Sprite
-  clickedPurchaseSprite: Sprite
-  purchaseSprite: Sprite
   leftButton: Sprite
   rightButton: Sprite
+  buttonSprite: Sprite
+  scrollPosition: number
+  wearablesToShow: Wearable[]
+  changeVisibility: () => void
+  scrollLeft: () => void
+  scrollRight: () => void
+  upScrollButtons: () => void
+  tradeDown: () => void
+  tradeUp: () => void
+  selectWearable: (arg: WearableButtonProp) => void
 }
 
-export const initialWearablesData: WearablesDataType = {
-  isVisible: true,
-  selectedWearable: WEARABLES.unselected,
-  backgroundSprite: wearablesMarketSprites.background,
-  clickedPurchaseSprite: wearablesMarketSprites.purchase_clicked,
-  purchaseSprite: wearablesMarketSprites.purchase,
-  leftButton: wearablesMarketSprites.left_unavailable,
-  rightButton: wearablesMarketSprites.right_unavailable
+export type WearableButtonProp = {
+  wearable: Wearable
 }

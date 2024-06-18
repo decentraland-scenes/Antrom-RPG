@@ -1,7 +1,5 @@
-// only one export line should be uncommented
-
 // Run the main scene
-// export * from './scenes/main'
+export * from './scenes/main'
 
 // tests scenes
-export * from './scenes/tests/test-banner'
+// export * from './scenes/tests/test-wearables-market'
