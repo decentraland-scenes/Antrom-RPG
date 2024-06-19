@@ -1,9 +1,5 @@
 import { engine } from '@dcl/sdk/ecs'
-import ReactEcs, {
-  Button,
-  ReactEcsRenderer,
-  UiEntity
-} from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type UIController } from '../controllers/ui.controller'
 import * as utils from '@dcl-sdk/utils'
 import { movePlayerTo } from '~system/RestrictedActions'
@@ -21,6 +17,7 @@ export class LoadingUI {
     this.loadingSystem(2000)
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   mainUi() {
     return (
       <UiEntity
@@ -71,7 +68,7 @@ export class LoadingUI {
           uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
           onMouseDown={() => {
             this.isVisible = false
-            movePlayerTo({
+            void movePlayerTo({
               newRelativePosition: Vector3.create(-22.21, 5.43, -26.53)
             })
           }}
@@ -80,7 +77,7 @@ export class LoadingUI {
     )
   }
 
-  loadingSystem(dt: number) {
+  loadingSystem(dt: number): void {
     utils.timers.setTimeout(() => {
       if (this.timer - dt <= 0 && this.isLoading) {
         this.isLoading = false

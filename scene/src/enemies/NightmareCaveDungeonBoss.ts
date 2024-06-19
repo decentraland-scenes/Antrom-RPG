@@ -1,7 +1,7 @@
 import { Transform } from '@dcl/sdk/ecs'
 import MonsterOligar from './monster'
-import { ITEM_TYPES } from './playerInventoryMaps'
-import { LEVEL_TYPES } from './types'
+// import { ITEM_TYPES } from './playerInventoryMaps'
+// import { LEVEL_TYPES } from './types'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
 const DEFAULT_ATTACK = 35
@@ -10,7 +10,7 @@ const DEFAULT_LEVEL = 5
 const DEFAULT_HP = 200
 const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number) {
+function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -35,12 +35,12 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
     this.dropRate = -1
   }
 
-  onDropXp() {
+  onDropXp(): void {
     // this.create()
 
     // setTimeout(7 * 1000, () => {
-    const xp = getRandomIntRange(this.xp, this.xp + 10)
-    const randomNumber = Math.random()
+    // const xp = getRandomIntRange(this.xp, this.xp + 10)
+    // const randomNumber = Math.random()
     const random = Math.random() * 1000
 
     switch (true) {
@@ -58,7 +58,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
 
       case random < 1: {
@@ -75,7 +75,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     6
         // )
-        // break
+        break
       }
 
       case random < 100: {
@@ -92,7 +92,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 200: {
         // 1% chance (3% cumulative - 2% previous)
@@ -108,7 +108,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 300: {
         // 7% chance (10% cumulative - 3% previous)
@@ -124,7 +124,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 400: {
         // 10% chance (20% cumulative - 10% previous)
@@ -140,7 +140,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 500: {
         // 10% chance (30% cumulative - 20% previous)
@@ -156,7 +156,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 650: {
         // 10% chance (40% cumulative - 30% previous)
@@ -172,7 +172,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 750: {
         // 20% chance (60% cumulative - 40% previous)
@@ -188,7 +188,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       case random < 850: {
         // 20% chance (80% cumulative - 60% previous)
@@ -204,7 +204,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-        // break
+        break
       }
       default: {
         // 20% chance (100% cumulative - 80% previous)
@@ -224,22 +224,22 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
     }
     // })
 
-    const exp = [
-      {
-        type: LEVEL_TYPES.ENEMY,
-        value: 1
-      },
-      {
-        type: LEVEL_TYPES.PLAYER,
-        value: 120
-      }
-    ]
-    const loot = [
-      {
-        type: ITEM_TYPES.BONE,
-        value: 100
-      }
-    ]
+    // const exp = [
+    //   {
+    //     type: LEVEL_TYPES.ENEMY,
+    //     value: 1
+    //   },
+    //   {
+    //     type: LEVEL_TYPES.PLAYER,
+    //     value: 120
+    //   }
+    // ]
+    // const loot = [
+    //   {
+    //     type: ITEM_TYPES.BONE,
+    //     value: 100
+    //   }
+    // ]
 
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
@@ -260,7 +260,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
     // //})
   }
 
-  onDropLoot() {}
+  onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
