@@ -92,14 +92,18 @@ export class DungeonBase {
           PointerEventType.PET_DOWN,
           this.area
         )
-      ) { /* empty */ }
+      ) {
+        /* empty */
+      }
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
           PointerEventType.PET_DOWN,
           this.door1
         )
-      ) { /* empty */ }
+      ) {
+        /* empty */
+      }
     })
   }
 }

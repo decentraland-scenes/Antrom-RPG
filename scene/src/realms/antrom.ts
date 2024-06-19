@@ -28,9 +28,7 @@ import {
   trewsKill
 } from '../counters'
 import { setCurrentActiveScene } from '../instances'
-import {
-  buildLeaderBoard
-} from '../leaderboard/buildLeaderBoard'
+import { buildLeaderBoard } from '../leaderboard/buildLeaderBoard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
 
 export class Antrom {
@@ -286,7 +284,7 @@ export class Antrom {
     this.createAntrom2()
   }
 
-  async updateBoard():Promise<void> {
+  async updateBoard(): Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
     console.log('dng easy leaderboard', scoreData)
     const data = [...scoreData.dungeon_action_easy]
@@ -698,7 +696,7 @@ export class Antrom {
     )
   }
 
-  DungeonDoor():void {
+  DungeonDoor(): void {
     Transform.create(this.dungeonDoor, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -764,7 +762,7 @@ export class Antrom {
     })
   }
 
-  createTriggerZoneForBerserkerUpgradeMarket():void {
+  createTriggerZoneForBerserkerUpgradeMarket(): void {
     Transform.createOrReplace(this.tz_bersekerUpgradeMarket, {
       position: Vector3.create(-54.61, 9.6, -28.93),
       scale: Vector3.create(1, 1, 1),
@@ -807,7 +805,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForResourceMarket():void {
+  createTriggerZoneForResourceMarket(): void {
     Transform.createOrReplace(this.tz_resourceMarket, {
       position: Vector3.create(40.76, 7.24, -4.25),
       scale: Vector3.create(1, 1, 1),
@@ -850,7 +848,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForRangerUpgradeMarket():void {
+  createTriggerZoneForRangerUpgradeMarket(): void {
     Transform.createOrReplace(this.tz_rangerUpgradeMarket, {
       position: Vector3.create(-58.44, 9.6, -29.89),
       scale: Vector3.create(1, 1, 1),
@@ -896,7 +894,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForMageUpgradeMarket():void {
+  createTriggerZoneForMageUpgradeMarket(): void {
     Transform.createOrReplace(this.tz_mageUpgradeMarket, {
       position: Vector3.create(-58.35, 9.6, -33.78),
       scale: Vector3.create(1, 1, 1),
@@ -942,7 +940,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForApprenticeMarket():void {
+  createTriggerZoneForApprenticeMarket(): void {
     Transform.createOrReplace(this.tz_apprenticeMarket, {
       position: Vector3.create(-55.92, 9.6, -33.67),
       scale: Vector3.create(1, 1, 1),
@@ -985,7 +983,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForSkillChange():void {
+  createTriggerZoneForSkillChange(): void {
     Transform.createOrReplace(this.tz_skillChange, {
       position: Vector3.create(-16.62, 9.67, -46.67),
       scale: Vector3.create(1, 1, 1),
@@ -1049,7 +1047,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneForMagicalItemsMarketHUD():void {
+  createTriggerZoneForMagicalItemsMarketHUD(): void {
     Transform.createOrReplace(this.tz_magicalItemsMarketHUD, {
       position: Vector3.create(-37.38, 9.7, -27.33),
       scale: Vector3.create(1, 1, 1),
@@ -1092,7 +1090,7 @@ export class Antrom {
     )
   }
 
-  createTriggerZoneFoDailyRewards():void {
+  createTriggerZoneFoDailyRewards(): void {
     Transform.createOrReplace(this.tz_dailyRewards, {
       position: Vector3.create(-30.07, 9.6, -34.87),
       scale: Vector3.create(1, 1, 1),
@@ -1138,7 +1136,7 @@ export class Antrom {
     )
   }
 
-  createFuranceUpgrade():void {
+  createFuranceUpgrade(): void {
     Transform.create(this.furanceUpgrade, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -1188,7 +1186,7 @@ export class Antrom {
     })
   }
 
-  createCellDoors():void {
+  createCellDoors(): void {
     Transform.create(this.cellDoor, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -1266,7 +1264,7 @@ export class Antrom {
     })
   }
 
-  createCellEntranceDoors():void {
+  createCellEntranceDoors(): void {
     Transform.create(this.cellEntranceDoor, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -1338,7 +1336,7 @@ export class Antrom {
     })
   }
 
-  createTavernDoor():void {
+  createTavernDoor(): void {
     Transform.create(this.tavernDoor, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -1400,7 +1398,7 @@ export class Antrom {
     })
   }
 
-  createHeavyGrinderCrown():void {
+  createHeavyGrinderCrown(): void {
     Transform.create(this.heavyGrinderCrown, {
       position: Vector3.create(89.2, 17.89, -19.36),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -1437,7 +1435,7 @@ export class Antrom {
     })
   }
 
-  createCampfireA():void {
+  createCampfireA(): void {
     GltfContainer.create(this.campFire, { src: 'assets/models/Fireplace.glb' })
     Transform.create(this.campFire, {
       position: Vector3.create(-25.21, 4.64, -26.11),
@@ -1525,7 +1523,7 @@ export class Antrom {
     })
   }
 
-  createAntrom2():void {
+  createAntrom2(): void {
     // const executioners = Array.from({ length: 10 }, () => new Executioner())
     // executioners.forEach((executioner) => engine.addEntity(executioner))
     // const chickens = Array.from({ length: 6 }, () => new Chicken())
@@ -1536,7 +1534,7 @@ export class Antrom {
     // pig.forEach((pig) => engine.addEntity(pig))
   }
 
-  removeAllEntities():void {
+  removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
     engine.removeEntity(this.dungeonDoor)
     engine.removeEntity(this.tz_bersekerUpgradeMarket)

@@ -128,7 +128,7 @@ export class MinersCave {
     ]
   }
 
-  buildCave():void {
+  buildCave(): void {
     utils.timers.setTimeout(() => {
       // buildCaveBuilderScene()
       // loader.showLoaderCave(15000)
@@ -142,7 +142,7 @@ export class MinersCave {
     }, 50)
   }
 
-  removeAllEntities():void {
+  removeAllEntities(): void {
     engine.removeEntity(this.cave)
     engine.removeEntity(this.ladder)
     this.gems_entities.forEach((gem) => {

@@ -262,7 +262,7 @@ export default class HardCaveDungeonBoss extends MonsterOligar {
     // //})
   }
 
-  onDropLoot():void {}
+  onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))

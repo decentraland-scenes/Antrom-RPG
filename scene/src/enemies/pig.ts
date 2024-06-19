@@ -1,9 +1,6 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMeat from './monsterMeat'
-import {
-  GltfContainer,
-  Transform,
-} from '@dcl/sdk/ecs'
+import { GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { getRandomIntRange } from './../utils/getRandomInt'
 
 const DEFAULT_ATTACK = 2
@@ -26,12 +23,12 @@ export default class Pig extends MonsterMeat {
     this.minLuck = -1000
   }
 
-  create():void {
+  create(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const mons = new Pig()
   }
 
-  onDropXp():void {
+  onDropXp(): void {
     // TODO PLAYER
     // log("onDropXp - Chicken")
     // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {
@@ -67,9 +64,9 @@ export default class Pig extends MonsterMeat {
     // player.writeDataToServer()
   }
 
-  async onDropLoot():Promise<void> {}
+  async onDropLoot(): Promise<void> {}
 
-  setupAttackTriggerBox():void {
+  setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
   }
 

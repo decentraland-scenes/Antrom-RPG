@@ -42,7 +42,7 @@ export class MonsterAttackRanged {
     this.refreshTimer = 0.5
   }
 
-  attackSystem = (dt: number):void => {
+  attackSystem = (dt: number): void => {
     const playerPos = Transform.get(engine.PlayerEntity).position
     const monsterPos = Transform.getMutable(this.monster.entity).position
     const distanceToPlayer = Vector3.distance(playerPos, monsterPos)
@@ -50,7 +50,7 @@ export class MonsterAttackRanged {
       playerPos: Vector3,
       monsterPos: Vector3,
       dt: any
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       const directionToPlayer = Vector3.normalize(
         Vector3.subtract(playerPos, monsterPos) as Vector3

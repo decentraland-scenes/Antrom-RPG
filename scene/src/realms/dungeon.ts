@@ -380,7 +380,7 @@ export class Dungeon {
     })
   }
 
-  buildDungeon(scene: string):void {
+  buildDungeon(scene: string): void {
     // cleanupScene()
     utils.timers.setTimeout(() => {
       const hideAvatarsEntity = engine.addEntity()
@@ -400,7 +400,9 @@ export class Dungeon {
       this.buildDesertDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({ newRelativePosition: Vector3.create(23.01, 1.72, 91.7) })
+        void movePlayerTo({
+          newRelativePosition: Vector3.create(23.01, 1.72, 91.7)
+        })
       }, 5000)
     }
     if (scene === 'LegacyDungeon') {
@@ -414,7 +416,9 @@ export class Dungeon {
     }
     if (scene === 'CaveDungeon') {
       // buildCaveDungeonScene()
-      void movePlayerTo({ newRelativePosition: Vector3.create(66.62, 0.54, -41.19) })
+      void movePlayerTo({
+        newRelativePosition: Vector3.create(66.62, 0.54, -41.19)
+      })
     }
     if (scene === 'OrcVillage') {
       // buildOrcDungeonScene()
@@ -429,32 +433,40 @@ export class Dungeon {
       // buildUndeadDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({ newRelativePosition: Vector3.create(0.98, 7.69, -6.0) })
+        void movePlayerTo({
+          newRelativePosition: Vector3.create(0.98, 7.69, -6.0)
+        })
       }, 5000)
     }
   }
 
-  resetDungeon(scene: string):void {
+  resetDungeon(scene: string): void {
     if (scene === 'DesertDungeon') {
       // resetDesertDungeonScene()
-      void movePlayerTo({ newRelativePosition: Vector3.create(23.01, 1.72, 91.7) })
+      void movePlayerTo({
+        newRelativePosition: Vector3.create(23.01, 1.72, 91.7)
+      })
     }
     if (scene === 'CaveDungeon') {
       // resetCaveDungeonScene()
-      void movePlayerTo({ newRelativePosition: Vector3.create(66.62, 0.54, -41.19) })
+      void movePlayerTo({
+        newRelativePosition: Vector3.create(66.62, 0.54, -41.19)
+      })
     }
     if (scene === 'LegacyDungeon') {
       setCurrentActiveScene('LegacyDungeon')
       // buildLegacyDungeonScene()
-      void movePlayerTo({ newRelativePosition: Vector3.create(72.32, 1.03, 69.08) })
+      void movePlayerTo({
+        newRelativePosition: Vector3.create(72.32, 1.03, 69.08)
+      })
     }
   }
 
-  buildDesertDungeonScene():void {
+  buildDesertDungeonScene(): void {
     // build desert dungeon
   }
 
-  async updateBoard():Promise<void> {
+  async updateBoard(): Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
     console.log('dng easy leaderboard', scoreData)
     const data = [...scoreData.dungeon_action_easy]
@@ -465,22 +477,22 @@ export class Dungeon {
     })
   }
 
-  createResourceHub():void {}
-  resetDesertDungeonScene():void {
+  createResourceHub(): void {}
+  resetDesertDungeonScene(): void {
     // reset dungeon scene
   }
 
-  buildLegacyDungeonScene():void {
+  buildLegacyDungeonScene(): void {
     // dungeonBase()
     // createDungeonPotions()
   }
 
-  buildCaveDungeonScene():void {
+  buildCaveDungeonScene(): void {
     // buildCave()
   }
 
-  resetCaveDungeonScene():void {}
-  createNightmareDungeonLegacy():void {
+  resetCaveDungeonScene(): void {}
+  createNightmareDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricNightmare())
     // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new TrewsNightmare())
@@ -494,7 +506,7 @@ export class Dungeon {
     // console.log('create easy enemies')
   }
 
-  createHardDungeonLegacy():void {
+  createHardDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodric())
     // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new Trews())
@@ -508,7 +520,7 @@ export class Dungeon {
     // console.log("create easy enemies")
   }
 
-  createEasyDungeonLegacy():void {
+  createEasyDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricE())
     // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new TrewsE())
@@ -522,7 +534,7 @@ export class Dungeon {
     // console.log("create easy enemies")
   }
 
-  moveWalls(wall: number):void {
+  moveWalls(wall: number): void {
     // Move the wall after kill the enemies
     switch (wall) {
       case 1:
@@ -578,7 +590,12 @@ export class Dungeon {
     }
   }
 
-  createSoldier(position: Vector3, type: any, attack: number, hp: number):void {
+  createSoldier(
+    position: Vector3,
+    type: any,
+    attack: number,
+    hp: number
+  ): void {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, new-cap
       const soldier = new type(position, attack, hp)
@@ -587,7 +604,7 @@ export class Dungeon {
     }
   }
 
-  createDungeon(difficulty: Difficulty, location: Location):void {
+  createDungeon(difficulty: Difficulty, location: Location): void {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (location.CAVE) {
       // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
@@ -602,7 +619,7 @@ export class Dungeon {
         //     () => new EasyCaveDungeonBoss(easyEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.MEDIUM) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const mediumEnemyAttack = 180
@@ -614,7 +631,7 @@ export class Dungeon {
         //     () => new MedCaveDungeonBoss(mediumEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.HARD) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const hardEnemyAttack = 900
@@ -626,7 +643,7 @@ export class Dungeon {
         //     () => new HardCaveDungeonBoss(hardEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.NIGHTMARE) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const nightmareEnemyAttack = 2000
@@ -642,7 +659,7 @@ export class Dungeon {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
         console.log(`Invalid difficulty level: ${difficulty}`)
       }
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     } else if (location.DESERT) {
       // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       if (difficulty.EASY) {
@@ -656,7 +673,7 @@ export class Dungeon {
         //     () => new EasyDesertDungeonBoss(easyEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.MEDIUM) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const mediumEnemyAttack = 80
@@ -668,7 +685,7 @@ export class Dungeon {
         //     () => new MedDesertDungeonBoss(mediumEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.HARD) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const hardEnemyAttack = 900
@@ -680,7 +697,7 @@ export class Dungeon {
         //     () => new HardCaveDungeonBoss(hardEnemyAttack)
         // )
         // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.NIGHTMARE) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const nightmareEnemyAttack = 2000
@@ -702,19 +719,19 @@ export class Dungeon {
     }
   }
 
-  createDesertDungeonEnemies(attack: number, hp: number):void{
+  createDesertDungeonEnemies(attack: number, hp: number): void {
     desertSoldierPositions.forEach((position) => {
       // this.createSoldier(position, attack, hp)
     })
   }
 
-  createCaveDungeonEnemies(attack: number, hp: number):void {
+  createCaveDungeonEnemies(attack: number, hp: number): void {
     caveSoldierPositions.forEach((position) => {
       // this.createSoldier(position, attack, hp)
     })
   }
 
-  removeAllEntities():void {
+  removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
     engine.removeEntity(this.wall1)
     engine.removeEntity(this.wall2)

@@ -8,7 +8,7 @@ const DEFAULT_XP = 60
 // const DEFAULT_HP = 200
 // const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number):number {
+function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -37,7 +37,7 @@ export default class EasyDesertDungeonBoss extends MonsterOligar {
     this.dropRate = -1
   }
 
-  onDropXp():void {
+  onDropXp(): void {
     // this.create()
 
     // setTimeout(7 * 1000, () => {
@@ -262,7 +262,7 @@ export default class EasyDesertDungeonBoss extends MonsterOligar {
     // //})
   }
 
-  onDropLoot():void {}
+  onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))

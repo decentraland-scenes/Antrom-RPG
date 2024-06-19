@@ -4,7 +4,7 @@ import {
   engine,
   Transform,
   TextShape,
-  TextAlignMode,
+  TextAlignMode
 } from '@dcl/sdk/ecs'
 import { Color4, Vector3 } from '@dcl/sdk/math'
 
@@ -106,7 +106,7 @@ export async function buildLeaderBoard(
   scoreData: any[],
   parent: Entity,
   length: number
-):Promise<void> {
+): Promise<void> {
   // if canvas is empty
   if (scoreBoardNames.length === 0) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

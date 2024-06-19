@@ -132,7 +132,7 @@ export class DemonKingDungeon {
     this.buildDemonKingDungeon()
   }
 
-  buildDemonKingDungeon():void {
+  buildDemonKingDungeon(): void {
     if (DungeonStage.read() <= 2) {
       // loader.showGarrisonscreen(8000)
     }
@@ -143,7 +143,7 @@ export class DemonKingDungeon {
     }, 8000)
   }
 
-  createGarrisonAlara2():void {
+  createGarrisonAlara2(): void {
     this.npc_garrisonAlara = npc.create(
       {
         position: Vector3.create(14.57, 67.44, -3.22),
@@ -176,7 +176,7 @@ export class DemonKingDungeon {
     )
   }
 
-  removeAllEntities():void {
+  removeAllEntities(): void {
     engine.removeEntity(this.dungeon_collider)
     engine.removeEntity(this.dungeon_door1)
     engine.removeEntity(this.dungeon)

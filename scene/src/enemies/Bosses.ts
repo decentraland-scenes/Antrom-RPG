@@ -34,7 +34,7 @@ const MODEL_NAMES = [
   'assets/models/ExecutionerAxe.glb'
 ]
 
-function getRandomIntRange(min: number, max: number):number {
+function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -78,8 +78,10 @@ export default class Bosses extends MonsterOligar {
     // Billboard.create(this.entity, {})
   }
 
-  onDropXp():void {
-    void movePlayerTo({ newRelativePosition: Vector3.create(77.12, 6.61, 27.78) })
+  onDropXp(): void {
+    void movePlayerTo({
+      newRelativePosition: Vector3.create(77.12, 6.61, 27.78)
+    })
     // Oligar.currentStage++
     if (!Bosses.canCreate()) {
       // ui.displayAnnouncement("You WIN")

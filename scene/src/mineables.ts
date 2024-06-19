@@ -9,7 +9,7 @@ import {
   InputAction,
   inputSystem
 } from '@dcl/sdk/ecs'
-import { Vector3, Quaternion} from '@dcl/sdk/math'
+import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
 import { type GameController } from './controllers/game.controller'
 
@@ -64,7 +64,7 @@ export class Rock {
     this.battle()
   }
 
-  battle():void  {
+  battle(): void {
     PointerEvents.createOrReplace(this.rock, {
       pointerEvents: [
         {
@@ -99,7 +99,7 @@ export class Rock {
     })
   }
 
-  removeRock():void  {
+  removeRock(): void {
     engine.removeEntity(this.rock)
   }
 }
@@ -144,7 +144,7 @@ export class Tree {
     this.battle()
   }
 
-  battle():void  {
+  battle(): void {
     PointerEvents.createOrReplace(this.tree, {
       pointerEvents: [
         {
@@ -181,7 +181,7 @@ export class Tree {
     })
   }
 
-  removeTree():void  {
+  removeTree(): void {
     engine.removeEntity(this.tree)
   }
 }
@@ -225,7 +225,7 @@ export class BerryTree {
     this.battle()
   }
 
-  battle():void  {
+  battle(): void {
     PointerEvents.createOrReplace(this.berryTree, {
       pointerEvents: [
         {
@@ -260,7 +260,7 @@ export class BerryTree {
     })
   }
 
-  removeBerryTree():void  {
+  removeBerryTree(): void {
     engine.removeEntity(this.berryTree)
   }
 }
@@ -307,7 +307,7 @@ export class Pot {
     this.battle()
   }
 
-  battle():void  {
+  battle(): void {
     PointerEvents.createOrReplace(this.pot, {
       pointerEvents: [
         {
@@ -328,11 +328,13 @@ export class Pot {
           PointerEventType.PET_DOWN,
           this.pot
         )
-      ) { /* empty */ }
+      ) {
+        /* empty */
+      }
     })
   }
 
-  removepot():void  {
+  removepot(): void {
     engine.removeEntity(this.pot)
   }
 }
@@ -377,7 +379,7 @@ export class Gem {
     })
   }
 
-  battle():void  {
+  battle(): void {
     PointerEvents.createOrReplace(this.gem, {
       pointerEvents: [
         {
@@ -412,7 +414,7 @@ export class Gem {
     })
   }
 
-  killChar():void  {
+  killChar(): void {
     engine.removeEntity(this.gem)
     this.gem = engine.addEntity()
     Transform.createOrReplace(this.gem, {
@@ -432,12 +434,12 @@ export class Gem {
     this.isDead = true
   }
 
-  isDeadOnce():void  {
+  isDeadOnce(): void {
     if (!this.isDead) this.killChar()
   }
 
   // TODO
-  async dyingAnimation():Promise<void>  {
+  async dyingAnimation(): Promise<void> {
     // Animator.playSingleAnimation(this.gem, 'action')
     // AudioSource.playSound(this.gem, 'assets/sounds/mining.mp3')
     // if (result1 === true && result2 === true) {
@@ -458,11 +460,11 @@ export class Gem {
     // player.writeDataToServer()
   }
 
-  callDyingAnimation():void {
+  callDyingAnimation(): void {
     if (!this.isDeadAnimation) void this.dyingAnimation()
   }
 
-  removeGem():void  {
+  removeGem(): void {
     engine.removeEntity(this.gem)
   }
 }

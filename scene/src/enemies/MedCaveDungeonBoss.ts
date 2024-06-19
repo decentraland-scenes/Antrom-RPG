@@ -8,7 +8,7 @@ const DEFAULT_XP = 60
 // const DEFAULT_HP = 200
 // const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number):number {
+function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
   max = Math.floor(max)
   return Math.floor(Math.random() * (max - min + 1)) + min
@@ -37,7 +37,7 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
     this.dropRate = -1
   }
 
-  onDropXp():void {
+  onDropXp(): void {
     // this.create()
 
     // setTimeout(7 * 1000, () => {
@@ -60,7 +60,7 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-break
+        break
       }
 
       case random < 1: {
@@ -77,7 +77,7 @@ break
         //     0,
         //     6
         // )
-break
+        break
       }
 
       case random < 100: {
@@ -94,7 +94,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 200: {
         // 1% chance (3% cumulative - 2% previous)
@@ -110,7 +110,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 300: {
         // 7% chance (10% cumulative - 3% previous)
@@ -126,7 +126,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 400: {
         // 10% chance (20% cumulative - 10% previous)
@@ -142,7 +142,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 500: {
         // 10% chance (30% cumulative - 20% previous)
@@ -158,7 +158,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 650: {
         // 10% chance (40% cumulative - 30% previous)
@@ -174,7 +174,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 750: {
         // 20% chance (60% cumulative - 40% previous)
@@ -190,7 +190,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       case random < 850: {
         // 20% chance (80% cumulative - 60% previous)
@@ -206,7 +206,7 @@ break
         //     0,
         //     3
         // )
-break
+        break
       }
       default: {
         // 20% chance (100% cumulative - 80% previous)
@@ -262,7 +262,7 @@ break
     // //})
   }
 
-  onDropLoot():void {}
+  onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))

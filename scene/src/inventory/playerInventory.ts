@@ -16,7 +16,7 @@ export class PlayerInventory {
     itemKey: string,
     by: number = 1,
     reason?: INVENTORY_ACTION_REASONS
-  ):void => {
+  ): void => {
     this.inventory = UpdateInventory(this.inventory, {
       type: INVENTORY_ACTIONS.INCREASE_ITEM,
       itemKey,
@@ -29,7 +29,7 @@ export class PlayerInventory {
     itemKey: string,
     by: number = 1,
     reason?: INVENTORY_ACTION_REASONS
-  ):void {
+  ): void {
     this.inventory = UpdateInventory(this.inventory, {
       type: INVENTORY_ACTIONS.REDUCE_ITEM,
       itemKey,
@@ -38,7 +38,7 @@ export class PlayerInventory {
     })
   }
 
-  setItem(itemKey: string, count = 0):void {
+  setItem(itemKey: string, count = 0): void {
     this.inventory[itemKey] = {
       count,
       name: itemKey

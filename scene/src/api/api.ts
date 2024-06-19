@@ -27,7 +27,7 @@ export const LogInventoryToServer = async (
   actionType: string,
   itemId: string,
   count: number
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const myPlayer = getPlayer()
   if (myPlayer != null) {
