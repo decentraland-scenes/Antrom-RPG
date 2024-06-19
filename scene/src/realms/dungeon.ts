@@ -21,8 +21,8 @@ import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { movePlayerTo } from '~system/RestrictedActions'
 import { setCurrentActiveScene } from '../instances'
 import { GetPlayerDungeonEasyLeaderBoard } from '../api/api'
-import { buildLeaderBoard } from '../leaderboard/buildLeaderBoard'
 import { type GameController } from '../controllers/game.controller'
+import { LeaderBoard } from '../leaderboard/leaderboard'
 
 type Difficulty = {
   EASY: 'easy'
@@ -148,6 +148,7 @@ const caveSoldierPositions = [
 
 export class Dungeon {
   private readonly boardParent = engine.addEntity()
+  private readonly leaderBoard: LeaderBoard
   private readonly wall1 = engine.addEntity()
   private readonly wall2 = engine.addEntity()
   private readonly wall3 = engine.addEntity()
@@ -193,6 +194,7 @@ export class Dungeon {
       position: Vector3.create(25.94, 10, 72),
       rotation: Quaternion.create(0, 0, 0, 0)
     })
+    this.leaderBoard = new LeaderBoard()
     Transform.createOrReplace(this.wall1, {
       position: Vector3.create(39.74, 6.88, 25.35),
       scale: Vector3.create(1, 1, 1)
@@ -466,13 +468,13 @@ export class Dungeon {
     // build desert dungeon
   }
 
-  async updateBoard(): Promise<void> {
+  async updateBoard():Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
     console.log('dng easy leaderboard', scoreData)
     const data = [...scoreData.dungeon_action_easy]
     data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
     const topTen = data.slice(0, 10)
-    buildLeaderBoard(topTen, this.boardParent, 10).catch((error: Error) => {
+    this.leaderBoard.buildLeaderBoard(topTen, this.boardParent, 10).catch((error: Error) => {
       console.log(error)
     })
   }
@@ -733,6 +735,8 @@ export class Dungeon {
 
   removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
+    this.leaderBoard.destroy()
+    engine.removeEntity(this.leaderBoard.leaderBoard)
     engine.removeEntity(this.wall1)
     engine.removeEntity(this.wall2)
     engine.removeEntity(this.wall3)
