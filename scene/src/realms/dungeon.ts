@@ -468,15 +468,17 @@ export class Dungeon {
     // build desert dungeon
   }
 
-  async updateBoard():Promise<void> {
+  async updateBoard(): Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
     console.log('dng easy leaderboard', scoreData)
     const data = [...scoreData.dungeon_action_easy]
     data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
     const topTen = data.slice(0, 10)
-    this.leaderBoard.buildLeaderBoard(topTen, this.boardParent, 10).catch((error: Error) => {
-      console.log(error)
-    })
+    this.leaderBoard
+      .buildLeaderBoard(topTen, this.boardParent, 10)
+      .catch((error: Error) => {
+        console.log(error)
+      })
   }
 
   createResourceHub(): void {}
