@@ -129,3 +129,12 @@ export const npcDialogsSprites: Record<string, Sprite> = {
     h: 26
   }
 }
+
+
+export const DIALOG_WIDTH_FACTOR = 0.4
+export const DIALOG_ASPECT_RATIO = 0.3
+export const DIALOG_HEIGHT_FACTOR = DIALOG_WIDTH_FACTOR * DIALOG_ASPECT_RATIO
+
+export const BUTTON_WIDTH_FACTOR = DIALOG_WIDTH_FACTOR * 0.2
+export const BUTTON_ASPECT_RATIO = 0.26
+export const BUTTON_HEIGHT_FACTOR = BUTTON_WIDTH_FACTOR * BUTTON_ASPECT_RATIO

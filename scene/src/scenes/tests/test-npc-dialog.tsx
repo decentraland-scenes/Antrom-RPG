@@ -27,6 +27,7 @@ export class UI {
     this.dialogIndex = this.assignedDialogs.findIndex(
       (dialog) => dialog.id === dialogId
     )
+    console.log(dialogId)
   }
 
   assignDialog(dialogs: Dialog[]): void {
