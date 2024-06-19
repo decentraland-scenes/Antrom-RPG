@@ -28,12 +28,13 @@ import {
   trewsKill
 } from '../counters'
 import { setCurrentActiveScene } from '../instances'
-import { buildLeaderBoard } from '../leaderboard/buildLeaderBoard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
+import { LeaderBoard } from '../leaderboard/leaderboard'
 
 export class Antrom {
   // BuildBuilderSceneAntrom
   private readonly boardParent = engine.addEntity()
+  private readonly leaderBoard: LeaderBoard
   private readonly dungeonDoor = engine.addEntity()
   private readonly tz_bersekerUpgradeMarket = engine.addEntity()
   private readonly tz_resourceMarket = engine.addEntity()
@@ -108,6 +109,7 @@ export class Antrom {
       position: Vector3.create(-45.59, 13.32, -61.18),
       rotation: Quaternion.create(0, 1, 0, 0)
     })
+    this.leaderBoard = new LeaderBoard()
     utils.timers.setInterval(() => {
       this.updateBoard().catch((error: Error) => {
         console.log(error)
@@ -290,9 +292,11 @@ export class Antrom {
     const data = [...scoreData.dungeon_action_easy]
     data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
     const topTen = data.slice(0, 10)
-    buildLeaderBoard(topTen, this.boardParent, 10).catch((error: Error) => {
-      console.log(error)
-    })
+    this.leaderBoard
+      .buildLeaderBoard(topTen, this.boardParent, 10)
+      .catch((error: Error) => {
+        console.log(error)
+      })
   }
 
   AntromNPCs(): void {
@@ -1536,6 +1540,8 @@ export class Antrom {
 
   removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
+    this.leaderBoard.destroy()
+    engine.removeEntity(this.leaderBoard.leaderBoard)
     engine.removeEntity(this.dungeonDoor)
     engine.removeEntity(this.tz_bersekerUpgradeMarket)
     engine.removeEntity(this.tz_resourceMarket)
