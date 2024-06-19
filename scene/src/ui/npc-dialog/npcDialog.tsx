@@ -3,7 +3,8 @@ import type { Dialog, DialogButton } from './dialogsData'
 import { npcDialogsSprites } from './dialogsData'
 
 import ReactEcs, { Button, UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
+import { getUvs } from '../utils/utils'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 const DIALOG_ASPECT_RATIO = 0.3
 
@@ -33,7 +34,15 @@ function npcDialog({
   nextMessage,
   goToDialog
 }: NpcDialogProps): ReactEcs.JSX.Element {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
+
   function AnswerButton({ answer }: AnswerButton): ReactEcs.JSX.Element {
+    const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+    if (canvasInfo === null) return null
+
     return (
       <UiEntity
         uiTransform={{

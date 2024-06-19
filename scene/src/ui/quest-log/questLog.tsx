@@ -1,4 +1,4 @@
-import { canvasInfo } from '../utils/utils'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import type { StageButtonType } from './questsData'
 import { QUEST_STAGES } from './questsData'
 
@@ -44,6 +44,11 @@ function QuestLog({
       />
     )
   }
+
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
+
   return (
     <UiEntity
       uiTransform={{

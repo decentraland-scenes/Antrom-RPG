@@ -14,7 +14,7 @@ import type { Sprite } from '../../ui/utils/utils'
 
 const BALANCE: number = 300
 
-export class UI {
+export class ResourcesMarketUiTest {
   public isVisible: boolean
   public balance: number
   public tradeClicked: boolean
@@ -36,8 +36,9 @@ export class UI {
     this.buttonMaxSprite = resourcesMarketSprites.max_button
     this.selectedQuantity = 1
     this.selectedItem = undefined
-    const uiComponent = (): ReactEcs.JSX.Element[] => [this.ResourcesMarketUI()]
+    const uiComponent = (): ReactEcs.JSX.Element => this.ResourcesMarketUI()
     ReactEcsRenderer.setUiRenderer(uiComponent)
+    console.log('constructor')
   }
 
   changeVisibility(): void {
@@ -239,6 +240,6 @@ export class UI {
 
 export function main(): void {
   // all the initializing logic
-  const gameUI = new UI()
-  gameUI.ResourcesMarketUI()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const gameUI = new ResourcesMarketUiTest()
 }

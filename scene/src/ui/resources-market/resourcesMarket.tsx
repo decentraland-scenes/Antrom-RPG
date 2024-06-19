@@ -1,11 +1,12 @@
 import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
 import type { Sprite } from '../utils/utils'
-import { Tab, canvasInfo, getUvs } from '../utils/utils'
+import { Tab, getUvs } from '../utils/utils'
 import {
   type ResourcesMarketProps,
   resourcesMarketSprites,
   type InventoryItem
 } from './resourcesData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 const ASPECT_RATIO = 0.7
 const WIDTH_FACTOR = 0.5
@@ -154,21 +155,26 @@ function ResourcesMarket({
     )
   }
 
+  const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (uiCanvasInfo === null) return null
+
   return (
     <UiEntity
       uiTransform={{
-        width: canvasInfo.width,
-        height: canvasInfo.height,
-        display: isVisible ? 'flex' : 'none',
+        width: uiCanvasInfo.width,
+        height: uiCanvasInfo.height,
+        display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        pointerFilter: 'block'
       }}
     >
       <UiEntity
         uiTransform={{
-          width: canvasInfo.width * WIDTH_FACTOR,
-          height: canvasInfo.width * HEIGTH_FACTOR,
+          width: uiCanvasInfo.width * WIDTH_FACTOR,
+          height: uiCanvasInfo.width * HEIGTH_FACTOR,
           flexDirection: 'row',
           alignItems: 'flex-start'
         }}
@@ -180,7 +186,7 @@ function ResourcesMarket({
       >
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * WIDTH_FACTOR * 0.42,
+            width: uiCanvasInfo.width * WIDTH_FACTOR * 0.42,
             height: '66.5%',
             flexDirection: 'column',
             alignItems: 'center',
@@ -236,8 +242,8 @@ function ResourcesMarket({
               <UiEntity
                 key={index}
                 uiTransform={{
-                  width: canvasInfo.width * WIDTH_FACTOR * SIZE_ITEM_FACTOR,
-                  height: canvasInfo.width * WIDTH_FACTOR * SIZE_ITEM_FACTOR,
+                  width: uiCanvasInfo.width * WIDTH_FACTOR * SIZE_ITEM_FACTOR,
+                  height: uiCanvasInfo.width * WIDTH_FACTOR * SIZE_ITEM_FACTOR,
                   margin: { right: '8.75%', bottom: '4%', top: '1.5%' }
                 }}
               >
@@ -248,7 +254,7 @@ function ResourcesMarket({
         </UiEntity>
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * WIDTH_FACTOR * 0.35,
+            width: uiCanvasInfo.width * WIDTH_FACTOR * 0.35,
             height: '60%',
             flexDirection: 'column',
             alignItems: 'center',
@@ -270,7 +276,7 @@ function ResourcesMarket({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * WIDTH_FACTOR * 0.35,
+              width: uiCanvasInfo.width * WIDTH_FACTOR * 0.35,
               height: '50%',
               flexDirection: 'row',
               alignItems: 'flex-start',
@@ -280,7 +286,7 @@ function ResourcesMarket({
           >
             <UiEntity
               uiTransform={{
-                width: canvasInfo.width * WIDTH_FACTOR * 0.35 * 0.2,
+                width: uiCanvasInfo.width * WIDTH_FACTOR * 0.35 * 0.2,
                 height: '100%',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -290,6 +296,7 @@ function ResourcesMarket({
             >
               <Input
                 onChange={(value) => {
+                  console.log('input')
                   updatePrice(value)
                 }}
                 value={selectedQuantity.toString()}
@@ -327,8 +334,8 @@ function ResourcesMarket({
             <UiEntity
               uiTransform={{
                 positionType: 'relative',
-                width: canvasInfo.width * WIDTH_FACTOR * 0.35 * 0.33,
-                height: canvasInfo.width * WIDTH_FACTOR * 0.35 * 0.33,
+                width: uiCanvasInfo.width * WIDTH_FACTOR * 0.35 * 0.33,
+                height: uiCanvasInfo.width * WIDTH_FACTOR * 0.35 * 0.33,
                 margin: { top: '2%' }
               }}
               uiBackground={{
@@ -365,8 +372,8 @@ function ResourcesMarket({
           uiTransform={{
             positionType: 'absolute',
             position: { top: '52%', right: '8%' },
-            width: canvasInfo.width * WIDTH_FACTOR * 0.04,
-            height: canvasInfo.width * WIDTH_FACTOR * 0.04 * ASPECT_RATIO,
+            width: uiCanvasInfo.width * WIDTH_FACTOR * 0.04,
+            height: uiCanvasInfo.width * WIDTH_FACTOR * 0.04 * ASPECT_RATIO,
             display: selectedItem?.item.withMana === true ? 'flex' : 'none'
           }}
           uiBackground={{
@@ -381,8 +388,8 @@ function ResourcesMarket({
           uiTransform={{
             position: { right: '3%', top: '23%' },
             positionType: 'absolute',
-            width: canvasInfo.width * WIDTH_FACTOR * 0.04,
-            height: canvasInfo.width * WIDTH_FACTOR * 0.04
+            width: uiCanvasInfo.width * WIDTH_FACTOR * 0.04,
+            height: uiCanvasInfo.width * WIDTH_FACTOR * 0.04
           }}
           uiBackground={{
             textureMode: 'stretch',

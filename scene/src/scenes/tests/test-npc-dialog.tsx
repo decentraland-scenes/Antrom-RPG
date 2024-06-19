@@ -61,6 +61,5 @@ export class UI {
 export function main(): void {
   // all the initializing logic
   const gameUI = new UI()
-  gameUI.DialogUI()
   gameUI.assignDialog(BONE_TRADER_DIALOGS)
 }

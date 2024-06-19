@@ -1,5 +1,5 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
+import { getUvs } from '../utils/utils'
 import type { WearableButtonProp, WearablesMarketProps } from './wearablesData'
 import {
   HEIGTH_FACTOR,
@@ -7,6 +7,7 @@ import {
   WIDTH_FACTOR,
   wearablesMarketSprites
 } from './wearablesData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 function WearablesMarket({
   isVisible,
@@ -63,6 +64,10 @@ function WearablesMarket({
       </UiEntity>
     )
   }
+
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity

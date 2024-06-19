@@ -1,6 +1,5 @@
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, Label, UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo } from '../utils/utils'
 import type { Option, OptionWithArray } from './dungeonsData'
 import {
   DAILY_FREE_TOKENS,
@@ -10,6 +9,7 @@ import {
   PREMIUM_TOKENS,
   SEASON_PASS
 } from './dungeonsData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 export type SelectOptionProps = {
   id: string
@@ -85,6 +85,10 @@ function Dungeon({
       </UiEntity>
     )
   }
+
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity

@@ -1,5 +1,5 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
+import { getUvs } from '../utils/utils'
 import type {
   MagicalItemButtonProp,
   MagicalItemsMarketProp
@@ -10,6 +10,7 @@ import {
   WIDTH_FACTOR,
   magicalItemsMarketSprites
 } from './magicalItemPurchaseData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 function MagicalItemsMarket({
   isVisible,
@@ -67,6 +68,10 @@ function MagicalItemsMarket({
       </UiEntity>
     )
   }
+
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity
