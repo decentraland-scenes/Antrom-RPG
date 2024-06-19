@@ -1,6 +1,6 @@
 // import { Scalar } from "decentraland-ecs"
 
-import { Transform, engine } from '@dcl/sdk/ecs'
+import { engine } from '@dcl/sdk/ecs'
 import { Scalar } from '@dcl/sdk/math'
 import { getRandomInt } from './../utils/getRandomInt'
 
@@ -32,7 +32,7 @@ export class Character {
     this.magic = magic
   }
 
-  reduceHealth(attack: number) {
+  reduceHealth(attack: number):void {
     console.log('reducehealth', attack)
     if (this.health - attack >= 0) {
       this.health -= Math.round(attack)
@@ -42,22 +42,22 @@ export class Character {
     console.log(this.health, this.getHealthScaled())
   }
 
-  getHealthScaled() {
+  getHealthScaled():number {
     return this.health / this.maxHealth
   }
 
-  rollDice() {
+  rollDice():number {
     const max = 20 + this.level / 2
     const min = (this.minLuck / 100) * max
     const randomNumber = Scalar.randomRange(Math.round(min), Math.round(max))
     return randomNumber
   }
 
-  getLuckRange() {
+  getLuckRange():number  {
     return this.level
   }
 
-  getDefensePercent() {
+  getDefensePercent():number  {
     // TODO random Int function
     const def = this.baseDefense * getRandomInt(Math.round(this.level / 2))
     return def >= 1 ? 0.99 : def

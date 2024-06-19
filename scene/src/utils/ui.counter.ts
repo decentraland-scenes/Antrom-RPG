@@ -4,21 +4,21 @@ export class UICounter {
     this.credits = 0
   }
 
-  set(number: number) {
+  set(number: number):void {
     this.credits = number
   }
 
-  increase(number: number) {
+  increase(number: number):void  {
     this.credits = this.credits + number
   }
 
-  decrease(number: number) {
+  decrease(number: number):void  {
     if (this.credits > 0) {
       this.credits = this.credits - number
     }
   }
 
-  read() {
+  read():number {
     return this.credits
   }
 }

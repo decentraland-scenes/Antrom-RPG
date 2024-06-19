@@ -1,6 +1,5 @@
 import {
   Animator,
-  Entity,
   GltfContainer,
   InputAction,
   PointerEventType,
@@ -133,18 +132,18 @@ export class DemonKingDungeon {
     this.buildDemonKingDungeon()
   }
 
-  buildDemonKingDungeon() {
+  buildDemonKingDungeon():void {
     if (DungeonStage.read() <= 2) {
       // loader.showGarrisonscreen(8000)
     }
     utils.timers.setTimeout(() => {
-      movePlayerTo({
+      void movePlayerTo({
         newRelativePosition: Vector3.create(-9.83, 48.19, -45.24)
       })
     }, 8000)
   }
 
-  createGarrisonAlara2() {
+  createGarrisonAlara2():void {
     this.npc_garrisonAlara = npc.create(
       {
         position: Vector3.create(14.57, 67.44, -3.22),
@@ -177,7 +176,7 @@ export class DemonKingDungeon {
     )
   }
 
-  removeAllEntities() {
+  removeAllEntities():void {
     engine.removeEntity(this.dungeon_collider)
     engine.removeEntity(this.dungeon_door1)
     engine.removeEntity(this.dungeon)

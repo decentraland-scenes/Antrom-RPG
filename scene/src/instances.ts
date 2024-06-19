@@ -1,6 +1,6 @@
 export let currentActiveScene = 'Antrom'
 
-export const setCurrentActiveScene = (sceneName: string) => {
+export const setCurrentActiveScene = (sceneName: string):void => {
   currentActiveScene = sceneName
   // atlasAnalytics.updateBranchName(sceneName)
 }

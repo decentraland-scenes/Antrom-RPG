@@ -1,6 +1,5 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
-  Entity,
-  AudioSource,
   Animator,
   GltfContainer,
   Transform,
@@ -43,7 +42,7 @@ export class MonsterMeat extends Character {
   attackSystemRanged!: MonsterAttackRanged
   isPrey: boolean = false
   dropRate: number = -1
-  static setGlobalHasSkill(value: boolean) {
+  static setGlobalHasSkill(value: boolean):void {
     // Modify some static property or perform some global logic here.
     MonsterMeat.globalHasSkill = value
   }
@@ -78,12 +77,14 @@ export class MonsterMeat extends Character {
     MonsterMeat.setGlobalHasSkill(true)
   }
 
-  initMonster() {
+  initMonster():void {
     console.log('init')
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!this.shape && this.shapeFile) {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (this.audioFile) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
@@ -137,24 +138,24 @@ export class MonsterMeat extends Character {
     this.setupAttackHandler()
   }
 
-  create() {
+  create():void {
     // function needs to be implemented per individual monster
     throw new Error('create is required to be implemented for this monster')
   }
 
-  onDropXp() {
+  onDropXp():void {
     // function needs to be implemented per individual monster
     throw new Error('onDropXp is required to be implemented for this monster')
   }
 
-  loadTransformation() {
+  loadTransformation():void {
     // function needs to be implemented per individual monster
     throw new Error(
       'loadTransformation is required to be implemented for this monster'
     )
   }
 
-  setupRangedAttackTriggerBox() {
+  setupRangedAttackTriggerBox():void {
     const entity = engine.addEntity()
     Transform.create(entity, { parent: this.entity })
     MeshRenderer.setBox(entity)
@@ -167,6 +168,7 @@ export class MonsterMeat extends Character {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
       },
@@ -180,7 +182,7 @@ export class MonsterMeat extends Character {
     )
   }
 
-  setupEngageTriggerBox() {
+  setupEngageTriggerBox():void {
     const entity = engine.addEntity()
     Transform.create(entity, { parent: this.entity })
     MeshRenderer.setBox(entity)
@@ -199,7 +201,7 @@ export class MonsterMeat extends Character {
     )
   }
 
-  setupAttackTriggerBox() {
+  setupAttackTriggerBox():void {
     const entity = engine.addEntity()
     Transform.create(entity, { parent: this.entity })
     MeshRenderer.setBox(entity)
@@ -246,11 +248,11 @@ export class MonsterMeat extends Character {
     this.create() // ????
   }
 
-  callDyingAnimation() {
+  callDyingAnimation():void {
     if (!this.isDeadAnimation) this.dyingAnimation()
   }
 
-  killChar() {
+  killChar():void {
     // TODO (first check if used )
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
@@ -265,11 +267,11 @@ export class MonsterMeat extends Character {
     // })
   }
 
-  isDeadOnce() {
+  isDeadOnce():void {
     if (!this.isDead) this.killChar()
   }
 
-  onDead() {
+  onDead():void {
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
@@ -286,7 +288,7 @@ export class MonsterMeat extends Character {
     // })
   }
 
-  performAttack(damage: number, isCriticalAttack: boolean) {
+  performAttack(damage: number, isCriticalAttack: boolean):void {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
     // this.updateHealthBar()
@@ -311,16 +313,17 @@ export class MonsterMeat extends Character {
     }
   }
 
-  handleAttack() {
+  handleAttack():void {
     if (this.health <= 0) {
       this.onDead()
       return
     }
     this.performAttack(1, false)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const random = Math.random() * 1000
   }
 
-  setupAttackHandler() {
+  setupAttackHandler():void {
     pointerEventsSystem.onPointerDown(
       {
         entity: this.entity,
@@ -348,7 +351,7 @@ export class MonsterMeat extends Character {
     Animator.playSingleAnimation(this.entity, this.attackClip)
   }
 
-  attackPlayer(enemyAttack: number) {
+  attackPlayer(enemyAttack: number):void {
     // PLAYER TBD
     // player.reduceHealth(enemyAttack)
     // this.playAttack()

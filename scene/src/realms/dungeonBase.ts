@@ -1,13 +1,11 @@
 import { engine } from '@dcl/ecs/dist/runtime/initialization'
 import {
   Animator,
-  EasingFunction,
   GltfContainer,
   InputAction,
   PointerEventType,
   PointerEvents,
   Transform,
-  Tween,
   inputSystem
 } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
@@ -94,16 +92,14 @@ export class DungeonBase {
           PointerEventType.PET_DOWN,
           this.area
         )
-      ) {
-      }
+      ) { /* empty */ }
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
           PointerEventType.PET_DOWN,
           this.door1
         )
-      ) {
-      }
+      ) { /* empty */ }
     })
   }
 }

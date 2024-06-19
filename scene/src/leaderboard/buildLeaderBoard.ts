@@ -5,9 +5,8 @@ import {
   Transform,
   TextShape,
   TextAlignMode,
-  Rotate
 } from '@dcl/sdk/ecs'
-import { Color3, Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Color4, Vector3 } from '@dcl/sdk/math'
 
 const TiltleFont = Font.F_SERIF
 const SFFont = Font.F_SERIF
@@ -107,9 +106,10 @@ export async function buildLeaderBoard(
   scoreData: any[],
   parent: Entity,
   length: number
-) {
+):Promise<void> {
   // if canvas is empty
   if (scoreBoardNames.length === 0) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const nameTitle = new ScoreBoardText(
       TextTypes.BIGTITLE,
       '   Callan Quest',
@@ -117,6 +117,7 @@ export async function buildLeaderBoard(
       parent
     )
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const scoreTitle = new ScoreBoardText(
       TextTypes.BIGTITLE,
       '',
@@ -134,6 +135,7 @@ export async function buildLeaderBoard(
         )
         scoreBoardNames.push(username)
 
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         const dungeons_completed = new ScoreBoardText(
           TextTypes.TINYVALUE,
           scoreData[i].dungeons_completed.toString(),
