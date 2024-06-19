@@ -38,7 +38,6 @@ export class ResourcesMarketUiTest {
     this.selectedItem = undefined
     const uiComponent = (): ReactEcs.JSX.Element => this.ResourcesMarketUI()
     ReactEcsRenderer.setUiRenderer(uiComponent)
-    console.log('constructor')
   }
 
   changeVisibility(): void {
@@ -50,7 +49,6 @@ export class ResourcesMarketUiTest {
     this.selectedQuantity = 1
     this.selectedItemQuantity = inventoryItem.amount
     this.updatePrice()
-    console.log(this.selectedItem)
   }
 
   updatePrice(value?: string): void {

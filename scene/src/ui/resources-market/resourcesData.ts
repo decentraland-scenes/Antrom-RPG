@@ -343,3 +343,9 @@ export type ResourcesMarketProps = {
   tradeUp: () => void
   isUnavailable: () => boolean
 }
+
+
+export const ASPECT_RATIO = 0.7
+export const WIDTH_FACTOR = 0.5
+export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
+export const SIZE_ITEM_FACTOR = 0.1

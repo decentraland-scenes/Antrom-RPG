@@ -1,17 +1,18 @@
-import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
-import type { Sprite } from '../utils/utils'
-import { Tab, getUvs } from '../utils/utils'
-import {
-  type ResourcesMarketProps,
-  resourcesMarketSprites,
-  type InventoryItem
-} from './resourcesData'
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
+import { Tab, getUvs } from '../utils/utils'
+import { ItemButton } from './itemButton'
+import {
+  ASPECT_RATIO,
+  HEIGTH_FACTOR,
+  SIZE_ITEM_FACTOR,
+  WIDTH_FACTOR,
+  resourcesMarketSprites,
+  type ResourcesMarketProps
+} from './resourcesData'
+import { TradeButton } from './tradeButton'
 
-const ASPECT_RATIO = 0.7
-const WIDTH_FACTOR = 0.5
-const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
-const SIZE_ITEM_FACTOR = 0.1
+
 
 function ResourcesMarket({
   isVisible,
@@ -33,128 +34,6 @@ function ResourcesMarket({
   tradeUp,
   isUnavailable
 }: ResourcesMarketProps): ReactEcs.JSX.Element {
-  function TradeButton(): ReactEcs.JSX.Element {
-    let normalSprite: Sprite
-    let clickedSprite: Sprite
-    let unavailableSprite: Sprite
-
-    if (isSelling) {
-      normalSprite = resourcesMarketSprites.sell_button
-      clickedSprite = resourcesMarketSprites.sell_button_clicked
-      unavailableSprite = resourcesMarketSprites.sell_button_unavailable
-    } else {
-      if (selectedItem?.item.withMana === true) {
-        normalSprite = resourcesMarketSprites.purchase_with_mana_button
-        clickedSprite = resourcesMarketSprites.purchase_with_mana_button_clicked
-        unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
-      } else {
-        normalSprite = resourcesMarketSprites.purchase_button
-        clickedSprite = resourcesMarketSprites.purchase_button_clicked
-        unavailableSprite = resourcesMarketSprites.purchase_button_unavailable
-      }
-    }
-    return (
-      <UiEntity
-        uiTransform={{
-          positionType: 'relative',
-          width: '50%',
-          height: '10%'
-        }}
-      >
-        <UiEntity
-          uiTransform={{
-            positionType: 'relative',
-            width: '100%',
-            height: '100%',
-            display: isUnavailable() ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(unavailableSprite),
-            texture: {
-              src: unavailableSprite.atlasSrc
-            }
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            positionType: 'relative',
-            width: '100%',
-            height: '100%',
-            display: !isUnavailable() ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(tradeClicked ? clickedSprite : normalSprite),
-            texture: {
-              src: clickedSprite.atlasSrc
-            }
-          }}
-          onMouseDown={tradeDown}
-          onMouseUp={tradeUp}
-        />
-      </UiEntity>
-    )
-  }
-
-  function ItemButton(inventoryItem: InventoryItem): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{
-          width: '100%',
-          height: '100%',
-          display:
-            (inventoryItem.amount !== undefined && inventoryItem.amount > 0) ||
-            !isSelling
-              ? 'flex'
-              : 'none'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(inventoryItem.item.sprite),
-          texture: { src: inventoryItem.item.sprite.atlasSrc }
-        }}
-        onMouseDown={() => {
-          selectItem(inventoryItem)
-        }}
-      >
-        <UiEntity
-          uiTransform={{
-            positionType: 'absolute',
-            width: '115%',
-            height: '115%',
-            position: { left: '-5%', top: '-5%' },
-            display:
-              selectedItem?.item.id === inventoryItem.item.id ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(resourcesMarketSprites.selected_frame),
-            texture: {
-              src: resourcesMarketSprites.selected_frame.atlasSrc
-            }
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            positionType: 'absolute',
-            width: '100%',
-            height: '100%',
-            display: isSelling ? 'flex' : 'none'
-          }}
-          uiText={{
-            value:
-              inventoryItem.amount !== undefined
-                ? inventoryItem.amount.toString()
-                : '',
-            textAlign: 'bottom-right',
-            fontSize: 20
-          }}
-        />
-      </UiEntity>
-    )
-  }
-
   const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
   if (uiCanvasInfo === null) return null
@@ -164,7 +43,7 @@ function ResourcesMarket({
       uiTransform={{
         width: uiCanvasInfo.width,
         height: uiCanvasInfo.height,
-        display: 'flex',
+        display: isVisible?'flex':'none',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
@@ -247,7 +126,12 @@ function ResourcesMarket({
                   margin: { right: '8.75%', bottom: '4%', top: '1.5%' }
                 }}
               >
-                <ItemButton item={resource.item} amount={resource.amount} />
+                <ItemButton
+                  inventoryItem={resource}
+                  selectedItem={selectedItem}
+                  isSelling={isSelling}
+                  selectItem={selectItem}
+                />
               </UiEntity>
             ))}
           </UiEntity>
@@ -366,7 +250,14 @@ function ResourcesMarket({
               }}
             />
           </UiEntity>
-          <TradeButton inventoryItem={selectedItem} />
+          <TradeButton
+            isSelling={isSelling}
+            selectedItem={selectedItem}
+            tradeClicked={tradeClicked}
+            tradeDown={tradeDown}
+            tradeUp={tradeUp}
+            isUnavailable={isUnavailable}
+          />
         </UiEntity>
         <UiEntity
           uiTransform={{

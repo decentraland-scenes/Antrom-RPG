@@ -130,7 +130,6 @@ export const npcDialogsSprites: Record<string, Sprite> = {
   }
 }
 
-
 export const DIALOG_WIDTH_FACTOR = 0.4
 export const DIALOG_ASPECT_RATIO = 0.3
 export const DIALOG_HEIGHT_FACTOR = DIALOG_WIDTH_FACTOR * DIALOG_ASPECT_RATIO

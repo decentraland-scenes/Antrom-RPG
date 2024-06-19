@@ -1,13 +1,14 @@
 import type { Dialog } from './dialogsData'
-import { DIALOG_HEIGHT_FACTOR, DIALOG_WIDTH_FACTOR, npcDialogsSprites } from './dialogsData'
+import {
+  DIALOG_HEIGHT_FACTOR,
+  DIALOG_WIDTH_FACTOR,
+  npcDialogsSprites
+} from './dialogsData'
 
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs } from '../utils/utils'
 import { AnswerButton } from './answerButton'
-
-
-
 
 type NpcDialogProps = {
   isVisible: boolean
@@ -17,8 +18,6 @@ type NpcDialogProps = {
   goToDialog: (dialog: string) => void
 }
 
-
-
 function npcDialog({
   isVisible,
   dialogIndex,
@@ -26,7 +25,6 @@ function npcDialog({
   nextMessage,
   goToDialog
 }: NpcDialogProps): ReactEcs.JSX.Element {
-
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
   if (canvasInfo === null) return null

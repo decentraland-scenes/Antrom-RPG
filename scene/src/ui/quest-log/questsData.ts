@@ -39,6 +39,6 @@ export type StageDataType = {
 }
 
 export type StageButtonType = {
-  stage:StageDataType
+  stage: StageDataType
   setStage: (arg: string) => void
 }
