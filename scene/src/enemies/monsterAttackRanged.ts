@@ -1,11 +1,11 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type MonsterOligar } from './monster'
-import { Animator, Billboard, Transform, engine } from '@dcl/sdk/ecs'
+import { Animator, Transform, engine } from '@dcl/sdk/ecs'
 
 // Configuration constants
 const MOVE_SPEED = 1
 const ROT_SPEED = 1
-const MAX_DISTANCE = 20
+// const MAX_DISTANCE = 20
 
 type MonsterAttackConfig = {
   moveSpeed?: number
@@ -42,7 +42,7 @@ export class MonsterAttackRanged {
     this.refreshTimer = 0.5
   }
 
-  attackSystem = (dt: number) => {
+  attackSystem = (dt: number): void => {
     const playerPos = Transform.get(engine.PlayerEntity).position
     const monsterPos = Transform.getMutable(this.monster.entity).position
     const distanceToPlayer = Vector3.distance(playerPos, monsterPos)
@@ -50,6 +50,7 @@ export class MonsterAttackRanged {
       playerPos: Vector3,
       monsterPos: Vector3,
       dt: any
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     ) => {
       const directionToPlayer = Vector3.normalize(
         Vector3.subtract(playerPos, monsterPos) as Vector3

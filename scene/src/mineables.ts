@@ -9,7 +9,7 @@ import {
   InputAction,
   inputSystem
 } from '@dcl/sdk/ecs'
-import { Vector3, Quaternion, Color4 } from '@dcl/sdk/math'
+import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
 import { type GameController } from './controllers/game.controller'
 
@@ -64,7 +64,7 @@ export class Rock {
     this.battle()
   }
 
-  battle() {
+  battle(): void {
     PointerEvents.createOrReplace(this.rock, {
       pointerEvents: [
         {
@@ -99,7 +99,7 @@ export class Rock {
     })
   }
 
-  removeRock() {
+  removeRock(): void {
     engine.removeEntity(this.rock)
   }
 }
@@ -144,7 +144,7 @@ export class Tree {
     this.battle()
   }
 
-  battle() {
+  battle(): void {
     PointerEvents.createOrReplace(this.tree, {
       pointerEvents: [
         {
@@ -181,7 +181,7 @@ export class Tree {
     })
   }
 
-  removeTree() {
+  removeTree(): void {
     engine.removeEntity(this.tree)
   }
 }
@@ -225,7 +225,7 @@ export class BerryTree {
     this.battle()
   }
 
-  battle() {
+  battle(): void {
     PointerEvents.createOrReplace(this.berryTree, {
       pointerEvents: [
         {
@@ -260,7 +260,7 @@ export class BerryTree {
     })
   }
 
-  removeBerryTree() {
+  removeBerryTree(): void {
     engine.removeEntity(this.berryTree)
   }
 }
@@ -307,7 +307,7 @@ export class Pot {
     this.battle()
   }
 
-  battle() {
+  battle(): void {
     PointerEvents.createOrReplace(this.pot, {
       pointerEvents: [
         {
@@ -329,11 +329,12 @@ export class Pot {
           this.pot
         )
       ) {
+        /* empty */
       }
     })
   }
 
-  removepot() {
+  removepot(): void {
     engine.removeEntity(this.pot)
   }
 }
@@ -378,7 +379,7 @@ export class Gem {
     })
   }
 
-  battle() {
+  battle(): void {
     PointerEvents.createOrReplace(this.gem, {
       pointerEvents: [
         {
@@ -413,7 +414,7 @@ export class Gem {
     })
   }
 
-  killChar() {
+  killChar(): void {
     engine.removeEntity(this.gem)
     this.gem = engine.addEntity()
     Transform.createOrReplace(this.gem, {
@@ -433,12 +434,12 @@ export class Gem {
     this.isDead = true
   }
 
-  isDeadOnce() {
+  isDeadOnce(): void {
     if (!this.isDead) this.killChar()
   }
 
   // TODO
-  async dyingAnimation() {
+  async dyingAnimation(): Promise<void> {
     // Animator.playSingleAnimation(this.gem, 'action')
     // AudioSource.playSound(this.gem, 'assets/sounds/mining.mp3')
     // if (result1 === true && result2 === true) {
@@ -459,11 +460,11 @@ export class Gem {
     // player.writeDataToServer()
   }
 
-  callDyingAnimation() {
-    if (!this.isDeadAnimation) this.dyingAnimation()
+  callDyingAnimation(): void {
+    if (!this.isDeadAnimation) void this.dyingAnimation()
   }
 
-  removeGem() {
+  removeGem(): void {
     engine.removeEntity(this.gem)
   }
 }

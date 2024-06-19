@@ -1,19 +1,6 @@
-import { movePlayerTo } from '~system/RestrictedActions'
-import { MonsterOligar } from './monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMeat from './monsterMeat'
-import {
-  Entity,
-  AudioSource,
-  Animator,
-  GltfContainer,
-  Transform,
-  MeshRenderer,
-  engine,
-  VisibilityComponent,
-  pointerEventsSystem,
-  InputAction
-} from '@dcl/sdk/ecs'
+import { GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { getRandomIntRange } from './../utils/getRandomInt'
 
 const DEFAULT_ATTACK = 0
@@ -36,11 +23,12 @@ export default class Chicken extends MonsterMeat {
     this.minLuck = -1000
   }
 
-  create() {
+  create(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const mons = new Chicken()
   }
 
-  onDropXp() {
+  onDropXp(): void {
     // TODO PLAYER
     // log("onDropXp - Chicken")
     // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {
@@ -76,9 +64,9 @@ export default class Chicken extends MonsterMeat {
     // player.writeDataToServer()
   }
 
-  async onDropLoot() {}
+  async onDropLoot(): Promise<void> {}
 
-  setupAttackTriggerBox() {
+  setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
   }
 

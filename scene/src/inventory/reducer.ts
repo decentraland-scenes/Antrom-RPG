@@ -24,10 +24,12 @@ export const UpdateInventory = (
   state: Inventory,
   payload: Payload
 ): Inventory => {
+  // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
   const oldItem = state[payload.itemKey] || {
     count: 0
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-floating-promises
   LogInventoryToServer(payload.type, payload.itemKey, payload.count).then(
     () => {
       console.log('Logged information correctly')
@@ -41,6 +43,7 @@ export const UpdateInventory = (
         [payload.itemKey]: {
           ...oldItem,
           name: payload.itemKey,
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           count: oldItem?.count + (payload.count || 1)
         }
       }
@@ -50,6 +53,7 @@ export const UpdateInventory = (
         [payload.itemKey]: {
           ...oldItem,
           name: payload.itemKey,
+          // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
           count: (oldItem?.count || 0) - (payload.count || 1)
         }
       }

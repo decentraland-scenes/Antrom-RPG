@@ -15,6 +15,7 @@ export class UIController {
   constructor(gameController: GameController) {
     this.gameController = gameController
     this.loadingUI = new LoadingUI(this)
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const uiComponent = () => [
       this.loadingUI.mainUi(),
       NpcUtilsUi(),
@@ -23,6 +24,7 @@ export class UIController {
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   announcementUI() {
     return (
       <Announcement
@@ -33,7 +35,11 @@ export class UIController {
     )
   }
 
-  displayAnnouncement(announcement: string, color: Color4, duration: number) {
+  displayAnnouncement(
+    announcement: string,
+    color: Color4,
+    duration: number
+  ): void {
     utils.timers.clearInterval(duration)
     console.log('OPEN ANNOUNCEMENT')
     this.announcement = announcement
