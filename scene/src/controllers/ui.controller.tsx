@@ -35,7 +35,11 @@ export class UIController {
     )
   }
 
-  displayAnnouncement(announcement: string, color: Color4, duration: number):void {
+  displayAnnouncement(
+    announcement: string,
+    color: Color4,
+    duration: number
+  ): void {
     utils.timers.clearInterval(duration)
     console.log('OPEN ANNOUNCEMENT')
     this.announcement = announcement

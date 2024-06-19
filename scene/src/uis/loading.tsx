@@ -1,7 +1,5 @@
 import { engine } from '@dcl/sdk/ecs'
-import ReactEcs, {
-  UiEntity
-} from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type UIController } from '../controllers/ui.controller'
 import * as utils from '@dcl-sdk/utils'
 import { movePlayerTo } from '~system/RestrictedActions'
@@ -79,7 +77,7 @@ export class LoadingUI {
     )
   }
 
-  loadingSystem(dt: number):void {
+  loadingSystem(dt: number): void {
     utils.timers.setTimeout(() => {
       if (this.timer - dt <= 0 && this.isLoading) {
         this.isLoading = false
