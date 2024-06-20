@@ -12,8 +12,6 @@ import {
 } from './resourcesData'
 import { TradeButton } from './tradeButton'
 
-
-
 function ResourcesMarket({
   isVisible,
   balance,
@@ -43,7 +41,7 @@ function ResourcesMarket({
       uiTransform={{
         width: uiCanvasInfo.width,
         height: uiCanvasInfo.height,
-        display: isVisible?'flex':'none',
+        display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',

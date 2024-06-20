@@ -15,7 +15,6 @@ export type CraftCost = {
 }
 
 export enum Wearables {
-  W_UNSELECTED = 'unselected',
   W_MAGE = 'mage',
   W_MAGE_HAT = 'mage_hat',
   W_MAGE_STAFF = 'mage_staff',
@@ -28,14 +27,6 @@ export enum Wearables {
 }
 
 export const wearablesSprites: Record<Wearables, Sprite> = {
-  [Wearables.W_UNSELECTED]: {
-    atlasSrc: '',
-    atlasSize: { x: 0, y: 0 },
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0
-  },
   [Wearables.W_MAGE]: {
     atlasSrc: 'assets/images/wearables_spritesheet.png',
     atlasSize: { x: 1024, y: 1024 },
@@ -210,12 +201,6 @@ export const wearablesMarketSprites: Record<string, Sprite> = {
 }
 
 export const WEARABLES: Record<Wearables, Wearable> = {
-  [Wearables.W_UNSELECTED]: {
-    name: '',
-    craftCost: [{ item: ITEMS.unselected, amount: 0 }],
-    sprite: wearablesSprites.unselected,
-    id: ''
-  },
   [Wearables.W_MAGE]: {
     name: 'Mage',
     craftCost: [
