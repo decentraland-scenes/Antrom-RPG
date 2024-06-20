@@ -5,7 +5,7 @@ import {
   MAGICAL_ITEMS_MARKET,
   MAGICAL_ITEMS_TO_SHOW,
   PURCHASE_SPRITE,
-  magicalItemsMarketSprites,
+  magicalItemsMarketSprites
 } from '../../ui/magical-market/magicalMarketData'
 import type { Sprite } from '../../ui/utils/utils'
 import { type Item } from '../../ui/resources-market/resourcesData'

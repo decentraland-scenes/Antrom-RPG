@@ -55,7 +55,6 @@ function MagicalItemsMarket({
           texture: { src: backgroundSprite.atlasSrc }
         }}
       >
-        {' '}
         <UiEntity
           uiTransform={{
             width: '55%',
@@ -64,7 +63,6 @@ function MagicalItemsMarket({
             position: { top: '16%', left: '12.25%' },
             flexWrap: 'wrap'
           }}
-          
         >
           {magicalItemsToShow
             .slice(
@@ -159,7 +157,6 @@ function MagicalItemsMarket({
               height: '20%',
               margin: { top: '12%', bottom: '12%' }
             }}
-
             uiText={{
               value:
                 selectedMagicalItem !== null &&

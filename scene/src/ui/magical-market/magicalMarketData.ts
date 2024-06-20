@@ -2,7 +2,6 @@ import type { Item } from '../resources-market/resourcesData'
 import { ITEMS } from '../resources-market/resourcesData'
 import type { Sprite } from '../utils/utils'
 
-
 export const magicalItemsMarketSprites: Record<string, Sprite> = {
   background: {
     atlasSrc: 'assets/images/magicalitemsmarket_spritesheet.png',

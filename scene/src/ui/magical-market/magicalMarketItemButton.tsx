@@ -1,14 +1,12 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import { type Item } from '../resources-market/resourcesData'
 import { getUvs } from '../utils/utils'
-import {
-  type MagicalItem,
-  magicalItemsMarketSprites
-} from './magicalMarketData'
+import { magicalItemsMarketSprites } from './magicalMarketData'
 
 type magicalItemButtonType = {
-  magicalItem: MagicalItem
-  selectedMagicalItem: MagicalItem | undefined
-  selectMagicalItem: (arg: MagicalItem) => void
+  magicalItem: Item
+  selectedMagicalItem: Item | undefined
+  selectMagicalItem: (arg: Item) => void
 }
 
 export function MagicalMarketItemButton({

@@ -224,7 +224,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     w: 256,
     h: 256
   },
-    [Items.I_BASIC_RUNE]: {
+  [Items.I_BASIC_RUNE]: {
     atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
     x: 1024,
@@ -295,7 +295,7 @@ export const resourcesSprites: Record<Items, Sprite> = {
     y: 512,
     w: 256,
     h: 256
-  },
+  }
 }
 
 export const ITEMS: Record<Items, Item> = {
