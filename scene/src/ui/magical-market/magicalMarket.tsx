@@ -9,7 +9,6 @@ import {
   magicalItemsMarketSprites
 } from './magicalMarketData'
 import { MagicalMarketItemButton } from './magicalMarketItemButton'
-import { Color4 } from '@dcl/sdk/math'
 
 function MagicalItemsMarket({
   isVisible,

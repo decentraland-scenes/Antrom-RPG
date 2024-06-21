@@ -448,9 +448,9 @@ export const RESOURCES_INVENTORY: InventoryItem[] = [
 
 export const RESOURCES_MARKET: InventoryItem[] = [
   { item: ITEMS.berry },
-  { item: ITEMS.bone, amount: 9999 },
-  { item: ITEMS.token, amount: 9999 },
-  { item: ITEMS.coins, amount: 9999 }
+  { item: ITEMS.bone },
+  { item: ITEMS.token },
+  { item: ITEMS.coins }
 ]
 
 export type CraftCost = {
