@@ -1,6 +1,6 @@
 import { engine } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import Loading from '../../ui/loading/loading'
+import Loading from '../../ui/loading/loadingComponent'
 
 const TIME_TO_LOAD: number = 2
 

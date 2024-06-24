@@ -1,7 +1,7 @@
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, Label, UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo } from '../utils/utils'
-import type { Option, OptionWithArray } from './dungeonsData'
+import type { Option } from './dungeonsData'
 import {
   DAILY_FREE_TOKENS,
   DIFFICULTIES,
@@ -10,6 +10,7 @@ import {
   PREMIUM_TOKENS,
   SEASON_PASS
 } from './dungeonsData'
+import { OptionButton } from './optionButton'
 
 export type SelectOptionProps = {
   id: string
@@ -20,11 +21,12 @@ type DungeonProps = {
   isLoading: boolean
   isInfo: boolean
   isVisible: boolean
+  isOpen: boolean
   scrollPosition: number
   dungeon: string
   difficulty: string
   isPlayable: boolean
-  changeVisibility: () => void
+  openMenu: () => void
   scrollRight: () => void
   scrollLeft: () => void
   selectOption: ({ id, array }: SelectOptionProps) => void
@@ -38,9 +40,10 @@ function Dungeon({
   isLoading,
   isInfo,
   isVisible,
+  isOpen,
   scrollPosition,
   isPlayable,
-  changeVisibility,
+  openMenu,
   scrollRight,
   scrollLeft,
   selectOption,
@@ -48,49 +51,17 @@ function Dungeon({
   getLoadingImage,
   openDungeonSelection,
   playDungeon
-}: DungeonProps): ReactEcs.JSX.Element {
-  function OptionButton({
-    available,
-    selected,
-    imgSources,
-    id,
-    array
-  }: OptionWithArray): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{ width: '100%', height: '100%' }}
-        uiBackground={{
-          textureMode: 'stretch',
-          texture: {
-            src: available ? imgSources[0] : imgSources[1]
-          }
-        }}
-        onMouseDown={() => {
-          selectOption({ id, array })
-        }}
-      >
-        <UiEntity
-          uiTransform={{
-            positionType: 'absolute',
-            position: { top: '-25%', left: '-10%' },
-            width: '25%',
-            height: '100%',
-            display: selected ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            texture: { src: 'assets/images/chooseDungeon/selectionIcon.png' }
-          }}
-        />
-      </UiEntity>
-    )
-  }
+}: DungeonProps): ReactEcs.JSX.Element | null {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity
       uiTransform={{
         width: '100%',
-        height: '100%'
+        height: '100%',
+        display: isVisible ? 'flex' : 'none'
       }}
     >
       <UiEntity
@@ -117,7 +88,7 @@ function Dungeon({
           uiTransform={{
             width: '10%',
             height: '100%',
-            display: isVisible ? 'none' : 'flex',
+            display: isOpen ? 'none' : 'flex',
             alignItems: 'center'
           }}
         >
@@ -125,7 +96,7 @@ function Dungeon({
             uiTransform={{
               width: canvasInfo.width * 0.1,
               height: canvasInfo.width * 0.1,
-              display: isVisible ? 'none' : 'flex'
+              display: isOpen ? 'none' : 'flex'
             }}
             uiBackground={{
               textureMode: 'center',
@@ -139,7 +110,7 @@ function Dungeon({
             positionType: 'relative',
             width: '100%',
             height: '100%',
-            display: isVisible ? 'flex' : 'none',
+            display: isOpen ? 'flex' : 'none',
             justifyContent: 'center',
             alignItems: 'center'
           }}
@@ -150,7 +121,7 @@ function Dungeon({
               positionType: 'absolute',
               width: '250',
               height: '300',
-              display: isVisible ? 'flex' : 'none',
+              display: isOpen ? 'flex' : 'none',
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
               flexDirection: 'column'
@@ -271,6 +242,7 @@ function Dungeon({
                     selected={dungeon.selected}
                     imgSources={dungeon.imgSources}
                     id={dungeon.id}
+                    selectOption={selectOption}
                   />
                 </UiEntity>
               ))}
@@ -312,6 +284,7 @@ function Dungeon({
                     selected={difficulty.selected}
                     imgSources={difficulty.imgSources}
                     id={difficulty.id}
+                    selectOption={selectOption}
                   />
                 </UiEntity>
               ))}
@@ -348,7 +321,7 @@ function Dungeon({
                 textureMode: 'stretch',
                 texture: { src: 'assets/images/chooseDungeon/exitButton.png' }
               }}
-              onMouseDown={changeVisibility}
+              onMouseDown={openMenu}
             />
             <UiEntity
               uiTransform={{
