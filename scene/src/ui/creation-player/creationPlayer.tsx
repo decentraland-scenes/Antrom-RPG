@@ -13,9 +13,9 @@ import { CreationPlayerOption } from './creationPlayerOption'
 
 type CreationPlayerProps = {
   isVisible: boolean
-  selectRace: (arg: string) => void
-  selectClass: (arg: string) => void
-  selectFaction: (arg: string) => void
+  selectRace: (arg: CharacterStatsType) => void
+  selectClass: (arg: CharacterStatsType) => void
+  selectFaction: (arg: ChacarterFactionsType) => void
   selectedClass: CharacterStatsType | undefined
   selectedRace: CharacterStatsType | undefined
   selectedFaction: ChacarterFactionsType | undefined
@@ -26,7 +26,9 @@ function CreationPlayer({
   selectRace,
   selectClass,
   selectFaction,
-  selectedClass
+  selectedClass,
+  selectedRace,
+  selectedFaction
 }: CreationPlayerProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -66,10 +68,9 @@ function CreationPlayer({
           >
             <CreationPlayerOption
               option={characterClass}
-              type={'class'}
-              selectedRace={''}
-              selectedClass={'thief'}
-              selectedFaction={''}
+              selectedRace={selectedRace}
+              selectedClass={selectedClass}
+              selectedFaction={selectedFaction}
               selectRace={selectRace}
               selectClass={selectClass}
               selectFaction={selectFaction}

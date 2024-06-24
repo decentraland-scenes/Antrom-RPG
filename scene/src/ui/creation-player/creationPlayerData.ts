@@ -304,6 +304,7 @@ export type CharacterStatsType = {
   critRate: number
   critDamage: number
   id: string
+  type: 'class' | 'race'
 }
 
 export type ChacarterFactionsType = {
@@ -312,6 +313,7 @@ export type ChacarterFactionsType = {
   unselectedSprite: Sprite
   infoSprite: Sprite
   id: string
+  type: 'faction'
 }
 
 export enum CharacterClasses {
@@ -347,7 +349,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     healthPoints: 30,
     critRate: 0,
     critDamage: 0,
-    id: CharacterClasses.CC_CLERIC
+    id: CharacterClasses.CC_CLERIC,
+    type: 'class'
   },
   [CharacterClasses.CC_MAGE]: {
     name: 'Mage',
@@ -361,7 +364,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     healthPoints: 20,
     critRate: 3,
     critDamage: 0,
-    id: CharacterClasses.CC_MAGE
+    id: CharacterClasses.CC_MAGE,
+    type: 'class'
   },
   [CharacterClasses.CC_THIEF]: {
     name: 'Thief',
@@ -375,7 +379,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     healthPoints: 0,
     critRate: 2,
     critDamage: 0,
-    id: CharacterClasses.CC_THIEF
+    id: CharacterClasses.CC_THIEF,
+    type: 'class'
   },
   [CharacterClasses.CC_RANGE]: {
     name: 'Cleric',
@@ -389,7 +394,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     healthPoints: 0,
     critRate: 6,
     critDamage: 0,
-    id: CharacterClasses.CC_RANGE
+    id: CharacterClasses.CC_RANGE,
+    type: 'class'
   },
   [CharacterClasses.CC_BERSERKER]: {
     name: 'Berserker',
@@ -403,7 +409,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     healthPoints: 0,
     critRate: 0,
     critDamage: 0,
-    id: CharacterClasses.CC_BERSERKER
+    id: CharacterClasses.CC_BERSERKER,
+    type: 'class'
   }
 }
 
@@ -419,3 +426,11 @@ export const ASPECT_RATIO = 0.56
 export const WIDTH_FACTOR = 0.5
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 export const ITEM_SIZE_FACTOR = 0.12
+
+export function isStat(value: CharacterStatsType | ChacarterFactionsType): value is CharacterStatsType {
+  return value.type === 'class' || value.type === 'race';
+}
+
+export function isFaction(value: CharacterStatsType | ChacarterFactionsType): value is ChacarterFactionsType {
+  return value.type === 'faction';
+}

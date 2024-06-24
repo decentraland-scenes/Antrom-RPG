@@ -7,18 +7,16 @@ import {
 
 type creationPlayerOptionProps = {
   option: CharacterStatsType | ChacarterFactionsType
-  type: 'race' | 'class' | 'faction'
-  selectedRace: string
-  selectedClass: string
-  selectedFaction: string
-  selectRace: (arg: string) => void
-  selectClass: (arg: string) => void
-  selectFaction: (arg: string) => void
+  selectedRace: CharacterStatsType | undefined
+  selectedClass: CharacterStatsType | undefined
+  selectedFaction: ChacarterFactionsType | undefined
+  selectRace: (arg: CharacterStatsType) => void
+  selectClass: (arg: CharacterStatsType) => void
+  selectFaction: (arg: ChacarterFactionsType) => void
 }
 
 export function CreationPlayerOption({
   option,
-  type,
   selectedRace,
   selectedClass,
   selectedFaction,
@@ -27,23 +25,23 @@ export function CreationPlayerOption({
   selectFaction
 }: creationPlayerOptionProps): ReactEcs.JSX.Element {
   let backgroundSprite: Sprite
-  switch (type) {
+  switch (option.type) {
     case 'race':
-      if (option.id === selectedRace) {
+      if (selectedRace !== undefined && option.id === selectedRace.id) {
         backgroundSprite = option.selectedSprite
       } else {
         backgroundSprite = option.unselectedSprite
       }
       break
     case 'class':
-      if (option.id === selectedClass) {
+      if (selectedClass !== undefined && option.id === selectedClass.id) {
         backgroundSprite = option.selectedSprite
       } else {
         backgroundSprite = option.unselectedSprite
       }
       break
     case 'faction':
-      if (option.id === selectedFaction) {
+      if (selectedFaction !== undefined && option.id === selectedFaction.id) {
         backgroundSprite = option.selectedSprite
       } else {
         backgroundSprite = option.unselectedSprite
@@ -51,16 +49,16 @@ export function CreationPlayerOption({
       break
   }
   function handleClick(): void {
-    switch (type) {
+    switch (option.type) {
       case 'race':
-        selectRace(option.id)
+        selectRace(option)
         break
       case 'class':
         // selectClass(option.id)
-        console.log(option.id, selectedClass)
+        selectClass(option)
         break
       case 'faction':
-        selectFaction(option.id)
+        selectFaction(option)
         break
     }
   }
