@@ -1,28 +1,30 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import CreationPlayer from '../../ui/creation-player/creationPlayer'
-import type { ChacarterFactionsType, CharacterStatsType } from '../../ui/creation-player/creationPlayerData'
+import type {
+  CharacterFactionsType,
+  CharacterStatsType
+} from '../../ui/creation-player/creationPlayerData'
 
 export class UI {
   public isVisible: boolean = true
   public selectedClass: CharacterStatsType | undefined
   public selectedRace: CharacterStatsType | undefined
-  public selectedFaction: ChacarterFactionsType | undefined
-  
+  public selectedFaction: CharacterFactionsType | undefined
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.creationPlayerUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
-  selectClass(characterClass: CharacterStatsType): void{
+  selectClass(characterClass: CharacterStatsType): void {
     this.selectedClass = characterClass
   }
 
-  selectRace(characterRace: CharacterStatsType): void{
+  selectRace(characterRace: CharacterStatsType): void {
     this.selectedRace = characterRace
   }
 
-  selectFaction(characterFaction: ChacarterFactionsType): void{
+  selectFaction(characterFaction: CharacterFactionsType): void {
     this.selectedFaction = characterFaction
   }
 
@@ -45,5 +47,4 @@ export function main(): void {
   // // all the initializing logic
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gameUI = new UI()
-
 }

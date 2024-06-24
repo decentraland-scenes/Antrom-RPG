@@ -1,18 +1,18 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs, type Sprite } from '../utils/utils'
 import {
-  type ChacarterFactionsType,
+  type CharacterFactionsType,
   type CharacterStatsType
 } from './creationPlayerData'
 
 type creationPlayerOptionProps = {
-  option: CharacterStatsType | ChacarterFactionsType
+  option: CharacterStatsType | CharacterFactionsType
   selectedRace: CharacterStatsType | undefined
   selectedClass: CharacterStatsType | undefined
-  selectedFaction: ChacarterFactionsType | undefined
+  selectedFaction: CharacterFactionsType | undefined
   selectRace: (arg: CharacterStatsType) => void
   selectClass: (arg: CharacterStatsType) => void
-  selectFaction: (arg: ChacarterFactionsType) => void
+  selectFaction: (arg: CharacterFactionsType) => void
 }
 
 export function CreationPlayerOption({
@@ -54,7 +54,6 @@ export function CreationPlayerOption({
         selectRace(option)
         break
       case 'class':
-        // selectClass(option.id)
         selectClass(option)
         break
       case 'faction':

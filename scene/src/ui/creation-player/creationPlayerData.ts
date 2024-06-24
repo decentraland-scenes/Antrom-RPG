@@ -296,7 +296,7 @@ export type CharacterStatsType = {
   skill?: string
   selectedSprite: Sprite
   unselectedSprite: Sprite
-  skillSprite: Sprite
+  skillSprite?: Sprite
   attack: number
   defense: number
   luck: number
@@ -307,7 +307,7 @@ export type CharacterStatsType = {
   type: 'class' | 'race'
 }
 
-export type ChacarterFactionsType = {
+export type CharacterFactionsType = {
   name: string
   selectedSprite: Sprite
   unselectedSprite: Sprite
@@ -414,6 +414,85 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
   }
 }
 
+export const RACES: Record<CharacterRaces, CharacterStatsType> = {
+  [CharacterRaces.CR_UNDEAD]: {
+    name: 'Undead',
+    selectedSprite: creationPlayerSprites.undead,
+    unselectedSprite: creationPlayerSprites.undeadUnselected,
+    attack: 75,
+    defense: 14,
+    luck: 7,
+    healthPoints: 210,
+    critRate: 1,
+    critDamage: 100,
+    id: CharacterRaces.CR_UNDEAD,
+    type: 'race'
+  },
+  [CharacterRaces.CR_ORC]: {
+    name: 'Orc',
+    selectedSprite: creationPlayerSprites.orc,
+    unselectedSprite: creationPlayerSprites.orcUnselected,
+    attack: 75,
+    defense: 8,
+    luck: 9,
+    healthPoints: 200,
+    critRate: 1,
+    critDamage: 100,
+    id: CharacterRaces.CR_ORC,
+    type: 'race'
+  },
+  [CharacterRaces.CR_HUMAN]: {
+    name: 'Human',
+    selectedSprite: creationPlayerSprites.human,
+    unselectedSprite: creationPlayerSprites.humanUnselected,
+    attack: 65,
+    defense: 10,
+    luck: 9,
+    healthPoints: 180,
+    critRate: 1,
+    critDamage: 100,
+    id: CharacterRaces.CR_HUMAN,
+    type: 'race'
+  },
+  [CharacterRaces.CR_ELF]: {
+    name: 'Elf',
+    selectedSprite: creationPlayerSprites.elf,
+    unselectedSprite: creationPlayerSprites.elfUnselected,
+    attack: 80,
+    defense: 7,
+    luck: 11,
+    healthPoints: 180,
+    critRate: 1,
+    critDamage: 100,
+    id: CharacterRaces.CR_ELF,
+    type: 'race'
+  }
+}
+
+export const FACTIONS: Record<CharacterFactions, CharacterFactionsType> = {
+  [CharacterFactions.CF_REBELS]: {
+    name: 'The Rebels',
+    selectedSprite: creationPlayerSprites.rebels,
+    unselectedSprite: creationPlayerSprites.rebelsUnselected,
+    infoSprite: creationPlayerSprites.rebelsInfo,
+    id: CharacterFactions.CF_REBELS,
+    type: 'faction'
+  },
+  [CharacterFactions.CF_DISCIPLES]: {
+    name: 'The Disciples',
+    selectedSprite: creationPlayerSprites.diciples,
+    unselectedSprite: creationPlayerSprites.diciplesUnselected,
+    infoSprite: creationPlayerSprites.diciplesInfo,
+    id: CharacterFactions.CF_DISCIPLES,
+    type: 'faction'
+  }
+  
+}
+
+export const CHARACTER_FACTIONS: CharacterFactionsType[] = [
+FACTIONS.disciples,
+FACTIONS.rebels
+]
 export const CHARACTER_CLASSES: CharacterStatsType[] = [
   CLASSES.mage,
   CLASSES.cleric,
@@ -421,16 +500,14 @@ export const CHARACTER_CLASSES: CharacterStatsType[] = [
   CLASSES.range,
   CLASSES.berserker
 ]
+export const CHARACTER_RACES: CharacterStatsType[] = [
+  RACES.undead,
+  RACES.orc,
+  RACES.human,
+  RACES.elf
+]
 
 export const ASPECT_RATIO = 0.56
 export const WIDTH_FACTOR = 0.5
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 export const ITEM_SIZE_FACTOR = 0.12
-
-export function isStat(value: CharacterStatsType | ChacarterFactionsType): value is CharacterStatsType {
-  return value.type === 'class' || value.type === 'race';
-}
-
-export function isFaction(value: CharacterStatsType | ChacarterFactionsType): value is ChacarterFactionsType {
-  return value.type === 'faction';
-}
