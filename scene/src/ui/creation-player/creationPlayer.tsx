@@ -165,7 +165,17 @@ function CreationPlayer({
                 texture: { src: selectedFaction.infoSprite.atlasSrc }
               }}
             />
-          ) : null}
+          ) : <UiEntity uiTransform={{
+                width: '100%',
+                height: canvasInfo.width * WIDTH_FACTOR * 0.2 * 2.22,
+                display: selectedClass!==undefined && selectedRace !==undefined? 'flex':'none'
+              }}
+              uiBackground={{
+                textureMode: 'stretch',
+                uvs: getUvs(creationPlayerSprites.stats),
+                texture: { src: creationPlayerSprites.stats.atlasSrc }
+              }}>
+            </UiEntity>}
         </UiEntity>
 
         {/* Your character panel */}
