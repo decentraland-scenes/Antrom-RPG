@@ -17,9 +17,7 @@ import { CreationPlayerSelectedOption } from './creationPlayerSelectedOption'
 
 type CreationPlayerProps = {
   isVisible: boolean
-  selectRace: (arg: CharacterStatsType) => void
-  selectClass: (arg: CharacterStatsType) => void
-  selectFaction: (arg: CharacterFactionsType) => void
+  selectOption: (arg: CharacterStatsType | CharacterFactionsType) => void
   selectedClass: CharacterStatsType | undefined
   selectedRace: CharacterStatsType | undefined
   selectedFaction: CharacterFactionsType | undefined
@@ -27,9 +25,7 @@ type CreationPlayerProps = {
 
 function CreationPlayer({
   isVisible,
-  selectRace,
-  selectClass,
-  selectFaction,
+  selectOption,
   selectedClass,
   selectedRace,
   selectedFaction
@@ -64,20 +60,19 @@ function CreationPlayer({
         {/* Create your character: Faction, Race, Class */}
         <UiEntity
           uiTransform={{
-          width: canvasInfo.width * WIDTH_FACTOR * 0.525,
-          height: '100%',
-          flexDirection: 'column',
-          alignItems: 'flex-start'
-        }}
->
+            width: canvasInfo.width * WIDTH_FACTOR * 0.525,
+            height: '100%',
+            flexDirection: 'column',
+            alignItems: 'flex-start'
+          }}
+        >
           <UiEntity
             uiTransform={{
               width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
-              margin:{top:'27.5%'}
+              margin: { top: '27.5%' }
             }}
-
           >
             {CHARACTER_FACTIONS.map((characterFaction, index) => (
               <UiEntity
@@ -90,12 +85,8 @@ function CreationPlayer({
               >
                 <CreationPlayerOption
                   option={characterFaction}
-                  selectedRace={selectedRace}
-                  selectedClass={selectedClass}
-                  selectedFaction={selectedFaction}
-                  selectRace={selectRace}
-                  selectClass={selectClass}
-                  selectFaction={selectFaction}
+                  selectedOption={selectedFaction}
+                  selectOption={selectOption}
                 />
               </UiEntity>
             ))}
@@ -105,9 +96,8 @@ function CreationPlayer({
               width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
-              margin:{top:'15%'}
+              margin: { top: '15%' }
             }}
-
           >
             {CHARACTER_RACES.map((characterRace, index) => (
               <UiEntity
@@ -120,12 +110,8 @@ function CreationPlayer({
               >
                 <CreationPlayerOption
                   option={characterRace}
-                  selectedRace={selectedRace}
-                  selectedClass={selectedClass}
-                  selectedFaction={selectedFaction}
-                  selectRace={selectRace}
-                  selectClass={selectClass}
-                  selectFaction={selectFaction}
+                  selectedOption={selectedRace}
+                  selectOption={selectOption}
                 />
               </UiEntity>
             ))}
@@ -135,7 +121,7 @@ function CreationPlayer({
               width: '100%',
               flexDirection: 'row',
               justifyContent: 'center',
-              margin:{top:'14%'}
+              margin: { top: '14%' }
             }}
           >
             {CHARACTER_CLASSES.map((characterClass, index) => (
@@ -149,12 +135,8 @@ function CreationPlayer({
               >
                 <CreationPlayerOption
                   option={characterClass}
-                  selectedRace={selectedRace}
-                  selectedClass={selectedClass}
-                  selectedFaction={selectedFaction}
-                  selectRace={selectRace}
-                  selectClass={selectClass}
-                  selectFaction={selectFaction}
+                  selectedOption={selectedClass}
+                  selectOption={selectOption}
                 />
               </UiEntity>
             ))}
@@ -163,16 +145,28 @@ function CreationPlayer({
 
         {/* Details panel */}
         <UiEntity
-        uiTransform={{width:canvasInfo.width * WIDTH_FACTOR*.2, height:'100%', padding:{top:'7%'}}} 
-        uiBackground={{color:Color4.create(1,0,0,0.1)}} >
-          {selectedFaction !== undefined && (selectedClass === undefined || selectedRace === undefined) ?
+          uiTransform={{
+            width: canvasInfo.width * WIDTH_FACTOR * 0.2,
+            height: '100%',
+            padding: { top: '7%' }
+          }}
+          uiBackground={{ color: Color4.create(1, 0, 0, 0.1) }}
+        >
+          {selectedFaction !== undefined &&
+          (selectedClass === undefined || selectedRace === undefined) ? (
             <UiEntity
-            uiTransform={{width:"100%", height:canvasInfo.width * WIDTH_FACTOR*0.2*2.22}} uiBackground={{textureMode: 'stretch',
-          uvs: getUvs(selectedFaction.infoSprite),
-          texture: { src: selectedFaction.infoSprite.atlasSrc }}}/> : null
-          }
+              uiTransform={{
+                width: '100%',
+                height: canvasInfo.width * WIDTH_FACTOR * 0.2 * 2.22
+              }}
+              uiBackground={{
+                textureMode: 'stretch',
+                uvs: getUvs(selectedFaction.infoSprite),
+                texture: { src: selectedFaction.infoSprite.atlasSrc }
+              }}
+            />
+          ) : null}
         </UiEntity>
-
 
         {/* Your character panel */}
         <UiEntity
@@ -184,10 +178,13 @@ function CreationPlayer({
             flexDirection: 'column'
           }}
         >
-          <CreationPlayerSelectedOption selectedOption={selectedFaction}/>
-          <CreationPlayerSelectedOption selectedOption={selectedRace}/>
-          <CreationPlayerSelectedOption selectedOption={selectedClass}/>
-          <CreationPlayerSelectedOption selectedOption={selectedClass} isSkill/>
+          <CreationPlayerSelectedOption selectedOption={selectedFaction} />
+          <CreationPlayerSelectedOption selectedOption={selectedRace} />
+          <CreationPlayerSelectedOption selectedOption={selectedClass} />
+          <CreationPlayerSelectedOption
+            selectedOption={selectedClass}
+            isSkill
+          />
         </UiEntity>
       </UiEntity>
     </UiEntity>

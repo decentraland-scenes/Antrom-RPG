@@ -13,18 +13,23 @@ type creationPlayerSelectedOptionProps = {
 }
 
 export function CreationPlayerSelectedOption({
-  selectedOption, isSkill
+  selectedOption,
+  isSkill
 }: creationPlayerSelectedOptionProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
-  let selectedOptionSprite: Sprite|undefined
+  let selectedOptionSprite: Sprite | undefined
 
-  if(selectedOption !== undefined && selectedOption.type === 'class'){
-    if (isSkill !== null && isSkill === true ){
+  if (selectedOption !== undefined && selectedOption.type === 'class') {
+    if (isSkill !== null && isSkill === true) {
       selectedOptionSprite = selectedOption.skillSprite
-    } else {selectedOptionSprite = selectedOption.selectedSprite}
-  } else {selectedOptionSprite = selectedOption?.selectedSprite}
+    } else {
+      selectedOptionSprite = selectedOption.selectedSprite
+    }
+  } else {
+    selectedOptionSprite = selectedOption?.selectedSprite
+  }
 
   return (
     <UiEntity

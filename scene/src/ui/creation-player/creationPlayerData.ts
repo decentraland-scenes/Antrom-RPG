@@ -486,12 +486,11 @@ export const FACTIONS: Record<CharacterFactions, CharacterFactionsType> = {
     id: CharacterFactions.CF_DISCIPLES,
     type: 'faction'
   }
-  
 }
 
 export const CHARACTER_FACTIONS: CharacterFactionsType[] = [
-FACTIONS.disciples,
-FACTIONS.rebels
+  FACTIONS.disciples,
+  FACTIONS.rebels
 ]
 export const CHARACTER_CLASSES: CharacterStatsType[] = [
   CLASSES.mage,

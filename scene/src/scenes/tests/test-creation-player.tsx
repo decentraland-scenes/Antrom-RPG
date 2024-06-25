@@ -16,16 +16,18 @@ export class UI {
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
-  selectClass(characterClass: CharacterStatsType): void {
-    this.selectedClass = characterClass
-  }
-
-  selectRace(characterRace: CharacterStatsType): void {
-    this.selectedRace = characterRace
-  }
-
-  selectFaction(characterFaction: CharacterFactionsType): void {
-    this.selectedFaction = characterFaction
+  selectOption(option: CharacterStatsType | CharacterFactionsType): void {
+    switch (option.type) {
+      case 'race':
+        this.selectedRace = option
+        break
+      case 'class':
+        this.selectedClass = option
+        break
+      case 'faction':
+        this.selectedFaction = option
+        break
+    }
   }
 
   creationPlayerUI(): ReactEcs.JSX.Element {
@@ -35,9 +37,7 @@ export class UI {
         selectedClass={this.selectedClass}
         selectedRace={this.selectedRace}
         selectedFaction={this.selectedFaction}
-        selectClass={this.selectClass.bind(this)}
-        selectRace={this.selectRace.bind(this)}
-        selectFaction={this.selectFaction.bind(this)}
+        selectOption={this.selectOption.bind(this)}
       />
     )
   }
