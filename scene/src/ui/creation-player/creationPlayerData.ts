@@ -13,23 +13,23 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 1530,
-    y: 80,
+    y: 99,
     w: 290,
     h: 645
   },
   disciplesUnselected: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 2017,
-    y: 541,
+    x: 1907,
+    y: 330,
     w: 103,
     h: 109
   },
   disciples: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 1907,
-    y: 541,
+    x: 2017,
+    y: 330,
     w: 103,
     h: 109
   },
@@ -37,7 +37,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 1185,
-    y: 1045,
+    y: 1069,
     w: 290,
     h: 645
   },
@@ -52,7 +52,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
   rebels: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 104,
+    x: 1004,
     y: 989,
     w: 103,
     h: 109
@@ -68,7 +68,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
   mageUnselected: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 1956,
+    x: 1957,
     y: 768,
     w: 104,
     h: 110
@@ -124,7 +124,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
   berserker: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 2016,
+    x: 2017,
     y: 0,
     w: 103,
     h: 109
@@ -237,15 +237,15 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 3,
-    y: 878,
+    y: 989,
     w: 103,
     h: 109
   },
   orc: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
-    x: 1907,
-    y: 989,
+    x: 1957,
+    y: 879,
     w: 103,
     h: 109
   },
@@ -480,9 +480,9 @@ export const FACTIONS: Record<CharacterFactions, CharacterFactionsType> = {
   },
   [CharacterFactions.CF_DISCIPLES]: {
     name: 'The Disciples',
-    selectedSprite: creationPlayerSprites.diciples,
-    unselectedSprite: creationPlayerSprites.diciplesUnselected,
-    infoSprite: creationPlayerSprites.diciplesInfo,
+    selectedSprite: creationPlayerSprites.disciples,
+    unselectedSprite: creationPlayerSprites.disciplesUnselected,
+    infoSprite: creationPlayerSprites.disciplesInfo,
     id: CharacterFactions.CF_DISCIPLES,
     type: 'faction'
   }

@@ -52,7 +52,7 @@ function CreationPlayer({
         uiTransform={{
           width: canvasInfo.width * WIDTH_FACTOR,
           height: canvasInfo.width * HEIGTH_FACTOR,
-          flexDirection: 'column',
+          flexDirection: 'row',
           alignItems: 'flex-start'
         }}
         uiBackground={{
@@ -61,96 +61,120 @@ function CreationPlayer({
           texture: { src: creationPlayerSprites.background.atlasSrc }
         }}
       >
+        {/* Create your character: Faction, Race, Class */}
         <UiEntity
           uiTransform={{
-            flexDirection: 'row',
-            alignItems: 'flex-start'
-          }}
-          uiBackground={{
-            color: Color4.create(0, 1, 0, 0.1)
-          }}
-        >
-          {CHARACTER_FACTIONS.map((characterFaction, index) => (
-            <UiEntity
-              key={index}
-              uiTransform={{
-                width: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                height: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                margin: { right: '1%' }
-              }}
-            >
-              <CreationPlayerOption
-                option={characterFaction}
-                selectedRace={selectedRace}
-                selectedClass={selectedClass}
-                selectedFaction={selectedFaction}
-                selectRace={selectRace}
-                selectClass={selectClass}
-                selectFaction={selectFaction}
-              />
-            </UiEntity>
-          ))}
+          width: canvasInfo.width * WIDTH_FACTOR * 0.525,
+          height: '100%',
+          flexDirection: 'column',
+          alignItems: 'flex-start'
+        }}
+>
+          <UiEntity
+            uiTransform={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              margin:{top:'27.5%'}
+            }}
+
+          >
+            {CHARACTER_FACTIONS.map((characterFaction, index) => (
+              <UiEntity
+                key={index}
+                uiTransform={{
+                  width: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  height: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  margin: { right: '1%' }
+                }}
+              >
+                <CreationPlayerOption
+                  option={characterFaction}
+                  selectedRace={selectedRace}
+                  selectedClass={selectedClass}
+                  selectedFaction={selectedFaction}
+                  selectRace={selectRace}
+                  selectClass={selectClass}
+                  selectFaction={selectFaction}
+                />
+              </UiEntity>
+            ))}
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              margin:{top:'15%'}
+            }}
+
+          >
+            {CHARACTER_RACES.map((characterRace, index) => (
+              <UiEntity
+                key={index}
+                uiTransform={{
+                  width: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  height: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  margin: { right: '1%' }
+                }}
+              >
+                <CreationPlayerOption
+                  option={characterRace}
+                  selectedRace={selectedRace}
+                  selectedClass={selectedClass}
+                  selectedFaction={selectedFaction}
+                  selectRace={selectRace}
+                  selectClass={selectClass}
+                  selectFaction={selectFaction}
+                />
+              </UiEntity>
+            ))}
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              margin:{top:'14%'}
+            }}
+          >
+            {CHARACTER_CLASSES.map((characterClass, index) => (
+              <UiEntity
+                key={index}
+                uiTransform={{
+                  width: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  height: canvasInfo.width * WIDTH_FACTOR * 0.075,
+                  margin: { right: '1%' }
+                }}
+              >
+                <CreationPlayerOption
+                  option={characterClass}
+                  selectedRace={selectedRace}
+                  selectedClass={selectedClass}
+                  selectedFaction={selectedFaction}
+                  selectRace={selectRace}
+                  selectClass={selectClass}
+                  selectFaction={selectFaction}
+                />
+              </UiEntity>
+            ))}
+          </UiEntity>
         </UiEntity>
+
+        {/* Details panel */}
         <UiEntity
-          uiTransform={{
-            flexDirection: 'row',
-            alignItems: 'flex-start'
-          }}
-          uiBackground={{
-            color: Color4.create(0, 1, 0, 0.1)
-          }}
-        >
-          {CHARACTER_RACES.map((characterRace, index) => (
+        uiTransform={{width:canvasInfo.width * WIDTH_FACTOR*.2, height:'100%', padding:{top:'7%'}}} 
+        uiBackground={{color:Color4.create(1,0,0,0.1)}} >
+          {selectedFaction !== undefined && (selectedClass === undefined || selectedRace === undefined) ?
             <UiEntity
-              key={index}
-              uiTransform={{
-                width: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                height: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                margin: { right: '1%' }
-              }}
-            >
-              <CreationPlayerOption
-                option={characterRace}
-                selectedRace={selectedRace}
-                selectedClass={selectedClass}
-                selectedFaction={selectedFaction}
-                selectRace={selectRace}
-                selectClass={selectClass}
-                selectFaction={selectFaction}
-              />
-            </UiEntity>
-          ))}
+            uiTransform={{width:"100%", height:canvasInfo.width * WIDTH_FACTOR*0.2*2.22}} uiBackground={{textureMode: 'stretch',
+          uvs: getUvs(selectedFaction.infoSprite),
+          texture: { src: selectedFaction.infoSprite.atlasSrc }}}/> : null
+          }
         </UiEntity>
-        <UiEntity
-          uiTransform={{
-            flexDirection: 'row',
-            alignItems: 'flex-start'
-          }}
-          uiBackground={{
-            color: Color4.create(1, 0, 0, 0.1)
-          }}
-        >
-          {CHARACTER_CLASSES.map((characterClass, index) => (
-            <UiEntity
-              key={index}
-              uiTransform={{
-                width: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                height: canvasInfo.width * WIDTH_FACTOR * 0.075,
-                margin: { right: '1%' }
-              }}
-            >
-              <CreationPlayerOption
-                option={characterClass}
-                selectedRace={selectedRace}
-                selectedClass={selectedClass}
-                selectedFaction={selectedFaction}
-                selectRace={selectRace}
-                selectClass={selectClass}
-                selectFaction={selectFaction}
-              />
-            </UiEntity>
-          ))}
-        </UiEntity>
+
+
+        {/* Your character panel */}
         <UiEntity
           uiTransform={{
             position: { right: '15.25%', top: '10.5%' },
