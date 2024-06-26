@@ -1,8 +1,8 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import CreationPlayer from '../../ui/creation-player/creationPlayer'
-import type {
-  CharacterFactionsType,
-  CharacterStatsType
+import {
+  type CharacterFactionsType,
+  type CharacterStatsType
 } from '../../ui/creation-player/creationPlayerData'
 
 export class UI {
@@ -10,10 +10,14 @@ export class UI {
   public selectedClass: CharacterStatsType | undefined
   public selectedRace: CharacterStatsType | undefined
   public selectedFaction: CharacterFactionsType | undefined
+  public clearOptionsClicked: boolean
+  public acceptClicked: boolean
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.creationPlayerUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
+    this.clearOptionsClicked = false
+    this.acceptClicked = false
   }
 
   selectOption(option: CharacterStatsType | CharacterFactionsType): void {
@@ -30,6 +34,26 @@ export class UI {
     }
   }
 
+  clearOptionsMouseDown(): void {
+    this.selectedClass = undefined
+    this.selectedRace = undefined
+    this.selectedFaction = undefined
+    this.clearOptionsClicked = true
+  }
+
+  clearOptionsMouseUp(): void {
+    this.clearOptionsClicked = false
+  }
+
+  acceptMouseDown(): void {
+    // code to create character
+    this.acceptClicked = true
+  }
+
+  acceptMouseUp(): void {
+    this.acceptClicked = false
+  }
+
   creationPlayerUI(): ReactEcs.JSX.Element {
     return (
       <CreationPlayer
@@ -38,6 +62,12 @@ export class UI {
         selectedRace={this.selectedRace}
         selectedFaction={this.selectedFaction}
         selectOption={this.selectOption.bind(this)}
+        clearOptionsClicked={this.clearOptionsClicked}
+        clearOptionsMouseDown={this.clearOptionsMouseDown.bind(this)}
+        clearOptionsMouseUp={this.clearOptionsMouseUp.bind(this)}
+        acceptClicked={this.acceptClicked}
+        acceptMouseDown={this.acceptMouseDown.bind(this)}
+        acceptMouseUp={this.acceptMouseUp.bind(this)}
       />
     )
   }

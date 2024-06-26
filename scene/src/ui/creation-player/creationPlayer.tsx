@@ -1,19 +1,19 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs } from '../utils/utils'
+import { type Sprite, getUvs } from '../utils/utils'
 import {
   CHARACTER_CLASSES,
-  type CharacterStatsType,
+  CHARACTER_FACTIONS,
+  CHARACTER_RACES,
   HEIGTH_FACTOR,
   WIDTH_FACTOR,
   creationPlayerSprites,
   type CharacterFactionsType,
-  CHARACTER_RACES,
-  CHARACTER_FACTIONS
+  type CharacterStatsType
 } from './creationPlayerData'
 import { CreationPlayerOption } from './creationPlayerOption'
-import { Color4 } from '@dcl/sdk/math'
 import { CreationPlayerSelectedOption } from './creationPlayerSelectedOption'
+import { CreationPlayerStat } from './creationPlayerStat'
 
 type CreationPlayerProps = {
   isVisible: boolean
@@ -21,6 +21,12 @@ type CreationPlayerProps = {
   selectedClass: CharacterStatsType | undefined
   selectedRace: CharacterStatsType | undefined
   selectedFaction: CharacterFactionsType | undefined
+  clearOptionsClicked: boolean
+  clearOptionsMouseDown: () => void
+  clearOptionsMouseUp: () => void
+  acceptClicked: boolean
+  acceptMouseDown: () => void
+  acceptMouseUp: () => void
 }
 
 function CreationPlayer({
@@ -28,66 +34,29 @@ function CreationPlayer({
   selectOption,
   selectedClass,
   selectedRace,
-  selectedFaction
+  selectedFaction,
+  clearOptionsClicked,
+  clearOptionsMouseDown,
+  clearOptionsMouseUp,
+  acceptClicked,
+  acceptMouseDown,
+  acceptMouseUp
 }: CreationPlayerProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
-  let classAttack: string = ''
-  let classDefense: string = ''
-  let classLuck: string = ''
-  let classHp: string = ''
-  let classCritRate: string = ''
-  let classCritDamage: string = ''
+  let acceptSprite: Sprite = creationPlayerSprites.acceptUnavailable
 
-  if (selectedClass !== undefined) {
-    if(selectedClass.attack !== 0) {
-      classAttack = ' (+' + selectedClass.attack.toString() + ')'
-    }  
-    if(selectedClass.defense !== 0){
-      classDefense = ' (+' + selectedClass.defense.toString() + '%)'
-      } 
-    if(selectedClass.luck !== 0){
-      (classLuck = ' (+' + selectedClass.luck.toString() + '%)')
-      } 
-    if(selectedClass.healthPoints !== 0){
-      (classHp = ' (+' + selectedClass.healthPoints.toString() + ')')
-      } 
-    if(selectedClass.critRate !== 0){
-      (classCritRate = ' (+' + selectedClass.critRate.toString() + '%)')
-      } 
-    if(selectedClass.critDamage !== 0){
-      (classCritDamage = ' (+' + selectedClass.critDamage.toString() + '%)')
-      } 
-  }
-
-    let raceAttack: string = ''
-  let raceDefense: string = ''
-  let raceLuck: string = ''
-  let raceHp: string = ''
-  let raceCritRate: string = ''
-  let raceCritDamage: string = ''
-
-
-    if (selectedRace !== undefined) {
-    if(selectedRace.attack !== 0) {
-      raceAttack = selectedRace.attack.toString() + ' '
-    }  
-    if(selectedRace.defense !== 0){
-      raceDefense =  '%'+selectedRace.defense.toString() + ' '
-      } 
-    if(selectedRace.luck !== 0){
-      (raceLuck =  '%'+selectedRace.luck.toString() + ' ')
-      } 
-    if(selectedRace.healthPoints !== 0){
-      (raceHp = selectedRace.healthPoints.toString() + ' ')
-      } 
-    if(selectedRace.critRate !== 0){
-      (raceCritRate = '%'+selectedRace.critRate.toString() + ' ')
-      } 
-    if(selectedRace.critDamage !== 0){
-      (raceCritDamage = '%'+selectedRace.critDamage.toString() + ' ')
-      } 
+  if (
+    selectedClass !== undefined &&
+    selectedRace !== undefined &&
+    selectedFaction !== undefined
+  ) {
+    if (acceptClicked) {
+      acceptSprite = creationPlayerSprites.acceptClicked
+    } else {
+      acceptSprite = creationPlayerSprites.accept
+    }
   }
 
   return (
@@ -204,17 +173,16 @@ function CreationPlayer({
         <UiEntity
           uiTransform={{
             width: canvasInfo.width * WIDTH_FACTOR * 0.2,
-            height: '100%',
-            padding: { top: '7%' }
+            height: '100%'
           }}
-          uiBackground={{ color: Color4.create(1, 0, 0, 0.1) }}
         >
           {selectedFaction !== undefined &&
           (selectedClass === undefined || selectedRace === undefined) ? (
             <UiEntity
               uiTransform={{
                 width: '100%',
-                height: canvasInfo.width * WIDTH_FACTOR * 0.2 * 2.22
+                height: canvasInfo.width * WIDTH_FACTOR * 0.2 * 2.22,
+                margin: { top: canvasInfo.width * HEIGTH_FACTOR * 0.12 }
               }}
               uiBackground={{
                 textureMode: 'stretch',
@@ -227,7 +195,9 @@ function CreationPlayer({
               uiTransform={{
                 width: '100%',
                 height: canvasInfo.width * WIDTH_FACTOR * 0.2 * 2.22,
-                flexDirection:'column',
+                flexDirection: 'column',
+                margin: { top: canvasInfo.width * HEIGTH_FACTOR * 0.09 },
+
                 display:
                   selectedClass !== undefined && selectedRace !== undefined
                     ? 'flex'
@@ -240,67 +210,52 @@ function CreationPlayer({
               }}
             >
               <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'10%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
+                uiTransform={{
+                  width: '100%',
+                  height: canvasInfo.width * HEIGTH_FACTOR * 0.075,
+                  margin: { top: canvasInfo.width * HEIGTH_FACTOR * 0.02 }
+                }}
                 uiText={{
-                  value: selectedRace !== undefined? selectedRace.name : '',
+                  value: selectedRace !== undefined ? selectedRace.name : '',
                   fontSize: 15,
                   textAlign: 'middle-center'
                 }}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'15%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceAttack + classAttack,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'attack'}
+                marginTop={0.04}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'20%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceDefense + classDefense,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'defense'}
+                marginTop={0.05}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'20%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceLuck + classLuck,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'luck'}
+                marginTop={0.05}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'20%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceHp + classHp,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'hp'}
+                marginTop={0.05}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'20%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceCritRate + classCritRate,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'critRate'}
+                marginTop={0.05}
               />
-              <UiEntity
-              uiTransform={{width:'100%', height:'15%', margin:{top:'20%'}}}
-              uiBackground={{color:Color4.create(0,0,1,0.1)}}
-                uiText={{
-                  value: raceCritDamage + classCritDamage,
-                  fontSize: 15,
-                  textAlign: 'middle-center'
-                }}
+              <CreationPlayerStat
+                selectedClass={selectedClass}
+                selectedRace={selectedRace}
+                stat={'critDamage'}
+                marginTop={0.05}
               />
             </UiEntity>
           )}
@@ -309,9 +264,9 @@ function CreationPlayer({
         {/* Your character panel */}
         <UiEntity
           uiTransform={{
-            position: { right: '15.25%', top: '10.5%' },
+            position: { right: '2%', top: '10.5%' },
             positionType: 'absolute',
-            width: canvasInfo.width * WIDTH_FACTOR * 0.085,
+            width: canvasInfo.width * WIDTH_FACTOR * 0.22,
             height: canvasInfo.width * WIDTH_FACTOR * 0.5,
             flexDirection: 'column'
           }}
@@ -322,6 +277,38 @@ function CreationPlayer({
           <CreationPlayerSelectedOption
             selectedOption={selectedClass}
             isSkill
+          />
+          <UiEntity
+            uiTransform={{
+              width: '90%',
+              height: canvasInfo.width * HEIGTH_FACTOR * 0.075,
+              margin: { top: canvasInfo.width * HEIGTH_FACTOR * 0.04 }
+            }}
+            uiBackground={{
+              textureMode: 'stretch',
+              uvs: getUvs(
+                clearOptionsClicked
+                  ? creationPlayerSprites.clearOptionsClicked
+                  : creationPlayerSprites.clearOptions
+              ),
+              texture: { src: creationPlayerSprites.stats.atlasSrc }
+            }}
+            onMouseDown={clearOptionsMouseDown}
+            onMouseUp={clearOptionsMouseUp}
+          />
+          <UiEntity
+            uiTransform={{
+              width: '90%',
+              height: canvasInfo.width * HEIGTH_FACTOR * 0.075,
+              margin: { top: canvasInfo.width * HEIGTH_FACTOR * 0.01 }
+            }}
+            uiBackground={{
+              textureMode: 'stretch',
+              uvs: getUvs(acceptSprite),
+              texture: { src: creationPlayerSprites.stats.atlasSrc }
+            }}
+            onMouseDown={acceptMouseDown}
+            onMouseUp={acceptMouseUp}
           />
         </UiEntity>
       </UiEntity>

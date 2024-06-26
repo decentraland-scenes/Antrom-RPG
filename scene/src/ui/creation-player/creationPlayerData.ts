@@ -265,7 +265,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 250,
     h: 54
   },
-  acceptUnvailable: {
+  acceptUnavailable: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 1453,
@@ -383,8 +383,8 @@ export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
     type: 'class'
   },
   [CharacterClasses.CC_RANGE]: {
-    name: 'Cleric',
-    skill: 'Healing Touch',
+    name: 'Range',
+    skill: 'Keen Eye',
     selectedSprite: creationPlayerSprites.range,
     unselectedSprite: creationPlayerSprites.rangeUnselected,
     skillSprite: creationPlayerSprites.rangeSkill,
@@ -492,6 +492,7 @@ export const CHARACTER_FACTIONS: CharacterFactionsType[] = [
   FACTIONS.disciples,
   FACTIONS.rebels
 ]
+
 export const CHARACTER_CLASSES: CharacterStatsType[] = [
   CLASSES.mage,
   CLASSES.cleric,
@@ -499,6 +500,7 @@ export const CHARACTER_CLASSES: CharacterStatsType[] = [
   CLASSES.range,
   CLASSES.berserker
 ]
+
 export const CHARACTER_RACES: CharacterStatsType[] = [
   RACES.undead,
   RACES.orc,
