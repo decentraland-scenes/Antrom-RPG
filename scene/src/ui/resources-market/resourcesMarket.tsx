@@ -31,7 +31,7 @@ function ResourcesMarket({
   tradeDown,
   tradeUp,
   isUnavailable
-}: ResourcesMarketProps): ReactEcs.JSX.Element {
+}: ResourcesMarketProps): ReactEcs.JSX.Element | null {
   const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
   if (uiCanvasInfo === null) return null
