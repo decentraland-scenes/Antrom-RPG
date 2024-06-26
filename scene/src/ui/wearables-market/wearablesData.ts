@@ -329,9 +329,11 @@ export type WearablesMarketProps = {
   upScrollButtons: () => void
   tradeDown: () => void
   tradeUp: () => void
-  selectWearable: (arg: WearableButtonProp) => void
+  selectWearable: (arg: Wearable) => void
 }
 
 export type WearableButtonProp = {
   wearable: Wearable
+  selectedWearable: Wearable | undefined
+  selectWearable: (arg: Wearable) => void
 }

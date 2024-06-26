@@ -24,7 +24,7 @@ function npcDialog({
   assignedDialogs,
   nextMessage,
   goToDialog
-}: NpcDialogProps): ReactEcs.JSX.Element {
+}: NpcDialogProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
   if (canvasInfo === null) return null

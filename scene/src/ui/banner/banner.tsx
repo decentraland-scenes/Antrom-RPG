@@ -13,7 +13,7 @@ function Banner({
   isVisible,
   type,
   position
-}: BannerProps): ReactEcs.JSX.Element {
+}: BannerProps): ReactEcs.JSX.Element | null {
   const WIDTH_FACTOR = 0.33
   let ASPECT_RATIO = 0.216
 

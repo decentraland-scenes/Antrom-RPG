@@ -49,7 +49,7 @@ function Dungeon({
   getLoadingImage,
   openDungeonSelection,
   playDungeon
-}: DungeonProps): ReactEcs.JSX.Element {
+}: DungeonProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
 
   if (canvasInfo === null) return null

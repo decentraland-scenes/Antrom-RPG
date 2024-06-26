@@ -32,7 +32,7 @@ function QuestLog({
   openQuestLog,
   showProgress,
   changeVisibility
-}: questLogProps): ReactEcs.JSX.Element {
+}: questLogProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 

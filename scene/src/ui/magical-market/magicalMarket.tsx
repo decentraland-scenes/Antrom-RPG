@@ -26,7 +26,7 @@ function MagicalItemsMarket({
   tradeDown,
   tradeUp,
   selectMagicalItem
-}: MagicalItemsMarketProp): ReactEcs.JSX.Element {
+}: MagicalItemsMarketProp): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 

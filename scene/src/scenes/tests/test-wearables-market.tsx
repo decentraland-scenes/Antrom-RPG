@@ -37,8 +37,8 @@ export class UI {
     this.isVisible = !this.isVisible
   }
 
-  selectWearable(props: { wearable: Wearable }): void {
-    this.selectedWearable = props.wearable
+  selectWearable(wearable: Wearable): void {
+    this.selectedWearable = wearable
   }
 
   tradeDown(): void {

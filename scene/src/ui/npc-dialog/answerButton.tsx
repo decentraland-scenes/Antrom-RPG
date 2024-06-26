@@ -17,7 +17,7 @@ type AnswerButtonType = {
 export function AnswerButton({
   answer,
   goToDialog
-}: AnswerButtonType): ReactEcs.JSX.Element {
+}: AnswerButtonType): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
