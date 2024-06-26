@@ -18,6 +18,7 @@ import { MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
 import MonsterMeat, { refreshtimer, setRefreshTimer } from './monsterMeat'
 import { monsterModifiers } from './skillEffects'
+import { getRandomInt } from '../utils/getRandomInt'
 
 export class MonsterMob extends Character {
   static globalHasSkill: boolean = true
@@ -124,8 +125,8 @@ export class MonsterMob extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    //  this.setupEngageTriggerBox()
-    //  this.setupAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
 
     // this.attackSystem = new MonsterAttack(this, Camera.instance, {
     //     moveSpeed: 2,
@@ -229,8 +230,6 @@ export class MonsterMob extends Character {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
-        this.createHealthBar()
-        this.createLabel()
       },
       () => {
         console.log('im out')
@@ -251,7 +250,7 @@ export class MonsterMob extends Character {
       entity,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+      [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
       () => {
         console.log('trigger Attack')
       },
@@ -270,9 +269,11 @@ export class MonsterMob extends Character {
       entity,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
+      [{ type: 'box', scale: Vector3.create(6, 2, 6) }],
       () => {
-        console.log('<<< Attack >>>')
+        this.createHealthBar()
+        this.handleAttack()
+        this.createLabel()
       },
       () => {
         console.log('im out')
@@ -403,7 +404,48 @@ export class MonsterMob extends Character {
         }
       },
       () => {
-        this.handleAttack()
+        if (this.health <= 0) {
+          this.onDead()
+          return
+        }
+
+        if (refreshtimer > 0) {
+          return
+        }
+        setRefreshTimer(0)
+
+        const monsterDiceResult = this.rollDice()
+        const playerDiceResult = player.rollDice()
+
+        const roundedPlayerDice = Math.floor(playerDiceResult)
+        const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+        if (roundedMonsterDice <= roundedPlayerDice) {
+          // Player attacks
+          let defPercent = this.getDefensePercent()
+
+          if (monsterModifiers.getDefBuff() !== 0) {
+            defPercent = defPercent * monsterModifiers.getDefBuff()
+            console.log('def %', defPercent)
+          }
+
+          const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+
+          const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
+          const playerAttack = Math.round(reduceHealthBy)
+          this.performAttack(playerAttack, isCriticalAttack)
+
+          // MainHUD.getInstance().updateStats(
+          //     `${roundedPlayerDice}`,
+          //     `${roundedMonsterDice}`,
+          //     `${playerAttack}`,
+          //     `MISSED`
+          // )
+
+          monsterModifiers.activeSkills.forEach((skill) =>
+            skill(isCriticalAttack, true, reduceHealthBy)
+          )
+        }
       }
     )
   }
