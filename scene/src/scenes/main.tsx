@@ -1,5 +1,4 @@
 import { GameController } from '../controllers/game.controller'
-import Pig from '../enemies/pig'
 
 let game: GameController | null = null
 
