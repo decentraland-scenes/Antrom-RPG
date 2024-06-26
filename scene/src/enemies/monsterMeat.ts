@@ -10,7 +10,7 @@ import {
   InputAction,
   TextShape,
   Material,
-  Entity
+  type Entity
 } from '@dcl/sdk/ecs'
 import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
@@ -21,8 +21,8 @@ import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
 
 export let refreshtimer: number = 0
-export function setRefreshTimer(num: number) {
-    refreshtimer = num
+export function setRefreshTimer(num: number): void {
+  refreshtimer = num
 }
 
 export class MonsterMeat extends Character {
@@ -42,446 +42,455 @@ export class MonsterMeat extends Character {
   fightBackAnnouncement?: string
   isDeadAnimation: boolean
   isDead: boolean
-  //attackSound?: AudioSource
-  //playerAttackUI: ui.CornerLabel
+  // attackSound?: AudioSource
+  // playerAttackUI: ui.CornerLabel
   label?: any
   topOffSet?: number
   initialPosition?: Vector3
-  attackSystemRanged!: MonsterAttackRanged;
+  attackSystemRanged!: MonsterAttackRanged
   isPrey: boolean = false
   dropRate: number = -1
-  static setGlobalHasSkill(value: boolean) {
-      // Modify some static property or perform some global logic here.
-      MonsterMeat.globalHasSkill = value
+  static setGlobalHasSkill(value: boolean): void {
+    // Modify some static property or perform some global logic here.
+    MonsterMeat.globalHasSkill = value
   }
+
   constructor(
-      attack: number,
-      xp: number,
-      level: number,
-      health: number = 1,
-      baseDefense = 0.01,
-      engageDistance: number = 9,
-      topOffset: number = 2.5
+    attack: number,
+    xp: number,
+    level: number,
+    health: number = 1,
+    baseDefense = 0.01,
+    engageDistance: number = 9,
+    topOffset: number = 2.5
   ) {
-      super(attack, xp, level, health, baseDefense)
-      this.isDead = false
-      this.isDeadAnimation = false
-      this.engageDistance = engageDistance
-      this.topOffSet = topOffset
-      this.loadTransformation()
-      //monster sounds
-      // this.dyingSound = enemyDyingAudioSource
-      // this.addComponentOrReplace(this.dyingSound)
-      //
+    super(attack, xp, level, health, baseDefense)
+    this.isDead = false
+    this.isDeadAnimation = false
+    this.engageDistance = engageDistance
+    this.topOffSet = topOffset
+    this.loadTransformation()
+    // monster sounds
+    // this.dyingSound = enemyDyingAudioSource
+    // this.addComponentOrReplace(this.dyingSound)
+    //
 
-      //this.attackSound = enemyAttackAudioSource
-      //this.addComponentOrReplace(this.attackSound)
-      //
-      // let monDef = enemyDefAudioSource
-      // this.addComponentOrReplace(monDef)
-      //
-      // let monHey = enemyHeyAudioSource
-      // this.addComponentOrReplace(monHey)
-      MonsterMeat.setGlobalHasSkill(true)
+    // this.attackSound = enemyAttackAudioSource
+    // this.addComponentOrReplace(this.attackSound)
+    //
+    // let monDef = enemyDefAudioSource
+    // this.addComponentOrReplace(monDef)
+    //
+    // let monHey = enemyHeyAudioSource
+    // this.addComponentOrReplace(monHey)
+    MonsterMeat.setGlobalHasSkill(true)
   }
 
-  initMonster() {
-      console.log("init")
-      if (!this.shape && this.shapeFile) {
-          this.shape = this.shapeFile
-          GltfContainer.createOrReplace(this.entity, { src: this.shape })
-      }
-      if (this.audioFile) {
-          // const clip = new AudioClip(this.audioFile)
-          // this.sound = new AudioSource(clip)
-          // this.addComponentOrReplace(this.sound)
-
-      }
+  initMonster(): void {
+    console.log('init')
+    if (!this.shape && this.shapeFile) {
+      this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
-      Animator.createOrReplace(this.entity, {
-          states: [{
-              clip: this.idleClip,
-              playing: true,
-              loop: true,
-          }, {
-              clip: this.attackClip,
-              playing: false,
-              loop: true,
-          },
-          {
-              clip: this.walkClip,
-              playing: false,
-              loop: true,
-          },
-          {
-              clip: this.impactClip,
-              playing: false,
-              loop: false,
-          },
-          {
-              clip: this.dieClip,
-              playing: false,
-              loop: false,
-          }],
-      })
+    }
+    if (this.audioFile) {
+      // const clip = new AudioClip(this.audioFile)
+      // this.sound = new AudioSource(clip)
+      // this.addComponentOrReplace(this.sound)
+    }
+    GltfContainer.createOrReplace(this.entity, { src: this.shape })
+    Animator.createOrReplace(this.entity, {
+      states: [
+        {
+          clip: this.idleClip,
+          playing: true,
+          loop: true
+        },
+        {
+          clip: this.attackClip,
+          playing: false,
+          loop: true
+        },
+        {
+          clip: this.walkClip,
+          playing: false,
+          loop: true
+        },
+        {
+          clip: this.impactClip,
+          playing: false,
+          loop: false
+        },
+        {
+          clip: this.dieClip,
+          playing: false,
+          loop: false
+        }
+      ]
+    })
 
-      this.setupRangedAttackTriggerBox()
-      //  this.setupEngageTriggerBox()
-      //  this.setupAttackTriggerBox()
+    this.setupRangedAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
 
-      // this.attackSystem = new MonsterAttack(this, Camera.instance, {
-      //     moveSpeed: 2,
-      //     engageDistance: this.engageDistance,
-      // })
+    // this.attackSystem = new MonsterAttack(this, Camera.instance, {
+    //     moveSpeed: 2,
+    //     engageDistance: this.engageDistance,
+    // })
 
-      this.attackSystemRanged = new MonsterAttackRanged(this, {
-          moveSpeed: 2,
-          engageDistance: this.engageDistance,
-      })
+    this.attackSystemRanged = new MonsterAttackRanged(this, {
+      moveSpeed: 2,
+      engageDistance: this.engageDistance
+    })
 
-      this.setupAttackHandler()
+    this.setupAttackHandler()
   }
-  createHealthBar() {
-      let hb = engine.addEntity()
-      Transform.createOrReplace(hb, {
-          scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
-          position: Vector3.create(0, this.topOffSet, 0),
-          parent: this.entity
-      })
-      MeshRenderer.setBox(hb)
-      Material.setPbrMaterial(hb, {
-          albedoColor: Color4.create(1,0,0,0.5),
-          metallic: 0,
-          roughness: 1,
-          specularIntensity: 0,
-          emissiveIntensity: 0.4,
-      })
-     
-      this.healthBar = hb
+
+  createHealthBar(): void {
+    const hb = engine.addEntity()
+    Transform.createOrReplace(hb, {
+      scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
+      position: Vector3.create(0, this.topOffSet, 0),
+      parent: this.entity
+    })
+    MeshRenderer.setBox(hb)
+    Material.setPbrMaterial(hb, {
+      albedoColor: Color4.create(1, 0, 0, 0.5),
+      metallic: 0,
+      roughness: 1,
+      specularIntensity: 0,
+      emissiveIntensity: 0.4
+    })
+
+    this.healthBar = hb
   }
+
   createLabel(): void {
-      this.label = engine.addEntity()
-      TextShape.create(this.label, {
-          text: `${this.health}`,
-          textColor: Color4.White(),
-          fontSize: 1
-        })
-        Transform.createOrReplace(this.label, {
-          position: Vector3.create(0, this.topOffSet, -0.1),
-          rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-          parent: this.entity
-      })
-  }
-  refillHealthBar(percentage = 1): void {
-      this.health += this.maxHealth * percentage
-      if (this.health > this.maxHealth) {
-          this.health = this.maxHealth
-      }
-      this.updateHealthBar()
+    this.label = engine.addEntity()
+    TextShape.create(this.label, {
+      text: `${this.health}`,
+      textColor: Color4.White(),
+      fontSize: 1
+    })
+    Transform.createOrReplace(this.label, {
+      position: Vector3.create(0, this.topOffSet, -0.1),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+      parent: this.entity
+    })
   }
 
-  takeDamage(damage: number) {
-      this.health -= damage
-      if (this.health < 0) {
-          this.health = 0
-      }
+  refillHealthBar(percentage = 1): void {
+    this.health += this.maxHealth * percentage
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth
+    }
+    this.updateHealthBar()
+  }
+
+  takeDamage(damage: number): void {
+    this.health -= damage
+    if (this.health < 0) {
+      this.health = 0
+    }
   }
 
   updateHealthBar(): void {
-      if (this.healthBar) {
-          Transform.getMutable(this.healthBar).scale.x =  1 * this.getHealthScaled()
-      }
+    if (this.healthBar) {
+      Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
+    }
 
-      if (this.label) {
-          TextShape.getMutable(this.label).text = `${this.health}`
-      }
+    if (this.label) {
+      TextShape.getMutable(this.label).text = `${this.health}`
+    }
   }
 
   create(): void {
-      //function needs to be implemented per individual monster
-      throw new Error("create is required to be implemented for this monster")
-  }
-  onDropXp(): void {
-      //function needs to be implemented per individual monster
-      throw new Error(
-          "onDropXp is required to be implemented for this monster"
-      )
+    // function needs to be implemented per individual monster
+    throw new Error('create is required to be implemented for this monster')
   }
 
+  onDropXp(): void {
+    // function needs to be implemented per individual monster
+    throw new Error('onDropXp is required to be implemented for this monster')
+  }
 
   loadTransformation(): void {
-      //function needs to be implemented per individual monster
-      throw new Error(
-          "loadTransformation is required to be implemented for this monster"
-      )
+    // function needs to be implemented per individual monster
+    throw new Error(
+      'loadTransformation is required to be implemented for this monster'
+    )
   }
+
   setupRangedAttackTriggerBox(): void {
-      let entity = engine.addEntity()
-      Transform.create(entity, { parent: this.entity })
-      MeshRenderer.setBox(entity)
-      VisibilityComponent.create(entity, { visible: false })
-      utils.triggers.addTrigger(
-          entity,
-          utils.NO_LAYERS,
-          utils.LAYER_1,
-          [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
-          () => {
-              console.log("trigger Ranged attack")
-              if (this.isDeadAnimation) return
-              const CameraPos = Transform.get(engine.CameraEntity).position
-              engine.addSystem(this.attackSystemRanged.attackSystem)
-              this.createHealthBar()
-              this.createLabel()
-          },
-          () => {
-              console.log("im out")
-              if (this.isDeadAnimation) return
-              engine.removeSystem(this.attackSystemRanged.attackSystem)
-              Animator.stopAllAnimations(this.entity)
-              Animator.playSingleAnimation(this.entity, this.idleClip)
-          },
-      )
+    const entity = engine.addEntity()
+    Transform.create(entity, { parent: this.entity })
+    MeshRenderer.setBox(entity)
+    VisibilityComponent.create(entity, { visible: false })
+    utils.triggers.addTrigger(
+      entity,
+      utils.NO_LAYERS,
+      utils.LAYER_1,
+      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
+      () => {
+        console.log('trigger Ranged attack')
+        if (this.isDeadAnimation) return
+        // const CameraPos = Transform.get(engine.CameraEntity).position
+        engine.addSystem(this.attackSystemRanged.attackSystem)
+        this.createHealthBar()
+        this.createLabel()
+      },
+      () => {
+        console.log('im out')
+        if (this.isDeadAnimation) return
+        engine.removeSystem(this.attackSystemRanged.attackSystem)
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.idleClip)
+      }
+    )
   }
+
   setupEngageTriggerBox(): void {
-      let entity = engine.addEntity()
-      Transform.create(entity, { parent: this.entity })
-      MeshRenderer.setBox(entity)
-      VisibilityComponent.create(entity, { visible: false })
-      utils.triggers.addTrigger(
-          entity,
-          1,
-          1,
-          [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
-          () => {
-              console.log("trigger Attack")
-          },
-          () => {
-              console.log("im out")
-          }
-      )
+    const entity = engine.addEntity()
+    Transform.create(entity, { parent: this.entity })
+    MeshRenderer.setBox(entity)
+    VisibilityComponent.create(entity, { visible: false })
+    utils.triggers.addTrigger(
+      entity,
+      1,
+      1,
+      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+      () => {
+        console.log('trigger Attack')
+      },
+      () => {
+        console.log('im out')
+      }
+    )
   }
+
   setupAttackTriggerBox(): void {
-      let entity = engine.addEntity()
-      Transform.create(entity, { parent: this.entity })
-      MeshRenderer.setBox(entity)
-      VisibilityComponent.create(entity, { visible: false })
-      utils.triggers.addTrigger(
-          entity,
-          1,
-          1,
-          [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
-          () => {
-              console.log("<<< Attack >>>")
-          },
-          () => {
-              console.log("im out")
-          }
-      )
+    const entity = engine.addEntity()
+    Transform.create(entity, { parent: this.entity })
+    MeshRenderer.setBox(entity)
+    VisibilityComponent.create(entity, { visible: false })
+    utils.triggers.addTrigger(
+      entity,
+      1,
+      1,
+      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
+      () => {
+        console.log('<<< Attack >>>')
+      },
+      () => {
+        console.log('im out')
+      }
+    )
   }
+
   setDistance(distance: number): void {
-      pointerEventsSystem.onPointerDown(
-          {
-              entity: this.entity,
-              opts: {
-                  button: InputAction.IA_POINTER,
-                  hoverText: 'Click',
-                  maxDistance: distance
-              }
-          },
-          function () {
-              console.log("clicked entity")
-
-          }
-      )
+    pointerEventsSystem.onPointerDown(
+      {
+        entity: this.entity,
+        opts: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Click',
+          maxDistance: distance
+        }
+      },
+      function () {
+        console.log('clicked entity')
+      }
+    )
   }
+
   dyingAnimation(): void {
-      this.isDeadAnimation = true
-      if (this.dieClip) {
-          Animator.playSingleAnimation(this.entity, this.dieClip)
-      }
-      this.create()
+    this.isDeadAnimation = true
+    if (this.dieClip) {
+      Animator.playSingleAnimation(this.entity, this.dieClip)
+    }
+    this.create()
   }
-  callDyingAnimation() {
-      if (!this.isDeadAnimation) this.dyingAnimation()
+
+  callDyingAnimation(): void {
+    if (!this.isDeadAnimation) this.dyingAnimation()
   }
+
   killChar(): void {
-      //TODO (first check if used )
+    // TODO (first check if used )
 
-      // lootEventManager.fireEvent(
-      //     new LootDropEvent(
-      //         this.getComponent(Transform).position,
-      //         () => this.onDropLoot(),
-      //         this.dropRate
-      //     )
-      // )
-      utils.timers.setTimeout(() => {
-        // TODO entity removing triggers error 
-        // engine.removeEntity(this.entity)
-         console.log("entity removed")
-         this.isDead = true
-          }, 5 * 1000
-      )
+    // lootEventManager.fireEvent(
+    //     new LootDropEvent(
+    //         this.getComponent(Transform).position,
+    //         () => this.onDropLoot(),
+    //         this.dropRate
+    //     )
+    // )
+    utils.timers.setTimeout(() => {
+      // TODO entity removing triggers error
+      // engine.removeEntity(this.entity)
+      console.log('entity removed')
+      this.isDead = true
+    }, 5 * 1000)
   }
+
   isDeadOnce(): void {
-      if (!this.isDead) this.killChar()
+    if (!this.isDead) this.killChar()
   }
+
   onDead(): void {
-      this.onDropXp()
-      this.callDyingAnimation()
-      engine.removeSystem(this.attackSystemRanged.attackSystem)
+    this.onDropXp()
+    this.callDyingAnimation()
+    engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-      if (this.healthBar) {
-          engine.removeEntity(this.healthBar)
-      }
-      if (this.label) {
-          engine.removeEntity(this.label)
-      }
-      utils.timers.setTimeout(() => {
-          this.isDeadOnce()
-           },  1000
-       )
+    if (this.healthBar) {
+      engine.removeEntity(this.healthBar)
+    }
+    if (this.label) {
+      engine.removeEntity(this.label)
+    }
+    utils.timers.setTimeout(() => {
+      this.isDeadOnce()
+    }, 1000)
   }
+
   performAttack(damage: number, isCriticalAttack: boolean): void {
-      console.log("damaging monster: " + damage)
-      this.reduceHealth(damage)
-      this.updateHealthBar()
+    console.log('damaging monster: ' + damage)
+    this.reduceHealth(damage)
+    this.updateHealthBar()
 
-      if (isCriticalAttack) {
-          //UI from ui.ts
-          // showCriticalIcon()
-      }
+    if (isCriticalAttack) {
+      // UI from ui.ts
+      // showCriticalIcon()
+    }
 
-      Animator.playSingleAnimation(this.entity, this.impactClip)
-      if (this.health <= 0) {
-          this.onDead()
-      }
+    Animator.playSingleAnimation(this.entity, this.impactClip)
+    if (this.health <= 0) {
+      this.onDead()
+    }
   }
+
   handleAttack(): void {
-      if (this.health <= 0) {
-          this.onDead()
-          return
-      }
-      this.performAttack(1, false)
-      const random = Math.random() * 1000
-      if (refreshtimer > 0) {
-          return
-      }
-      setRefreshTimer(1)
+    if (this.health <= 0) {
+      this.onDead()
+      return
+    }
 
-      const monsterDiceResult = this.rollDice()
-      const playerDiceResult = player.rollDice()
+    // const random = Math.random() * 1000
+    if (refreshtimer > 0) {
+      return
+    }
+    setRefreshTimer(0)
 
-      let roundedPlayerDice = Math.floor(playerDiceResult)
-      let roundedMonsterDice = Math.floor(monsterDiceResult)
+    const monsterDiceResult = this.rollDice()
+    const playerDiceResult = player.rollDice()
 
-      if (monsterDiceResult <= playerDiceResult ) {
-          // Player attacks
-          let defPercent = this.getDefensePercent()
+    const roundedPlayerDice = Math.floor(playerDiceResult)
+    const roundedMonsterDice = Math.floor(monsterDiceResult)
 
-          if (monsterModifiers.getDefBuff() != 0) {
-              defPercent = defPercent * monsterModifiers.getDefBuff()
-              console.log("def %", defPercent)
-          }
+    if (roundedMonsterDice <= roundedPlayerDice) {
+      // Player attacks
+      let defPercent = this.getDefensePercent()
 
-         const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
-
-         const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) //remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
-         let playerAttack = Math.round(reduceHealthBy)
-        
-         //this.performAttack(playerAttack, isCriticalAttack)
-
-
-          // MainHUD.getInstance().updateStats(
-          //     `${roundedPlayerDice}`,
-          //     `${roundedMonsterDice}`,
-          //     `${playerAttack}`,
-          //     `MISSED`
-          // )
-
-         monsterModifiers.activeSkills.forEach((skill) =>
-          skill(isCriticalAttack, true, reduceHealthBy)
-       )
-      }
-      else {
-          // Monster attacks
-          let defPercent = player.getDefensePercent()
-          let enemyAttack = this.attack * (1 - defPercent)
-
-          if (monsterModifiers.getAtkBuff() != 0) {
-              console.log("monster before modified: " + enemyAttack)
-              enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
-              console.log(
-                  "monster after modified: " +
-                      monsterModifiers.getAtkBuff() +
-                      " " +
-                      enemyAttack
-              )
-          }
-         // createMissedLabel()
-
-          let roundedAttack = Math.floor(enemyAttack)
-          this.attackPlayer(enemyAttack)
-
-          // MainHUD.getInstance().updateStats(
-          //     `${roundedPlayerDice}`,
-          //     `${roundedMonsterDice}`,
-          //     `MISSED`,
-          //     `${roundedAttack}`
-          // )
-
-          monsterModifiers.activeSkills.forEach((skill) =>
-              skill(false, false, enemyAttack, this)
-          )
+      if (monsterModifiers.getDefBuff() !== 0) {
+        defPercent = defPercent * monsterModifiers.getDefBuff()
+        console.log('def %', defPercent)
       }
 
-  }
-  setupAttackHandler(): void {
-      pointerEventsSystem.onPointerDown(
-          {
-              entity: this.entity,
-              opts: {
-                  button: InputAction.IA_POINTER,
-                  hoverText: 'Attack Enemy!',
-                  maxDistance: 7
-              }
-          },
-          () => {
-              this.handleAttack()
+      const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
 
-          }
+      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
+      const playerAttack = Math.round(reduceHealthBy)
+
+      this.performAttack(playerAttack, isCriticalAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `${playerAttack}`,
+      //     `MISSED`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(isCriticalAttack, true, reduceHealthBy)
       )
-  }
-  run(): void {
-      Animator.playSingleAnimation(this.entity, this.walkClip)
-  }
-  playIdle(): void {
-      Animator.playSingleAnimation(this.entity, this.idleClip)
-  }
-  playAttack(): void {
-      Animator.playSingleAnimation(this.entity, this.attackClip)
-  }
-  attackPlayer(enemyAttack: number): void {
-      //PLAYER TBD
-       player.reduceHealth(enemyAttack)
+    } else {
+      // Monster attacks
+      const defPercent = player.getDefensePercent()
+      let enemyAttack = this.attack * (1 - defPercent)
 
-       this.playAttack()
-
-       player.impactAnimation?.()
-       //applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-       //this.attackSound.playOnce()
-
-      // setTimeout(1 * 1000, () => {
-      //     checkHealth()
-      // })
-      utils.timers.setTimeout(() => {
-           //TODO from counters
-           //checkHealth()
-            }, 1000
+      if (monsterModifiers.getAtkBuff() !== 0) {
+        console.log('monster before modified: ' + enemyAttack)
+        enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
+        console.log(
+          'monster after modified: ' +
+            monsterModifiers.getAtkBuff() +
+            ' ' +
+            enemyAttack
         )
+      }
+      // createMissedLabel()
+
+      const roundedAttack = Math.floor(enemyAttack)
+      this.attackPlayer(roundedAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `MISSED`,
+      //     `${roundedAttack}`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(false, false, enemyAttack, this)
+      )
+    }
   }
 
+  setupAttackHandler(): void {
+    pointerEventsSystem.onPointerDown(
+      {
+        entity: this.entity,
+        opts: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Attack Enemy!',
+          maxDistance: 7
+        }
+      },
+      () => {
+        this.handleAttack()
+      }
+    )
+  }
 
+  run(): void {
+    Animator.playSingleAnimation(this.entity, this.walkClip)
+  }
+
+  playIdle(): void {
+    Animator.playSingleAnimation(this.entity, this.idleClip)
+  }
+
+  playAttack(): void {
+    Animator.playSingleAnimation(this.entity, this.attackClip)
+  }
+
+  attackPlayer(enemyAttack: number): void {
+    player.reduceHealth(enemyAttack)
+
+    this.playAttack()
+
+    player.impactAnimation?.()
+    // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
+
+    // this.attackSound.playOnce()
+
+    // setTimeout(1 * 1000, () => {
+    //     checkHealth()
+    // })
+    utils.timers.setTimeout(() => {
+      // TODO from counters
+      // checkHealth()
+    }, 1000)
+  }
 }
 
 export default MonsterMeat

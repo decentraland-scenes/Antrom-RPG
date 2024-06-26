@@ -10,7 +10,7 @@ export enum buffTypes {
     LUCK = "luck",
 }
 
-export interface buffItem {
+export type buffItem = {
     type: buffTypes
     value: number
 }

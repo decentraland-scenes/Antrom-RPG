@@ -32,12 +32,12 @@ export class PetManager {
        // return this.petInstances?.[name];
     }
 
-    setPets(pets: string[] = []) {
+    setPets(pets: string[] = []):void {
         this.pets = pets;
     }
 
     removeInstance(name: string):void {
-        const instance = this.getPetInstance(name);
+        // const instance = this.getPetInstance(name);
         // if (instance) {
         //     instance.remove()
         //     delete this.petInstances[name];
@@ -49,7 +49,7 @@ export class PetManager {
     }
 
     hasPet(petName: PetTypes):boolean {
-        return this.pets.indexOf(petName) !== -1;
+        return this.pets.includes(petName);
     }
 
 }

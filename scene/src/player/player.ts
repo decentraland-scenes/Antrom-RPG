@@ -1,4 +1,6 @@
-import { Item, buffItem, itemTypes } from "./Items"
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
+/* eslint-disable @typescript-eslint/ban-types */
+import { type Item, type buffItem, itemTypes } from "./Items"
 import LevelManager from "./LevelManager"
 import { Character } from "../enemies/character"
 import { PetManager } from "./petManager"
@@ -6,9 +8,11 @@ import { LEVEL_TYPES } from "../enemies/types"
 import { getRandomIntRange } from "../utils/getRandomInt"
 import { WearablesConfig } from "./wearables-config"
 
-//health increase by 10%
+// health increase by 10%
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const HEALTH_MULTIPLIER = 1.05
-//attack increase by 20%
+// attack increase by 20%
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ATTACK_MULTIPLIER = 1.11
 enum ITEM_GLBS {
     SWORD = "models/KnightSword.glb",
@@ -20,7 +24,7 @@ export class Player extends Character {
     static globalHasSkill: boolean = true
     static globalHasSkillActive: boolean = false
 
-    //public attackAnimation?: () => void
+    // public attackAnimation?: () => void
     public questTime: number
     public lastLogin: number
     public username: string = ''
@@ -32,7 +36,7 @@ export class Player extends Character {
 
     public swordInventoryCount!: number
 
-    //HSU
+    // HSU
     // public HSU1InventoryCount: ui.UICounter
 
     // //HSU
@@ -86,11 +90,11 @@ export class Player extends Character {
         return this.instance
     }
 
-    static setGlobalHasSkill(value: boolean) {
+    static setGlobalHasSkill(value: boolean): void {
         Player.globalHasSkill = value
     }
 
-    static setGlobalHasSkillActive(value: boolean) {
+    static setGlobalHasSkillActive(value: boolean):void {
         Player.globalHasSkillActive = value
     }
 
@@ -98,7 +102,7 @@ export class Player extends Character {
         super(attack, xp, level, health)
         this.levels = new LevelManager()
         this.levels.setLevel(LEVEL_TYPES.PLAYER, level, xp)
-        //this.inventory = new PlayerInventory()
+        // this.inventory = new PlayerInventory()
         this.petManager = new PetManager()
 
         this.avatarModelList = ["models/BaseCharacter.glb"]
@@ -111,7 +115,7 @@ export class Player extends Character {
                     } else {
                         this.updateXpBar()
                     }
-                    return
+                    
             }
            // TODO api
            // this.writeDataToServer()
@@ -161,7 +165,7 @@ export class Player extends Character {
         //     await WriteUserUsername()
         // })
     }
-    //HACER HOY
+    
     // async CreatePlayerAvatar(shape?: GLTFShape) {
     //     const { userId } = await getUserData()
     //     this.playerAvatar = new PlayerAvatar(
@@ -189,16 +193,13 @@ export class Player extends Character {
                         if (Array.isArray(buff)) {
                             const wearable = WearablesConfig.mapping[item.name]
                             if (
-                                wearable &&
-                                wearable.duplicates !== undefined &&
+                                wearable?.duplicates !== undefined &&
                                 wearable.duplicates > 0 &&
-                                wearable.dStats &&
-                                wearable.dStats.defBuff
+                                wearable.dStats?.defBuff
                             )
                                 accm +=
                                     wearable.dStats.defBuff *
                                     wearable.duplicates
-                            //@ts-ignore
                             const b = buff.find((buff) => buff.type)
                             if (b) {
                                 return accm + b.value
@@ -210,7 +211,7 @@ export class Player extends Character {
                     return accm
                 }, 0)
         const safeDefense = defense >= 1 ? 0.99 : defense
-        const percentageDef = safeDefense * 100
+        // const percentageDef = safeDefense * 100
         // TODO UI
         // this.defenseLabel.set(`Player Defense: ${percentageDef}%`)
         // setTimeout(2000, () => this.defenseLabel.hide())
@@ -218,20 +219,21 @@ export class Player extends Character {
         return safeDefense
     }
 
-    attackAnimation() {
-        //log("attack animation")
-        //this.playerAvatar?.playAttack()
+    attackAnimation():void {
+        // console.log("attack animation")
+        // this.playerAvatar?.playAttack()
     }
 
-    impactAnimation() {
-        //log("attack animation")
-        //this.playerAvatar?.playImpact()
+    impactAnimation():void {
+        // console.log("attack animation")
+        // this.playerAvatar?.playImpact()
     }
 
-    addAvatarModel(model: string, weight: number = 0) {
+    addAvatarModel(model: string, weight: number = 0):void {
         // this.avatarModelList.push(model)
         // executeTask(() => AddAvatarModels(model, weight))
     }
+
     getLuckRange(): number {
         return super.getLuckRange() + this.getLuckBuffs()
     }
@@ -245,15 +247,12 @@ export class Player extends Character {
                     if (Array.isArray(buff)) {
                         const wearable = WearablesConfig.mapping[item.name]
                         if (
-                            wearable &&
-                            wearable.duplicates !== undefined &&
+                            wearable?.duplicates !== undefined &&
                             wearable.duplicates > 0 &&
-                            wearable.dStats &&
-                            wearable.dStats.luckBuff
+                            wearable.dStats?.luckBuff
                         )
                             accm +=
                                 wearable.dStats.luckBuff * wearable.duplicates
-                        //@ts-ignore
                         const b = buff.find((buff) => buff.type)
                         if (b) {
                             return accm + b.value
@@ -284,17 +283,14 @@ export class Player extends Character {
                     if (item.type === itemTypes.SWORD) {
                         const wearable = WearablesConfig.mapping[item.name]
                         if (
-                            wearable &&
-                            wearable.duplicates !== undefined &&
+                            wearable?.duplicates !== undefined &&
                             wearable.duplicates > 0 &&
-                            wearable.dStats &&
-                            wearable.dStats.magicBuff
+                            wearable.dStats?.magicBuff
                         ) {
                             accm +=
                                 wearable.dStats.magicBuff * wearable.duplicates
                         }
                         if (Array.isArray(buff)) {
-                            //@ts-ignore
                             const b = buff.find((buff) => buff.type)
                             if (b) {
                                 return accm + b.value
@@ -309,59 +305,65 @@ export class Player extends Character {
         )
     }
 
-    chopTree() {
+    chopTree():void {
         // const treeCount = this.inventory.getItemCount(ITEM_TYPES.TREE)
         // console.log(treeCount)
     }
+
     reduceHealth(attack: number): void {
         super.reduceHealth(attack)
         this.updateHealthBar()
     }
 
-    refillHealthBar(percentage = 1, playAnimation = true) {
+    refillHealthBar(percentage = 1, playAnimation = true):void {
         this.health += this.maxHealth * percentage
         if (this.health > this.maxHealth) {
             this.health = this.maxHealth
         }
         this.updateHealthBar()
 
-        if (playAnimation === true) {
-            //applyHealToLocation(Camera.instance.feetPosition) ??
+        if (playAnimation) {
+            // applyHealToLocation(Camera.instance.feetPosition) ??
         }
     }
 
-    heal(absorbedHealth: number) {
+    heal(absorbedHealth: number):void {
         this.health += absorbedHealth
         if (this.health > this.maxHealth) {
             this.health = this.maxHealth
         }
         this.updateHealthBar()
-        //ui.displayAnnouncement(heal ${absorbedHealth})
+        // ui.displayAnnouncement(heal ${absorbedHealth})
 
         // Optionally, apply healing animation
         // applyHealToLocation(Camera.instance.feetPosition) ??
     }
 
-    depleteHealthBar(percentage = 1) {
+    depleteHealthBar(percentage = 1):void {
         this.health -= this.maxHealth * percentage
         // if (this.health > this.maxHealth) {
         //     this.health = this.maxHealth
         // }
         this.updateHealthBar()
     }
-    getLevel() {
+
+    getLevel():number {
         return this.level
     }
-    subscribeHpEvent(f: Function) {
+
+    subscribeHpEvent(f: Function):void {
         this.hpEvent = f
     }
-    subscribeXpEvent(f: Function) {
+
+    subscribeXpEvent(f: Function):void {
         this.xpEvent = f
     }
-    subscribeLvEvent(f: Function) {
+
+    subscribeLvEvent(f: Function):void{
         this.lvEvent = f
     }
-    updateHealthBar() {
+
+    updateHealthBar():void {
         if (this.health > this.maxHealth) this.health = this.maxHealth
         this.hpEvent(this.health, this.maxHealth)
         // StatusHUD.updateHp(this.health, this.maxHealth)
@@ -371,7 +373,7 @@ export class Player extends Character {
         // )
     }
 
-    updateXpBar() {
+    updateXpBar():void {
         const level = this.levels.getLevel(LEVEL_TYPES.PLAYER)
         this.xpEvent(
             this.levels.getXp(LEVEL_TYPES.PLAYER) -
@@ -383,17 +385,18 @@ export class Player extends Character {
         )
     }
 
-    rollDice() {
+    rollDice():number {
         const max = 20 + this.levels.getLevel(LEVEL_TYPES.PLAYER) / 2
         const min = (this.getLuckBuffs() / 100) * max
 
         const randomNumber = getRandomIntRange(Math.round(min), Math.round(max))
 
-        //const value2 = this.getLuckBuffs() / 2
+        // const value2 = this.getLuckBuffs() / 2
 
         return randomNumber
     }
-    getPlayerAttack(isCriticalAttack = false) {
+
+    getPlayerAttack(isCriticalAttack = false):number {
         return (
             (this.attack +
                 (this.attackBuff || 0) +
@@ -402,17 +405,14 @@ export class Player extends Character {
                     if (item.type === itemTypes.SWORD) {
                         const wearable = WearablesConfig.mapping[item.name]
                         if (
-                            wearable &&
-                            wearable.duplicates !== undefined &&
+                            wearable?.duplicates !== undefined &&
                             wearable.duplicates > 0 &&
-                            wearable.dStats &&
-                            wearable.dStats.attackBuff
+                            wearable.dStats?.attackBuff
                         ) {
                             accm +=
                                 wearable.dStats.attackBuff * wearable.duplicates
                         }
                         if (Array.isArray(buff)) {
-                            //@ts-ignore
                             const b = buff.find((buff) => buff.type)
                             if (b) {
                                 return accm + b.value
