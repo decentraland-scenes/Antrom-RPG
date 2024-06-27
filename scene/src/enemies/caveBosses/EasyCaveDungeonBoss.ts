@@ -1,5 +1,5 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from './monster'
+import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
 // const DEFAULT_ATTACK = 35
@@ -14,18 +14,18 @@ function getRandomIntRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default class EasyDesertDungeonBoss extends MonsterOligar {
-  shapeFile = 'assets/models/SandBoss.glb'
-  hoverText = `Attack Wasteland Apex Ahau!`
+export default class EasyCaveDungeonBoss extends MonsterOligar {
+  shapeFile = 'assets/models/RockMonsterBoss.glb'
+  hoverText = `Attack Metapsammite!`
 
   minLuck = 10
 
   constructor(difficulty: number) {
     super(
-      20,
+      45,
       DEFAULT_XP,
       // Player.getInstance().getLevel() * difficulty,
-      1000
+      2500
     )
 
     this.initMonster()

@@ -1,5 +1,5 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from './monster'
+import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
 // const DEFAULT_ATTACK = 35
@@ -22,10 +22,10 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
 
   constructor(difficulty: number) {
     super(
-      350,
+      100,
       DEFAULT_XP,
       // Player.getInstance().getLevel() * difficulty,
-      140000
+      10000
     )
 
     this.initMonster()

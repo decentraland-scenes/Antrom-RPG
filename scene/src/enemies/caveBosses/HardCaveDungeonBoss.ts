@@ -1,5 +1,5 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from './monster'
+import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 
 // const DEFAULT_ATTACK = 35
