@@ -2,4 +2,4 @@
 // export * from './scenes/main'
 
 // tests scenes
-export * from './scenes/tests/test-wearables-market'
+export * from './scenes/tests/test-bottom-bar'
