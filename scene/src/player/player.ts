@@ -360,7 +360,7 @@ export class Player extends Character {
 
   updateHealthBar(): void {
     if (this.health > this.maxHealth) this.health = this.maxHealth
-    this.hpEvent(this.health, this.maxHealth)
+    // this.hpEvent(this.health, this.maxHealth)
     // StatusHUD.updateHp(this.health, this.maxHealth)
     // InventoryHUD.getInstance().pages[0].updateHp(
     //     this.health,

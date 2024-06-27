@@ -44,6 +44,7 @@ export class MonsterMeat extends Character {
   isDead: boolean
   // attackSound?: AudioSource
   // playerAttackUI: ui.CornerLabel
+  rangeAttackTrigger!: Entity
   label?: any
   topOffSet?: number
   initialPosition?: Vector3
@@ -69,7 +70,7 @@ export class MonsterMeat extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    this.loadTransformation()
+    // this.loadTransformation()
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -129,8 +130,8 @@ export class MonsterMeat extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
+    // this.setupEngageTriggerBox()
+    // this.setupAttackTriggerBox()
 
     // this.attackSystem = new MonsterAttack(this, Camera.instance, {
     //     moveSpeed: 2,
@@ -221,12 +222,12 @@ export class MonsterMeat extends Character {
   }
 
   setupRangedAttackTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.rangeAttackTrigger = engine.addEntity()
+    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.rangeAttackTrigger)
+    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.rangeAttackTrigger,
       utils.NO_LAYERS,
       utils.LAYER_1,
       [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
@@ -235,8 +236,6 @@ export class MonsterMeat extends Character {
         if (this.isDeadAnimation) return
         // const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
-        this.createHealthBar()
-        this.createLabel()
       },
       () => {
         console.log('im out')

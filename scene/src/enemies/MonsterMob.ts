@@ -39,6 +39,7 @@ export class MonsterMob extends Character {
   isDead: boolean
   // attackSound?: AudioSource
   // playerAttackUI: ui.CornerLabel
+  rangeAttackTrigger!: Entity
   label?: any
   topOffSet?: number
   initialPosition?: Vector3
@@ -64,7 +65,7 @@ export class MonsterMob extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    this.loadTransformation()
+    // this.loadTransformation()
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -86,6 +87,7 @@ export class MonsterMob extends Character {
     // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!this.shape && this.shapeFile) {
       this.shape = this.shapeFile
+      console.log(this.shape)
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
     if (this.audioFile != null) {
@@ -125,8 +127,8 @@ export class MonsterMob extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
+    // this.setupEngageTriggerBox()
+    // this.setupAttackTriggerBox()
 
     // this.attackSystem = new MonsterAttack(this, Camera.instance, {
     //     moveSpeed: 2,
@@ -142,6 +144,7 @@ export class MonsterMob extends Character {
   }
 
   createHealthBar(): void {
+    console.log('healthBAr')
     const hb = engine.addEntity()
     Transform.createOrReplace(hb, {
       scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
@@ -217,12 +220,12 @@ export class MonsterMob extends Character {
   }
 
   setupRangedAttackTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.rangeAttackTrigger = engine.addEntity()
+    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.rangeAttackTrigger)
+    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.rangeAttackTrigger,
       utils.NO_LAYERS,
       utils.LAYER_1,
       [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
@@ -230,6 +233,8 @@ export class MonsterMob extends Character {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
+        this.createHealthBar()
+        this.createLabel()
       },
       () => {
         console.log('im out')
@@ -341,6 +346,9 @@ export class MonsterMob extends Character {
     }
     if (this.label != null) {
       engine.removeEntity(this.label)
+    }
+    if (this.rangeAttackTrigger != null) {
+      engine.removeEntity(this.rangeAttackTrigger)
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()

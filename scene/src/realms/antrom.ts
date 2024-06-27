@@ -30,6 +30,9 @@ import {
 import { setCurrentActiveScene } from '../instances'
 import { buildLeaderBoard } from '../leaderboard/buildLeaderBoard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
+import Executioner from '../enemies/Executioner'
+import Pig from '../enemies/pig'
+import Chicken from '../enemies/chicken'
 
 export class Antrom {
   // BuildBuilderSceneAntrom
@@ -77,10 +80,17 @@ export class Antrom {
   private readonly rocks: Rock[]
   private readonly trees: Tree[]
   private readonly berryTrees: BerryTree[]
+  // Enemies
+  private readonly executioners: Executioner[]
+  private readonly pigs: Pig[]
+  private readonly chickens: Chicken[]
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
     this.gameController = gameController
+    this.executioners = []
+    this.pigs = []
+    this.chickens = []
     GltfContainer.createOrReplace(this.antromForestTest, {
       src: 'assets/models/Antrom/AntromForestTest.glb'
     })
@@ -265,6 +275,15 @@ export class Antrom {
       new BerryTree(this.gameController, Items.berryTree),
       new BerryTree(this.gameController, Items.berryTree)
     ]
+    for (let i = 0; i < 5; i++) {
+      this.executioners.push(new Executioner())
+    }
+    for (let i = 0; i < 4; i++) {
+      this.pigs.push(new Pig())
+    }
+    for (let i = 0; i < 8; i++) {
+      this.chickens.push(new Chicken())
+    }
 
     this.AntromNPCs()
     this.DungeonDoor()
@@ -281,7 +300,6 @@ export class Antrom {
     this.createTavernDoor()
     this.createHeavyGrinderCrown()
     this.createCampfireA()
-    this.createAntrom2()
   }
 
   async updateBoard(): Promise<void> {
@@ -1523,17 +1541,6 @@ export class Antrom {
     })
   }
 
-  createAntrom2(): void {
-    // const executioners = Array.from({ length: 10 }, () => new Executioner())
-    // executioners.forEach((executioner) => engine.addEntity(executioner))
-    // const chickens = Array.from({ length: 6 }, () => new Chicken())
-    // chickens.forEach((chicken) => engine.addEntity(chicken))
-    // // const mage = Array.from({ length: 2 }, () => new Mage())
-    // // mage.forEach((mage) => engine.addEntity(mage))
-    // const pig = Array.from({ length: 3 }, () => new Pig())
-    // pig.forEach((pig) => engine.addEntity(pig))
-  }
-
   removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
     engine.removeEntity(this.dungeonDoor)
@@ -1573,6 +1580,16 @@ export class Antrom {
     engine.removeEntity(this.npc_RandomVillager9)
     engine.removeEntity(this.npc_RandomVillager10)
     engine.removeEntity(this.npc_RandomVillager11)
+
+    this.executioners.forEach((executioner) => {
+      executioner.removeEntity()
+    })
+    this.chickens.forEach((chicken) => {
+      chicken.removeEntity()
+    })
+    this.pigs.forEach((pig) => {
+      pig.removeEntity()
+    })
 
     this.rocks.forEach((rock) => {
       rock.removeRock()
