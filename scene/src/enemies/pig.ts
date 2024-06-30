@@ -86,6 +86,8 @@ export default class Pig extends MonsterMeat {
 
   removeEntity(): void {
     engine.removeEntity(this.rangeAttackTrigger)
+    engine.removeEntity(this.engageAttackTrigger)
+    engine.removeEntity(this.attackTrigger)
     engine.removeEntity(this.healthBar)
     engine.removeEntity(this.label)
     engine.removeEntity(this.entity)

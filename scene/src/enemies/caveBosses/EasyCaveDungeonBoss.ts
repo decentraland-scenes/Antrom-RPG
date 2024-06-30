@@ -1,6 +1,6 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import MonsterMobAuto from '../monsterMobAuto'
 
 // const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
@@ -14,7 +14,7 @@ function getRandomIntRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default class EasyCaveDungeonBoss extends MonsterOligar {
+export default class EasyCaveDungeonBoss extends MonsterMobAuto {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 

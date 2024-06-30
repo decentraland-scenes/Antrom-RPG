@@ -19,11 +19,8 @@ import { MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
-
-export let refreshtimer: number = 0
-export function setRefreshTimer(num: number): void {
-  refreshtimer = num
-}
+import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
+import { MonsterAttack } from './monsterAttack'
 
 export class MonsterMeat extends Character {
   static globalHasSkill: boolean = true
@@ -45,10 +42,13 @@ export class MonsterMeat extends Character {
   // attackSound?: AudioSource
   // playerAttackUI: ui.CornerLabel
   rangeAttackTrigger!: Entity
+  engageAttackTrigger!: Entity
+  attackTrigger!: Entity
   label?: any
   topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
+  attackSystem!: MonsterAttack
   isPrey: boolean = false
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
@@ -70,7 +70,6 @@ export class MonsterMeat extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    // this.loadTransformation()
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -109,7 +108,7 @@ export class MonsterMeat extends Character {
         {
           clip: this.attackClip,
           playing: false,
-          loop: true
+          loop: false
         },
         {
           clip: this.walkClip,
@@ -130,13 +129,13 @@ export class MonsterMeat extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
-    // this.setupAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
 
-    // this.attackSystem = new MonsterAttack(this, Camera.instance, {
-    //     moveSpeed: 2,
-    //     engageDistance: this.engageDistance,
-    // })
+    this.attackSystem = new MonsterAttack(this, {
+      moveSpeed: 2,
+      engageDistance: this.engageDistance
+    })
 
     this.attackSystemRanged = new MonsterAttackRanged(this, {
       moveSpeed: 2,
@@ -248,12 +247,12 @@ export class MonsterMeat extends Character {
   }
 
   setupEngageTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.engageAttackTrigger = engine.addEntity()
+    Transform.create(this.engageAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.engageAttackTrigger)
+    VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.engageAttackTrigger,
       1,
       1,
       [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
@@ -267,12 +266,12 @@ export class MonsterMeat extends Character {
   }
 
   setupAttackTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.attackTrigger = engine.addEntity()
+    Transform.create(this.attackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.attackTrigger)
+    VisibilityComponent.create(this.attackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.attackTrigger,
       1,
       1,
       [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
@@ -346,6 +345,11 @@ export class MonsterMeat extends Character {
     if (this.label) {
       engine.removeEntity(this.label)
     }
+    if (this.rangeAttackTrigger != null) {
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
+    }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()
     }, 1000)
@@ -377,7 +381,7 @@ export class MonsterMeat extends Character {
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(0)
+    setRefreshTimer(1)
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()

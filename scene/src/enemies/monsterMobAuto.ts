@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
   Animator,
   GltfContainer,
@@ -7,22 +8,21 @@ import {
   VisibilityComponent,
   pointerEventsSystem,
   InputAction,
-  type Entity,
+  TextShape,
   Material,
-  TextShape
+  type Entity
 } from '@dcl/sdk/ecs'
 import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
-import MonsterMeat from './monsterMeat'
-import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
+import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { MonsterAttack } from './monsterAttack'
 
-export class MonsterMob extends Character {
+export class MonsterMobAuto extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
@@ -53,7 +53,7 @@ export class MonsterMob extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterMeat.globalHasSkill = value
+    MonsterMobAuto.globalHasSkill = value
   }
 
   constructor(
@@ -70,7 +70,6 @@ export class MonsterMob extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    // this.loadTransformation()
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -84,18 +83,16 @@ export class MonsterMob extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterMeat.setGlobalHasSkill(true)
+    MonsterMobAuto.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
     console.log('init')
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!this.shape && this.shapeFile) {
       this.shape = this.shapeFile
-      console.log(this.shape)
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-    if (this.audioFile != null) {
+    if (this.audioFile) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
       // this.addComponentOrReplace(this.sound)
@@ -111,7 +108,7 @@ export class MonsterMob extends Character {
         {
           clip: this.attackClip,
           playing: false,
-          loop: true
+          loop: false
         },
         {
           clip: this.walkClip,
@@ -149,7 +146,6 @@ export class MonsterMob extends Character {
   }
 
   createHealthBar(): void {
-    console.log('healthBAr')
     const hb = engine.addEntity()
     Transform.createOrReplace(hb, {
       scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
@@ -198,11 +194,11 @@ export class MonsterMob extends Character {
   }
 
   updateHealthBar(): void {
-    if (this.healthBar != null) {
+    if (this.healthBar) {
       Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
     }
 
-    if (this.label != null) {
+    if (this.label) {
       TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
@@ -237,9 +233,8 @@ export class MonsterMob extends Character {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
+        // const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
-        this.createHealthBar()
-        this.createLabel()
       },
       () => {
         console.log('im out')
@@ -260,7 +255,7 @@ export class MonsterMob extends Character {
       this.engageAttackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
+      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
       () => {
         console.log('trigger Attack')
       },
@@ -279,11 +274,9 @@ export class MonsterMob extends Character {
       this.attackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(6, 2, 6) }],
+      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
       () => {
-        this.createHealthBar()
-        this.handleAttack()
-        this.createLabel()
+        console.log('<<< Attack >>>')
       },
       () => {
         console.log('im out')
@@ -309,7 +302,7 @@ export class MonsterMob extends Character {
 
   dyingAnimation(): void {
     this.isDeadAnimation = true
-    if (this.dieClip != null) {
+    if (this.dieClip) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
     this.create()
@@ -320,7 +313,7 @@ export class MonsterMob extends Character {
   }
 
   killChar(): void {
-    // TODO lootEvent
+    // TODO (first check if used )
 
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
@@ -346,10 +339,10 @@ export class MonsterMob extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    if (this.healthBar != null) {
+    if (this.healthBar) {
       engine.removeEntity(this.healthBar)
     }
-    if (this.label != null) {
+    if (this.label) {
       engine.removeEntity(this.label)
     }
     if (this.rangeAttackTrigger != null) {
@@ -384,28 +377,75 @@ export class MonsterMob extends Character {
       return
     }
 
+    // const random = Math.random() * 1000
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(0)
+    setRefreshTimer(1)
 
-    const defPercent = player.getDefensePercent()
-    let enemyAttack = this.attack * (1 - defPercent)
-    if (monsterModifiers.getAtkBuff() !== 0) {
-      console.log('monster before modified: ' + enemyAttack)
-      enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
-      console.log(
-        'monster after modified: ' +
-          monsterModifiers.getAtkBuff() +
-          ' ' +
-          enemyAttack
+    const monsterDiceResult = this.rollDice()
+    const playerDiceResult = player.rollDice()
+
+    const roundedPlayerDice = Math.floor(playerDiceResult)
+    const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+    if (roundedMonsterDice <= roundedPlayerDice) {
+      // Player attacks
+      let defPercent = this.getDefensePercent()
+
+      if (monsterModifiers.getDefBuff() !== 0) {
+        defPercent = defPercent * monsterModifiers.getDefBuff()
+        console.log('def %', defPercent)
+      }
+
+      const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+
+      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
+      const playerAttack = Math.round(reduceHealthBy)
+
+      this.performAttack(playerAttack, isCriticalAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `${playerAttack}`,
+      //     `MISSED`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(isCriticalAttack, true, reduceHealthBy)
+      )
+    } else {
+      // Monster attacks
+      const defPercent = player.getDefensePercent()
+      let enemyAttack = this.attack * (1 - defPercent)
+
+      if (monsterModifiers.getAtkBuff() !== 0) {
+        console.log('monster before modified: ' + enemyAttack)
+        enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
+        console.log(
+          'monster after modified: ' +
+            monsterModifiers.getAtkBuff() +
+            ' ' +
+            enemyAttack
+        )
+      }
+      // createMissedLabel()
+
+      const roundedAttack = Math.floor(enemyAttack)
+      this.attackPlayer(roundedAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `MISSED`,
+      //     `${roundedAttack}`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(false, false, enemyAttack, this)
       )
     }
-    const roundedAttack = Math.floor(enemyAttack)
-    this.attackPlayer(roundedAttack)
-    monsterModifiers.activeSkills.forEach((skill) =>
-      skill(false, false, enemyAttack, this)
-    )
   }
 
   setupAttackHandler(): void {
@@ -419,48 +459,7 @@ export class MonsterMob extends Character {
         }
       },
       () => {
-        if (this.health <= 0) {
-          this.onDead()
-          return
-        }
-
-        if (refreshtimer > 0) {
-          return
-        }
-        setRefreshTimer(0)
-
-        const monsterDiceResult = this.rollDice()
-        const playerDiceResult = player.rollDice()
-
-        const roundedPlayerDice = Math.floor(playerDiceResult)
-        const roundedMonsterDice = Math.floor(monsterDiceResult)
-
-        if (roundedMonsterDice <= roundedPlayerDice) {
-          // Player attacks
-          let defPercent = this.getDefensePercent()
-
-          if (monsterModifiers.getDefBuff() !== 0) {
-            defPercent = defPercent * monsterModifiers.getDefBuff()
-            console.log('def %', defPercent)
-          }
-
-          const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
-
-          const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
-          const playerAttack = Math.round(reduceHealthBy)
-          this.performAttack(playerAttack, isCriticalAttack)
-
-          // MainHUD.getInstance().updateStats(
-          //     `${roundedPlayerDice}`,
-          //     `${roundedMonsterDice}`,
-          //     `${playerAttack}`,
-          //     `MISSED`
-          // )
-
-          monsterModifiers.activeSkills.forEach((skill) =>
-            skill(isCriticalAttack, true, reduceHealthBy)
-          )
-        }
+        this.handleAttack()
       }
     )
   }
@@ -497,4 +496,4 @@ export class MonsterMob extends Character {
   }
 }
 
-export default MonsterMob
+export default MonsterMobAuto
