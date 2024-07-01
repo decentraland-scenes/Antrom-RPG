@@ -1,5 +1,4 @@
-import { type Sprite } from "../utils/utils"
-
+import { type Sprite } from '../utils/utils'
 
 export const bottomBarSprites: Record<string, Sprite> = {
   background: {
@@ -18,7 +17,7 @@ export const bottomBarSprites: Record<string, Sprite> = {
     w: 100,
     h: 100
   },
-   hpFrame: {
+  hpFrame: {
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
     x: 139,
@@ -26,7 +25,7 @@ export const bottomBarSprites: Record<string, Sprite> = {
     w: 177,
     h: 159
   },
-    xpBackground: {
+  xpBackground: {
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
     x: 0,
@@ -34,7 +33,7 @@ export const bottomBarSprites: Record<string, Sprite> = {
     w: 624,
     h: 10
   },
-   xpFrame: {
+  xpFrame: {
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
     x: 10,
@@ -42,20 +41,33 @@ export const bottomBarSprites: Record<string, Sprite> = {
     w: 625,
     h: 13
   },
+  exampleSkill: {
+    atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 2048 },
+    x: 0,
+    y: 0,
+    w: 256,
+    h: 256
+  }
 }
-
 
 export const ASPECT_RATIO = 0.2
 export const WIDTH_FACTOR = 0.35
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
-export const HP_BACKGROUND_FACTOR = bottomBarSprites.hpBackground.w/bottomBarSprites.background.w
-export const HP_W_FRAME_FACTOR = bottomBarSprites.hpFrame.w/bottomBarSprites.background.w
-export const HP_FRAME_ASPECT_RATIO = bottomBarSprites.hpFrame.h/bottomBarSprites.hpFrame.w
-export const XP_BACKGROUND_FACTOR = bottomBarSprites.xpBackground.w/bottomBarSprites.background.w
-export const XP_BACKGROUND_ASPECT_RATIO = bottomBarSprites.xpBackground.h/bottomBarSprites.xpBackground.w
-export const XP_W_FRAME_FACTOR = bottomBarSprites.xpFrame.w/bottomBarSprites.background.w
-export const XP_FRAME_ASPECT_RATIO = bottomBarSprites.xpFrame.h/bottomBarSprites.xpFrame.w
-
+export const HP_BACKGROUND_FACTOR =
+  bottomBarSprites.hpBackground.w / bottomBarSprites.background.w
+export const HP_W_FRAME_FACTOR =
+  bottomBarSprites.hpFrame.w / bottomBarSprites.background.w
+export const HP_FRAME_ASPECT_RATIO =
+  bottomBarSprites.hpFrame.h / bottomBarSprites.hpFrame.w
+export const XP_BACKGROUND_FACTOR =
+  bottomBarSprites.xpBackground.w / bottomBarSprites.background.w
+export const XP_BACKGROUND_ASPECT_RATIO =
+  bottomBarSprites.xpBackground.h / bottomBarSprites.xpBackground.w
+export const XP_W_FRAME_FACTOR =
+  bottomBarSprites.xpFrame.w / bottomBarSprites.background.w
+export const XP_FRAME_ASPECT_RATIO =
+  bottomBarSprites.xpFrame.h / bottomBarSprites.xpFrame.w
 
 //  "hp fill.png": {
 //             frame: {
