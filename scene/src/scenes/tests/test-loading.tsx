@@ -51,6 +51,5 @@ export class UI {
 export function main(): void {
   // all the initializing logic
   const gameUI = new UI()
-  gameUI.LoadingUI()
   gameUI.startLoading()
 }

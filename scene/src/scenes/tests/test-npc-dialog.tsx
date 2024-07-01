@@ -27,6 +27,7 @@ export class UI {
     this.dialogIndex = this.assignedDialogs.findIndex(
       (dialog) => dialog.id === dialogId
     )
+    console.log(dialogId)
   }
 
   assignDialog(dialogs: Dialog[]): void {
@@ -61,6 +62,5 @@ export class UI {
 export function main(): void {
   // all the initializing logic
   const gameUI = new UI()
-  gameUI.DialogUI()
   gameUI.assignDialog(BONE_TRADER_DIALOGS)
 }

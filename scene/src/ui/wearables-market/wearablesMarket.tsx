@@ -1,12 +1,14 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
-import type { WearableButtonProp, WearablesMarketProps } from './wearablesData'
+import { getUvs } from '../utils/utils'
+import type { WearablesMarketProps } from './wearablesData'
 import {
   HEIGTH_FACTOR,
   WEARABLES_TO_SHOW,
   WIDTH_FACTOR,
   wearablesMarketSprites
 } from './wearablesData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import { WearableButton } from './wearableButton'
 
 function WearablesMarket({
   isVisible,
@@ -24,45 +26,10 @@ function WearablesMarket({
   tradeDown,
   tradeUp,
   selectWearable
-}: WearablesMarketProps): ReactEcs.JSX.Element {
-  function WearableButton({
-    wearable
-  }: WearableButtonProp): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{
-          width: '100%',
-          height: '100%',
-          display: 'flex'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(wearable.sprite),
-          texture: { src: wearable.sprite.atlasSrc }
-        }}
-        onMouseDown={() => {
-          selectWearable({ wearable })
-        }}
-      >
-        <UiEntity
-          uiTransform={{
-            positionType: 'absolute',
-            width: '115%',
-            height: '115%',
-            position: { left: '-7.5%', top: '-7.5%' },
-            display: selectedWearable?.id === wearable.id ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(wearablesMarketSprites.selected_frame),
-            texture: {
-              src: wearablesMarketSprites.selected_frame.atlasSrc
-            }
-          }}
-        />
-      </UiEntity>
-    )
-  }
+}: WearablesMarketProps): ReactEcs.JSX.Element | null {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity
@@ -109,7 +76,11 @@ function WearablesMarket({
                   margin: { right: '10.2%', bottom: '4.5%' }
                 }}
               >
-                <WearableButton wearable={wearable} />
+                <WearableButton
+                  wearable={wearable}
+                  selectedWearable={selectedWearable}
+                  selectWearable={selectWearable}
+                />
               </UiEntity>
             ))}
         </UiEntity>

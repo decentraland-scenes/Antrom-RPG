@@ -152,7 +152,6 @@ export class UI {
 
 export function main(): void {
   // all the initializing logic
-
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gameUI = new UI()
-  gameUI.DungeonUI()
 }

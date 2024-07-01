@@ -1,15 +1,14 @@
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
-import type {
-  MagicalItemButtonProp,
-  MagicalItemsMarketProp
-} from './magicalItemPurchaseData'
+import { getUvs } from '../utils/utils'
+import type { MagicalItemsMarketProp } from './magicalMarketData'
 import {
   HEIGTH_FACTOR,
-  WEARABLES_TO_SHOW,
+  MAGICAL_ITEMS_TO_SHOW,
   WIDTH_FACTOR,
   magicalItemsMarketSprites
-} from './magicalItemPurchaseData'
+} from './magicalMarketData'
+import { MagicalMarketItemButton } from './magicalMarketItemButton'
 
 function MagicalItemsMarket({
   isVisible,
@@ -27,46 +26,9 @@ function MagicalItemsMarket({
   tradeDown,
   tradeUp,
   selectMagicalItem
-}: MagicalItemsMarketProp): ReactEcs.JSX.Element {
-  function MagicalItemButton({
-    magicalItem
-  }: MagicalItemButtonProp): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{
-          width: '100%',
-          height: '100%',
-          display: 'flex'
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(magicalItem.sprite),
-          texture: { src: magicalItem.sprite.atlasSrc }
-        }}
-        onMouseDown={() => {
-          selectMagicalItem({ magicalItem })
-        }}
-      >
-        <UiEntity
-          uiTransform={{
-            positionType: 'absolute',
-            width: '115%',
-            height: '115%',
-            position: { left: '-7.5%', top: '-7.5%' },
-            display:
-              selectedMagicalItem?.id === magicalItem.id ? 'flex' : 'none'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(magicalItemsMarketSprites.selected_frame),
-            texture: {
-              src: magicalItemsMarketSprites.selected_frame.atlasSrc
-            }
-          }}
-        />
-      </UiEntity>
-    )
-  }
+}: MagicalItemsMarketProp): ReactEcs.JSX.Element | null {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity
@@ -92,18 +54,20 @@ function MagicalItemsMarket({
           texture: { src: backgroundSprite.atlasSrc }
         }}
       >
-        {' '}
         <UiEntity
           uiTransform={{
             width: '55%',
             height: 'auto',
             flexDirection: 'row',
-            position: { top: '14.5%', left: '11%' },
+            position: { top: '16%', left: '12.25%' },
             flexWrap: 'wrap'
           }}
         >
           {magicalItemsToShow
-            .slice(scrollPosition * (WEARABLES_TO_SHOW - 1), WEARABLES_TO_SHOW)
+            .slice(
+              scrollPosition * (MAGICAL_ITEMS_TO_SHOW - 1),
+              MAGICAL_ITEMS_TO_SHOW
+            )
             .map((magicalItem, index) => (
               <UiEntity
                 key={index}
@@ -113,7 +77,11 @@ function MagicalItemsMarket({
                   margin: { right: '10.2%', bottom: '4.5%' }
                 }}
               >
-                <MagicalItemButton magicalItem={magicalItem} />
+                <MagicalMarketItemButton
+                  magicalItem={magicalItem}
+                  selectedMagicalItem={selectedMagicalItem}
+                  selectMagicalItem={selectMagicalItem}
+                />
               </UiEntity>
             ))}
         </UiEntity>
@@ -169,7 +137,7 @@ function MagicalItemsMarket({
         />
         <UiEntity
           uiTransform={{
-            width: '32%',
+            width: '30.75%',
             height: '100%',
             positionType: 'absolute',
             flexDirection: 'column',

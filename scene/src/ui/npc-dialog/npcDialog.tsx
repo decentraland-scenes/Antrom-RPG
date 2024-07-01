@@ -1,18 +1,14 @@
-import { Color4 } from '@dcl/sdk/math'
-import type { Dialog, DialogButton } from './dialogsData'
-import { npcDialogsSprites } from './dialogsData'
+import type { Dialog } from './dialogsData'
+import {
+  DIALOG_HEIGHT_FACTOR,
+  DIALOG_WIDTH_FACTOR,
+  npcDialogsSprites
+} from './dialogsData'
 
-import ReactEcs, { Button, UiEntity } from '@dcl/sdk/react-ecs'
-import { canvasInfo, getUvs } from '../utils/utils'
-
-const DIALOG_ASPECT_RATIO = 0.3
-
-const DIALOG_WIDTH_FACTOR = 0.4
-const DIALOG_HEIGHT_FACTOR = DIALOG_WIDTH_FACTOR * DIALOG_ASPECT_RATIO
-
-const BUTTON_ASPECT_RATIO = 0.26
-const BUTTON_WIDTH_FACTOR = DIALOG_WIDTH_FACTOR * 0.2
-const BUTTON_HEIGHT_FACTOR = BUTTON_WIDTH_FACTOR * BUTTON_ASPECT_RATIO
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import { getUvs } from '../utils/utils'
+import { AnswerButton } from './answerButton'
 
 type NpcDialogProps = {
   isVisible: boolean
@@ -22,69 +18,16 @@ type NpcDialogProps = {
   goToDialog: (dialog: string) => void
 }
 
-type AnswerButton = {
-  answer: DialogButton
-}
-
 function npcDialog({
   isVisible,
   dialogIndex,
   assignedDialogs,
   nextMessage,
   goToDialog
-}: NpcDialogProps): ReactEcs.JSX.Element {
-  function AnswerButton({ answer }: AnswerButton): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{
-          width: canvasInfo.width * BUTTON_WIDTH_FACTOR,
-          height: canvasInfo.width * BUTTON_HEIGHT_FACTOR
-        }}
-      >
-        <Button
-          value={answer.label}
-          disabled={answer.disabled ?? false}
-          variant="secondary"
-          uiTransform={{
-            width: '100%',
-            height: '100%'
-          }}
-          color={answer.disabled === true ? Color4.Gray() : Color4.White()}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs:
-              answer.disabled === true
-                ? getUvs(npcDialogsSprites.available_button)
-                : getUvs(npcDialogsSprites.unavailable_button),
-            texture: { src: npcDialogsSprites.available_button.atlasSrc }
-          }}
-          onMouseDown={() => {
-            goToDialog(answer.goToDialog)
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            width: canvasInfo.width * BUTTON_HEIGHT_FACTOR * 0.7,
-            height: canvasInfo.width * BUTTON_HEIGHT_FACTOR * 0.7,
-            display: answer.action !== undefined ? 'flex' : 'none',
-            positionType: 'absolute',
-            position: {
-              top: canvasInfo.width * BUTTON_HEIGHT_FACTOR * 0.15,
-              left: canvasInfo.width * BUTTON_HEIGHT_FACTOR * 0.175
-            }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs:
-              answer.action === 'primary'
-                ? getUvs(npcDialogsSprites.e_icon_avaialable)
-                : getUvs(npcDialogsSprites.f_icon_avaialable),
-            texture: { src: npcDialogsSprites.e_icon_avaialable.atlasSrc }
-          }}
-        />
-      </UiEntity>
-    )
-  }
+}: NpcDialogProps): ReactEcs.JSX.Element | null {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+
+  if (canvasInfo === null) return null
 
   return (
     <UiEntity
@@ -139,9 +82,9 @@ function npcDialog({
             }
           }}
         >
-          {assignedDialogs[dialogIndex].buttons.map((button, index) => (
+          {assignedDialogs[dialogIndex].buttons.map((answer, index) => (
             <UiEntity key={index}>
-              <AnswerButton answer={button} />
+              <AnswerButton answer={answer} goToDialog={goToDialog} />
             </UiEntity>
           ))}
         </UiEntity>

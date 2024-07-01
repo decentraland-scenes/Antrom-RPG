@@ -28,6 +28,8 @@ export class UI {
     this.isProgressVisible = false
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.QuestLogUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
+
+    engine.addSystem(this.showingProgressSystem.bind(this))
   }
 
   changeVisibility(): void {
@@ -50,7 +52,6 @@ export class UI {
   }
 
   showingProgressSystem(dt: number): void {
-    console.log('The system is still active')
     if (this.isProgressVisible) {
       if (this.timer - dt <= 0) {
         this.isProgressVisible = false
@@ -58,19 +59,12 @@ export class UI {
         this.timer = this.timer - dt
         console.log(this.timer)
       }
-    } else {
-      this.hideProgress()
     }
   }
 
   showProgress(): void {
     this.timer = TIME_SHOW_PROGRESS
     this.isProgressVisible = true
-    engine.addSystem(this.showingProgressSystem.bind(this))
-  }
-
-  hideProgress(): void {
-    engine.removeSystem(this.showingProgressSystem.bind(this))
   }
 
   QuestLogUI(): ReactEcs.JSX.Element {
@@ -95,6 +89,6 @@ export class UI {
 
 export function main(): void {
   // all the initializing logic
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gameUI = new UI()
-  gameUI.QuestLogUI()
 }

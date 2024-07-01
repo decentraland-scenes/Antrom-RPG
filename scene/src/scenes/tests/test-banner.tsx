@@ -25,10 +25,10 @@ export class UI {
 }
 
 export function main(): void {
-  // Seba
   // // all the initializing logic
-  // const gameUI = new UI()
-  // gameUI.bannerUI()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const gameUI = new UI()
+
   // Giorgio
   // const game = new GameController()
   // game.start()
