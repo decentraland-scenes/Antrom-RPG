@@ -1,36 +1,22 @@
 import { Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterMobAuto from '../monsterMobAuto'
+import MonsterMob from '../MonsterMob'
+import { Player } from '../../player/player'
+import { LEVEL_TYPES } from '../types'
+import { ITEM_TYPES } from '../playerInventoryMaps'
 
-// const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
-// const DEFAULT_LEVEL = 5
-// const DEFAULT_HP = 200
-// const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number): number {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-export default class EasyCaveDungeonBoss extends MonsterMobAuto {
+export default class EasyCaveDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
   minLuck = 10
 
   constructor(difficulty: number) {
-    super(
-      45,
-      DEFAULT_XP,
-      // Player.getInstance().getLevel() * difficulty,
-      2500
-    )
+    super(45, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 2500)
 
     this.initMonster()
-
-    // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
     this.topOffSet = 3
     // # in %
@@ -38,11 +24,6 @@ export default class EasyCaveDungeonBoss extends MonsterMobAuto {
   }
 
   onDropXp(): void {
-    // this.create()
-
-    // setTimeout(7 * 1000, () => {
-    // const xp = getRandomIntRange(this.xp, this.xp + 10)
-    // const randomNumber = Math.random()
     const random = Math.random() * 1000
 
     switch (true) {
@@ -226,40 +207,31 @@ export default class EasyCaveDungeonBoss extends MonsterMobAuto {
     }
     // })
 
-    // const exp = [
-    //   {
-    //     type: LEVEL_TYPES.ENEMY,
-    //     value: 1
-    //   },
-    //   {
-    //     type: LEVEL_TYPES.PLAYER,
-    //     value: 120
-    //   }
-    // ]
-    // const loot = [
-    //   {
-    //     type: ITEM_TYPES.BONE,
-    //     value: 100
-    //   }
-    // ]
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const exp = [
+      {
+        type: LEVEL_TYPES.ENEMY,
+        value: 1
+      },
+      {
+        type: LEVEL_TYPES.PLAYER,
+        value: 120
+      }
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const loot = [
+      {
+        type: ITEM_TYPES.BONE,
+        value: 100
+      }
+    ]
+    // TODO UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-
+    // TODO async function
     // backToAntromFromCave("Easy")
-
-    // //setTimeout(17 * 1000, () => {
-    // cleanupScene()
-    // loader.showLoaderyouwinscreen(10000)
-    // buildantrom2World()
-    // setTimeout(11 * 1000, () => {
-    //     movePlayerTo({ x: -38.34, y: 10.43, z: -39.75 })
-    // })
-    // player.health = player.maxHealth * 1
-    // player.updateHealthBar()
-    // //})
   }
 
   onDropLoot(): void {}
@@ -271,12 +243,8 @@ export default class EasyCaveDungeonBoss extends MonsterMobAuto {
   create(): void {}
 
   loadTransformation(): void {
-    const initialPosition = Vector3.create(
-      getRandomIntRange(1, 31),
-      0,
-      getRandomIntRange(0, 24)
-    )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialPosition = Vector3.create(-15.5, 2.45, -4.6)
+    const initialRotation = Quaternion.fromEulerDegrees(0, 90, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation

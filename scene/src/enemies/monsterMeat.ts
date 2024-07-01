@@ -482,6 +482,7 @@ export class MonsterMeat extends Character {
     this.playAttack()
 
     player.impactAnimation?.()
+    // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
 
     // this.attackSound.playOnce()
