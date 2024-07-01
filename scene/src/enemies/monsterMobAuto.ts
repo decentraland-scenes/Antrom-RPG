@@ -21,8 +21,9 @@ import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { MonsterAttack } from './monsterAttack'
+import { applyDefSkillEffectToEnemyLocation } from '../effects/enemyDeffSkillActivation'
 
-export class MonsterMeat extends Character {
+export class MonsterMobAuto extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
@@ -53,7 +54,7 @@ export class MonsterMeat extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterMeat.globalHasSkill = value
+    MonsterMobAuto.globalHasSkill = value
   }
 
   constructor(
@@ -83,7 +84,7 @@ export class MonsterMeat extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterMeat.setGlobalHasSkill(true)
+    MonsterMobAuto.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
@@ -233,7 +234,6 @@ export class MonsterMeat extends Character {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
-        // const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
       },
       () => {
@@ -325,7 +325,6 @@ export class MonsterMeat extends Character {
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
       // engine.removeEntity(this.entity)
-      console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
   }
@@ -385,7 +384,7 @@ export class MonsterMeat extends Character {
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()
-
+    const random = Math.random() * 1000
     const roundedPlayerDice = Math.floor(playerDiceResult)
     const roundedMonsterDice = Math.floor(monsterDiceResult)
 
@@ -401,8 +400,23 @@ export class MonsterMeat extends Character {
       const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
 
       const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
-      const playerAttack = Math.round(reduceHealthBy)
+      let playerAttack = Math.round(reduceHealthBy)
+      switch (true) {
+        case random < 200: {
+          // 30% chance
+          // TODO UI
+          // bossDefense()
 
+          applyDefSkillEffectToEnemyLocation(
+            Transform.getMutable(this.entity).position,
+            4000
+          )
+          // reduce incoming attack by 50%
+          playerAttack = playerAttack / 2
+
+          break
+        }
+      }
       this.performAttack(playerAttack, isCriticalAttack)
 
       // MainHUD.getInstance().updateStats(
@@ -482,7 +496,6 @@ export class MonsterMeat extends Character {
     this.playAttack()
 
     player.impactAnimation?.()
-    // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
 
     // this.attackSound.playOnce()
@@ -497,4 +510,4 @@ export class MonsterMeat extends Character {
   }
 }
 
-export default MonsterMeat
+export default MonsterMobAuto

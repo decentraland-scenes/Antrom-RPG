@@ -1,6 +1,6 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMeat from './monsterMeat'
-import { GltfContainer, Transform } from '@dcl/sdk/ecs'
+import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { getRandomIntRange } from './../utils/getRandomInt'
 
 const DEFAULT_ATTACK = 0
@@ -17,6 +17,7 @@ export default class Chicken extends MonsterMeat {
   constructor() {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP, 1, 4)
     this.initMonster()
+    this.loadTransformation()
     this.shape = this.shapeFile
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
     this.isPrey = true
@@ -72,14 +73,23 @@ export default class Chicken extends MonsterMeat {
 
   loadTransformation(): void {
     const initialPosition = Vector3.create(
-      getRandomIntRange(1, 31),
+      getRandomIntRange(-24, -4),
       0,
-      getRandomIntRange(0, 24)
+      getRandomIntRange(10, -12)
     )
     const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation
     })
+  }
+
+  removeEntity(): void {
+    engine.removeEntity(this.rangeAttackTrigger)
+    engine.removeEntity(this.engageAttackTrigger)
+    engine.removeEntity(this.attackTrigger)
+    engine.removeEntity(this.healthBar)
+    engine.removeEntity(this.label)
+    engine.removeEntity(this.entity)
   }
 }
