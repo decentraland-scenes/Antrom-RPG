@@ -8,7 +8,6 @@ export class UI {
   public levelXp: number
   public level: number
 
-
   constructor() {
     this.actualHpPercent = 75.6
     this.actualXp = 250
@@ -26,7 +25,8 @@ export class UI {
         actualHpPercent={this.actualHpPercent}
         levelXp={this.levelXp}
         actualXp={this.actualXp}
-        level={this.level} />
+        level={this.level}
+      />
     )
   }
 }

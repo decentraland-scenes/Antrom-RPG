@@ -13,8 +13,11 @@ import {
 } from './bottomBarData'
 import { BottomBarSkillSlot } from './bottomBarSkillSlot'
 
-
-const exampleSkill = { cooldown: 5, name: 'Example Skill', sprite: bottomBarSprites.exampleSkill }
+const exampleSkill = {
+  cooldown: 5,
+  name: 'Example Skill',
+  sprite: bottomBarSprites.exampleSkill
+}
 
 type BottomBarProps = {
   isVisible: boolean
@@ -22,7 +25,6 @@ type BottomBarProps = {
   levelXp: number
   actualHpPercent: number
   level: number
-
 }
 
 function BottomBar({
@@ -30,8 +32,7 @@ function BottomBar({
   actualXp,
   levelXp,
   actualHpPercent,
-  level,
-
+  level
 }: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -72,7 +73,6 @@ function BottomBar({
           texture: { src: bottomBarSprites.background.atlasSrc }
         }}
       >
-       
         <UiEntity
           uiTransform={{
             width: canvasInfo.width * WIDTH_FACTOR * XP_W_FRAME_FACTOR,
@@ -115,16 +115,15 @@ function BottomBar({
               texture: { src: bottomBarSprites.xpFrame.atlasSrc }
             }}
           />
-           <UiEntity
-             uiTransform={{
+          <UiEntity
+            uiTransform={{
               width: '100%',
               height: '100%',
               positionType: 'absolute',
-              position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.01 },
-
+              position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.01 }
             }}
             uiText={{
-              value: actualXp.toString()+'/'+levelXp.toString(),
+              value: actualXp.toString() + '/' + levelXp.toString(),
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1
             }}
           />
@@ -177,7 +176,7 @@ function BottomBar({
               texture: { src: bottomBarSprites.hpFrame.atlasSrc }
             }}
           />
-           <UiEntity
+          <UiEntity
             uiTransform={{
               width: canvasInfo.width * WIDTH_FACTOR * HP_W_FRAME_FACTOR,
               height:
@@ -189,36 +188,41 @@ function BottomBar({
               position: { top: -canvasInfo.width * HEIGTH_FACTOR * 0.28 }
             }}
             uiText={{
-              value: actualHpPercent.toString()+'%',
+              value: actualHpPercent.toString() + '%',
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.15
             }}
           />
         </UiEntity>
         <UiEntity
-             uiTransform={{
-              width: canvasInfo.width * WIDTH_FACTOR * 0.095,
-              height: canvasInfo.width * WIDTH_FACTOR* 0.095,
-              positionType: 'absolute',
-              position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155, left:canvasInfo.width * WIDTH_FACTOR * .051 },
+          uiTransform={{
+            width: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            height: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            positionType: 'absolute',
+            position: {
+              bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155,
+              left: canvasInfo.width * WIDTH_FACTOR * 0.051
+            }
+          }}
+        >
+          <BottomBarSkillSlot skill={exampleSkill} label={'1'} />
+        </UiEntity>
 
-            }}>
-          <BottomBarSkillSlot skill={exampleSkill} label={'1'}/>
-            </UiEntity>
-        
         <UiEntity
-             uiTransform={{
-              width: '10%',
-              height: '10%',
-              positionType: 'absolute',
-              position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.42, left:canvasInfo.width * WIDTH_FACTOR * .355 },
-
-            }}
-            uiText={{
-              value: level.toString(),
-              fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1,
-              textAlign:'middle-center'
-            }}
-          />
+          uiTransform={{
+            width: '10%',
+            height: '10%',
+            positionType: 'absolute',
+            position: {
+              bottom: canvasInfo.width * HEIGTH_FACTOR * 0.42,
+              left: canvasInfo.width * WIDTH_FACTOR * 0.355
+            }
+          }}
+          uiText={{
+            value: level.toString(),
+            fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1,
+            textAlign: 'middle-center'
+          }}
+        />
       </UiEntity>
     </UiEntity>
   )

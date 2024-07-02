@@ -31,9 +31,8 @@ export class UI {
   showBanner(): void {
     this.isBannerVisible = true
     this.timer = 2
-    engine.addSystem(this.showBannerSystem.bind(this),0,'showBannerSystem')
+    engine.addSystem(this.showBannerSystem.bind(this), 0, 'showBannerSystem')
   }
-
 
   bannerUI(): ReactEcs.JSX.Element {
     return (
