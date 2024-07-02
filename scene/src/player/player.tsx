@@ -9,6 +9,8 @@ import { getRandomIntRange } from '../utils/getRandomInt'
 import { WearablesConfig } from './wearables-config'
 import { PlayerInventory } from '../inventory/playerInventory'
 import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
+import BottomBar from '../ui/bottom-bar/bottomBar'
+import ReactEcs from '@dcl/sdk/react-ecs'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -420,5 +422,18 @@ export class Player extends Character {
       (isCriticalAttack ? 1 + this.critDamageBuff / 100 : 1)
     )
   }
+
+  PlayerUI(): ReactEcs.JSX.Element {
+    return (      
+      <BottomBar
+        isVisible={true}
+        actualHpPercent={100.0 * this.health / this.maxHealth}
+        levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
+        actualXp={this.xp}
+        level={this.level}
+      />
+    )
+  }
 }
+
 export const player = Player.getInstance()
