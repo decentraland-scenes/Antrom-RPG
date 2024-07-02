@@ -1,511 +1,500 @@
-// import { Vector3 } from 'three'
-// import { MonsterAttackRanged } from './monsterAttackRanged'
-
-// // WORK IN PROGRESS
-
-// const sceneMessageBus = new MessageBus()
-
-// class MonsterMob extends Character {
-//   static globalHasSkill: boolean = true
-//   monsterShape: string = ''
-//   chickenShape: string = ''
-//   shapeFile?: string
-//   shape?: string = ''
-//   audioFile?: string
-//   // sound?: AudioSource
-//   // dyingSound?: AudioSource
-//   idleClip: string = 'idle'
-//   attackClip: string = 'attack'
-//   walkClip: string = 'walk'
-//   impactClip: string = 'impact'
-//   dieClip: string = 'die'
-//   engageDistance: number
-//   fightBackAnnouncement?: string
-//   isDeadAnimation: boolean
-//   isDead: boolean
-//   hoverText?: string
-//   // attackSound?: AudioSource
-//   // healthBar: Entity
-//   // playerAttackUI: ui.CornerLabel
-//   label?: any
-//   topOffSet?: number
-//   initialPosition?: Vector3
-//   attackSystemRanged!: MonsterAttackRanged
-//   isPrey: boolean = false
-//   dropRate: number = -1
-//   static setGlobalHasSkill(value: boolean) {
-//     // Modify some static property or perform some global logic here.
-//     MonsterMob.globalHasSkill = value
-//   }
-
-//   constructor(
-//     attack: number,
-//     xp: number,
-//     level: number,
-//     health: number = 1,
-//     baseDefense = 0.01,
-//     engageDistance: number = 5,
-//     topOffset: number = 2.5
-//   ) {
-//     super(attack, xp, level, health, baseDefense)
-//     this.animator = new Animator()
-//     this.isDead = false
-//     this.isDeadAnimation = false
-//     this.engageDistance = engageDistance
-//     this.loadTransformation()
-
-//     // set-up animations for monsters
-//     this.walkClip = new AnimationState('walk')
-//     this.animator.addClip(this.walkClip)
-//     this.impactClip = new AnimationState('impact', { looping: false })
-//     this.animator.addClip(this.impactClip)
-//     this.attackClip = new AnimationState('attack', {
-//       looping: false,
-//       layer: 2
-//     })
-//     this.attackClip.onChange((e) => {
-//       // if(e.){}
-//       // log("logging e", e)
-//     })
-//     this.animator.addClip(this.attackClip)
-//     this.dieClip = new AnimationState('die', { looping: false })
-//     this.animator.addClip(this.dieClip)
-
-//     // monster sounds
-//     // this.dyingSound = enemyDyingAudioSource
-//     // this.addComponentOrReplace(this.dyingSound)
-//     //
-
-//     this.attackSound = enemyAttackAudioSource
-//     // this.addComponentOrReplace(this.attackSound)
-//     //
-//     // let monDef = enemyDefAudioSource
-//     // this.addComponentOrReplace(monDef)
-//     //
-//     // let monHey = enemyHeyAudioSource
-//     // this.addComponentOrReplace(monHey)
-//     MonsterMob.setGlobalHasSkill(true)
-//   }
-
-//   initMonster() {
-//     if (!this.shape && this.shapeFile) {
-//       this.shape = new GLTFShape(this.shapeFile)
-//     }
-//     if (this.audioFile) {
-//       const clip = new AudioClip(this.audioFile)
-//       this.sound = new AudioSource(clip)
-//       this.addComponentOrReplace(this.sound)
-//     }
-//     this.addComponent(this.shape)
-//     this.addComponent(this.animator)
-
-//     // implement the rest of animations on individual monster class
-//     this.idleClip = new AnimationState('idle', {
-//       looping: true,
-//       layer: 0
-//     })
-//     this.animator.addClip(this.idleClip)
-
-//     // Default Animation
-//     this.idleClip.play()
-
-//     this.setupRangedAttackTriggerBox(new utils.TriggerSphereShape(800))
-//     this.setupEngageTriggerBox(new utils.TriggerSphereShape(12))
-//     this.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
-
-//     this.attackSystem = new MonsterAttack(this, Camera.instance, {
-//       moveSpeed: 2.5,
-//       engageDistance: this.engageDistance
-//     })
-
-//     this.attackSystemRanged = new MonsterAttackRanged(this, Camera.instance, {
-//       moveSpeed: 2,
-//       engageDistance: this.engageDistance
-//     })
-
-//     this.setupAttackHandler()
-//   }
-
-//   createLabel() {
-//     this.label = addLabel(`${this.health}`, this, true, Color3.White(), 1, {
-//       position: new Vector3(0, this.topOffSet, -0.1)
-//     })
-//   }
-
-//   createHealthBar() {
-//     const hb = new Entity()
-//     hb.addComponentOrReplace(
-//       new Transform({
-//         scale: new Vector3(1 * this.getHealthScaled(), 0.1, 0.1),
-//         position: new Vector3(0, this.topOffSet, 0)
-//       })
-//     )
-//     const myMaterial = new Material()
-//     myMaterial.albedoColor = Color4.FromColor3(Color3.Red(), 0.5)
-//     myMaterial.roughness = 1
-//     myMaterial.specularIntensity = 0
-//     myMaterial.metallic = 0
-//     myMaterial.emissiveColor = Color3.Red()
-//     myMaterial.emissiveIntensity = 0.8
-
-//     hb.addComponentOrReplace(myMaterial)
-//     hb.addComponentOrReplace(new BoxShape())
-
-//     hb.setParent(this)
-//     this.healthBar = hb
-//   }
-
-//   refillHealthBar(percentage = 1) {
-//     this.health += this.maxHealth * percentage
-//     if (this.health > this.maxHealth) {
-//       this.health = this.maxHealth
-//     }
-//     this.updateHealthBar()
-//   }
-
-//   takeDamage(damage) {
-//     this.health -= damage
-//     if (this.health < 0) {
-//       this.health = 0
-//     }
-//     this.updateHealthBar()
-//   }
-
-//   updateHealthBar() {
-//     if (this.healthBar) {
-//       this.healthBar.getComponent(Transform).scale.x =
-//         1 * this.getHealthScaled()
-//     }
-
-//     if (this.label) {
-//       this.label.getComponent(TextShape).value = `${this.health}`
-//     }
-//   }
-
-//   onDropLoot() {
-//     // function needs to be implemented per individual monster
-//     throw new Error('onDrop is required to be implemented for this monster')
-//   }
-
-//   onDropXp() {
-//     // function needs to be implemented per individual monster
-//     throw new Error('onDropXp is required to be implemented for this monster')
-//   }
-
-//   setupEngageTriggerBox(triggerShape: TriggerBoxShape | TriggerSphereShape) {
-//     const engageEntity = new Entity()
-//     engageEntity.setParent(this)
-
-//     engageEntity.addComponentOrReplace(
-//       new utils.TriggerComponent(triggerShape, {
-//         onCameraEnter: () => {
-//           if (this.isDeadAnimation) return
-//           engine.addSystem(this.attackSystem)
-//         },
-//         onCameraExit: () => {
-//           if (this.isDeadAnimation) return
-//           engine.removeSystem(this.attackSystem)
-
-//           this.playIdle()
-//         }
-//       })
-//     )
-//   }
-
-//   setupRangedAttackTriggerBox(
-//     triggerShape: TriggerBoxShape | TriggerSphereShape
-//   ) {
-//     const engageEntity = new Entity()
-//     engageEntity.setParent(this)
-
-//     engageEntity.addComponentOrReplace(
-//       new utils.TriggerComponent(triggerShape, {
-//         onCameraEnter: () => {
-//           if (this.isDeadAnimation) return
-//           engine.addSystem(this.attackSystemRanged)
-//         },
-//         onCameraExit: () => {
-//           if (this.isDeadAnimation) return
-//           engine.removeSystem(this.attackSystemRanged)
-
-//           this.playIdle()
-//         }
-//       })
-//     )
-//   }
-
-//   stopRun() {
-//     this.walkClip?.stop()
-//     this.playIdle(false)
-//   }
-
-//   setupAttackTriggerBox(triggerShape: TriggerBoxShape | TriggerSphereShape) {
-//     this.addComponentOrReplace(
-//       new utils.TriggerComponent(triggerShape, {
-//         onCameraEnter: () => {
-//           if (this.isDeadAnimation) return
-//           this.createHealthBar()
-//           this.handleAttack()
-//           this.createLabel()
-
-//           this.addComponentOrReplace(new CurrentlyAttackingMonster())
-
-//           // this.addComponentOrReplace(interval)
-//         },
-//         onCameraExit: () => {
-//           if (this.healthBar) engine.removeEntity(this.healthBar)
-
-//           if (this.label) engine.removeEntity(this.label)
-
-//           this.removeComponent(CurrentlyAttackingMonster)
-//         }
-//       })
-//     )
-//   }
-
-//   setDistance(distance: number) {
-//     const pointerDownComponent = this.getComponent(OnPointerDown)
-//     if (pointerDownComponent) {
-//       pointerDownComponent.distance = distance
-//     }
-//   }
-
-//   create() {
-//     // function needs to be implemented per individual monster
-//     throw new Error('create is required to be implemented for this monster')
-//   }
-
-//   loadTransformation() {
-//     // function needs to be implemented per individual monster
-//     throw new Error(
-//       'loadTransformation is required to be implemented for this monster'
-//     )
-//   }
-
-//   dyingAnimation() {
-//     this.isDeadAnimation = true
-
-//     if (this.dyingSound) {
-//       this.dyingSound.playOnce()
-//     }
-//     if (this.dieClip) {
-//       this.dieClip.play()
-//     }
-//     this.create()
-//   }
-
-//   callDyingAnimation() {
-//     if (!this.isDeadAnimation) this.dyingAnimation()
-//   }
-
-//   killChar() {
-//     lootEventManager.fireEvent(
-//       new LootDropEvent(
-//         this.getComponent(Transform).position,
-//         () => {
-//           this.onDropLoot()
-//         },
-//         this.dropRate
-//       )
-//     )
-
-//     setTimeout(5 * 1000, () => {
-//       engine.removeEntity(this)
-//       this.isDead = true
-//     })
-//   }
-
-//   isDeadOnce() {
-//     if (!this.isDead) this.killChar()
-//   }
-
-//   onDead() {
-//     this.onDropXp()
-
-//     this.callDyingAnimation()
-//     engine.removeSystem(this.attackSystem)
-//     engine.removeSystem(this.attackSystemRanged)
-
-//     if (this.healthBar) {
-//       engine.removeEntity(this.healthBar)
-//     }
-//     if (this.label) {
-//       engine.removeEntity(this.label)
-//     }
-
-//     this.removeComponent(OnPointerDown)
-//     this.removeComponent(CurrentlyAttackingMonster)
-
-//     setTimeout(1 * 1000, () => {
-//       this.isDeadOnce()
-//     })
-//   }
-
-//   performAttack(damage: number, isCriticalAttack: boolean) {
-//     log('damaging monster: ' + damage)
-//     this.reduceHealth(damage)
-//     this.updateHealthBar()
-
-//     if (isCriticalAttack) {
-//       // ui.displayAnnouncement(`Critical Attack!`)
-//       showCriticalIcon()
-//     }
-
-//     if (this.attackClip?.playing) {
-//       this.attackClip.stop()
-//     }
-//     if (this.impactClip) {
-//       this.impactClip.play()
-//     }
-
-//     applyEnemyAttackedEffectToLocation(this.getComponent(Transform).position)
-
-//     player.attackAnimation?.()
-
-//     if (this.health <= 0) {
-//       this.onDead()
-//     }
-//   }
-
-//   handleAttack() {
-//     if (this.health <= 0) {
-//       this.onDead()
-//       return
-//     }
-
-//     if (refreshtimer > 0) {
-//       return
-//     }
-//     setRefreshTimer(1)
-
-//     // Monster attacks
-
-//     const defPercent = player.getDefensePercent()
-//     let enemyAttack = this.attack * (1 - defPercent)
-
-//     if (monsterModifiers.getAtkBuff() != 0) {
-//       log('monster before modified: ' + enemyAttack)
-//       enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
-//       log(
-//         'monster after modified: ' +
-//           monsterModifiers.getAtkBuff() +
-//           ' ' +
-//           enemyAttack
-//       )
-//     }
-
-//     const roundedAttack = Math.floor(enemyAttack)
-//     this.attackPlayer(enemyAttack)
-
-//     // MainHUD.getInstance().updateStats(
-//     //     `NONE`,
-//     //     `NONE`,
-//     //     `MISSED`,
-//     //     `${roundedAttack}`
-//     // )
-
-//     monsterModifiers.activeSkills.forEach((skill) =>
-//       skill(false, false, enemyAttack, this)
-//     )
-//   }
-
-//   setupAttackHandler() {
-//     this.addComponent(
-//       new OnPointerDown(
-//         (e) => {
-//           // this.handleAttack()
-//           if (this.health <= 0) {
-//             this.onDead()
-//             return
-//           }
-
-//           if (refreshtimer > 0) {
-//             return
-//           }
-//           setRefreshTimer(0.3)
-
-//           sceneMessageBus.emit('sayHi', () => {
-//             ui.displayAnnouncement('hi')
-//           })
-
-//           const monsterDiceResult = this.rollDice()
-//           const playerDiceResult = player.rollDice()
-
-//           const roundedPlayerDice = Math.floor(playerDiceResult)
-//           const roundedMonsterDice = Math.floor(monsterDiceResult)
-
-//           if (monsterDiceResult <= playerDiceResult) {
-//             // Player attacks
-//             let defPercent = this.getDefensePercent()
-
-//             if (monsterModifiers.getDefBuff() != 0) {
-//               defPercent = defPercent * monsterModifiers.getDefBuff()
-//               log('def %', defPercent)
-//             }
-
-//             const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
-
-//             const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
-//             const playerAttack = Math.round(reduceHealthBy)
-//             this.performAttack(playerAttack, isCriticalAttack)
-
-//             MainHUD.getInstance().updateStats(
-//               `${roundedPlayerDice}`,
-//               `${roundedMonsterDice}`,
-//               `${playerAttack}`,
-//               `MISSED`
-//             )
-
-//             monsterModifiers.activeSkills.forEach((skill) =>
-//               skill(isCriticalAttack, true, reduceHealthBy)
-//             )
-//           } else {
-//             // ui.displayAnnouncement("missed attack")
-//             createMissedLabel()
-//           }
-//         },
-//         {
-//           hoverText: this.hoverText || 'Attack Enemy!',
-//           distance: 6.5
-//         }
-//       )
-//     )
-//   }
-
-//   // Play running animation
-//   run() {
-//     this.getComponent(Animator).getClip('idle').stop()
-//     this.getComponent(Animator).getClip('attack').stop()
-//     this.getComponent(Animator).getClip('walk').play()
-//   }
-
-//   // Play idle animation
-//   playIdle(reset?: boolean) {
-//     this.getComponent(Animator).getClip('attack').stop()
-//     this.getComponent(Animator).getClip('idle').play(reset)
-//     // this.getComponent(Animator).getClip("run").stop()
-//   }
-
-//   playAttack() {
-//     this.getComponent(Animator).getClip('idle').stop()
-//     this.getComponent(Animator).getClip('run').stop()
-//     this.getComponent(Animator).getClip('attack').play()
-//   }
-
-//   attackPlayer(enemyAttack: number) {
-//     player.reduceHealth(enemyAttack)
-
-//     this.playAttack()
-
-//     // player.impactAnimation?.()
-//     applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-//     // this.attackSound.playOnce()
-
-//     setTimeout(1 * 1000, () => {
-//       checkHealth()
-//     })
-//   }
-// }
-
-// export default MonsterMob
+import {
+  Animator,
+  GltfContainer,
+  Transform,
+  MeshRenderer,
+  engine,
+  VisibilityComponent,
+  pointerEventsSystem,
+  InputAction,
+  type Entity,
+  Material,
+  TextShape
+} from '@dcl/sdk/ecs'
+import { Character } from './character'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
+import * as utils from '@dcl-sdk/utils'
+import { MonsterAttackRanged } from './monsterAttackRanged'
+import { player } from '../player/player'
+import MonsterMeat from './monsterMeat'
+import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
+import { monsterModifiers } from './skillEffects'
+import { getRandomInt } from '../utils/getRandomInt'
+import { MonsterAttack } from './monsterAttack'
+
+export class MonsterMob extends Character {
+  static globalHasSkill: boolean = true
+  monsterShape?: string
+  chickenShape?: { src: '' }
+  shapeFile?: string
+  shape: string = ''
+  audioFile?: string
+  healthBar!: Entity
+  idleClip: string = 'idle'
+  attackClip: string = 'attack'
+  walkClip: string = 'walk'
+  impactClip: string = 'impact'
+  dieClip: string = 'die'
+  engageDistance: number
+  fightBackAnnouncement?: string
+  isDeadAnimation: boolean
+  isDead: boolean
+  // attackSound?: AudioSource
+  // playerAttackUI: ui.CornerLabel
+  rangeAttackTrigger!: Entity
+  engageAttackTrigger!: Entity
+  attackTrigger!: Entity
+  label?: any
+  topOffSet?: number
+  initialPosition?: Vector3
+  attackSystemRanged!: MonsterAttackRanged
+  attackSystem!: MonsterAttack
+  isPrey: boolean = false
+  dropRate: number = -1
+  static setGlobalHasSkill(value: boolean): void {
+    // Modify some static property or perform some global logic here.
+    MonsterMeat.globalHasSkill = value
+  }
+
+  constructor(
+    attack: number,
+    xp: number,
+    level: number,
+    health: number = 1,
+    baseDefense = 0.01,
+    engageDistance: number = 9,
+    topOffset: number = 2.5
+  ) {
+    super(attack, xp, level, health, baseDefense)
+    this.isDead = false
+    this.isDeadAnimation = false
+    this.engageDistance = engageDistance
+    this.topOffSet = topOffset
+    // this.loadTransformation()
+    // monster sounds
+    // this.dyingSound = enemyDyingAudioSource
+    // this.addComponentOrReplace(this.dyingSound)
+    //
+
+    // this.attackSound = enemyAttackAudioSource
+    // this.addComponentOrReplace(this.attackSound)
+    //
+    // let monDef = enemyDefAudioSource
+    // this.addComponentOrReplace(monDef)
+    //
+    // let monHey = enemyHeyAudioSource
+    // this.addComponentOrReplace(monHey)
+    MonsterMeat.setGlobalHasSkill(true)
+  }
+
+  initMonster(): void {
+    console.log('init')
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (!this.shape && this.shapeFile) {
+      this.shape = this.shapeFile
+      console.log(this.shape)
+      GltfContainer.createOrReplace(this.entity, { src: this.shape })
+    }
+    if (this.audioFile != null) {
+      // const clip = new AudioClip(this.audioFile)
+      // this.sound = new AudioSource(clip)
+      // this.addComponentOrReplace(this.sound)
+    }
+    GltfContainer.createOrReplace(this.entity, { src: this.shape })
+    Animator.createOrReplace(this.entity, {
+      states: [
+        {
+          clip: this.idleClip,
+          playing: true,
+          loop: true
+        },
+        {
+          clip: this.attackClip,
+          playing: false,
+          loop: true
+        },
+        {
+          clip: this.walkClip,
+          playing: false,
+          loop: true
+        },
+        {
+          clip: this.impactClip,
+          playing: false,
+          loop: false
+        },
+        {
+          clip: this.dieClip,
+          playing: false,
+          loop: false
+        }
+      ]
+    })
+
+    this.setupRangedAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
+
+    this.attackSystem = new MonsterAttack(this, {
+      moveSpeed: 2,
+      engageDistance: this.engageDistance
+    })
+
+    this.attackSystemRanged = new MonsterAttackRanged(this, {
+      moveSpeed: 2,
+      engageDistance: this.engageDistance
+    })
+
+    this.setupAttackHandler()
+  }
+
+  createHealthBar(): void {
+    console.log('healthBAr')
+    const hb = engine.addEntity()
+    Transform.createOrReplace(hb, {
+      scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
+      position: Vector3.create(0, this.topOffSet, 0),
+      parent: this.entity
+    })
+    MeshRenderer.setBox(hb)
+    Material.setPbrMaterial(hb, {
+      albedoColor: Color4.create(1, 0, 0, 0.5),
+      metallic: 0,
+      roughness: 1,
+      specularIntensity: 0,
+      emissiveIntensity: 0.4
+    })
+
+    this.healthBar = hb
+  }
+
+  createLabel(): void {
+    this.label = engine.addEntity()
+    TextShape.create(this.label, {
+      text: `${this.health}`,
+      textColor: Color4.White(),
+      fontSize: 1
+    })
+    Transform.createOrReplace(this.label, {
+      position: Vector3.create(0, this.topOffSet, -0.1),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+      parent: this.entity
+    })
+  }
+
+  refillHealthBar(percentage = 1): void {
+    this.health += this.maxHealth * percentage
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth
+    }
+    this.updateHealthBar()
+  }
+
+  takeDamage(damage: number): void {
+    this.health -= damage
+    if (this.health < 0) {
+      this.health = 0
+    }
+  }
+
+  updateHealthBar(): void {
+    if (this.healthBar != null) {
+      Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
+    }
+
+    if (this.label != null) {
+      TextShape.getMutable(this.label).text = `${this.health}`
+    }
+  }
+
+  create(): void {
+    // function needs to be implemented per individual monster
+    throw new Error('create is required to be implemented for this monster')
+  }
+
+  onDropXp(): void {
+    // function needs to be implemented per individual monster
+    throw new Error('onDropXp is required to be implemented for this monster')
+  }
+
+  loadTransformation(): void {
+    // function needs to be implemented per individual monster
+    throw new Error(
+      'loadTransformation is required to be implemented for this monster'
+    )
+  }
+
+  setupRangedAttackTriggerBox(): void {
+    this.rangeAttackTrigger = engine.addEntity()
+    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.rangeAttackTrigger)
+    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
+    utils.triggers.addTrigger(
+      this.rangeAttackTrigger,
+      utils.NO_LAYERS,
+      utils.LAYER_1,
+      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
+      () => {
+        console.log('trigger Ranged attack')
+        if (this.isDeadAnimation) return
+        engine.addSystem(this.attackSystemRanged.attackSystem)
+        this.createHealthBar()
+        this.createLabel()
+      },
+      () => {
+        console.log('im out')
+        if (this.isDeadAnimation) return
+        engine.removeSystem(this.attackSystemRanged.attackSystem)
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.idleClip)
+      }
+    )
+  }
+
+  setupEngageTriggerBox(): void {
+    this.engageAttackTrigger = engine.addEntity()
+    Transform.create(this.engageAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.engageAttackTrigger)
+    VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
+    utils.triggers.addTrigger(
+      this.engageAttackTrigger,
+      1,
+      1,
+      [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
+      () => {
+        console.log('trigger Attack')
+      },
+      () => {
+        console.log('im out')
+      }
+    )
+  }
+
+  setupAttackTriggerBox(): void {
+    this.attackTrigger = engine.addEntity()
+    Transform.create(this.attackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.attackTrigger)
+    VisibilityComponent.create(this.attackTrigger, { visible: false })
+    utils.triggers.addTrigger(
+      this.attackTrigger,
+      1,
+      1,
+      [{ type: 'box', scale: Vector3.create(6, 2, 6) }],
+      () => {
+        this.createHealthBar()
+        this.handleAttack()
+        this.createLabel()
+      },
+      () => {
+        console.log('im out')
+      }
+    )
+  }
+
+  setDistance(distance: number): void {
+    pointerEventsSystem.onPointerDown(
+      {
+        entity: this.entity,
+        opts: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Click',
+          maxDistance: distance
+        }
+      },
+      function () {
+        console.log('clicked entity')
+      }
+    )
+  }
+
+  dyingAnimation(): void {
+    this.isDeadAnimation = true
+    if (this.dieClip != null) {
+      Animator.playSingleAnimation(this.entity, this.dieClip)
+    }
+    this.create()
+  }
+
+  callDyingAnimation(): void {
+    if (!this.isDeadAnimation) this.dyingAnimation()
+  }
+
+  killChar(): void {
+    // TODO lootEvent
+
+    // lootEventManager.fireEvent(
+    //     new LootDropEvent(
+    //         this.getComponent(Transform).position,
+    //         () => this.onDropLoot(),
+    //         this.dropRate
+    //     )
+    // )
+    utils.timers.setTimeout(() => {
+      // TODO entity removing triggers error
+      // engine.removeEntity(this.entity)
+      console.log('entity removed')
+      this.isDead = true
+    }, 5 * 1000)
+  }
+
+  isDeadOnce(): void {
+    if (!this.isDead) this.killChar()
+  }
+
+  onDead(): void {
+    this.onDropXp()
+    this.callDyingAnimation()
+    engine.removeSystem(this.attackSystemRanged.attackSystem)
+
+    if (this.healthBar != null) {
+      engine.removeEntity(this.healthBar)
+    }
+    if (this.label != null) {
+      engine.removeEntity(this.label)
+    }
+    if (this.rangeAttackTrigger != null) {
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
+    }
+    utils.timers.setTimeout(() => {
+      this.isDeadOnce()
+    }, 1000)
+  }
+
+  performAttack(damage: number, isCriticalAttack: boolean): void {
+    console.log('damaging monster: ' + damage)
+    this.reduceHealth(damage)
+    this.updateHealthBar()
+
+    if (isCriticalAttack) {
+      // UI from ui.ts
+      // showCriticalIcon()
+    }
+
+    Animator.playSingleAnimation(this.entity, this.impactClip)
+    if (this.health <= 0) {
+      this.onDead()
+    }
+  }
+
+  handleAttack(): void {
+    if (this.health <= 0) {
+      this.onDead()
+      return
+    }
+
+    if (refreshtimer > 0) {
+      return
+    }
+    setRefreshTimer(0)
+
+    const defPercent = player.getDefensePercent()
+    let enemyAttack = this.attack * (1 - defPercent)
+    if (monsterModifiers.getAtkBuff() !== 0) {
+      console.log('monster before modified: ' + enemyAttack)
+      enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
+      console.log(
+        'monster after modified: ' +
+          monsterModifiers.getAtkBuff() +
+          ' ' +
+          enemyAttack
+      )
+    }
+    const roundedAttack = Math.floor(enemyAttack)
+    this.attackPlayer(roundedAttack)
+    monsterModifiers.activeSkills.forEach((skill) =>
+      skill(false, false, enemyAttack, this)
+    )
+  }
+
+  setupAttackHandler(): void {
+    pointerEventsSystem.onPointerDown(
+      {
+        entity: this.entity,
+        opts: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Attack Enemy!',
+          maxDistance: 7
+        }
+      },
+      () => {
+        if (this.health <= 0) {
+          this.onDead()
+          return
+        }
+
+        if (refreshtimer > 0) {
+          return
+        }
+        setRefreshTimer(0)
+
+        const monsterDiceResult = this.rollDice()
+        const playerDiceResult = player.rollDice()
+
+        const roundedPlayerDice = Math.floor(playerDiceResult)
+        const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+        if (roundedMonsterDice <= roundedPlayerDice) {
+          // Player attacks
+          let defPercent = this.getDefensePercent()
+
+          if (monsterModifiers.getDefBuff() !== 0) {
+            defPercent = defPercent * monsterModifiers.getDefBuff()
+            console.log('def %', defPercent)
+          }
+
+          const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+
+          const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
+          const playerAttack = Math.round(reduceHealthBy)
+          this.performAttack(playerAttack, isCriticalAttack)
+
+          // MainHUD.getInstance().updateStats(
+          //     `${roundedPlayerDice}`,
+          //     `${roundedMonsterDice}`,
+          //     `${playerAttack}`,
+          //     `MISSED`
+          // )
+
+          monsterModifiers.activeSkills.forEach((skill) =>
+            skill(isCriticalAttack, true, reduceHealthBy)
+          )
+        }
+      }
+    )
+  }
+
+  run(): void {
+    Animator.playSingleAnimation(this.entity, this.walkClip)
+  }
+
+  playIdle(): void {
+    Animator.playSingleAnimation(this.entity, this.idleClip)
+  }
+
+  playAttack(): void {
+    Animator.playSingleAnimation(this.entity, this.attackClip)
+  }
+
+  attackPlayer(enemyAttack: number): void {
+    player.reduceHealth(enemyAttack)
+
+    this.playAttack()
+
+    player.impactAnimation?.()
+    // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
+
+    // this.attackSound.playOnce()
+
+    // setTimeout(1 * 1000, () => {
+    //     checkHealth()
+    // })
+    utils.timers.setTimeout(() => {
+      // TODO from counters
+      // checkHealth()
+    }, 1000)
+  }
+}
+
+export default MonsterMob

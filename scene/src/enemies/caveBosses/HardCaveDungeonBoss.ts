@@ -1,36 +1,25 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from './monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Player } from '../../player/player'
+import MonsterMob from '../MonsterMob'
+import { ITEM_TYPES } from '../playerInventoryMaps'
+import { LEVEL_TYPES } from '../types'
+import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 
-// const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
-// const DEFAULT_LEVEL = 5
-// const DEFAULT_HP = 200
-// const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number): number {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-export default class EasyCaveDungeonBoss extends MonsterOligar {
+export default class HardCaveDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
   minLuck = 10
 
   constructor(difficulty: number) {
-    super(
-      45,
-      DEFAULT_XP,
-      // Player.getInstance().getLevel() * difficulty,
-      2500
-    )
+    super(750, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 280000)
 
     this.initMonster()
 
-    // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
+    super.setupEngageTriggerBox()
 
     this.topOffSet = 3
     // # in %
@@ -38,15 +27,10 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
   }
 
   onDropXp(): void {
-    // this.create()
-
-    // setTimeout(7 * 1000, () => {
-    // const xp = getRandomIntRange(this.xp, this.xp + 10)
-    // const randomNumber = Math.random()
-    const random = Math.random() * 1000
+    const random = Math.random() * 100
 
     switch (true) {
-      case random < 50: {
+      case random < 1: {
         // 1% chance
         // TODO UI
         // confirmAndSendLootUI(
@@ -63,7 +47,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         break
       }
 
-      case random < 1: {
+      case random < 2: {
         // Additional 0.5% Chance (Cumulative 1% - 0.5% for the previous case)
         // TODO UI
         // confirmAndSendLootOnceUI(
@@ -80,7 +64,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         break
       }
 
-      case random < 100: {
+      case random < 3: {
         // 1% chance (2% cumulative - 1% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -96,7 +80,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 200: {
+      case random < 4: {
         // 1% chance (3% cumulative - 2% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -128,7 +112,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 400: {
+      case random < 10: {
         // 10% chance (20% cumulative - 10% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -144,7 +128,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 500: {
+      case random < 20: {
         // 10% chance (30% cumulative - 20% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -160,7 +144,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 650: {
+      case random < 30: {
         // 10% chance (40% cumulative - 30% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -176,7 +160,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 750: {
+      case random < 40: {
         // 20% chance (60% cumulative - 40% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -192,7 +176,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 850: {
+      case random < 80: {
         // 20% chance (80% cumulative - 60% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -226,29 +210,31 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
     }
     // })
 
-    // const exp = [
-    //   {
-    //     type: LEVEL_TYPES.ENEMY,
-    //     value: 1
-    //   },
-    //   {
-    //     type: LEVEL_TYPES.PLAYER,
-    //     value: 120
-    //   }
-    // ]
-    // const loot = [
-    //   {
-    //     type: ITEM_TYPES.BONE,
-    //     value: 100
-    //   }
-    // ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const exp = [
+      {
+        type: LEVEL_TYPES.ENEMY,
+        value: 1
+      },
+      {
+        type: LEVEL_TYPES.PLAYER,
+        value: 120
+      }
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const loot = [
+      {
+        type: ITEM_TYPES.BONE,
+        value: 100
+      }
+    ]
 
+    // TODO UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-
-    // backToAntromFromCave("Easy")
+    void backToAntromFromCave('Easy')
 
     // //setTimeout(17 * 1000, () => {
     // cleanupScene()
@@ -265,18 +251,14 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
   onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
-    // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
+    super.setupAttackTriggerBox()
   }
 
   create(): void {}
 
   loadTransformation(): void {
-    const initialPosition = Vector3.create(
-      getRandomIntRange(1, 31),
-      0,
-      getRandomIntRange(0, 24)
-    )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialPosition = Vector3.create(-15.5, 2.45, -4.6)
+    const initialRotation = Quaternion.fromEulerDegrees(0, 90, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation

@@ -23,7 +23,7 @@ import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { MonsterAttack } from './monsterAttack'
 import { applyDefSkillEffectToEnemyLocation } from '../effects/enemyDeffSkillActivation'
 
-export class MonsterOligar extends Character {
+export class MonsterMobAuto extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
@@ -54,7 +54,7 @@ export class MonsterOligar extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterOligar.globalHasSkill = value
+    MonsterMobAuto.globalHasSkill = value
   }
 
   constructor(
@@ -84,7 +84,7 @@ export class MonsterOligar extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterOligar.setGlobalHasSkill(true)
+    MonsterMobAuto.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
@@ -234,7 +234,6 @@ export class MonsterOligar extends Character {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
-        // const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
       },
       () => {
@@ -326,7 +325,6 @@ export class MonsterOligar extends Character {
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
       // engine.removeEntity(this.entity)
-      console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
   }
@@ -386,7 +384,7 @@ export class MonsterOligar extends Character {
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()
-
+    const random = Math.random() * 1000
     const roundedPlayerDice = Math.floor(playerDiceResult)
     const roundedMonsterDice = Math.floor(monsterDiceResult)
 
@@ -398,12 +396,11 @@ export class MonsterOligar extends Character {
         defPercent = defPercent * monsterModifiers.getDefBuff()
         console.log('def %', defPercent)
       }
-      const random = Math.random() * 1000
+
       const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
 
       const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
       let playerAttack = Math.round(reduceHealthBy)
-
       switch (true) {
         case random < 200: {
           // 30% chance
@@ -499,7 +496,6 @@ export class MonsterOligar extends Character {
     this.playAttack()
 
     player.impactAnimation?.()
-    // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
 
     // this.attackSound.playOnce()
@@ -514,4 +510,4 @@ export class MonsterOligar extends Character {
   }
 }
 
-export default MonsterOligar
+export default MonsterMobAuto
