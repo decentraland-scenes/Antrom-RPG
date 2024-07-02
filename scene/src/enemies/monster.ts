@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
   Animator,
   GltfContainer,
@@ -6,12 +7,21 @@ import {
   engine,
   VisibilityComponent,
   pointerEventsSystem,
-  InputAction
+  InputAction,
+  TextShape,
+  Material,
+  type Entity
 } from '@dcl/sdk/ecs'
 import { Character } from './character'
-import { Vector3 } from '@dcl/sdk/math'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { MonsterAttackRanged } from './monsterAttackRanged'
+import { player } from '../player/player'
+import { monsterModifiers } from './skillEffects'
+import { getRandomInt } from '../utils/getRandomInt'
+import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
+import { MonsterAttack } from './monsterAttack'
+import { applyDefSkillEffectToEnemyLocation } from '../effects/enemyDeffSkillActivation'
 
 export class MonsterOligar extends Character {
   static globalHasSkill: boolean = true
@@ -20,8 +30,7 @@ export class MonsterOligar extends Character {
   shapeFile?: string
   shape: string = ''
   audioFile?: string
-  // sound?: AudioSource
-  // dyingSound?: AudioSource
+  healthBar!: Entity
   idleClip: string = 'idle'
   attackClip: string = 'attack'
   walkClip: string = 'walk'
@@ -32,13 +41,15 @@ export class MonsterOligar extends Character {
   isDeadAnimation: boolean
   isDead: boolean
   // attackSound?: AudioSource
-  // healthbar needs to be ui
-  // healthBar: Entity
   // playerAttackUI: ui.CornerLabel
+  rangeAttackTrigger!: Entity
+  engageAttackTrigger!: Entity
+  attackTrigger!: Entity
   label?: any
   topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
+  attackSystem!: MonsterAttack
   isPrey: boolean = false
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
@@ -59,7 +70,7 @@ export class MonsterOligar extends Character {
     this.isDead = false
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
-    this.loadTransformation()
+    this.topOffSet = topOffset
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -78,12 +89,10 @@ export class MonsterOligar extends Character {
 
   initMonster(): void {
     console.log('init')
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (!this.shape && this.shapeFile) {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (this.audioFile) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
@@ -100,7 +109,7 @@ export class MonsterOligar extends Character {
         {
           clip: this.attackClip,
           playing: false,
-          loop: true
+          loop: false
         },
         {
           clip: this.walkClip,
@@ -115,19 +124,19 @@ export class MonsterOligar extends Character {
         {
           clip: this.dieClip,
           playing: false,
-          loop: true
+          loop: false
         }
       ]
     })
 
     this.setupRangedAttackTriggerBox()
-    //  this.setupEngageTriggerBox()
-    //  this.setupAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
 
-    // this.attackSystem = new MonsterAttack(this, Camera.instance, {
-    //     moveSpeed: 2,
-    //     engageDistance: this.engageDistance,
-    // })
+    this.attackSystem = new MonsterAttack(this, {
+      moveSpeed: 2,
+      engageDistance: this.engageDistance
+    })
 
     this.attackSystemRanged = new MonsterAttackRanged(this, {
       moveSpeed: 2,
@@ -135,6 +144,64 @@ export class MonsterOligar extends Character {
     })
 
     this.setupAttackHandler()
+  }
+
+  createHealthBar(): void {
+    const hb = engine.addEntity()
+    Transform.createOrReplace(hb, {
+      scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
+      position: Vector3.create(0, this.topOffSet, 0),
+      parent: this.entity
+    })
+    MeshRenderer.setBox(hb)
+    Material.setPbrMaterial(hb, {
+      albedoColor: Color4.create(1, 0, 0, 0.5),
+      metallic: 0,
+      roughness: 1,
+      specularIntensity: 0,
+      emissiveIntensity: 0.4
+    })
+
+    this.healthBar = hb
+  }
+
+  createLabel(): void {
+    this.label = engine.addEntity()
+    TextShape.create(this.label, {
+      text: `${this.health}`,
+      textColor: Color4.White(),
+      fontSize: 1
+    })
+    Transform.createOrReplace(this.label, {
+      position: Vector3.create(0, this.topOffSet, -0.1),
+      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
+      parent: this.entity
+    })
+  }
+
+  refillHealthBar(percentage = 1): void {
+    this.health += this.maxHealth * percentage
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth
+    }
+    this.updateHealthBar()
+  }
+
+  takeDamage(damage: number): void {
+    this.health -= damage
+    if (this.health < 0) {
+      this.health = 0
+    }
+  }
+
+  updateHealthBar(): void {
+    if (this.healthBar) {
+      Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
+    }
+
+    if (this.label) {
+      TextShape.getMutable(this.label).text = `${this.health}`
+    }
   }
 
   create(): void {
@@ -155,20 +222,19 @@ export class MonsterOligar extends Character {
   }
 
   setupRangedAttackTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.rangeAttackTrigger = engine.addEntity()
+    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.rangeAttackTrigger)
+    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.rangeAttackTrigger,
       utils.NO_LAYERS,
       utils.LAYER_1,
       [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const CameraPos = Transform.get(engine.CameraEntity).position
+        // const CameraPos = Transform.get(engine.CameraEntity).position
         engine.addSystem(this.attackSystemRanged.attackSystem)
       },
       () => {
@@ -182,12 +248,12 @@ export class MonsterOligar extends Character {
   }
 
   setupEngageTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.engageAttackTrigger = engine.addEntity()
+    Transform.create(this.engageAttackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.engageAttackTrigger)
+    VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.engageAttackTrigger,
       1,
       1,
       [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
@@ -201,12 +267,12 @@ export class MonsterOligar extends Character {
   }
 
   setupAttackTriggerBox(): void {
-    const entity = engine.addEntity()
-    Transform.create(entity, { parent: this.entity })
-    MeshRenderer.setBox(entity)
-    VisibilityComponent.create(entity, { visible: false })
+    this.attackTrigger = engine.addEntity()
+    Transform.create(this.attackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.attackTrigger)
+    VisibilityComponent.create(this.attackTrigger, { visible: false })
     utils.triggers.addTrigger(
-      entity,
+      this.attackTrigger,
       1,
       1,
       [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
@@ -237,15 +303,10 @@ export class MonsterOligar extends Character {
 
   dyingAnimation(): void {
     this.isDeadAnimation = true
-
-    // if (this.dyingSound) {
-    //     this.dyingSound.playOnce()
-    // }
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (this.dieClip) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
-    this.create() // ????
+    this.create()
   }
 
   callDyingAnimation(): void {
@@ -254,6 +315,7 @@ export class MonsterOligar extends Character {
 
   killChar(): void {
     // TODO (first check if used )
+
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
     //         this.getComponent(Transform).position,
@@ -261,10 +323,12 @@ export class MonsterOligar extends Character {
     //         this.dropRate
     //     )
     // )
-    // setTimeout(5 * 1000, () => {
-    //     engine.removeEntity(this)
-    //     this.isDead = true
-    // })
+    utils.timers.setTimeout(() => {
+      // TODO entity removing triggers error
+      // engine.removeEntity(this.entity)
+      console.log('entity removed')
+      this.isDead = true
+    }, 5 * 1000)
   }
 
   isDeadOnce(): void {
@@ -276,22 +340,26 @@ export class MonsterOligar extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    // UI TBD
-    // if (this.healthBar) {
-    //     engine.removeEntity(this.healthBar)
-    // }
-    // if (this.label) {
-    //     engine.removeEntity(this.label)
-    // }
-    // setTimeout(1 * 1000, () => {
-    //     this.isDeadOnce()
-    // })
+    if (this.healthBar) {
+      engine.removeEntity(this.healthBar)
+    }
+    if (this.label) {
+      engine.removeEntity(this.label)
+    }
+    if (this.rangeAttackTrigger != null) {
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
+    }
+    utils.timers.setTimeout(() => {
+      this.isDeadOnce()
+    }, 1000)
   }
 
   performAttack(damage: number, isCriticalAttack: boolean): void {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
-    // this.updateHealthBar()
+    this.updateHealthBar()
 
     if (isCriticalAttack) {
       // UI from ui.ts
@@ -299,15 +367,6 @@ export class MonsterOligar extends Character {
     }
 
     Animator.playSingleAnimation(this.entity, this.impactClip)
-    // Animator.playSingleAnimation(this.entity, this.walkClip)
-
-    // Effect TBD
-    // applyEnemyAttackedEffectToLocation(
-    //     this.getComponent(Transform).position
-    // )
-
-    // player.attackAnimation?.()
-
     if (this.health <= 0) {
       this.onDead()
     }
@@ -318,9 +377,92 @@ export class MonsterOligar extends Character {
       this.onDead()
       return
     }
-    this.performAttack(1, false)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const random = Math.random() * 1000
+
+    // const random = Math.random() * 1000
+    if (refreshtimer > 0) {
+      return
+    }
+    setRefreshTimer(1)
+
+    const monsterDiceResult = this.rollDice()
+    const playerDiceResult = player.rollDice()
+
+    const roundedPlayerDice = Math.floor(playerDiceResult)
+    const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+    if (roundedMonsterDice <= roundedPlayerDice) {
+      // Player attacks
+      let defPercent = this.getDefensePercent()
+
+      if (monsterModifiers.getDefBuff() !== 0) {
+        defPercent = defPercent * monsterModifiers.getDefBuff()
+        console.log('def %', defPercent)
+      }
+      const random = Math.random() * 1000
+      const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+
+      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
+      let playerAttack = Math.round(reduceHealthBy)
+
+      switch (true) {
+        case random < 200: {
+          // 30% chance
+          // TODO UI
+          // bossDefense()
+
+          applyDefSkillEffectToEnemyLocation(
+            Transform.getMutable(this.entity).position,
+            4000
+          )
+          // reduce incoming attack by 50%
+          playerAttack = playerAttack / 2
+
+          break
+        }
+      }
+      this.performAttack(playerAttack, isCriticalAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `${playerAttack}`,
+      //     `MISSED`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(isCriticalAttack, true, reduceHealthBy)
+      )
+    } else {
+      // Monster attacks
+      const defPercent = player.getDefensePercent()
+      let enemyAttack = this.attack * (1 - defPercent)
+
+      if (monsterModifiers.getAtkBuff() !== 0) {
+        console.log('monster before modified: ' + enemyAttack)
+        enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
+        console.log(
+          'monster after modified: ' +
+            monsterModifiers.getAtkBuff() +
+            ' ' +
+            enemyAttack
+        )
+      }
+      // createMissedLabel()
+
+      const roundedAttack = Math.floor(enemyAttack)
+      this.attackPlayer(roundedAttack)
+
+      // MainHUD.getInstance().updateStats(
+      //     `${roundedPlayerDice}`,
+      //     `${roundedMonsterDice}`,
+      //     `MISSED`,
+      //     `${roundedAttack}`
+      // )
+
+      monsterModifiers.activeSkills.forEach((skill) =>
+        skill(false, false, enemyAttack, this)
+      )
+    }
   }
 
   setupAttackHandler(): void {
@@ -352,15 +494,23 @@ export class MonsterOligar extends Character {
   }
 
   attackPlayer(enemyAttack: number): void {
-    // PLAYER TBD
-    // player.reduceHealth(enemyAttack)
-    // this.playAttack()
-    // player.impactAnimation?.()
+    player.reduceHealth(enemyAttack)
+
+    this.playAttack()
+
+    player.impactAnimation?.()
+    // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-    // //this.attackSound.playOnce()
+
+    // this.attackSound.playOnce()
+
     // setTimeout(1 * 1000, () => {
     //     checkHealth()
     // })
+    utils.timers.setTimeout(() => {
+      // TODO from counters
+      // checkHealth()
+    }, 1000)
   }
 }
 

@@ -4,6 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { ITEM_TYPES } from '../playerInventoryMaps'
 import { LEVEL_TYPES } from '../types'
+import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 
 const DEFAULT_XP = 60
 
@@ -208,7 +209,7 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
       }
     }
     // })
-    // backToAntromFromCave("Medium")
+    void backToAntromFromCave('Medium')
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const exp = [
       {

@@ -1,32 +1,22 @@
 import { Transform } from '@dcl/sdk/ecs'
 import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Player } from '../../player/player'
+import { quest } from '../../utils/refresherTimer'
+import { ITEM_TYPES } from '../playerInventoryMaps'
+import { LEVEL_TYPES } from '../types'
+import { backToAntrom } from './NightmareDesertDungeonBoss'
 
-// const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
-// const DEFAULT_LEVEL = 5
-// const DEFAULT_HP = 200
-// const DEFAULT_DEF = 0.1
 
-function getRandomIntRange(min: number, max: number): number {
-  min = Math.ceil(min)
-  max = Math.floor(max)
-  return Math.floor(Math.random() * (max - min + 1)) + min
-}
-
-export default class HardDesertDungeonBoss extends MonsterOligar {
+export default class MedDesertDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
   minLuck = 10
 
   constructor(difficulty: number) {
-    super(
-      100,
-      DEFAULT_XP,
-      // Player.getInstance().getLevel() * difficulty,
-      10000
-    )
+    super(100, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 10000)
 
     this.initMonster()
 
@@ -38,17 +28,75 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
   }
 
   onDropXp(): void {
-    // this.create()
-
-    // setTimeout(7 * 1000, () => {
-    // const xp = getRandomIntRange(this.xp, this.xp + 10)
-    // const randomNumber = Math.random()
-    const random = Math.random() * 1000
+    quest.turnOffKingQuestTimer()
+    const random = Math.random() * 100
 
     switch (true) {
-      case random < 50: {
-        // 1% chance
-        // TODO UI
+      case random < 3: {
+        // 3% chance
+        // confirmAndSendLootUI(
+        //     "RARE",
+        //     "FIRE BOW",
+        //     "0x3b8f5b62ddd10c1af0f31665c5ab09b2bf85cacc:2",
+        //     "fb",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+        break
+      }
+      case random < 6: {
+        // 3% chance (6% cumulative - 3% previous)
+        // confirmAndSendLootUI(
+        //     "RARE",
+        //     "FIRE SWORD",
+        //     "0x3b8f5b62ddd10c1af0f31665c5ab09b2bf85cacc:0",
+        //     "fs",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+
+        break
+      }
+      case random < 9: {
+        // 3% chance (9% cumulative - 6% previous)
+        // confirmAndSendLootUI(
+        //     "EPIC",
+        //     "Wasteland Mage Armor",
+        //     "0xa83c8951dd73843bf5f7e9936e72a345a3e79874:3",
+        //     "wsa2",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+
+        break
+      }
+      case random < 15: {
+        // 6% chance (15% cumulative - 9% previous)
+        // confirmAndSendLootUI(
+        //     "EPIC",
+        //     "Druid Staff",
+        //     "0x2b5e68e51dd54fe100150a6f52547f4f0b3d32aa:5",
+        //     "ds",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+        break
+      }
+      case random < 25: {
+        // 10% chance (25% cumulative - 15% previous)
+
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Helmet",
@@ -60,29 +108,11 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
+
         break
       }
-
-      case random < 1: {
-        // Additional 0.5% Chance (Cumulative 1% - 0.5% for the previous case)
-        // TODO UI
-        // confirmAndSendLootOnceUI(
-        //     "LEGENDARY",
-        //     "Lava Gauntlets",
-        //     "0x6e78e8aacddbf96296dbcc9a1cb682a4b16b60de:1",
-        //     "lavag",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     6
-        // )
-        break
-      }
-
-      case random < 100: {
-        // 1% chance (2% cumulative - 1% previous)
-        // TODO UI
+      case random < 35: {
+        // 10% chance (35% cumulative - 25% previous)
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Pants",
@@ -94,11 +124,11 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
+
         break
       }
-      case random < 200: {
-        // 1% chance (3% cumulative - 2% previous)
-        // TODO UI
+      case random < 45: {
+        // 10% chance (45% cumulative - 35% previous)
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Armor",
@@ -110,11 +140,11 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
+
         break
       }
-      case random < 300: {
-        // 7% chance (10% cumulative - 3% previous)
-        // TODO UI
+      case random < 60: {
+        // 15% chance (60% cumulative - 45% previous)
         // confirmAndSendLootUI(
         //     "UNCOMMON",
         //     "Apprentice Mage Sceptre",
@@ -128,57 +158,8 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 400: {
-        // 10% chance (20% cumulative - 10% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Ranger Hood",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:1",
-        //     "a2",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 500: {
-        // 10% chance (30% cumulative - 20% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Berserker Helm",
-        //     "0xd81dcebc0769f1f055352f4588bbcc55e08d1c60:1",
-        //     "apbh",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 650: {
-        // 10% chance (40% cumulative - 30% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Ranger Bow",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:2",
-        //     "a3",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 750: {
-        // 20% chance (60% cumulative - 40% previous)
-        // TODO UI
+      case random < 80: {
+        // 20% chance (80% cumulative - 60% previous)
         // confirmAndSendLootUI(
         //     "UNCOMMON",
         //     "Apprentice Berserker Axe",
@@ -192,30 +173,13 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 850: {
-        // 20% chance (80% cumulative - 60% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Berserker Garb",
-        //     "0xd81dcebc0769f1f055352f4588bbcc55e08d1c60:0",
-        //     "apbg",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
       default: {
         // 20% chance (100% cumulative - 80% previous)
-        // TODO UI
         // confirmAndSendLootUI(
         //     "UNCOMMON",
-        //     "Apprentice Ranger Suit",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:0",
-        //     "a1",
+        //     "Apprentice Ranger Bow",
+        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:2",
+        //     "a3",
         //     0,
         //     0,
         //     0,
@@ -224,59 +188,44 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
         // )
       }
     }
-    // })
+    void backToAntrom('Medium')
 
-    // const exp = [
-    //   {
-    //     type: LEVEL_TYPES.ENEMY,
-    //     value: 1
-    //   },
-    //   {
-    //     type: LEVEL_TYPES.PLAYER,
-    //     value: 120
-    //   }
-    // ]
-    // const loot = [
-    //   {
-    //     type: ITEM_TYPES.BONE,
-    //     value: 100
-    //   }
-    // ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const exp = [
+      {
+        type: LEVEL_TYPES.ENEMY,
+        value: 1
+      },
+      {
+        type: LEVEL_TYPES.PLAYER,
+        value: 120
+      }
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const loot = [
+      {
+        type: ITEM_TYPES.BONE,
+        value: 100
+      }
+    ]
 
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-
-    // backToAntromFromCave("Easy")
-
-    // //setTimeout(17 * 1000, () => {
-    // cleanupScene()
-    // loader.showLoaderyouwinscreen(10000)
-    // buildantrom2World()
-    // setTimeout(11 * 1000, () => {
-    //     movePlayerTo({ x: -38.34, y: 10.43, z: -39.75 })
-    // })
-    // player.health = player.maxHealth * 1
-    // player.updateHealthBar()
-    // //})
   }
 
   onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
-    // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
+    super.setupAttackTriggerBox()
   }
 
   create(): void {}
 
   loadTransformation(): void {
-    const initialPosition = Vector3.create(
-      getRandomIntRange(1, 31),
-      0,
-      getRandomIntRange(0, 24)
-    )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialPosition = Vector3.create(51.0, 2.53, 63.52)
+    const initialRotation = Quaternion.fromEulerDegrees(0, 90, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation

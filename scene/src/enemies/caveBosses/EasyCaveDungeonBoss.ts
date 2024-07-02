@@ -4,6 +4,7 @@ import MonsterMob from '../MonsterMob'
 import { Player } from '../../player/player'
 import { LEVEL_TYPES } from '../types'
 import { ITEM_TYPES } from '../playerInventoryMaps'
+import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 
 const DEFAULT_XP = 60
 
@@ -230,8 +231,7 @@ export default class EasyCaveDungeonBoss extends MonsterMob {
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-    // TODO async function
-    // backToAntromFromCave("Easy")
+    void backToAntromFromCave('Easy')
   }
 
   onDropLoot(): void {}

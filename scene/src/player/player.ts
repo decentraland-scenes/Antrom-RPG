@@ -7,6 +7,8 @@ import { PetManager } from './petManager'
 import { LEVEL_TYPES } from '../enemies/types'
 import { getRandomIntRange } from '../utils/getRandomInt'
 import { WearablesConfig } from './wearables-config'
+import { PlayerInventory } from '../inventory/playerInventory'
+import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -31,7 +33,7 @@ export class Player extends Character {
   public playerDataFetchError!: boolean
   public consecutiveLoginDays: number
   public items: Item[]
-  // public inventory: PlayerInventory
+  public inventory!: PlayerInventory
   // public playerAvatar: PlayerAvatar
 
   public swordInventoryCount!: number
@@ -102,7 +104,7 @@ export class Player extends Character {
     super(attack, xp, level, health)
     this.levels = new LevelManager()
     this.levels.setLevel(LEVEL_TYPES.PLAYER, level, xp)
-    // this.inventory = new PlayerInventory()
+    this.inventory = new PlayerInventory()
     this.petManager = new PetManager()
 
     this.avatarModelList = ['models/BaseCharacter.glb']
@@ -301,8 +303,8 @@ export class Player extends Character {
   }
 
   chopTree(): void {
-    // const treeCount = this.inventory.getItemCount(ITEM_TYPES.TREE)
-    // console.log(treeCount)
+    const treeCount = this.inventory.getItemCount(ITEM_TYPES.TREE)
+    console.log(treeCount)
   }
 
   reduceHealth(attack: number): void {

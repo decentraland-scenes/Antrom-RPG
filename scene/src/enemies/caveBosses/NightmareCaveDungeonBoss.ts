@@ -1,14 +1,18 @@
-import { Transform } from '@dcl/sdk/ecs'
+import {
+  GltfContainer,
+  InputAction,
+  MeshCollider,
+  Transform,
+  engine,
+  pointerEventsSystem
+} from '@dcl/sdk/ecs'
 import MonsterOligar from '../monster'
-// import { ITEM_TYPES } from './playerInventoryMaps'
-// import { LEVEL_TYPES } from './types'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-
-const DEFAULT_ATTACK = 35
-const DEFAULT_XP = 60
-const DEFAULT_LEVEL = 5
-const DEFAULT_HP = 200
-const DEFAULT_DEF = 0.1
+import { DungeonStage } from '../../counters'
+import { player } from '../../player/player'
+import { LEVEL_TYPES } from '../types'
+import { quest } from '../../utils/refresherTimer'
+import { ITEM_TYPES } from '../playerInventoryMaps'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -16,19 +20,24 @@ function getRandomIntRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default class EasyCaveDungeonBoss extends MonsterOligar {
+export default class NightmareCaveDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 10
+  minLuck = 50
 
   constructor(difficulty: number) {
-    // TODO
-    super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP, DEFAULT_DEF)
+    const stage = DungeonStage.read()
+    super(
+      1200 + 75 * stage,
+      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 100,
+      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 5,
+      1250000 + 15000 * stage
+    )
 
     this.initMonster()
 
-    // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
+    // TODO super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
     this.topOffSet = 3
     // # in %
@@ -36,15 +45,12 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
   }
 
   onDropXp(): void {
-    // this.create()
-
-    // setTimeout(7 * 1000, () => {
-    // const xp = getRandomIntRange(this.xp, this.xp + 10)
-    // const randomNumber = Math.random()
+    const xp = getRandomIntRange(this.xp, this.xp + 10)
+    quest.turnOffKingQuestTimer()
     const random = Math.random() * 1000
 
     switch (true) {
-      case random < 50: {
+      case random < 5: {
         // 1% chance
         // TODO UI
         // confirmAndSendLootUI(
@@ -61,7 +67,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         break
       }
 
-      case random < 1: {
+      case random < 200: {
         // Additional 0.5% Chance (Cumulative 1% - 0.5% for the previous case)
         // TODO UI
         // confirmAndSendLootOnceUI(
@@ -78,7 +84,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         break
       }
 
-      case random < 100: {
+      case random < 300: {
         // 1% chance (2% cumulative - 1% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -94,7 +100,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 200: {
+      case random < 400: {
         // 1% chance (3% cumulative - 2% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -110,7 +116,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 300: {
+      case random < 500: {
         // 7% chance (10% cumulative - 3% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -126,7 +132,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 400: {
+      case random < 600: {
         // 10% chance (20% cumulative - 10% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -142,7 +148,7 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 500: {
+      case random < 800: {
         // 10% chance (30% cumulative - 20% previous)
         // TODO UI
         // confirmAndSendLootUI(
@@ -158,62 +164,14 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 650: {
-        // 10% chance (40% cumulative - 30% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Ranger Bow",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:2",
-        //     "a3",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 750: {
-        // 20% chance (60% cumulative - 40% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Berserker Axe",
-        //     "0xd81dcebc0769f1f055352f4588bbcc55e08d1c60:2",
-        //     "apba",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 850: {
-        // 20% chance (80% cumulative - 60% previous)
-        // TODO UI
-        // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Berserker Garb",
-        //     "0xd81dcebc0769f1f055352f4588bbcc55e08d1c60:0",
-        //     "apbg",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
+
       default: {
-        // 20% chance (100% cumulative - 80% previous)
-        // TODO UI
+        // 20% chance (Cumulative 100% - 80% for previous cases)
         // confirmAndSendLootUI(
-        //     "UNCOMMON",
-        //     "Apprentice Ranger Suit",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:0",
-        //     "a1",
+        //     "RARE",
+        //     "Wasteland Pants",
+        //     "0xa83c8951dd73843bf5f7e9936e72a345a3e79874:1",
+        //     "wsp1",
         //     0,
         //     0,
         //     0,
@@ -224,60 +182,127 @@ export default class EasyCaveDungeonBoss extends MonsterOligar {
     }
     // })
 
-    // const exp = [
-    //   {
-    //     type: LEVEL_TYPES.ENEMY,
-    //     value: 1
-    //   },
-    //   {
-    //     type: LEVEL_TYPES.PLAYER,
-    //     value: 120
-    //   }
-    // ]
-    // const loot = [
-    //   {
-    //     type: ITEM_TYPES.BONE,
-    //     value: 100
-    //   }
-    // ]
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const exp = [
+      {
+        type: LEVEL_TYPES.ENEMY,
+        value: 1
+      },
+      {
+        type: LEVEL_TYPES.PLAYER,
+        value: xp
+      }
+    ]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const loot = [
+      {
+        type: ITEM_TYPES.BONE,
+        value: 100
+      }
+    ]
+    // TODO UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
 
-    // backToAntromFromCave("Easy")
-
-    // //setTimeout(17 * 1000, () => {
-    // cleanupScene()
-    // loader.showLoaderyouwinscreen(10000)
-    // buildantrom2World()
-    // setTimeout(11 * 1000, () => {
-    //     movePlayerTo({ x: -38.34, y: 10.43, z: -39.75 })
-    // })
-    // player.health = player.maxHealth * 1
-    // player.updateHealthBar()
-    // //})
+    // backToAntromFromCave("Nightmare")
   }
 
   onDropLoot(): void {}
 
   setupAttackTriggerBox(): void {
-    // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
+    super.setupAttackTriggerBox()
   }
 
   create(): void {}
 
   loadTransformation(): void {
-    const initialPosition = Vector3.create(
-      getRandomIntRange(1, 31),
-      0,
-      getRandomIntRange(0, 24)
-    )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialPosition = Vector3.create(-15.5, 2.45, -4.6)
+    const initialRotation = Quaternion.fromEulerDegrees(0, 90, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation
     })
   }
+}
+
+export async function backToAntromFromCave(difficulty: string): Promise<void> {
+  const door1 = engine.addEntity()
+  Transform.create(door1, {
+    position: Vector3.create(48.14, 19, -5.73),
+    rotation: Quaternion.create(0, -0.05, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(door1, { src: 'assets/models/Portal.glb' })
+  MeshCollider.setBox(door1)
+  pointerEventsSystem.onPointerDown(
+    {
+      entity: door1,
+      opts: {
+        button: InputAction.IA_POINTER,
+        hoverText: 'Restart Antrom'
+      }
+    },
+    function () {
+      quest.removeKingQuestTimer()
+      engine.removeEntity(door1)
+      const currentDungeonTokens = player.inventory.getItemCount(
+        ITEM_TYPES.ICESHARD
+      )
+      const currentPremuimDungeonTokens = player.inventory.getItemCount(
+        ITEM_TYPES.ICEHEART
+      )
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const total = currentPremuimDungeonTokens + currentDungeonTokens
+      // TODO UI
+      // const prompt = new ui.OptionPrompt(
+      //   'Congrats!',
+      //   `Restart ${difficulty} Dungeon \nTokens Remaining: ${total}`,
+
+      if (difficulty === 'Easy') {
+        // resetCaveDungeons('easy')
+      }
+
+      if (difficulty === 'Medium') {
+        // resetCaveDungeons('medium')
+      }
+
+      if (difficulty === 'Hard') {
+        // resetCaveDungeons('hard')
+      }
+
+      if (difficulty === 'Nightmare') {
+        // resetCaveDungeons('nightmare')
+      }
+      //   if (Player.globalHasSkillActive) {
+      //     ui.displayAnnouncement("try again")
+      //     door1.addComponentOrReplace(gltfShape1000)
+      // } else {
+      //     buildantrom2World()
+      // }
+      // TODO When ui is finished we need to have a look to og code cause it has 2 call backs and logic split
+    }
+  )
+
+  // const d1animator = new Animator()
+
+  // // Add animator component to the entity
+  // door1.addComponent(d1animator)
+
+  // // Instance animation clip object
+  // const clipOpen = new AnimationState('open', { looping: false })
+  // const clipClose = new AnimationState('close', { looping: false })
+  // const idleClip = new AnimationState('idle', { looping: true })
+
+  // // Add animation clip to Animator component
+  // d1animator.addClip(clipOpen)
+  // d1animator.addClip(clipClose)
+  // d1animator.addClip(idleClip)
+
+  // // Add entity to engine
+  // engine.addEntity(door1)
+
+  // // Default Animation
+  // idleClip.play()
 }
