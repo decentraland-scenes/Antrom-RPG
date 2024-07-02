@@ -1,9 +1,7 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import Banner from '../../ui/banner/bannerComponent'
 import { BannerPosition, BannerType } from '../../ui/banner/bannerConstants'
-import { engine } from '@dcl/sdk/ecs'
-// import { UiCanvasInformation, engine } from "@dcl/sdk/ecs"
-// import { canvasInfo } from "../../ui/utils/utils"
+import * as utils from '@dcl-sdk/utils'
 
 export class UI {
   public bannerType: BannerType
@@ -19,19 +17,11 @@ export class UI {
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
-  showBannerSystem(dt: number): void {
-    if (this.timer - dt <= 0) {
-      this.isBannerVisible = false
-      engine.removeSystem('showBannerSystem')
-    } else {
-      this.timer = this.timer - dt
-    }
-  }
-
   showBanner(): void {
-    this.isBannerVisible = true
-    this.timer = 2
-    engine.addSystem(this.showBannerSystem.bind(this), 0, 'showBannerSystem')
+    utils.timers.setTimeout(() => {
+      console.log('timer on')
+      this.isBannerVisible = false
+    }, this.timer * 1000)
   }
 
   bannerUI(): ReactEcs.JSX.Element {
@@ -46,14 +36,6 @@ export class UI {
 }
 
 export function main(): void {
-  // // all the initializing logic
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const gameUI = new UI()
   gameUI.showBanner()
-
-  // Giorgio
-  // const game = new GameController()
-  // game.start()
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // ReactEcsRenderer.setUiRenderer(exampleBannerUi)
 }
