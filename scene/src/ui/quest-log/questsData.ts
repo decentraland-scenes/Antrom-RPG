@@ -1,4 +1,4 @@
-export const QUEST_STAGES: StageType[] = [
+export const QUEST_STAGES: StageDataType[] = [
   // id quest is for general information, when no stage is selected
   {
     progress: -1,
@@ -31,14 +31,14 @@ export const QUEST_STAGES: StageType[] = [
 ]
 
 export type StageDataType = {
+  title: string
+  id: string
   progress: number
   need: number
   info: string
 }
 
 export type StageButtonType = {
-  title: string
-  id: string
+  stage: StageDataType
+  setStage: (arg: string) => void
 }
-
-export type StageType = StageButtonType & StageDataType

@@ -1,14 +1,22 @@
 import type { Sprite } from '../utils/utils'
 
 export enum Items {
-  I_UNSELECTED = 'unselected',
   I_BERRY = 'berry',
   I_BONE = 'bone',
   I_COIN = 'coins',
   I_TOKEN = 'token',
   I_MEAT = 'meat',
   I_WOOD = 'wood',
-  I_IRON = 'iron'
+  I_IRON = 'iron',
+  I_BASIC_RUNE = 'b_rune',
+  I_ADV_RUNE = 'a_rune',
+  I_MASTER_RUNE = 'm_rune',
+  I_BASIC_SPELL = 'b_spell',
+  I_ADV_SPELL = 'a_spell',
+  I_MASTER_SPELL = 'm_spell',
+  I_BASIC_SCROLL = 'b_scroll',
+  I_ADV_SCROLL = 'a_scroll',
+  I_MASTER_SCROLL = 'm_scroll'
 }
 
 export const resourcesMarketSprites: Record<string, Sprite> = {
@@ -160,14 +168,6 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
 }
 
 export const resourcesSprites: Record<Items, Sprite> = {
-  [Items.I_UNSELECTED]: {
-    atlasSrc: '',
-    atlasSize: { x: 0, y: 0 },
-    x: 0,
-    y: 0,
-    w: 0,
-    h: 0
-  },
   [Items.I_BERRY]: {
     atlasSrc: 'assets/images/item_spritesheet.png',
     atlasSize: { x: 1536, y: 1280 },
@@ -223,18 +223,82 @@ export const resourcesSprites: Record<Items, Sprite> = {
     y: 768,
     w: 256,
     h: 256
+  },
+  [Items.I_BASIC_RUNE]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 1024,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  [Items.I_ADV_RUNE]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 256,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  [Items.I_MASTER_RUNE]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 1280,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  [Items.I_BASIC_SPELL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 256,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  [Items.I_ADV_SPELL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 768,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  [Items.I_MASTER_SPELL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 1280,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  [Items.I_BASIC_SCROLL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 0,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  [Items.I_ADV_SCROLL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 512,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  [Items.I_MASTER_SCROLL]: {
+    atlasSrc: 'assets/images/item_spritesheet.png',
+    atlasSize: { x: 1536, y: 1280 },
+    x: 1280,
+    y: 512,
+    w: 256,
+    h: 256
   }
 }
 
 export const ITEMS: Record<Items, Item> = {
-  [Items.I_UNSELECTED]: {
-    name: 'Unselected',
-    sellPrice: 0,
-    buyPrice: 0,
-    withMana: false,
-    sprite: resourcesSprites.unselected,
-    id: Items.I_UNSELECTED
-  },
   [Items.I_BERRY]: {
     name: 'Berry',
     sellPrice: 1,
@@ -293,6 +357,87 @@ export const ITEMS: Record<Items, Item> = {
     withMana: true,
     sprite: resourcesMarketSprites.token,
     id: Items.I_IRON
+  },
+  [Items.I_BASIC_RUNE]: {
+    name: 'Basic Rune',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 50 }, { item: ITEMS.wood, amount: 50 }, { item: ITEMS.iron, amount: 50 }],
+    sprite: resourcesSprites.b_rune,
+    id: Items.I_BASIC_RUNE
+  },
+  [Items.I_ADV_RUNE]: {
+    name: 'Advanced Rune',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 5000 }, { item: ITEMS.wood, amount: 4000 }, { item: ITEMS.iron, amount: 2500 }, { item: ITEMS.bone, amount: 500 }],
+    sprite: resourcesSprites.a_rune,
+    id: Items.I_ADV_RUNE
+  },
+  [Items.I_MASTER_RUNE]: {
+    name: 'Master Rune',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 15000 }, { item: ITEMS.wood, amount: 12000 }, { item: ITEMS.iron, amount: 7500 }, { item: ITEMS.bone, amount: 1500 }],
+    sprite: resourcesSprites.m_rune,
+    id: Items.I_MASTER_RUNE
+  },
+  [Items.I_BASIC_SPELL]: {
+    name: 'Basic Spell',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 50 }, { item: ITEMS.wood, amount: 50 }, { item: ITEMS.iron, amount: 50 }],
+    sprite: resourcesSprites.b_spell,
+    id: Items.I_BASIC_SPELL
+  },
+  [Items.I_ADV_SPELL]: {
+    name: 'Advanced Spell',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 5000 }, { item: ITEMS.wood, amount: 4000 }, { item: ITEMS.iron, amount: 2500 }, { item: ITEMS.bone, amount: 500 }],
+    sprite: resourcesSprites.a_spell,
+    id: Items.I_ADV_SPELL
+  },
+  [Items.I_MASTER_SPELL]: {
+    name: 'Master Spell',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 15000 }, { item: ITEMS.wood, amount: 12000 }, { item: ITEMS.iron, amount: 7500 }, { item: ITEMS.bone, amount: 1500 }],
+    sprite: resourcesSprites.m_spell,
+    id: Items.I_MASTER_SPELL
+  },
+  [Items.I_BASIC_SCROLL]: {
+    name: 'Basic Scroll',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 50 }, { item: ITEMS.wood, amount: 50 }, { item: ITEMS.iron, amount: 50 }],
+    sprite: resourcesSprites.b_scroll,
+    id: Items.I_BASIC_SCROLL
+  },
+  [Items.I_ADV_SCROLL]: {
+    name: 'Advanced Scroll',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 5000 }, { item: ITEMS.wood, amount: 4000 }, { item: ITEMS.iron, amount: 2500 }, { item: ITEMS.bone, amount: 500 }],
+    sprite: resourcesSprites.a_scroll,
+    id: Items.I_ADV_SCROLL
+  },
+  [Items.I_MASTER_SCROLL]: {
+    name: 'Master Scroll',
+    sellPrice: 0,
+    buyPrice: 9999,
+    withMana: false,
+    // craftCost: [{ item: ITEMS.meat, amount: 15000 }, { item: ITEMS.wood, amount: 12000 }, { item: ITEMS.iron, amount: 7500 }, { item: ITEMS.bone, amount: 1500 }],
+    sprite: resourcesSprites.m_scroll,
+    id: Items.I_MASTER_SCROLL
   }
 }
 
@@ -301,13 +446,17 @@ export const RESOURCES_INVENTORY: InventoryItem[] = [
   { item: ITEMS.bone, amount: 5 }
 ]
 
-// Amount isn't an optional now, this is because idk how set optional in schemas.
 export const RESOURCES_MARKET: InventoryItem[] = [
   { item: ITEMS.berry },
-  { item: ITEMS.bone, amount: 9999 },
-  { item: ITEMS.token, amount: 9999 },
-  { item: ITEMS.coins, amount: 9999 }
+  { item: ITEMS.bone },
+  { item: ITEMS.token },
+  { item: ITEMS.coins }
 ]
+
+export type CraftCost = {
+  item: Item
+  amount: number
+}
 
 export type Item = {
   name: string
@@ -316,6 +465,7 @@ export type Item = {
   withMana: boolean
   sprite: Sprite
   id: string
+  craftCost?: CraftCost[]
 }
 
 export type InventoryItem = {
@@ -343,3 +493,8 @@ export type ResourcesMarketProps = {
   tradeUp: () => void
   isUnavailable: () => boolean
 }
+
+export const ASPECT_RATIO = 0.7
+export const WIDTH_FACTOR = 0.5
+export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
+export const SIZE_ITEM_FACTOR = 0.1

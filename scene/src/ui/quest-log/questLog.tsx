@@ -1,8 +1,8 @@
-import { canvasInfo } from '../utils/utils'
-import type { StageButtonType } from './questsData'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { QUEST_STAGES } from './questsData'
 
 import ReactEcs, { Button, UiEntity } from '@dcl/sdk/react-ecs'
+import { StageButton } from './stageButton'
 
 type questLogProps = {
   isInfo: boolean
@@ -32,18 +32,10 @@ function QuestLog({
   openQuestLog,
   showProgress,
   changeVisibility
-}: questLogProps): ReactEcs.JSX.Element {
-  function StageButton({ title, id }: StageButtonType): ReactEcs.JSX.Element {
-    return (
-      <UiEntity
-        uiTransform={{ width: '100%', height: '100%' }}
-        uiText={{ value: title, textAlign: 'middle-left', fontSize: 18 }}
-        onMouseDown={() => {
-          setStage(id)
-        }}
-      />
-    )
-  }
+}: questLogProps): ReactEcs.JSX.Element | null {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) return null
+
   return (
     <UiEntity
       uiTransform={{
@@ -160,7 +152,7 @@ function QuestLog({
                     key={index}
                     uiTransform={{ width: '100%', height: '20%' }}
                   >
-                    <StageButton title={stage.title} id={stage.id} />
+                    <StageButton stage={stage} setStage={setStage} />
                   </UiEntity>
                 ))}
               </UiEntity>

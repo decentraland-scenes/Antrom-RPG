@@ -1,16 +1,27 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import Banner from '../../ui/banner/banner'
+import Banner from '../../ui/banner/bannerComponent'
 import { BannerPosition, BannerType } from '../../ui/banner/bannerConstants'
-// import { UiCanvasInformation, engine } from "@dcl/sdk/ecs"
-// import { canvasInfo } from "../../ui/utils/utils"
+import * as utils from '@dcl-sdk/utils'
 
 export class UI {
-  public bannerType: BannerType = BannerType.B_BERRIES
-  public isBannerVisible: boolean = true
-  public bannerPosition: BannerPosition = BannerPosition.BP_CENTER_TOP
+  public bannerType: BannerType
+  public isBannerVisible: boolean
+  public bannerPosition: BannerPosition
+  public timer: number
   constructor() {
+    this.bannerType = BannerType.B_BERRIES
+    this.isBannerVisible = true
+    this.bannerPosition = BannerPosition.BP_CENTER_TOP
+    this.timer = 2
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.bannerUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
+  }
+
+  showBanner(): void {
+    utils.timers.setTimeout(() => {
+      console.log('timer on')
+      this.isBannerVisible = false
+    }, this.timer * 1000)
   }
 
   bannerUI(): ReactEcs.JSX.Element {
@@ -25,13 +36,6 @@ export class UI {
 }
 
 export function main(): void {
-  // Seba
-  // // all the initializing logic
-  // const gameUI = new UI()
-  // gameUI.bannerUI()
-  // Giorgio
-  // const game = new GameController()
-  // game.start()
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // ReactEcsRenderer.setUiRenderer(exampleBannerUi)
+  const gameUI = new UI()
+  gameUI.showBanner()
 }

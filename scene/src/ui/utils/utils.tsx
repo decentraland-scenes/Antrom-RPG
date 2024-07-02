@@ -1,4 +1,4 @@
-import { UiCanvasInformation, engine, type Coords } from '@dcl/sdk/ecs'
+import { type Coords } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 export function getUvs(sprite: Sprite | undefined): number[] {
@@ -61,20 +61,4 @@ export type Sprite = {
   y: number
   w: number
   h: number
-}
-
-export const canvasInfo = {
-  width: 0,
-  height: 0
-}
-
-export function getCanvasInfo(): void {
-  engine.addSystem(() => {
-    const uiCanvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
-
-    if (uiCanvasInfo === null) return
-
-    canvasInfo.width = uiCanvasInfo.width
-    canvasInfo.height = uiCanvasInfo.height
-  })
 }
