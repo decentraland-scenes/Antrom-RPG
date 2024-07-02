@@ -6,18 +6,17 @@ import { LEVEL_TYPES } from '../types'
 import { ITEM_TYPES } from '../playerInventoryMaps'
 import { Transform } from '@dcl/sdk/ecs'
 
-const DEFAULT_ATTACK = 75
-const DEFAULT_XP = 250
-const DEFAULT_LEVEL = 80
-const DEFAULT_HP = 450
+const DEFAULT_ATTACK = 15
+const DEFAULT_XP = 100
+const DEFAULT_LEVEL = 20
+const DEFAULT_HP = 700
 
-const POSITIONS: Vector3[] = [Vector3.create(35.18, 63.58, 33.05)]
-// CHECK TYPE DEFENSE
-export default class BerserkerNightmare extends MonsterOligar {
-  shapeFile = 'assets/models/SkeletonSword.glb'
-  hoverText = 'Attack Nightmare Skeleton Soldier!'
-  minLuck = 20
-  static currentInstance: BerserkerNightmare
+// CHECK TYPE HEALER
+export default class TrewsE extends MonsterOligar {
+  shapeFile = 'assets/models/SkeletonwBow.glb'
+  hoverText = 'Attack LVL 25 Skeleton Ranger!'
+  minLuck = 12
+  static currentInstance: TrewsE
 
   constructor() {
     const stage = DungeonStage.read()
@@ -31,7 +30,7 @@ export default class BerserkerNightmare extends MonsterOligar {
     this.topOffSet = 3
     // # in %
     this.dropRate = 100
-    BerserkerNightmare.currentInstance = this
+    TrewsE.currentInstance = this
   }
 
   onDropXp(): void {
@@ -40,7 +39,7 @@ export default class BerserkerNightmare extends MonsterOligar {
     const exp = [
       {
         type: LEVEL_TYPES.ENEMY,
-        value: 3
+        value: 6
       },
       {
         type: LEVEL_TYPES.PLAYER,
@@ -50,7 +49,7 @@ export default class BerserkerNightmare extends MonsterOligar {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const loot = [
       {
-        type: ITEM_TYPES.ROCK,
+        type: ITEM_TYPES.TREE,
         value: 50
       }
     ]
@@ -59,9 +58,9 @@ export default class BerserkerNightmare extends MonsterOligar {
   }
 
   onDropLoot(): void {
-    // manageDungeonKeys('foundKey3')
+    // manageDungeonKeys('foundKey4')
     // foundSmallKey()
-    // key5.increase(1)
+    // key4.increase(1)
     // log('on drop here')
   }
 
@@ -72,8 +71,12 @@ export default class BerserkerNightmare extends MonsterOligar {
   create(): void {}
 
   loadTransformation(): void {
-    const initialPosition = POSITIONS[getRandomInt(POSITIONS.length)]
-    const initialRotation = Quaternion.fromEulerDegrees(0, 90, 0)
+    const initialPosition = Vector3.create(83.62, 63.5, 46.4)
+    const initialRotation = Quaternion.fromEulerDegrees(
+      0,
+      getRandomInt(10) / 10 + getRandomInt(4),
+      0
+    )
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation

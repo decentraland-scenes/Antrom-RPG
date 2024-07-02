@@ -1,15 +1,15 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
-import { player } from '../../player/player'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../types'
 import { ITEM_TYPES } from '../playerInventoryMaps'
 import { Transform } from '@dcl/sdk/ecs'
 
-const DEFAULT_ATTACK = 0
+const DEFAULT_ATTACK = 50
 const DEFAULT_XP = 250
-const DEFAULT_LEVEL = 80
+const DEFAULT_LEVEL = 100
+const DEFAULT_HP = 700
 
 const POSITIONS: Vector3[] = [
   Vector3.create(83.62, 63.5, 46.4),
@@ -28,7 +28,7 @@ export default class TrewsNightmare extends MonsterOligar {
       Math.round(DEFAULT_ATTACK + stage * 1.75),
       Math.round(DEFAULT_XP + stage * 4),
       Math.round(DEFAULT_LEVEL + stage * 0.25),
-      Math.round(player.maxHealth * 2 + stage * 60)
+      Math.round(DEFAULT_HP + stage * 60)
     )
     this.initMonster()
     this.topOffSet = 3
