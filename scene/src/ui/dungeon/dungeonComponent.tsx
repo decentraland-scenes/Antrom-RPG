@@ -321,7 +321,7 @@ function Dungeon({
                 textureMode: 'stretch',
                 texture: { src: 'assets/images/chooseDungeon/exitButton.png' }
               }}
-              onMouseDown={()=>{setOpen(true)}}
+              onMouseDown={()=>{setOpen(false)}}
             />
             <UiEntity
               uiTransform={{
