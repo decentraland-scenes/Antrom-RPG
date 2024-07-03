@@ -66,7 +66,7 @@ export class LoadingUI {
           }}
           uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
           onMouseDown={() => {
-            this.uiController.playDungeonUI.changeVisibility()
+            this.uiController.playDungeonUI.setVisibility(true)
             this.isVisible = false
             void movePlayerTo({
               newRelativePosition: Vector3.create(-22.21, 5.43, -26.53)
