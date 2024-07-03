@@ -107,7 +107,7 @@ export class PlayDungeonUI {
     if (this.timer - dt <= 0 && this.isLoading) {
       this.isLoading = false
       engine.removeSystem(this.loadingDungeonSystem)
-      this.isVisible = false
+      this.setOpen(false)
     } else {
       this.timer = this.timer - dt
     }
