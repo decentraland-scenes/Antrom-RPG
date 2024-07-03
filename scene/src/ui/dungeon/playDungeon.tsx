@@ -29,12 +29,12 @@ export class PlayDungeonUI {
     this.timer = 2
   }
 
-  changeVisibility(): void {
-    this.isVisible = !this.isVisible
+  setVisibility(visibility: boolean): void {
+    this.isVisible = visibility
   }
 
-  openMenu(): void {
-    this.isOpen = !this.isOpen
+  setOpen(open: boolean): void {
+    this.isOpen = open
   }
 
   scrollRight(): void {
@@ -107,14 +107,14 @@ export class PlayDungeonUI {
     if (this.timer - dt <= 0 && this.isLoading) {
       this.isLoading = false
       engine.removeSystem(this.loadingDungeonSystem)
-      this.isVisible = false
+      this.setOpen(false)
     } else {
       this.timer = this.timer - dt
     }
   }
 
   openDungeonSelection(): void {
-    this.openMenu()
+    this.setOpen(true)
     for (const dungeon of DUNGEONS) {
       dungeon.selected = false
     }
@@ -139,7 +139,7 @@ export class PlayDungeonUI {
         isVisible={this.isVisible}
         scrollPosition={this.scrollPosition}
         isPlayable={this.isPlayable}
-        openMenu={this.openMenu.bind(this)}
+        setOpen={this.setOpen.bind(this)}
         scrollRight={this.scrollRight.bind(this)}
         scrollLeft={this.scrollLeft.bind(this)}
         selectOption={this.selectOption.bind(this)}

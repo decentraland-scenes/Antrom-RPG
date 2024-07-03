@@ -1,7 +1,7 @@
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterMeat from './monsterMeat'
 import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { getRandomIntRange } from './../utils/getRandomInt'
+import MonsterMeat from './monsterMeat'
 
 const DEFAULT_ATTACK = 2
 const DEFAULT_XP = 10
