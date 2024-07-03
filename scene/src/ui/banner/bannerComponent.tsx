@@ -39,7 +39,7 @@ function Banner({
           left: (canvasInfo.width - canvasInfo.width * WIDTH_FACTOR) / 2,
           top: TOP_POSITION
         },
-        positionType:'absolute',
+        positionType: 'absolute',
         width: canvasInfo.width * WIDTH_FACTOR,
         height: canvasInfo.width * WIDTH_FACTOR * ASPECT_RATIO
       }}

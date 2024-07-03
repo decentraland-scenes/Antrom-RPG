@@ -8,7 +8,11 @@ import { type GameController } from './game.controller'
 import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { Player } from '../player/player'
 import Banner from '../ui/banner/bannerComponent'
-import { BANNER_DURATION, BannerPosition, type BannerType } from '../ui/banner/bannerConstants'
+import {
+  BANNER_DURATION,
+  BannerPosition,
+  type BannerType
+} from '../ui/banner/bannerConstants'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -47,7 +51,6 @@ export class UIController {
     )
   }
 
-  
   displayAnnouncement(
     announcement: string,
     color: Color4,
@@ -82,10 +85,7 @@ export class UIController {
     )
   }
 
-  displayBanner(
-    bannerType: BannerType,
-    bannerPosition?: BannerPosition
-  ): void {
+  displayBanner(bannerType: BannerType, bannerPosition?: BannerPosition): void {
     utils.timers.clearInterval(BANNER_DURATION)
     console.log('OPEN BANNER')
     this.bannerType = bannerType
@@ -97,7 +97,4 @@ export class UIController {
       this.isBannerVisible = false
     }, BANNER_DURATION)
   }
-
-
-
 }
