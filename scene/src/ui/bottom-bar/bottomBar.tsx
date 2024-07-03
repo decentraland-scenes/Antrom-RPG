@@ -50,6 +50,7 @@ function BottomBar({
   return (
     <UiEntity
       uiTransform={{
+        positionType: 'absolute',
         width: canvasInfo.width,
         height: canvasInfo.height,
         display: isVisible ? 'flex' : 'none',

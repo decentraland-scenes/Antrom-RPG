@@ -6,6 +6,7 @@ import { Color4 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { type GameController } from './game.controller'
 import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
+import { Player } from '../player/player'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -20,10 +21,11 @@ export class UIController {
     this.playDungeonUI = new PlayDungeonUI(this)
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const uiComponent = () => [
+      Player.getInstance().PlayerUI(),
       this.loadingUI.mainUi(),
       NpcUtilsUi(),
       this.announcementUI(),
-      this.playDungeonUI.DungeonUI()
+      this.playDungeonUI.DungeonUI(),
     ]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
