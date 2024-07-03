@@ -39,6 +39,7 @@ function Banner({
           left: (canvasInfo.width - canvasInfo.width * WIDTH_FACTOR) / 2,
           top: TOP_POSITION
         },
+        positionType:'absolute',
         width: canvasInfo.width * WIDTH_FACTOR,
         height: canvasInfo.width * WIDTH_FACTOR * ASPECT_RATIO
       }}
@@ -51,17 +52,5 @@ function Banner({
     />
   )
 }
-
-// const TIME = 100
-// let timer: number = 0
-// export function bannerSystem(dt: number): void {
-//   if (TIME - timer < 0) {
-//     isVisible = false
-//     timer = 0
-//     engine.removeSystem(bannerSystem)
-//   } else {
-//     timer = timer + dt
-//   }
-// }
 
 export default Banner

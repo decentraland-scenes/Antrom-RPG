@@ -29,11 +29,11 @@ export class PlayDungeonUI {
     this.timer = 2
   }
 
-  setVisibility(visibility:boolean): void {
+  setVisibility(visibility: boolean): void {
     this.isVisible = visibility
   }
 
-  setOpen(open:boolean): void {
+  setOpen(open: boolean): void {
     this.isOpen = open
   }
 

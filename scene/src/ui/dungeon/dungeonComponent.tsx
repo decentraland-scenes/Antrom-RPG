@@ -26,7 +26,7 @@ type DungeonProps = {
   dungeon: string
   difficulty: string
   isPlayable: boolean
-  setOpen: (arg:boolean) => void
+  setOpen: (arg: boolean) => void
   scrollRight: () => void
   scrollLeft: () => void
   selectOption: ({ id, array }: SelectOptionProps) => void
@@ -321,7 +321,9 @@ function Dungeon({
                 textureMode: 'stretch',
                 texture: { src: 'assets/images/chooseDungeon/exitButton.png' }
               }}
-              onMouseDown={()=>{setOpen(false)}}
+              onMouseDown={() => {
+                setOpen(false)
+              }}
             />
             <UiEntity
               uiTransform={{
