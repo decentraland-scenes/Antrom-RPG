@@ -424,10 +424,10 @@ export class Player extends Character {
   }
 
   PlayerUI(): ReactEcs.JSX.Element {
-    return (      
+    return (
       <BottomBar
         isVisible={true}
-        actualHpPercent={100.0 * this.health / this.maxHealth}
+        actualHpPercent={(100.0 * this.health) / this.maxHealth}
         levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
         actualXp={this.xp}
         level={this.level}
