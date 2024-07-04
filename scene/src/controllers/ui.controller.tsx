@@ -35,6 +35,7 @@ export class UIController {
       this.loadingUI.mainUi(),
       NpcUtilsUi(),
       this.announcementUI(),
+      this.bannerUI(),
       this.playDungeonUI.DungeonUI()
     ]
     ReactEcsRenderer.setUiRenderer(uiComponent)
@@ -86,8 +87,7 @@ export class UIController {
   }
 
   displayBanner(bannerType: BannerType, bannerPosition?: BannerPosition): void {
-    utils.timers.clearInterval(BANNER_DURATION)
-    console.log('OPEN BANNER')
+    utils.timers.clearInterval(BANNER_DURATION * 1000)
     this.bannerType = bannerType
     this.isBannerVisible = true
     if (bannerPosition !== undefined) {
@@ -95,6 +95,6 @@ export class UIController {
     }
     utils.timers.setTimeout(() => {
       this.isBannerVisible = false
-    }, BANNER_DURATION)
+    }, BANNER_DURATION * 1000)
   }
 }
