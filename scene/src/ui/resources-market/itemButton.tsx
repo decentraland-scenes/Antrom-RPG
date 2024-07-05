@@ -1,6 +1,6 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { resourcesMarketSprites, type InventoryItem } from './resourcesData'
-import { getUvs } from '../utils/utils'
+import { getUvs } from '../../utils/ui-utils'
 
 type ItemButtonType = {
   inventoryItem: InventoryItem

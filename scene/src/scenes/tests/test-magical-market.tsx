@@ -7,7 +7,7 @@ import {
   PURCHASE_SPRITE,
   magicalItemsMarketSprites
 } from '../../ui/magical-market/magicalMarketData'
-import type { Sprite } from '../../ui/utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 import { type Item } from '../../ui/resources-market/resourcesData'
 
 export class UI {

@@ -10,7 +10,7 @@ import type {
   Items
 } from '../../ui/resources-market/resourcesData'
 import ResourcesMarket from '../../ui/resources-market/resourcesMarket'
-import type { Sprite } from '../../ui/utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 
 const BALANCE: number = 300
 
