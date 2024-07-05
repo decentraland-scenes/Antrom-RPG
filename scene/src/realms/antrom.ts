@@ -281,7 +281,7 @@ export class Antrom {
       this.executioners.push(new Executioner())
     }
     for (let i = 0; i < 4; i++) {
-      this.pigs.push(new Pig())
+      this.pigs.push(new Pig(this.gameController))
     }
     for (let i = 0; i < 8; i++) {
       this.chickens.push(new Chicken())
