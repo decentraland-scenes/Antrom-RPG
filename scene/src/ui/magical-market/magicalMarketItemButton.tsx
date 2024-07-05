@@ -1,6 +1,6 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type Item } from '../resources-market/resourcesData'
-import { getUvs } from '../utils/utils'
+import { getUvs } from '../../utils/ui-utils'
 import { magicalItemsMarketSprites } from './magicalMarketData'
 
 type magicalItemButtonType = {

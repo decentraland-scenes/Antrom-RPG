@@ -1,7 +1,7 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import { LoadingUI } from '../ui/loading/loading'
 import { NpcUtilsUi } from 'dcl-npc-toolkit'
-import Announcement from '../uis/Announcement'
+import Announcement from '../ui/announcement/announcement'
 import { Color4 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { type GameController } from './game.controller'

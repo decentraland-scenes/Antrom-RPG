@@ -1,6 +1,6 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { Input, UiEntity } from '@dcl/sdk/react-ecs'
-import { Tab, getUvs } from '../utils/utils'
+import { Tab, getUvs } from '../../utils/ui-utils'
 import { ItemButton } from './itemButton'
 import {
   ASPECT_RATIO,

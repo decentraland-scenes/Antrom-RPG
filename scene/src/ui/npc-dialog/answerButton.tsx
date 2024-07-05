@@ -1,7 +1,7 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs } from '../utils/utils'
+import { getUvs } from '../../utils/ui-utils'
 import {
   type DialogButton,
   npcDialogsSprites,

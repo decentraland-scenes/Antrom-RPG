@@ -50,7 +50,7 @@ export function Tab(props: {
       onMouseDown={() => {
         props.callback(props.callbackValue)
       }}
-    ></UiEntity>
+    />
   )
 }
 

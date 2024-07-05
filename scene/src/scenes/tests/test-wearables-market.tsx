@@ -1,5 +1,5 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import type { Sprite } from '../../ui/utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 import {
   APPRENTICE_WEARABLES,
   CLICKED_PURCHASE_SPRITE,

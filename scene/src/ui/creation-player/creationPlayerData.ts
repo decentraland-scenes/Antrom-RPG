@@ -1,4 +1,4 @@
-import { type Sprite } from '../utils/utils'
+import { type Sprite } from '../../utils/ui-utils'
 
 export const creationPlayerSprites: Record<string, Sprite> = {
   background: {
