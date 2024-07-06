@@ -11,6 +11,7 @@ import {
   SEASON_PASS
 } from './dungeonsData'
 import { OptionButton } from './optionButton'
+import Canvas from '../canvas/Canvas'
 
 export type SelectOptionProps = {
   id: string
@@ -57,13 +58,7 @@ function Dungeon({
   if (canvasInfo === null) return null
 
   return (
-    <UiEntity
-      uiTransform={{
-        width: '100%',
-        height: '100%',
-        display: isVisible ? 'flex' : 'none'
-      }}
-    >
+    <Canvas>
       <UiEntity
         uiTransform={{
           width: '100%',
@@ -341,7 +336,7 @@ function Dungeon({
           </UiEntity>
         </UiEntity>
       </UiEntity>
-    </UiEntity>
+    </Canvas>
   )
 }
 

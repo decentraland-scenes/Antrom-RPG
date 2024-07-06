@@ -45,24 +45,24 @@ export default class Executioner extends MonsterMob {
       // player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const exp = [
-      {
-        type: LEVEL_TYPES.ENEMY,
-        value: 1
-      },
-      {
-        type: LEVEL_TYPES.PLAYER,
-        value: xp
-      }
-    ]
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const loot = [
-      {
-        type: ITEM_TYPES.BONE,
-        value: 1
-      }
-    ]
+    // const exp = [
+    //   {
+    //     type: LEVEL_TYPES.ENEMY,
+    //     value: 1
+    //   },
+    //   {
+    //     type: LEVEL_TYPES.PLAYER,
+    //     value: xp
+    //   }
+    // ]
+
+    // const loot = [
+    //   {
+    //     type: ITEM_TYPES.BONE,
+    //     value: 1
+    //   }
+    // ]
+
     // UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
@@ -72,11 +72,6 @@ export default class Executioner extends MonsterMob {
 
   setupAttackTriggerBox(): void {
     super.setupAttackTriggerBox()
-  }
-
-  create(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mons = new Executioner()
   }
 
   loadTransformation(): void {

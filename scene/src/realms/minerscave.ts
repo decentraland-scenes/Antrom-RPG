@@ -7,17 +7,16 @@ import {
   PointerEvents,
   Transform,
   engine,
-  executeTask,
   inputSystem
 } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { movePlayerTo } from '~system/RestrictedActions'
-import { getWorldTime } from '~system/Runtime'
-import { Gem, Items, Pot } from '../mineables'
 import { type GameController } from '../controllers/game.controller'
+import { Gem, Items, Pot } from '../mineables'
+import { setPlayerPosition } from '../utils/engine'
 import { getRandomInt } from '../utils/getRandomInt'
+import { Realm } from './types'
 
-export class MinersCave {
+export class MinersCave extends Realm {
   private readonly cave = engine.addEntity()
   private readonly ladder = engine.addEntity()
   private readonly pot_positions: Vector3[]
@@ -25,6 +24,7 @@ export class MinersCave {
   private readonly gems_entities: Gem[]
   gameController: GameController
   constructor(gameController: GameController) {
+    super()
     this.gameController = gameController
     GltfContainer.create(this.cave, { src: 'models/cave.glb' })
     GltfContainer.create(this.ladder, { src: 'models/CaveLadder.glb' })
@@ -80,12 +80,6 @@ export class MinersCave {
         // buildWilderness() ??
       }
     })
-    executeTask(async () => {
-      const time = await getWorldTime({})
-      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      time.seconds < 6.25 * 60 * 60 || time.seconds > 19.85 * 60 * 60
-      console.log(time.seconds)
-    })
     this.pot_positions = [
       Vector3.create(60.93, 19.66, -7.77),
       Vector3.create(57.43, 16.34, 13.89),
@@ -135,9 +129,7 @@ export class MinersCave {
       utils.timers.setTimeout(() => {
         // createQuestTimerText()
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({
-          newRelativePosition: Vector3.create(69.38, 17.73, -24.05)
-        })
+        setPlayerPosition(69.38, 17.73, -24.05)
       }, 15000)
     }, 50)
   }

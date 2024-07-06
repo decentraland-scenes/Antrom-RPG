@@ -17,7 +17,7 @@ import {
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as npc from 'dcl-npc-toolkit'
 import { openDialogWindow } from 'dcl-npc-toolkit'
-import { movePlayerTo, openExternalUrl } from '~system/RestrictedActions'
+import { openExternalUrl } from '~system/RestrictedActions'
 import { GetPlayerDungeonEasyLeaderBoard } from '../api/api'
 import { type GameController } from '../controllers/game.controller'
 import {
@@ -27,14 +27,16 @@ import {
   jailOpenOnce,
   trewsKill
 } from '../counters'
-import { setCurrentActiveScene } from '../instances'
-import { BerryTree, Items, Rock, Tree } from '../mineables'
+import Chicken from '../enemies/chicken'
 import Executioner from '../enemies/Executioner'
 import Pig from '../enemies/pig'
-import Chicken from '../enemies/chicken'
+import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
+import { BerryTree, Items, Rock, Tree } from '../mineables'
+import { setPlayerPosition } from '../utils/engine'
+import { Realm } from './types'
 
-export class Antrom {
+export class Antrom extends Realm {
   // BuildBuilderSceneAntrom
   private readonly boardParent = engine.addEntity()
   private readonly leaderBoard: LeaderBoard
@@ -88,6 +90,8 @@ export class Antrom {
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
+    super()
+
     this.gameController = gameController
     this.executioners = []
     this.pigs = []
@@ -306,15 +310,16 @@ export class Antrom {
 
   async updateBoard(): Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
-    console.log('dng easy leaderboard', scoreData)
-    const data = [...scoreData.dungeon_action_easy]
-    data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
-    const topTen = data.slice(0, 10)
-    this.leaderBoard
-      .buildLeaderBoard(topTen, this.boardParent, 10)
-      .catch((error: Error) => {
-        console.log(error)
-      })
+    if (scoreData.dungeon_action_easy !== undefined) {
+      const data = [...scoreData.dungeon_action_easy]
+      data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
+      const topTen = data.slice(0, 10)
+      this.leaderBoard
+        .buildLeaderBoard(topTen, this.boardParent, 10)
+        .catch((error: Error) => {
+          console.log(error)
+        })
+    }
   }
 
   AntromNPCs(): void {
@@ -754,9 +759,7 @@ export class Antrom {
             // spawnBoss3()
             garrisonCreatedOnce.increase(1)
           } else {
-            void movePlayerTo({
-              newRelativePosition: Vector3.create(-9.83, 48.19, -45.24)
-            })
+            setPlayerPosition(-9.83, 48.19, -45.24)
           }
           setCurrentActiveScene('LegacyDungeon')
         } else {

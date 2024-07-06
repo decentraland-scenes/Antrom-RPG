@@ -1,28 +1,29 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import * as utils from '@dcl-sdk/utils'
 import {
-  engine,
+  Animator,
+  AudioSource,
   AvatarModifierArea,
   AvatarModifierType,
-  Transform,
-  GltfContainer,
-  Animator,
   EasingFunction,
+  GltfContainer,
   InputAction,
+  Material,
+  MeshRenderer,
   PointerEventType,
   PointerEvents,
+  Transform,
   Tween,
-  inputSystem,
-  MeshRenderer,
-  Material,
-  AudioSource
+  engine,
+  inputSystem
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { movePlayerTo } from '~system/RestrictedActions'
-import { setCurrentActiveScene } from '../instances'
 import { GetPlayerDungeonEasyLeaderBoard } from '../api/api'
 import { type GameController } from '../controllers/game.controller'
+import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
+import { setPlayerPosition } from '../utils/engine'
+import { Realm } from './types'
 
 type Difficulty = {
   EASY: 'easy'
@@ -146,7 +147,7 @@ const caveSoldierPositions = [
 //   Vector3.create(61.91, 3.29, 56.97)
 // ]
 
-export class Dungeon {
+export class Dungeon extends Realm {
   private readonly boardParent = engine.addEntity()
   private readonly leaderBoard: LeaderBoard
   private readonly wall1 = engine.addEntity()
@@ -163,6 +164,7 @@ export class Dungeon {
   private readonly doorOpening = engine.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
+    super()
     this.gameController = gameController
     GltfContainer.create(this.wall1, {
       src: 'assets/models/sandDungeonDoor.glb'
@@ -402,42 +404,32 @@ export class Dungeon {
       this.buildDesertDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({
-          newRelativePosition: Vector3.create(23.01, 1.72, 91.7)
-        })
+        setPlayerPosition(23.01, 1.72, 91.7)
       }, 5000)
     }
     if (scene === 'LegacyDungeon') {
       // buildLegacyDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({
-          newRelativePosition: Vector3.create(72.32, 1.03, 69.08)
-        })
+        setPlayerPosition(72.32, 1.03, 69.08)
       }, 5000)
     }
     if (scene === 'CaveDungeon') {
       // buildCaveDungeonScene()
-      void movePlayerTo({
-        newRelativePosition: Vector3.create(66.62, 0.54, -41.19)
-      })
+      setPlayerPosition(66.62, 0.54, -41.19)
     }
     if (scene === 'OrcVillage') {
       // buildOrcDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({
-          newRelativePosition: Vector3.create(86.39, 29.26, 86.5)
-        })
+        setPlayerPosition(86.39, 29.26, 86.5)
       }, 5000)
     }
     if (scene === 'UndeadVillage') {
       // buildUndeadDungeonScene()
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
-        void movePlayerTo({
-          newRelativePosition: Vector3.create(0.98, 7.69, -6.0)
-        })
+        setPlayerPosition(0.98, 7.69, -6.0)
       }, 5000)
     }
   }
@@ -445,22 +437,16 @@ export class Dungeon {
   resetDungeon(scene: string): void {
     if (scene === 'DesertDungeon') {
       // resetDesertDungeonScene()
-      void movePlayerTo({
-        newRelativePosition: Vector3.create(23.01, 1.72, 91.7)
-      })
+      setPlayerPosition(23.01, 1.72, 91.7)
     }
     if (scene === 'CaveDungeon') {
       // resetCaveDungeonScene()
-      void movePlayerTo({
-        newRelativePosition: Vector3.create(66.62, 0.54, -41.19)
-      })
+      setPlayerPosition(66.62, 0.54, -41.19)
     }
     if (scene === 'LegacyDungeon') {
       setCurrentActiveScene('LegacyDungeon')
       // buildLegacyDungeonScene()
-      void movePlayerTo({
-        newRelativePosition: Vector3.create(72.32, 1.03, 69.08)
-      })
+      setPlayerPosition(72.32, 1.03, 69.08)
     }
   }
 
@@ -470,15 +456,16 @@ export class Dungeon {
 
   async updateBoard(): Promise<void> {
     const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
-    console.log('dng easy leaderboard', scoreData)
-    const data = [...scoreData.dungeon_action_easy]
-    data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
-    const topTen = data.slice(0, 10)
-    this.leaderBoard
-      .buildLeaderBoard(topTen, this.boardParent, 10)
-      .catch((error: Error) => {
-        console.log(error)
-      })
+    if (scoreData.dungeon_action_easy !== undefined) {
+      const data = [...scoreData.dungeon_action_easy]
+      data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
+      const topTen = data.slice(0, 10)
+      this.leaderBoard
+        .buildLeaderBoard(topTen, this.boardParent, 10)
+        .catch((error: Error) => {
+          console.log(error)
+        })
+    }
   }
 
   createResourceHub(): void {}

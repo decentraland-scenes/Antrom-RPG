@@ -1,5 +1,6 @@
 import { signedFetch } from '~system/SignedFetch'
 import { getPlayer } from '@dcl/sdk/src/players'
+import { waitUntilWalletIsConnected } from '../utils/wallet'
 
 // const REDEEM_BASE_URL = `http://localhost:3000`;
 // const REDEEM_BASE_URL = `https://ipwpq4k3zi.execute-api.us-east-1.amazonaws.com`
@@ -13,6 +14,8 @@ export const GetPlayerDungeonEasyLeaderBoard = async () => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function getData(url: string, headers = {}) {
+  await waitUntilWalletIsConnected()
+
   // Default options are marked with *
   const response = await signedFetch({
     url: `${BASE_URL}${url}`,

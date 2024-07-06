@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
   Animator,
   GltfContainer,
@@ -30,7 +29,7 @@ export class MonsterOligar extends Character {
   shapeFile?: string
   shape: string = ''
   audioFile?: string
-  healthBar!: Entity
+  healthBar?: Entity
   idleClip: string = 'idle'
   attackClip: string = 'attack'
   walkClip: string = 'walk'
@@ -45,7 +44,7 @@ export class MonsterOligar extends Character {
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   attackTrigger!: Entity
-  label?: any
+  label?: Entity
   topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
@@ -89,11 +88,11 @@ export class MonsterOligar extends Character {
 
   initMonster(): void {
     console.log('init')
-    if (!this.shape && this.shapeFile) {
+    if (this.shape.length === 0 && this.shapeFile !== undefined) {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-    if (this.audioFile) {
+    if (this.audioFile !== undefined) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
       // this.addComponentOrReplace(this.sound)
@@ -195,11 +194,11 @@ export class MonsterOligar extends Character {
   }
 
   updateHealthBar(): void {
-    if (this.healthBar) {
+    if (this.healthBar !== undefined) {
       Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
     }
 
-    if (this.label) {
+    if (this.label !== undefined) {
       TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
@@ -303,7 +302,7 @@ export class MonsterOligar extends Character {
 
   dyingAnimation(): void {
     this.isDeadAnimation = true
-    if (this.dieClip) {
+    if (this.dieClip.length > 0) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
     this.create()
@@ -340,10 +339,10 @@ export class MonsterOligar extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    if (this.healthBar) {
+    if (this.healthBar !== undefined) {
       engine.removeEntity(this.healthBar)
     }
-    if (this.label) {
+    if (this.label !== undefined) {
       engine.removeEntity(this.label)
     }
     if (this.rangeAttackTrigger != null) {
