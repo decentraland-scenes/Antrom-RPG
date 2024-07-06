@@ -129,8 +129,8 @@ export class MonsterMeat extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
+    // this.setupEngageTriggerBox()
+    // this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
