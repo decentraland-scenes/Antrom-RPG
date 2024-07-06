@@ -13,6 +13,7 @@ import {
 import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
 import { type GameController } from './game.controller'
+import Canvas from '../ui/canvas/Canvas'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -83,21 +84,32 @@ export class UIController {
   ui(): ReactEcs.JSX.Element {
     return (
       <UiEntity>
+        {/* Announcement Overlay */}
         {this.isAnnouncementVisible && (
           <Announcement
             text={this.announcement}
             color={this.announcement_color}
           />
         )}
+
+        {/* Banner Overlay */}
         {this.bannerType !== undefined && this.isBannerVisible && (
           <Banner
             type={this.bannerType}
             position={this.bannerPosition ?? BannerPosition.BP_CENTER_TOP}
           />
         )}
-        {this.playDungeonUI.DungeonUI()}
+
+        {/* Dungoen HUD and screens */}
+        {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
+
+        {/* Player HUD */}
         {Player.getInstance().PlayerUI()}
-        {NpcUtilsUi()}
+
+        {/* NP utils library UI */}
+        <Canvas>{NpcUtilsUi()}</Canvas>
+
+        {/* Loadin screen */}
         {this.loadingUI.isVisible && this.loadingUI.mainUi()}
       </UiEntity>
     )
