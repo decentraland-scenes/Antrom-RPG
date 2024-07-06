@@ -82,10 +82,10 @@ export class MonsterAttack {
       }
     }
 
+    // TODO: empty function
     function monsterMove(entity: Entity, forward: Vector3): void {
-      const transform = Transform.getMutable(entity)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const monsterMove = Vector3.lerp(transform.position, forward, 1)
+      // const transform = Transform.getMutable(entity)
+      // const monsterMove = Vector3.lerp(transform.position, forward, 1)
     }
   }
 }

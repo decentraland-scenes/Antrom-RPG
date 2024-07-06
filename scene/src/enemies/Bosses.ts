@@ -1,7 +1,7 @@
-import { movePlayerTo } from '~system/RestrictedActions'
-import { MonsterOligar } from './monster'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Transform } from '@dcl/sdk/ecs'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { setPlayerPosition } from '../utils/engine'
+import { MonsterOligar } from './monster'
 
 const DEFAULT_ATTACK = 0
 const DEFAULT_XP = 1500
@@ -79,9 +79,7 @@ export default class Bosses extends MonsterOligar {
   }
 
   onDropXp(): void {
-    void movePlayerTo({
-      newRelativePosition: Vector3.create(77.12, 6.61, 27.78)
-    })
+    setPlayerPosition(77.12, 6.61, 27.78)
     // Oligar.currentStage++
     if (!Bosses.canCreate()) {
       // ui.displayAnnouncement("You WIN")
@@ -94,12 +92,6 @@ export default class Bosses extends MonsterOligar {
   }
 
   onDropLoot(): void {}
-
-  create(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mons = new Bosses()
-    // engine.addEntity(mons)
-  }
 
   loadTransformation(): void {
     const initialPosition = Vector3.create(getRandomIntRange(1, 28), 0.88, 14)

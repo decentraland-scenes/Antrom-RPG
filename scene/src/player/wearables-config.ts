@@ -11,20 +11,32 @@ export type Stats = {
   magicBuff?: number
 }
 
-export type WearableItem = {
+type WearableMappingItem = {
   label: string
   urn: string
   stats: Stats
   dStats?: Stats
   duplicates?: number
 }
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
-export class WearablesConfig {
-  static spritesheet = 'images/wearables_spritesheet.png'
 
-  static json = wearablesJson.frames
+type WearableItemImage = {
+  name: string
+  image: string
+}
 
-  static wearables = {
+type WearableConfigType = {
+  spritesheet: string
+  json: any
+  wearables: Record<string, WearableItemImage[]>
+  mapping: Record<string, WearableMappingItem>
+}
+
+export const WearablesConfig: WearableConfigType = {
+  spritesheet: 'images/wearables_spritesheet.png',
+
+  json: wearablesJson.frames,
+
+  wearables: {
     head: [
       {
         name: 'BerserkerHelmet',
@@ -474,12 +486,11 @@ export class WearablesConfig {
         image: 'health.png'
       }
     ]
-  }
+  },
 
   // TODO: add dstats to everything
 
-  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
-  static mapping: { [key: string]: WearableItem } = {
+  mapping: {
     DoubleHackets: {
       label: 'Double Hatchets',
       urn: 'urn:decentraland:matic:collections-v2:0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0',

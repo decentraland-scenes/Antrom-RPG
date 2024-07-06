@@ -236,8 +236,8 @@ export class ResourcesMarketUiTest {
   }
 }
 
+export let gameUi: ResourcesMarketUiTest
 export function main(): void {
   // all the initializing logic
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gameUI = new ResourcesMarketUiTest()
+  gameUi = new ResourcesMarketUiTest()
 }
