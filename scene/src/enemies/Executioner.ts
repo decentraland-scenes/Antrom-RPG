@@ -1,9 +1,8 @@
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Transform, engine } from '@dcl/sdk/ecs'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { player } from '../player/player'
 import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from './types'
-import { player } from '../player/player'
-import { ITEM_TYPES } from './playerInventoryMaps'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -37,14 +36,12 @@ export default class Executioner extends MonsterMob {
 
   onDropXp(): void {
     // this.create()
-    const xp = getRandomIntRange(this.xp, this.xp + 10)
-    const randomNumber = Math.random()
-
-    if (randomNumber <= 0.1) {
-      // ui.displayAnnouncement("+1 POTIONS")
-      // player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
-    }
-
+    // const xp = getRandomIntRange(this.xp, this.xp + 10)
+    // const randomNumber = Math.random()
+    // if (randomNumber <= 0.1) {
+    // ui.displayAnnouncement("+1 POTIONS")
+    // player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
+    // }
     // const exp = [
     //   {
     //     type: LEVEL_TYPES.ENEMY,
@@ -55,14 +52,12 @@ export default class Executioner extends MonsterMob {
     //     value: xp
     //   }
     // ]
-
     // const loot = [
     //   {
     //     type: ITEM_TYPES.BONE,
     //     value: 1
     //   }
     // ]
-
     // UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
