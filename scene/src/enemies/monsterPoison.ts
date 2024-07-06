@@ -14,14 +14,15 @@ import {
 import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
-import { MonsterAttackRanged } from './monsterAttackRanged'
+import { type MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { MonsterAttack } from './monsterAttack'
 
-export class MonsterMob extends Character {
+export class MonsterPoison extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
@@ -52,7 +53,7 @@ export class MonsterMob extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterMob.globalHasSkill = value
+    MonsterPoison.globalHasSkill = value
   }
 
   constructor(
@@ -83,7 +84,7 @@ export class MonsterMob extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterMob.setGlobalHasSkill(true)
+    MonsterPoison.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
@@ -130,19 +131,13 @@ export class MonsterMob extends Character {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
-    this.attackSystem = new MonsterAttack(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
-
-    this.attackSystemRanged = new MonsterAttackRanged(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
+    // this.attackSystem = new MonsterAttack(this, {
+    //   moveSpeed: 2,
+    //   engageDistance: this.engageDistance
+    // })
 
     this.setupAttackHandler()
   }
@@ -223,31 +218,6 @@ export class MonsterMob extends Character {
     )
   }
 
-  setupRangedAttackTriggerBox(): void {
-    this.rangeAttackTrigger = engine.addEntity()
-    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.rangeAttackTrigger)
-    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.rangeAttackTrigger,
-      utils.NO_LAYERS,
-      utils.LAYER_1,
-      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
-      () => {
-        console.log('trigger Ranged attack')
-        if (this.isDeadAnimation) return
-        engine.addSystem(this.attackSystemRanged.attackSystem)
-      },
-      () => {
-        console.log('im out')
-        if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.idleClip)
-      }
-    )
-  }
-
   setupEngageTriggerBox(): void {
     this.engageAttackTrigger = engine.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
@@ -259,7 +229,7 @@ export class MonsterMob extends Character {
       1,
       [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
       () => {
-        console.log('trigger Attack')
+        engine.addSystem(this.attackSystem.attackSystem)
       },
       () => {
         console.log('im out')
@@ -494,4 +464,4 @@ export class MonsterMob extends Character {
   }
 }
 
-export default MonsterMob
+export default MonsterPoison
