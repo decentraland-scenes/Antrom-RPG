@@ -129,8 +129,8 @@ export class MonsterMeat extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
-    // this.setupAttackTriggerBox()
+    this.setupEngageTriggerBox()
+    this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
@@ -324,7 +324,12 @@ export class MonsterMeat extends Character {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
-      // engine.removeEntity(this.entity)
+      engine.removeEntity(this.entity)
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
+      engine.removeEntity(this.healthBar)
+      engine.removeEntity(this.label)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -484,9 +489,6 @@ export class MonsterMeat extends Character {
     player.impactAnimation?.()
     // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-    // this.attackSound.playOnce()
-
     // setTimeout(1 * 1000, () => {
     //     checkHealth()
     // })
