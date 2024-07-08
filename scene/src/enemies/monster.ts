@@ -282,7 +282,6 @@ export class MonsterOligar extends Character {
         this.createHealthBar()
         this.handleAttack()
         this.createLabel()
-
       },
       () => {
         console.log('im out')

@@ -75,13 +75,13 @@ export class MonsterPoison extends Character {
 
   initMonster(): void {
     console.log('init')
-   
-    if ((this.shape.length === 0) && (this.shapeFile != null)) {
+
+    if (this.shape.length === 0 && this.shapeFile != null) {
       this.shape = this.shapeFile
       console.log(this.shape)
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-  
+
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
     Animator.createOrReplace(this.entity, {
       states: [
