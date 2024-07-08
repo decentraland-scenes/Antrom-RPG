@@ -1,5 +1,5 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs } from '../utils/utils'
+import { getUvs } from '../../utils/ui-utils'
 import type { WearablesMarketProps } from './wearablesData'
 import {
   HEIGTH_FACTOR,

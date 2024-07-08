@@ -4,16 +4,11 @@ import { BANNER } from './bannerConstants'
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 
 type BannerProps = {
-  isVisible: boolean
   type: BannerType
   position?: BannerPosition
 }
 
-function Banner({
-  isVisible,
-  type,
-  position
-}: BannerProps): ReactEcs.JSX.Element | null {
+function Banner({ type, position }: BannerProps): ReactEcs.JSX.Element | null {
   const WIDTH_FACTOR = 0.33
   let ASPECT_RATIO = 0.216
 
@@ -34,7 +29,6 @@ function Banner({
   return (
     <UiEntity
       uiTransform={{
-        display: isVisible ? 'flex' : 'none',
         position: {
           left: (canvasInfo.width - canvasInfo.width * WIDTH_FACTOR) / 2,
           top: TOP_POSITION

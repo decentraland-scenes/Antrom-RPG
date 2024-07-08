@@ -7,7 +7,7 @@ import {
 
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs } from '../utils/utils'
+import { getUvs } from '../../utils/ui-utils'
 import { AnswerButton } from './answerButton'
 
 type NpcDialogProps = {

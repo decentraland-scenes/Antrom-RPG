@@ -84,8 +84,9 @@ export class LoopSystem {
     if (quest.questOff || quest.questComplete) return // Stop updating if quest is off or completed
 
     this._questTimerIterations++
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const total = (this._kingQuestTimer += dt)
+
+    // TODO: this is not used until is uncommented the code below
+    // const total = (this._kingQuestTimer += dt)
 
     if (this._questTimerIterations === 5) {
       // questTimerText.value = quest.format(total)

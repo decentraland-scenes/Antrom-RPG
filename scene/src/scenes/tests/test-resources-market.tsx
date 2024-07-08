@@ -10,7 +10,7 @@ import type {
   Items
 } from '../../ui/resources-market/resourcesData'
 import ResourcesMarket from '../../ui/resources-market/resourcesMarket'
-import type { Sprite } from '../../ui/utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 
 const BALANCE: number = 300
 
@@ -236,8 +236,8 @@ export class ResourcesMarketUiTest {
   }
 }
 
+export let gameUi: ResourcesMarketUiTest
 export function main(): void {
   // all the initializing logic
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gameUI = new ResourcesMarketUiTest()
+  gameUi = new ResourcesMarketUiTest()
 }

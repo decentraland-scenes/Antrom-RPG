@@ -7,29 +7,29 @@ import {
   VisibilityComponent,
   pointerEventsSystem,
   InputAction,
-  TextShape,
+  type Entity,
   Material,
-  type Entity
+  TextShape
 } from '@dcl/sdk/ecs'
 import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
-import { MonsterAttackRanged } from './monsterAttackRanged'
+import { type MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
+import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
-import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { MonsterAttack } from './monsterAttack'
-import { applyDefSkillEffectToEnemyLocation } from '../effects/enemyDeffSkillActivation'
 
-export class MonsterOligar extends Character {
+export class MonsterPoison extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
   shapeFile?: string
   shape: string = ''
   audioFile?: string
-  healthBar?: Entity
+  healthBar!: Entity
   idleClip: string = 'idle'
   attackClip: string = 'attack'
   walkClip: string = 'walk'
@@ -44,7 +44,7 @@ export class MonsterOligar extends Character {
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   attackTrigger!: Entity
-  label?: Entity
+  label?: any
   topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
@@ -53,7 +53,7 @@ export class MonsterOligar extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterOligar.globalHasSkill = value
+    MonsterPoison.globalHasSkill = value
   }
 
   constructor(
@@ -70,6 +70,7 @@ export class MonsterOligar extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
+    // this.loadTransformation()
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -83,16 +84,18 @@ export class MonsterOligar extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterOligar.setGlobalHasSkill(true)
+    MonsterPoison.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
     console.log('init')
-    if (this.shape.length === 0 && this.shapeFile !== undefined) {
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
+    if (!this.shape && this.shapeFile) {
       this.shape = this.shapeFile
+      console.log(this.shape)
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-    if (this.audioFile !== undefined) {
+    if (this.audioFile != null) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
       // this.addComponentOrReplace(this.sound)
@@ -108,7 +111,7 @@ export class MonsterOligar extends Character {
         {
           clip: this.attackClip,
           playing: false,
-          loop: false
+          loop: true
         },
         {
           clip: this.walkClip,
@@ -128,24 +131,19 @@ export class MonsterOligar extends Character {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
-    this.attackSystem = new MonsterAttack(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
-
-    this.attackSystemRanged = new MonsterAttackRanged(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
+    // this.attackSystem = new MonsterAttack(this, {
+    //   moveSpeed: 2,
+    //   engageDistance: this.engageDistance
+    // })
 
     this.setupAttackHandler()
   }
 
   createHealthBar(): void {
+    console.log('healthBAr')
     const hb = engine.addEntity()
     Transform.createOrReplace(hb, {
       scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
@@ -194,11 +192,11 @@ export class MonsterOligar extends Character {
   }
 
   updateHealthBar(): void {
-    if (this.healthBar !== undefined) {
+    if (this.healthBar != null) {
       Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
     }
 
-    if (this.label !== undefined) {
+    if (this.label != null) {
       TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
@@ -220,32 +218,6 @@ export class MonsterOligar extends Character {
     )
   }
 
-  setupRangedAttackTriggerBox(): void {
-    this.rangeAttackTrigger = engine.addEntity()
-    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.rangeAttackTrigger)
-    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.rangeAttackTrigger,
-      utils.NO_LAYERS,
-      utils.LAYER_1,
-      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
-      () => {
-        console.log('trigger Ranged attack')
-        if (this.isDeadAnimation) return
-        // const CameraPos = Transform.get(engine.CameraEntity).position
-        engine.addSystem(this.attackSystemRanged.attackSystem)
-      },
-      () => {
-        console.log('im out')
-        if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.idleClip)
-      }
-    )
-  }
-
   setupEngageTriggerBox(): void {
     this.engageAttackTrigger = engine.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
@@ -255,9 +227,9 @@ export class MonsterOligar extends Character {
       this.engageAttackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+      [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
       () => {
-        console.log('trigger Attack')
+        engine.addSystem(this.attackSystem.attackSystem)
       },
       () => {
         console.log('im out')
@@ -274,9 +246,11 @@ export class MonsterOligar extends Character {
       this.attackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
+      [{ type: 'box', scale: Vector3.create(6, 2, 6) }],
       () => {
-        console.log('<<< Attack >>>')
+        this.createHealthBar()
+        this.handleAttack()
+        this.createLabel()
       },
       () => {
         console.log('im out')
@@ -302,7 +276,7 @@ export class MonsterOligar extends Character {
 
   dyingAnimation(): void {
     this.isDeadAnimation = true
-    if (this.dieClip.length > 0) {
+    if (this.dieClip != null) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
     this.create()
@@ -313,7 +287,7 @@ export class MonsterOligar extends Character {
   }
 
   killChar(): void {
-    // TODO (first check if used )
+    // TODO lootEvent
 
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
@@ -339,10 +313,10 @@ export class MonsterOligar extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    if (this.healthBar !== undefined) {
+    if (this.healthBar != null) {
       engine.removeEntity(this.healthBar)
     }
-    if (this.label !== undefined) {
+    if (this.label != null) {
       engine.removeEntity(this.label)
     }
     if (this.rangeAttackTrigger != null) {
@@ -377,91 +351,28 @@ export class MonsterOligar extends Character {
       return
     }
 
-    // const random = Math.random() * 1000
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(1)
+    setRefreshTimer(0)
 
-    const monsterDiceResult = this.rollDice()
-    const playerDiceResult = player.rollDice()
-
-    const roundedPlayerDice = Math.floor(playerDiceResult)
-    const roundedMonsterDice = Math.floor(monsterDiceResult)
-
-    if (roundedMonsterDice <= roundedPlayerDice) {
-      // Player attacks
-      let defPercent = this.getDefensePercent()
-
-      if (monsterModifiers.getDefBuff() !== 0) {
-        defPercent = defPercent * monsterModifiers.getDefBuff()
-        console.log('def %', defPercent)
-      }
-      const random = Math.random() * 1000
-      const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
-
-      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
-      let playerAttack = Math.round(reduceHealthBy)
-
-      switch (true) {
-        case random < 200: {
-          // 30% chance
-          // TODO UI
-          // bossDefense()
-
-          applyDefSkillEffectToEnemyLocation(
-            Transform.getMutable(this.entity).position,
-            4000
-          )
-          // reduce incoming attack by 50%
-          playerAttack = playerAttack / 2
-
-          break
-        }
-      }
-      this.performAttack(playerAttack, isCriticalAttack)
-
-      // MainHUD.getInstance().updateStats(
-      //     `${roundedPlayerDice}`,
-      //     `${roundedMonsterDice}`,
-      //     `${playerAttack}`,
-      //     `MISSED`
-      // )
-
-      monsterModifiers.activeSkills.forEach((skill) =>
-        skill(isCriticalAttack, true, reduceHealthBy)
-      )
-    } else {
-      // Monster attacks
-      const defPercent = player.getDefensePercent()
-      let enemyAttack = this.attack * (1 - defPercent)
-
-      if (monsterModifiers.getAtkBuff() !== 0) {
-        console.log('monster before modified: ' + enemyAttack)
-        enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
-        console.log(
-          'monster after modified: ' +
-            monsterModifiers.getAtkBuff() +
-            ' ' +
-            enemyAttack
-        )
-      }
-      // createMissedLabel()
-
-      const roundedAttack = Math.floor(enemyAttack)
-      this.attackPlayer(roundedAttack)
-
-      // MainHUD.getInstance().updateStats(
-      //     `${roundedPlayerDice}`,
-      //     `${roundedMonsterDice}`,
-      //     `MISSED`,
-      //     `${roundedAttack}`
-      // )
-
-      monsterModifiers.activeSkills.forEach((skill) =>
-        skill(false, false, enemyAttack, this)
+    const defPercent = player.getDefensePercent()
+    let enemyAttack = this.attack * (1 - defPercent)
+    if (monsterModifiers.getAtkBuff() !== 0) {
+      console.log('monster before modified: ' + enemyAttack)
+      enemyAttack = enemyAttack * monsterModifiers.getAtkBuff()
+      console.log(
+        'monster after modified: ' +
+          monsterModifiers.getAtkBuff() +
+          ' ' +
+          enemyAttack
       )
     }
+    const roundedAttack = Math.floor(enemyAttack)
+    this.attackPlayer(roundedAttack)
+    monsterModifiers.activeSkills.forEach((skill) =>
+      skill(false, false, enemyAttack, this)
+    )
   }
 
   setupAttackHandler(): void {
@@ -475,7 +386,48 @@ export class MonsterOligar extends Character {
         }
       },
       () => {
-        this.handleAttack()
+        if (this.health <= 0) {
+          this.onDead()
+          return
+        }
+
+        if (refreshtimer > 0) {
+          return
+        }
+        setRefreshTimer(0)
+
+        const monsterDiceResult = this.rollDice()
+        const playerDiceResult = player.rollDice()
+
+        const roundedPlayerDice = Math.floor(playerDiceResult)
+        const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+        if (roundedMonsterDice <= roundedPlayerDice) {
+          // Player attacks
+          let defPercent = this.getDefensePercent()
+
+          if (monsterModifiers.getDefBuff() !== 0) {
+            defPercent = defPercent * monsterModifiers.getDefBuff()
+            console.log('def %', defPercent)
+          }
+
+          const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+
+          const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
+          const playerAttack = Math.round(reduceHealthBy)
+          this.performAttack(playerAttack, isCriticalAttack)
+
+          // MainHUD.getInstance().updateStats(
+          //     `${roundedPlayerDice}`,
+          //     `${roundedMonsterDice}`,
+          //     `${playerAttack}`,
+          //     `MISSED`
+          // )
+
+          monsterModifiers.activeSkills.forEach((skill) =>
+            skill(isCriticalAttack, true, reduceHealthBy)
+          )
+        }
       }
     )
   }
@@ -498,7 +450,6 @@ export class MonsterOligar extends Character {
     this.playAttack()
 
     player.impactAnimation?.()
-    // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
 
     // this.attackSound.playOnce()
@@ -513,4 +464,4 @@ export class MonsterOligar extends Character {
   }
 }
 
-export default MonsterOligar
+export default MonsterPoison

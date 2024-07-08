@@ -16,7 +16,6 @@ import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { MonsterAttackRanged } from './monsterAttackRanged'
 import { player } from '../player/player'
-import MonsterMeat from './monsterMeat'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
@@ -53,7 +52,7 @@ export class MonsterMob extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterMeat.globalHasSkill = value
+    MonsterMob.globalHasSkill = value
   }
 
   constructor(
@@ -84,7 +83,7 @@ export class MonsterMob extends Character {
     //
     // let monHey = enemyHeyAudioSource
     // this.addComponentOrReplace(monHey)
-    MonsterMeat.setGlobalHasSkill(true)
+    MonsterMob.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
@@ -238,8 +237,6 @@ export class MonsterMob extends Character {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
-        this.createHealthBar()
-        this.createLabel()
       },
       () => {
         console.log('im out')

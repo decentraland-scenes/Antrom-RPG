@@ -2,6 +2,8 @@ import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { getRandomIntRange } from './../utils/getRandomInt'
 import MonsterMeat from './monsterMeat'
+import { type GameController } from '../controllers/game.controller'
+import { BannerType } from '../ui/banner/bannerConstants'
 
 const DEFAULT_ATTACK = 2
 const DEFAULT_XP = 10
@@ -14,8 +16,11 @@ export default class Pig extends MonsterMeat {
   // audioFile = "assets/sounds/chicken.mp3"
   hoverText = 'Attack Pig!'
 
-  constructor() {
+  gameController: GameController
+
+  constructor(gameController: GameController) {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP, 1, 4)
+    this.gameController = gameController
     this.initMonster()
     this.shape = this.shapeFile
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
@@ -26,10 +31,11 @@ export default class Pig extends MonsterMeat {
 
   create(): void {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mons = new Pig()
+    const mons = new Pig(this.gameController)
   }
 
   onDropXp(): void {
+    this.gameController.uicontroller.displayBanner(BannerType.B_MEAT)
     // TODO PLAYER
     // log("onDropXp - Chicken")
     // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {

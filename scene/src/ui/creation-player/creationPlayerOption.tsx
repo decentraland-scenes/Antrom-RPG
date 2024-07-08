@@ -1,5 +1,5 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs, type Sprite } from '../utils/utils'
+import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
   type CharacterFactionsType,
   type CharacterStatsType

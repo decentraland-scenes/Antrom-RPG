@@ -1,5 +1,5 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import type { Sprite } from '../../ui/utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 import {
   APPRENTICE_WEARABLES,
   CLICKED_PURCHASE_SPRITE,
@@ -105,8 +105,8 @@ export class UI {
   }
 }
 
+export let gameUi: UI
 export function main(): void {
   // all the initializing logic
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const gameUI = new UI()
+  gameUi = new UI()
 }

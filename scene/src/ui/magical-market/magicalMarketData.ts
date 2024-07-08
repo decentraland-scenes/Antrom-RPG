@@ -1,6 +1,6 @@
 import type { Item } from '../resources-market/resourcesData'
 import { ITEMS } from '../resources-market/resourcesData'
-import type { Sprite } from '../utils/utils'
+import type { Sprite } from '../../utils/ui-utils'
 
 export const magicalItemsMarketSprites: Record<string, Sprite> = {
   background: {

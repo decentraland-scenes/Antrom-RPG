@@ -1,6 +1,6 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { type Sprite, getUvs } from '../utils/utils'
+import { type Sprite, getUvs } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   HP_BACKGROUND_FACTOR,

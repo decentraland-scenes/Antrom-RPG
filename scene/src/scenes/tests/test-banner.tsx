@@ -25,13 +25,7 @@ export class UI {
   }
 
   bannerUI(): ReactEcs.JSX.Element {
-    return (
-      <Banner
-        isVisible={this.isBannerVisible}
-        type={this.bannerType}
-        position={this.bannerPosition}
-      />
-    )
+    return <Banner type={this.bannerType} position={this.bannerPosition} />
   }
 }
 
