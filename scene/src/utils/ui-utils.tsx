@@ -1,4 +1,4 @@
-import { type Coords } from '@dcl/sdk/ecs'
+import { InputAction, type Coords } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 
 export function getUvs(sprite: Sprite | undefined): number[] {
@@ -61,4 +61,21 @@ export type Sprite = {
   y: number
   w: number
   h: number
+}
+
+export type slotsInputs =
+  | InputAction.IA_PRIMARY
+  | InputAction.IA_SECONDARY
+  | InputAction.IA_ACTION_3
+  | InputAction.IA_ACTION_4
+  | InputAction.IA_ACTION_5
+  | InputAction.IA_ACTION_6
+
+export const InputKeys: Record<slotsInputs, string> = {
+  [InputAction.IA_PRIMARY]: 'E',
+  [InputAction.IA_SECONDARY]: 'F',
+  [InputAction.IA_ACTION_3]: '1',
+  [InputAction.IA_ACTION_4]: '2',
+  [InputAction.IA_ACTION_5]: '3',
+  [InputAction.IA_ACTION_6]: '4'
 }

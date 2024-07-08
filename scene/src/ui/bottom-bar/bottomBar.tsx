@@ -1,6 +1,6 @@
-import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import { InputAction, UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { type Sprite, getUvs } from '../../utils/ui-utils'
+import { type Sprite, getUvs, InputKeys } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   HP_BACKGROUND_FACTOR,
@@ -14,7 +14,7 @@ import {
 import { BottomBarSkillSlot } from './bottomBarSkillSlot'
 
 const exampleSkill = {
-  cooldown: 5,
+  cooldown: 3,
   name: 'Example Skill',
   sprite: bottomBarSprites.exampleSkill
 }
@@ -25,8 +25,8 @@ type BottomBarProps = {
   levelXp: number
   currentHpPercent: number
   level: number
-  slotOneIsCooling: boolean,
-  onClickSlotOne: (arg:number) => void
+  onClickSlotOne: (arg: number) => void
+  progressOne: number
 }
 
 function BottomBar({
@@ -35,8 +35,8 @@ function BottomBar({
   levelXp,
   currentHpPercent,
   level,
-  slotOneIsCooling,
   onClickSlotOne,
+  progressOne
 }: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -209,7 +209,12 @@ function BottomBar({
             }
           }}
         >
-          <BottomBarSkillSlot skill={exampleSkill} label={'1'} isCooling={slotOneIsCooling} onClick={onClickSlotOne} />
+          <BottomBarSkillSlot
+            skill={exampleSkill}
+            onClick={onClickSlotOne}
+            progress={progressOne}
+            hotKey={InputAction.IA_PRIMARY}
+          />
         </UiEntity>
 
         <UiEntity

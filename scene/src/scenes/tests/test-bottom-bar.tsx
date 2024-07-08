@@ -1,7 +1,7 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import BottomBar from '../../ui/bottom-bar/bottomBar'
 import * as utils from '@dcl-sdk/utils'
-
+import { engine } from '@dcl/sdk/ecs'
 
 export class UI {
   public isVisible: boolean = true
@@ -9,8 +9,9 @@ export class UI {
   public currentXp: number
   public levelXp: number
   public level: number
-  public slotOneCooldownTime: number = 0
-  public slotOneIsCooling: boolean = false
+  public cooldownTimeOne: number = 0
+  public progressOne: number = 0
+  public slotOneSkillCooldown: number = 0
 
   constructor() {
     this.currentHpPercent = 75.6
@@ -23,14 +24,30 @@ export class UI {
   }
 
   showCooldownSlotOne(time: number): void {
-    console.log(time)
-    this.slotOneCooldownTime = time
-    this.slotOneIsCooling = true
-    utils.timers.setTimeout(() => {
-      console.log('timeout')
-      this.slotOneCooldownTime = 0
-      this.slotOneIsCooling = false
-    }, time * 1000)
+    this.slotOneSkillCooldown = time
+    if (this.progressOne <= 0) {
+      console.log(time)
+      this.cooldownTimeOne = time
+      engine.addSystem(
+        this.cooldownSystemSlotOne.bind(this),
+        1,
+        'slotOneSystem'
+      )
+
+      utils.timers.setTimeout(() => {
+        this.progressOne = 0
+        engine.removeSystem('slotOneSystem')
+      }, time * 1000)
+    }
+  }
+
+  cooldownSystemSlotOne(dt: number): void {
+    if (this.cooldownTimeOne - dt >= 0) {
+      console.log('system is loaded')
+      this.cooldownTimeOne = this.cooldownTimeOne - dt
+      this.progressOne =
+        (this.cooldownTimeOne / this.slotOneSkillCooldown) * 100
+    }
   }
 
   bottomBarUI(): ReactEcs.JSX.Element {
@@ -41,8 +58,9 @@ export class UI {
         levelXp={this.levelXp}
         currentXp={this.currentXp}
         level={this.level}
-        slotOneIsCooling={this.slotOneIsCooling}
-        onClickSlotOne={this.showCooldownSlotOne.bind(this)}      />
+        onClickSlotOne={this.showCooldownSlotOne.bind(this)}
+        progressOne={this.progressOne}
+      />
     )
   }
 }
