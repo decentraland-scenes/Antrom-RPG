@@ -136,7 +136,6 @@ export class PlayDungeonUI {
         isLoading={this.isLoading}
         isOpen={this.isOpen}
         isInfo={this.isInfo}
-        isVisible={this.isVisible}
         scrollPosition={this.scrollPosition}
         isPlayable={this.isPlayable}
         setOpen={this.setOpen.bind(this)}

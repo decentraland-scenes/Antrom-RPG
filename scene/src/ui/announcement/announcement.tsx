@@ -1,32 +1,34 @@
 import { type Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Label } from '@dcl/sdk/react-ecs'
+import Canvas from '../canvas/Canvas'
 
 type AnnouncementProps = {
-  visible: boolean
   color: Color4
   text: string
 }
 
 function Announcement({
-  visible,
   text,
   color
 }: AnnouncementProps): ReactEcs.JSX.Element {
   return (
-    <Label
+    <Canvas
       uiTransform={{
-        width: 13,
-        height: 13,
-        margin: { top: '5%', bottom: '0%', left: '50%', right: '50%' },
-        positionType: 'absolute',
-        position: { bottom: '0%', top: '0%', left: '0%' },
-        display: visible ? 'flex' : 'none'
+        justifyContent: 'center'
       }}
-      fontSize={40}
-      font="sans-serif"
-      value={text}
-      color={color}
-    />
+    >
+      <Label
+        uiTransform={{
+          width: '50%'
+        }}
+        textAlign="middle-center"
+        textWrap="wrap"
+        fontSize={40}
+        font="sans-serif"
+        value={text}
+        color={color}
+      />
+    </Canvas>
   )
 }
 

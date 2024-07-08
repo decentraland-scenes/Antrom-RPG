@@ -1,3 +1,4 @@
+import * as utils from '@dcl-sdk/utils'
 import {
   Animator,
   GltfContainer,
@@ -8,15 +9,15 @@ import {
   engine,
   inputSystem
 } from '@dcl/sdk/ecs'
-import { Vector3, Quaternion, Color4 } from '@dcl/sdk/math'
-import * as utils from '@dcl-sdk/utils'
-import { movePlayerTo } from '~system/RestrictedActions'
-import { type GameController } from '../controllers/game.controller'
-import { DungeonStage, demonKill } from '../counters'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as npc from 'dcl-npc-toolkit'
 import { openDialogWindow } from 'dcl-npc-toolkit'
+import { type GameController } from '../controllers/game.controller'
+import { DungeonStage, demonKill } from '../counters'
+import { setPlayerPosition } from '../utils/engine'
+import { Realm } from './types'
 
-export class DemonKingDungeon {
+export class DemonKingDungeon extends Realm {
   private readonly dungeon_collider = engine.addEntity()
   private readonly dungeon_door1 = engine.addEntity()
   private readonly dungeon = engine.addEntity()
@@ -25,6 +26,7 @@ export class DemonKingDungeon {
   private npc_garrisonAlara = engine.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
+    super()
     this.gameController = gameController
     GltfContainer.createOrReplace(this.dungeon_collider, {
       src: 'assets/models/Dungeon_collider.glb'
@@ -137,9 +139,7 @@ export class DemonKingDungeon {
       // loader.showGarrisonscreen(8000)
     }
     utils.timers.setTimeout(() => {
-      void movePlayerTo({
-        newRelativePosition: Vector3.create(-9.83, 48.19, -45.24)
-      })
+      setPlayerPosition(-9.831, 48.19, -45.24)
     }, 8000)
   }
 

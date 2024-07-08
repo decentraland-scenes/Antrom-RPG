@@ -24,11 +24,6 @@ export default class Chicken extends MonsterMeat {
     this.minLuck = -1000
   }
 
-  create(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mons = new Chicken()
-  }
-
   onDropXp(): void {
     // TODO PLAYER
     // log("onDropXp - Chicken")

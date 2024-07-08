@@ -241,7 +241,7 @@ export default class HardCaveDungeonBoss extends MonsterMob {
     // loader.showLoaderyouwinscreen(10000)
     // buildantrom2World()
     // setTimeout(11 * 1000, () => {
-    //     movePlayerTo({ x: -38.34, y: 10.43, z: -39.75 })
+    //     setPlayerPosition(-38.34, 10.43, -39.75)
     // })
     // player.health = player.maxHealth * 1
     // player.updateHealthBar()

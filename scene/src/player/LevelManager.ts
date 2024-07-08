@@ -72,9 +72,9 @@ export class LevelManager {
     })
 
     this.onUpdate?.({
-      type: type,
+      type,
       level: newLevel,
-      xp: xp,
+      xp,
       total: newXp,
       levelChange: shouldLevelUp
     })
