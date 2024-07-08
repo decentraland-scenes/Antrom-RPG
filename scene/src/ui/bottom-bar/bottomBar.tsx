@@ -21,18 +21,22 @@ const exampleSkill = {
 
 type BottomBarProps = {
   isVisible: boolean
-  actualXp: number
+  currentXp: number
   levelXp: number
-  actualHpPercent: number
+  currentHpPercent: number
   level: number
+  slotOneIsCooling: boolean,
+  onClickSlotOne: (arg:number) => void
 }
 
 function BottomBar({
   isVisible,
-  actualXp,
+  currentXp,
   levelXp,
-  actualHpPercent,
-  level
+  currentHpPercent,
+  level,
+  slotOneIsCooling,
+  onClickSlotOne,
 }: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -42,9 +46,9 @@ function BottomBar({
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
     x: 0,
-    y: 0 + (100 - actualHpPercent),
+    y: 0 + (100 - currentHpPercent),
     w: 100,
-    h: 100 - (100 - actualHpPercent)
+    h: 100 - (100 - currentHpPercent)
   }
 
   return (
@@ -93,7 +97,7 @@ function BottomBar({
                 (canvasInfo.width *
                   WIDTH_FACTOR *
                   XP_W_FRAME_FACTOR *
-                  actualXp) /
+                  currentXp) /
                 levelXp,
               height: '100%',
               positionType: 'absolute'
@@ -124,7 +128,7 @@ function BottomBar({
               position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.01 }
             }}
             uiText={{
-              value: actualXp.toString() + '/' + levelXp.toString(),
+              value: currentXp.toString() + '/' + levelXp.toString(),
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1
             }}
           />
@@ -143,12 +147,12 @@ function BottomBar({
                 (canvasInfo.width *
                   WIDTH_FACTOR *
                   HP_BACKGROUND_FACTOR *
-                  actualHpPercent) /
+                  currentHpPercent) /
                 100,
               positionType: 'absolute',
               position: {
                 top:
-                  ((100 - actualHpPercent) / 100) *
+                  ((100 - currentHpPercent) / 100) *
                   canvasInfo.width *
                   WIDTH_FACTOR *
                   HP_BACKGROUND_FACTOR
@@ -189,7 +193,7 @@ function BottomBar({
               position: { top: -canvasInfo.width * HEIGTH_FACTOR * 0.28 }
             }}
             uiText={{
-              value: actualHpPercent.toString() + '%',
+              value: currentHpPercent.toString() + '%',
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.15
             }}
           />
@@ -205,7 +209,7 @@ function BottomBar({
             }
           }}
         >
-          <BottomBarSkillSlot skill={exampleSkill} label={'1'} />
+          <BottomBarSkillSlot skill={exampleSkill} label={'1'} isCooling={slotOneIsCooling} onClick={onClickSlotOne} />
         </UiEntity>
 
         <UiEntity

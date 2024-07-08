@@ -427,11 +427,12 @@ export class Player extends Character {
     return (
       <BottomBar
         isVisible={true}
-        actualHpPercent={(100.0 * this.health) / this.maxHealth}
+        currentHpPercent={(100.0 * this.health) / this.maxHealth}
         levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
-        actualXp={this.xp}
+        currentXp={this.xp}
         level={this.level}
-      />
+        slotOneIsCooling={false}
+        onClickSlotOne={()=>{}}      />
     )
   }
 }
