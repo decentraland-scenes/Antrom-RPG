@@ -1,7 +1,17 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { InputKeys, getUvs, type slotsInputs, type Sprite } from '../../utils/ui-utils'
+import {
+  InputKeys,
+  getUvs,
+  type slotsInputs,
+  type Sprite
+} from '../../utils/ui-utils'
 import { Color4 } from '@dcl/sdk/math'
-import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import {
+  PointerEventType,
+  UiCanvasInformation,
+  engine,
+  inputSystem
+} from '@dcl/sdk/ecs'
 
 type bottomBarSkillSlotProps = {
   skill: { cooldown: number; name: string; sprite: Sprite } | undefined
@@ -21,6 +31,12 @@ export function BottomBarSkillSlot({
   }
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
+
+  engine.addSystem(() => {
+    if (inputSystem.isTriggered(hotKey, PointerEventType.PET_DOWN)) {
+      onClick(skill.cooldown)
+    }
+  })
 
   return (
     <UiEntity
@@ -60,7 +76,7 @@ export function BottomBarSkillSlot({
           position: { bottom: 0 }
         }}
         uiText={{
-          value: ((progress * skill.cooldown) / 100).toFixed(1).toString(),
+          value: ((progress * skill.cooldown) / 100).toFixed(0).toString(),
           fontSize: canvasInfo.height * 0.02
         }}
       />

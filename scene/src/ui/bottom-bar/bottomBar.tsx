@@ -1,6 +1,6 @@
 import { InputAction, UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { type Sprite, getUvs, InputKeys } from '../../utils/ui-utils'
+import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   HP_BACKGROUND_FACTOR,
@@ -198,23 +198,111 @@ function BottomBar({
             }}
           />
         </UiEntity>
+
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            width: canvasInfo.width * WIDTH_FACTOR * 0.33,
             height: canvasInfo.width * WIDTH_FACTOR * 0.095,
             positionType: 'absolute',
+            justifyContent: 'space-between',
             position: {
               bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155,
               left: canvasInfo.width * WIDTH_FACTOR * 0.051
             }
           }}
         >
-          <BottomBarSkillSlot
-            skill={exampleSkill}
-            onClick={onClickSlotOne}
-            progress={progressOne}
-            hotKey={InputAction.IA_PRIMARY}
-          />
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_ACTION_3}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_PRIMARY}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_SECONDARY}
+            />
+          </UiEntity>
+        </UiEntity>
+
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * WIDTH_FACTOR * 0.33,
+            height: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            positionType: 'absolute',
+            justifyContent: 'space-between',
+            position: {
+              bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155,
+              right: canvasInfo.width * WIDTH_FACTOR * 0.051
+            }
+          }}
+        >
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_ACTION_4}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_ACTION_5}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              skill={exampleSkill}
+              onClick={onClickSlotOne}
+              progress={progressOne}
+              hotKey={InputAction.IA_ACTION_6}
+            />
+          </UiEntity>
         </UiEntity>
 
         <UiEntity

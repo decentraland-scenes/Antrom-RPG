@@ -1,7 +1,6 @@
+import { engine } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import BottomBar from '../../ui/bottom-bar/bottomBar'
-import * as utils from '@dcl-sdk/utils'
-import { engine } from '@dcl/sdk/ecs'
 
 export class UI {
   public isVisible: boolean = true
@@ -11,7 +10,9 @@ export class UI {
   public level: number
   public cooldownTimeOne: number = 0
   public progressOne: number = 0
+  public oneIsCooling: boolean = false
   public slotOneSkillCooldown: number = 0
+ 
 
   constructor() {
     this.currentHpPercent = 75.6
@@ -24,29 +25,28 @@ export class UI {
   }
 
   showCooldownSlotOne(time: number): void {
-    this.slotOneSkillCooldown = time
-    if (this.progressOne <= 0) {
+    if (!this.oneIsCooling) {
+      this.slotOneSkillCooldown = time
       console.log(time)
       this.cooldownTimeOne = time
+      this.oneIsCooling = true
       engine.addSystem(
         this.cooldownSystemSlotOne.bind(this),
         1,
         'slotOneSystem'
       )
-
-      utils.timers.setTimeout(() => {
-        this.progressOne = 0
-        engine.removeSystem('slotOneSystem')
-      }, time * 1000)
     }
   }
 
   cooldownSystemSlotOne(dt: number): void {
-    if (this.cooldownTimeOne - dt >= 0) {
-      console.log('system is loaded')
+    if (this.cooldownTimeOne - dt >= 0 && this.oneIsCooling) {
       this.cooldownTimeOne = this.cooldownTimeOne - dt
       this.progressOne =
         (this.cooldownTimeOne / this.slotOneSkillCooldown) * 100
+    } else {
+      this.oneIsCooling = false
+      this.progressOne = 0
+      engine.removeSystem('slotOneSystem')
     }
   }
 
