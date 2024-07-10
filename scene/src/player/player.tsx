@@ -432,7 +432,8 @@ export class Player extends Character {
         currentXp={this.xp}
         level={this.level}
         onClickSlotOne={() => {}}
-        progressOne={0}
+        cooldownTimeOne={0}
+        isCoolingOne={false}
       />
     )
   }

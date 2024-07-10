@@ -26,7 +26,8 @@ type BottomBarProps = {
   currentHpPercent: number
   level: number
   onClickSlotOne: (arg: number) => void
-  progressOne: number
+  cooldownTimeOne: number
+  isCoolingOne: boolean
 }
 
 function BottomBar({
@@ -36,7 +37,8 @@ function BottomBar({
   currentHpPercent,
   level,
   onClickSlotOne,
-  progressOne
+  cooldownTimeOne,
+  isCoolingOne
 }: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -220,8 +222,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_ACTION_3}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
           <UiEntity
@@ -233,8 +236,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_PRIMARY}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
           <UiEntity
@@ -246,8 +250,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_SECONDARY}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
         </UiEntity>
@@ -273,8 +278,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_ACTION_4}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
           <UiEntity
@@ -286,8 +292,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_ACTION_5}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
           <UiEntity
@@ -299,8 +306,9 @@ function BottomBar({
             <BottomBarSkillSlot
               skill={exampleSkill}
               onClick={onClickSlotOne}
-              progress={progressOne}
+              cooldownTime={cooldownTimeOne}
               hotKey={InputAction.IA_ACTION_6}
+              isCooling={isCoolingOne}
             />
           </UiEntity>
         </UiEntity>

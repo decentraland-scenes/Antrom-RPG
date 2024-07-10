@@ -9,10 +9,8 @@ export class UI {
   public levelXp: number
   public level: number
   public cooldownTimeOne: number = 0
-  public progressOne: number = 0
-  public oneIsCooling: boolean = false
+  public isCoolingOne: boolean = false
   public slotOneSkillCooldown: number = 0
- 
 
   constructor() {
     this.currentHpPercent = 75.6
@@ -25,11 +23,11 @@ export class UI {
   }
 
   showCooldownSlotOne(time: number): void {
-    if (!this.oneIsCooling) {
+    if (!this.isCoolingOne) {
       this.slotOneSkillCooldown = time
       console.log(time)
       this.cooldownTimeOne = time
-      this.oneIsCooling = true
+      this.isCoolingOne = true
       engine.addSystem(
         this.cooldownSystemSlotOne.bind(this),
         1,
@@ -39,13 +37,10 @@ export class UI {
   }
 
   cooldownSystemSlotOne(dt: number): void {
-    if (this.cooldownTimeOne - dt >= 0 && this.oneIsCooling) {
+    if (this.cooldownTimeOne - dt >= 0 && this.isCoolingOne) {
       this.cooldownTimeOne = this.cooldownTimeOne - dt
-      this.progressOne =
-        (this.cooldownTimeOne / this.slotOneSkillCooldown) * 100
     } else {
-      this.oneIsCooling = false
-      this.progressOne = 0
+      this.isCoolingOne = false
       engine.removeSystem('slotOneSystem')
     }
   }
@@ -59,7 +54,8 @@ export class UI {
         currentXp={this.currentXp}
         level={this.level}
         onClickSlotOne={this.showCooldownSlotOne.bind(this)}
-        progressOne={this.progressOne}
+        cooldownTimeOne={this.cooldownTimeOne}
+        isCoolingOne={this.isCoolingOne}
       />
     )
   }
