@@ -1,6 +1,6 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { type Sprite, getUvs } from '../../utils/ui-utils'
+import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   HP_BACKGROUND_FACTOR,
@@ -12,28 +12,17 @@ import {
   bottomBarSprites
 } from './bottomBarData'
 import { BottomBarSkillSlot } from './bottomBarSkillSlot'
-
-const exampleSkill = {
-  cooldown: 5,
-  name: 'Example Skill',
-  sprite: bottomBarSprites.exampleSkill
-}
-
-type BottomBarProps = {
-  isVisible: boolean
-  actualXp: number
-  levelXp: number
-  actualHpPercent: number
-  level: number
-}
+import { type bottomBarProps } from './skillsData'
 
 function BottomBar({
   isVisible,
-  actualXp,
+  currentXp,
   levelXp,
-  actualHpPercent,
-  level
-}: BottomBarProps): ReactEcs.JSX.Element | null {
+  currentHpPercent,
+  level,
+  onClickSlot,
+  slotsData
+}: bottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
@@ -42,9 +31,9 @@ function BottomBar({
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
     x: 0,
-    y: 0 + (100 - actualHpPercent),
+    y: 0 + (100 - currentHpPercent),
     w: 100,
-    h: 100 - (100 - actualHpPercent)
+    h: 100 - (100 - currentHpPercent)
   }
 
   return (
@@ -93,7 +82,7 @@ function BottomBar({
                 (canvasInfo.width *
                   WIDTH_FACTOR *
                   XP_W_FRAME_FACTOR *
-                  actualXp) /
+                  currentXp) /
                 levelXp,
               height: '100%',
               positionType: 'absolute'
@@ -124,7 +113,7 @@ function BottomBar({
               position: { bottom: canvasInfo.width * HEIGTH_FACTOR * 0.01 }
             }}
             uiText={{
-              value: actualXp.toString() + '/' + levelXp.toString(),
+              value: currentXp.toString() + '/' + levelXp.toString(),
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1
             }}
           />
@@ -143,12 +132,12 @@ function BottomBar({
                 (canvasInfo.width *
                   WIDTH_FACTOR *
                   HP_BACKGROUND_FACTOR *
-                  actualHpPercent) /
+                  currentHpPercent) /
                 100,
               positionType: 'absolute',
               position: {
                 top:
-                  ((100 - actualHpPercent) / 100) *
+                  ((100 - currentHpPercent) / 100) *
                   canvasInfo.width *
                   WIDTH_FACTOR *
                   HP_BACKGROUND_FACTOR
@@ -189,23 +178,110 @@ function BottomBar({
               position: { top: -canvasInfo.width * HEIGTH_FACTOR * 0.28 }
             }}
             uiText={{
-              value: actualHpPercent.toString() + '%',
+              value: currentHpPercent.toString() + '%',
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.15
             }}
           />
         </UiEntity>
+
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            width: canvasInfo.width * WIDTH_FACTOR * 0.33,
             height: canvasInfo.width * WIDTH_FACTOR * 0.095,
             positionType: 'absolute',
+            justifyContent: 'space-between',
             position: {
               bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155,
               left: canvasInfo.width * WIDTH_FACTOR * 0.051
             }
           }}
         >
-          <BottomBarSkillSlot skill={exampleSkill} label={'1'} />
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={0}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={1}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={2}
+            />
+          </UiEntity>
+        </UiEntity>
+
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * WIDTH_FACTOR * 0.33,
+            height: canvasInfo.width * WIDTH_FACTOR * 0.095,
+            positionType: 'absolute',
+            justifyContent: 'space-between',
+            position: {
+              bottom: canvasInfo.width * HEIGTH_FACTOR * 0.155,
+              right: canvasInfo.width * WIDTH_FACTOR * 0.051
+            }
+          }}
+        >
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={3}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={4}
+            />
+          </UiEntity>
+          <UiEntity
+            uiTransform={{
+              width: '30%',
+              height: '100%'
+            }}
+          >
+            <BottomBarSkillSlot
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={5}
+            />
+          </UiEntity>
         </UiEntity>
 
         <UiEntity
