@@ -1,8 +1,6 @@
 import {
-  PointerEventType,
   UiCanvasInformation,
-  engine,
-  inputSystem
+  engine
 } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
@@ -27,12 +25,6 @@ export function BottomBarSkillSlot({
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
-  engine.addSystem(() => {
-    if (inputSystem.isTriggered(slot.hotKey, PointerEventType.PET_DOWN)) {
-      onClick(index)
-    }
-  })
-
   return (
     <UiEntity
       uiTransform={{
@@ -50,32 +42,35 @@ export function BottomBarSkillSlot({
         console.log('Need to implement cooldown and execute the skill code')
       }}
     >
-      <UiEntity
-        uiTransform={{
-          display: slot.isCooling ? 'flex' : 'none',
-          width: '100%',
-          height: `${(slot.cooldownTime / slot.skill.cooldown) * 100}%`,
-          positionType: 'absolute',
-          position: { bottom: 0 }
-        }}
-        uiBackground={{
-          color: Color4.create(0, 0, 0, 0.8)
-        }}
-      />
-      <UiEntity
-        uiTransform={{
-          display: slot.isCooling ? 'flex' : 'none',
-          width: '100%',
-          height: '100%',
-          positionType: 'absolute',
-          position: { bottom: 0 }
-        }}
-        uiText={{
-          value: slot.cooldownTime.toFixed(0).toString(),
-          fontSize: canvasInfo.height * 0.02,
-          textAlign: 'middle-center'
-        }}
-      />
+      {slot.isCooling && (
+        <UiEntity
+          uiTransform={{
+            display: slot.isCooling ? 'flex' : 'none',
+            width: '100%',
+            height: `${(slot.cooldownTime / slot.skill.cooldown) * 100}%`,
+            positionType: 'absolute',
+            position: { bottom: 0 }
+          }}
+          uiBackground={{
+            color: Color4.create(0, 0, 0, 0.8)
+          }}
+        />
+      )}
+      {slot.isCooling && (
+        <UiEntity
+          uiTransform={{
+            width: '100%',
+            height: '100%',
+            positionType: 'absolute',
+            position: { bottom: 0 }
+          }}
+          uiText={{
+            value: slot.cooldownTime.toFixed(0).toString(),
+            fontSize: canvasInfo.height * 0.02,
+            textAlign: 'middle-center'
+          }}
+        />
+      )}
       <UiEntity
         uiTransform={{
           width: '100%',

@@ -79,3 +79,12 @@ export const InputKeys: Record<slotsInputs, string> = {
   [InputAction.IA_ACTION_5]: '3',
   [InputAction.IA_ACTION_6]: '4'
 }
+
+export const inputKeysArray: slotsInputs[] = [
+  InputAction.IA_ACTION_3,
+  InputAction.IA_PRIMARY,
+  InputAction.IA_SECONDARY,
+  InputAction.IA_ACTION_4,
+  InputAction.IA_ACTION_5,
+  InputAction.IA_ACTION_6
+]

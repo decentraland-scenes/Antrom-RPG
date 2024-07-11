@@ -1,10 +1,11 @@
-import { engine } from '@dcl/sdk/ecs'
+import { PointerEventType, engine, inputSystem } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import BottomBar from '../../ui/bottom-bar/bottomBar'
 import {
   slotsDataToTest,
   type skillSlotData
 } from '../../ui/bottom-bar/skillsData'
+import { inputKeysArray, type slotsInputs } from '../../utils/ui-utils'
 
 export class UI {
   public isVisible: boolean = true
@@ -64,6 +65,16 @@ export class UI {
     }
   }
 
+  addInputEvents(): void {
+    inputKeysArray.forEach((inputKey: slotsInputs, index: number) => {
+      engine.addSystem(() => {
+        if (inputSystem.isTriggered(inputKey, PointerEventType.PET_DOWN)) {
+          this.showCooldownSlot(index)
+        }
+      })
+    })
+  }
+
   bottomBarUI(): ReactEcs.JSX.Element {
     return (
       <BottomBar
@@ -83,4 +94,5 @@ export let gameUi: UI
 export function main(): void {
   // all the initializing logic
   gameUi = new UI()
+  gameUi.addInputEvents()
 }
