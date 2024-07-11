@@ -431,9 +431,8 @@ export class Player extends Character {
         levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
         currentXp={this.xp}
         level={this.level}
-        onClickSlotOne={() => {}}
-        cooldownTimeOne={0}
-        isCoolingOne={false}
+        onClickSlot={() => {}}
+        slotsData={undefined}
       />
     )
   }

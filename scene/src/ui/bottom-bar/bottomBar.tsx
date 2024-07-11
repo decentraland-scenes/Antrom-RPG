@@ -1,4 +1,4 @@
-import { InputAction, UiCanvasInformation, engine } from '@dcl/sdk/ecs'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
@@ -12,23 +12,7 @@ import {
   bottomBarSprites
 } from './bottomBarData'
 import { BottomBarSkillSlot } from './bottomBarSkillSlot'
-
-const exampleSkill = {
-  cooldown: 3,
-  name: 'Example Skill',
-  sprite: bottomBarSprites.exampleSkill
-}
-
-type BottomBarProps = {
-  isVisible: boolean
-  currentXp: number
-  levelXp: number
-  currentHpPercent: number
-  level: number
-  onClickSlotOne: (arg: number) => void
-  cooldownTimeOne: number
-  isCoolingOne: boolean
-}
+import { type bottomBarProps } from './skillsData'
 
 function BottomBar({
   isVisible,
@@ -36,10 +20,9 @@ function BottomBar({
   levelXp,
   currentHpPercent,
   level,
-  onClickSlotOne,
-  cooldownTimeOne,
-  isCoolingOne
-}: BottomBarProps): ReactEcs.JSX.Element | null {
+  onClickSlot,
+  slotsData
+}: bottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
@@ -220,11 +203,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_ACTION_3}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={0}
             />
           </UiEntity>
           <UiEntity
@@ -234,11 +215,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_PRIMARY}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={1}
             />
           </UiEntity>
           <UiEntity
@@ -248,11 +227,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_SECONDARY}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={2}
             />
           </UiEntity>
         </UiEntity>
@@ -276,11 +253,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_ACTION_4}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={3}
             />
           </UiEntity>
           <UiEntity
@@ -290,11 +265,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_ACTION_5}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={4}
             />
           </UiEntity>
           <UiEntity
@@ -304,11 +277,9 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              skill={exampleSkill}
-              onClick={onClickSlotOne}
-              cooldownTime={cooldownTimeOne}
-              hotKey={InputAction.IA_ACTION_6}
-              isCooling={isCoolingOne}
+              slotsData={slotsData}
+              onClick={onClickSlot}
+              index={5}
             />
           </UiEntity>
         </UiEntity>

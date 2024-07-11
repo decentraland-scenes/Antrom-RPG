@@ -1,6 +1,10 @@
 import { engine } from '@dcl/sdk/ecs'
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import BottomBar from '../../ui/bottom-bar/bottomBar'
+import {
+  slotsDataToTest,
+  type skillSlotData
+} from '../../ui/bottom-bar/skillsData'
 
 export class UI {
   public isVisible: boolean = true
@@ -8,42 +12,85 @@ export class UI {
   public currentXp: number
   public levelXp: number
   public level: number
-  public cooldownTimeOne: number = 0
-  public isCoolingOne: boolean = false
-  public slotOneSkillCooldown: number = 0
+  public slotsData: skillSlotData[] | undefined
+  public withOutSystemLoaded: boolean = false
 
   constructor() {
     this.currentHpPercent = 75.6
     this.currentXp = 250
     this.levelXp = 1000
     this.level = 1
+    this.slotsData = slotsDataToTest
 
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.bottomBarUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
-  showCooldownSlotOne(time: number): void {
-    if (!this.isCoolingOne) {
-      this.slotOneSkillCooldown = time
-      console.log(time)
-      this.cooldownTimeOne = time
-      this.isCoolingOne = true
-      engine.addSystem(
-        this.cooldownSystemSlotOne.bind(this),
-        1,
-        'slotOneSystem'
-      )
+  showCooldownSlot(index: number): void {
+    if (this.slotsData !== undefined) {
+      if (this.slotsData[index] !== undefined) {
+        const slot = this.slotsData[index]
+        if (!slot.isCooling && slot.skill !== undefined) {
+          slot.cooldownTime = slot.skill.cooldown
+          
+          if (!this.slotsData.some((slot) => slot.isCooling)) {
+            engine.addSystem(
+              this.cooldownSystemSlot.bind(this),
+              1,
+              'skillsCoolingSystem'
+            )
+          }
+          slot.isCooling = true
+        }
+      }
     }
   }
 
-  cooldownSystemSlotOne(dt: number): void {
-    if (this.cooldownTimeOne - dt >= 0 && this.isCoolingOne) {
-      this.cooldownTimeOne = this.cooldownTimeOne - dt
-    } else {
-      this.isCoolingOne = false
-      engine.removeSystem('slotOneSystem')
+  cooldownSystemSlot(dt: number): void {
+    if (this.slotsData !== undefined) {
+      if (this.slotsData.every((slot) => !slot.isCooling)) {
+        engine.removeSystem('skillsCoolingSystem')
+        console.log('system removed')
+      }
+      this.slotsData.forEach((slot) => {
+        if (slot.cooldownTime - dt >= 0 && slot.isCooling) {
+          slot.cooldownTime = slot.cooldownTime - dt
+        } else {
+          if (slot.skill !== undefined) {
+            slot.isCooling = false
+          }
+        }
+      })
     }
   }
+
+  // showCooldownSlot(index: number): void {
+  //   if (this.slotsData?.[index] !== undefined) {
+  //     const slot = this.slotsData[index]
+  //     if (!slot.isCooling && slot.skill !== undefined) {
+  //       slot.cooldownTime = slot.skill.cooldown
+  //       slot.isCooling = true
+  //       engine.addSystem(
+  //         this.cooldownSystemSlot.bind(this),
+  //         1,
+  //         `skillSlot-${slot.skill.name}-${slot.index}`
+  //       )
+  //     }
+  //   }
+  // }
+
+  // cooldownSystemSlot(dt: number): void {
+  //   this.slotsData?.forEach((slot) => {
+  //     if (slot.cooldownTime - dt >= 0 && slot.isCooling) {
+  //       slot.cooldownTime = slot.cooldownTime - dt
+  //     } else {
+  //       if (slot.skill !== undefined) {
+  //         slot.isCooling = false
+  //         engine.removeSystem(`skillSlot-${slot.skill.name}-${slot.index}`)
+  //       }
+  //     }
+  //   })
+  // }
 
   bottomBarUI(): ReactEcs.JSX.Element {
     return (
@@ -53,9 +100,8 @@ export class UI {
         levelXp={this.levelXp}
         currentXp={this.currentXp}
         level={this.level}
-        onClickSlotOne={this.showCooldownSlotOne.bind(this)}
-        cooldownTimeOne={this.cooldownTimeOne}
-        isCoolingOne={this.isCoolingOne}
+        slotsData={this.slotsData}
+        onClickSlot={this.showCooldownSlot.bind(this)}
       />
     )
   }
