@@ -15,8 +15,8 @@
   "devDependencies": {
     "@dcl/asset-packs": "^1.19.0",
     "@dcl/js-runtime": "7.5.6-9700458924.commit-a936907",
-    "@dcl/sdk": "7.5.6-9724511758.commit-cb2baa8",
-    "@dcl/sdk-commands": "7.5.6-9724511758.commit-cb2baa8",
+    "@dcl/sdk": "7.5.7-9891810625.commit-d9f5cf2",
+    "@dcl/sdk-commands": "7.5.7-9891810625.commit-d9f5cf2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "dcl-npc-toolkit": "^1.2.2",
