@@ -1,7 +1,4 @@
-import {
-  UiCanvasInformation,
-  engine
-} from '@dcl/sdk/ecs'
+import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { InputKeys, getUvs } from '../../utils/ui-utils'
