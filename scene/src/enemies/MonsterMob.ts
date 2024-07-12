@@ -69,36 +69,19 @@ export class MonsterMob extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    // this.loadTransformation()
-    // monster sounds
-    // this.dyingSound = enemyDyingAudioSource
-    // this.addComponentOrReplace(this.dyingSound)
-    //
 
-    // this.attackSound = enemyAttackAudioSource
-    // this.addComponentOrReplace(this.attackSound)
-    //
-    // let monDef = enemyDefAudioSource
-    // this.addComponentOrReplace(monDef)
-    //
-    // let monHey = enemyHeyAudioSource
-    // this.addComponentOrReplace(monHey)
     MonsterMob.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
     console.log('init')
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (!this.shape && this.shapeFile) {
+
+    if (this.shape.length === 0 && this.shapeFile != null) {
       this.shape = this.shapeFile
       console.log(this.shape)
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
-    if (this.audioFile != null) {
-      // const clip = new AudioClip(this.audioFile)
-      // this.sound = new AudioSource(clip)
-      // this.addComponentOrReplace(this.sound)
-    }
+
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
     Animator.createOrReplace(this.entity, {
       states: [
@@ -259,10 +242,11 @@ export class MonsterMob extends Character {
       1,
       [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
       () => {
-        console.log('trigger Attack')
+        engine.addSystem(this.attackSystem.attackSystem)
       },
       () => {
         console.log('im out')
+        engine.removeSystem(this.attackSystem.attackSystem)
       }
     )
   }
@@ -328,7 +312,12 @@ export class MonsterMob extends Character {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
-      // engine.removeEntity(this.entity)
+      engine.removeEntity(this.entity)
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
+      engine.removeEntity(this.healthBar)
+      engine.removeEntity(this.label)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -481,9 +470,6 @@ export class MonsterMob extends Character {
 
     player.impactAnimation?.()
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-    // this.attackSound.playOnce()
-
     // setTimeout(1 * 1000, () => {
     //     checkHealth()
     // })

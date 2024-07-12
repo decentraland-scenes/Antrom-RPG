@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/strict-boolean-expressions */
 import {
   Animator,
   GltfContainer,
@@ -15,21 +14,22 @@ import {
 import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
-import { MonsterAttackRanged } from './monsterAttackRanged'
-import { player } from '../player/player'
+import { type MonsterAttackRanged } from './monsterAttackRanged'
+import { Player, player } from '../player/player'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
-import { MonsterAttack } from './monsterAttack'
+import { type MonsterAttack } from './monsterAttack'
+import MonsterOligar from './monster'
 
-export class MonsterMeat extends Character {
+export class MonsterMage extends Character {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
   shapeFile?: string
   shape: string = ''
   audioFile?: string
-  healthBar!: Entity
+  healthBar?: Entity
   idleClip: string = 'idle'
   attackClip: string = 'attack'
   walkClip: string = 'walk'
@@ -44,7 +44,7 @@ export class MonsterMeat extends Character {
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   attackTrigger!: Entity
-  label?: any
+  label?: Entity
   topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
@@ -53,7 +53,7 @@ export class MonsterMeat extends Character {
   dropRate: number = -1
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
-    MonsterMeat.globalHasSkill = value
+    MonsterOligar.globalHasSkill = value
   }
 
   constructor(
@@ -70,32 +70,14 @@ export class MonsterMeat extends Character {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     this.topOffSet = topOffset
-    // monster sounds
-    // this.dyingSound = enemyDyingAudioSource
-    // this.addComponentOrReplace(this.dyingSound)
-    //
-
-    // this.attackSound = enemyAttackAudioSource
-    // this.addComponentOrReplace(this.attackSound)
-    //
-    // let monDef = enemyDefAudioSource
-    // this.addComponentOrReplace(monDef)
-    //
-    // let monHey = enemyHeyAudioSource
-    // this.addComponentOrReplace(monHey)
-    MonsterMeat.setGlobalHasSkill(true)
+    MonsterOligar.setGlobalHasSkill(true)
   }
 
   initMonster(): void {
     console.log('init')
-    if (!this.shape && this.shapeFile) {
+    if (this.shape.length === 0 && this.shapeFile !== undefined) {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
-    }
-    if (this.audioFile) {
-      // const clip = new AudioClip(this.audioFile)
-      // this.sound = new AudioSource(clip)
-      // this.addComponentOrReplace(this.sound)
     }
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
     Animator.createOrReplace(this.entity, {
@@ -128,19 +110,8 @@ export class MonsterMeat extends Character {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
-
-    this.attackSystem = new MonsterAttack(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
-
-    this.attackSystemRanged = new MonsterAttackRanged(this, {
-      moveSpeed: 2,
-      engageDistance: this.engageDistance
-    })
 
     this.setupAttackHandler()
   }
@@ -194,11 +165,11 @@ export class MonsterMeat extends Character {
   }
 
   updateHealthBar(): void {
-    if (this.healthBar) {
+    if (this.healthBar !== undefined) {
       Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
     }
 
-    if (this.label) {
+    if (this.label !== undefined) {
       TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
@@ -220,32 +191,6 @@ export class MonsterMeat extends Character {
     )
   }
 
-  setupRangedAttackTriggerBox(): void {
-    this.rangeAttackTrigger = engine.addEntity()
-    Transform.create(this.rangeAttackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.rangeAttackTrigger)
-    VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.rangeAttackTrigger,
-      utils.NO_LAYERS,
-      utils.LAYER_1,
-      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
-      () => {
-        console.log('trigger Ranged attack')
-        if (this.isDeadAnimation) return
-        // const CameraPos = Transform.get(engine.CameraEntity).position
-        engine.addSystem(this.attackSystemRanged.attackSystem)
-      },
-      () => {
-        console.log('im out')
-        if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.idleClip)
-      }
-    )
-  }
-
   setupEngageTriggerBox(): void {
     this.engageAttackTrigger = engine.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
@@ -257,12 +202,18 @@ export class MonsterMeat extends Character {
       1,
       [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
       () => {
-        console.log('trigger Attack')
+        engine.addSystem(this.attackSystem.attackSystem)
       },
       () => {
         console.log('im out')
+        engine.removeSystem(this.attackSystem.attackSystem)
+        Animator.playSingleAnimation(this.entity, this.dieClip)
       }
     )
+  }
+
+  stopRun(): void {
+    Animator.playSingleAnimation(this.entity, this.idleClip)
   }
 
   setupAttackTriggerBox(): void {
@@ -277,9 +228,16 @@ export class MonsterMeat extends Character {
       [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
       () => {
         console.log('<<< Attack >>>')
+        if (this.isDeadAnimation) return
+        this.createHealthBar()
+        this.handleAttack()
+        this.createLabel()
       },
       () => {
         console.log('im out')
+        if (this.healthBar != null) engine.removeEntity(this.healthBar)
+
+        if (this.label != null) engine.removeEntity(this.label)
       }
     )
   }
@@ -302,7 +260,7 @@ export class MonsterMeat extends Character {
 
   dyingAnimation(): void {
     this.isDeadAnimation = true
-    if (this.dieClip) {
+    if (this.dieClip.length > 0) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
     this.create()
@@ -328,8 +286,6 @@ export class MonsterMeat extends Character {
       engine.removeEntity(this.rangeAttackTrigger)
       engine.removeEntity(this.engageAttackTrigger)
       engine.removeEntity(this.attackTrigger)
-      engine.removeEntity(this.healthBar)
-      engine.removeEntity(this.label)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -344,10 +300,10 @@ export class MonsterMeat extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    if (this.healthBar) {
+    if (this.healthBar !== undefined) {
       engine.removeEntity(this.healthBar)
     }
-    if (this.label) {
+    if (this.label !== undefined) {
       engine.removeEntity(this.label)
     }
     if (this.rangeAttackTrigger != null) {
@@ -402,7 +358,7 @@ export class MonsterMeat extends Character {
         defPercent = defPercent * monsterModifiers.getDefBuff()
         console.log('def %', defPercent)
       }
-
+      const random = Math.random() * 1000
       const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
 
       const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
@@ -416,6 +372,21 @@ export class MonsterMeat extends Character {
       //     `${playerAttack}`,
       //     `MISSED`
       // )
+      if (MonsterOligar.globalHasSkill) {
+        switch (true) {
+          case random < 200: {
+            // 20% chance
+            Player.setGlobalHasSkill(false)
+            utils.timers.setTimeout(() => {
+              Player.setGlobalHasSkill(true)
+            }, 30 * 1000)
+            break
+          }
+        }
+      } else {
+        // TODO  ui.displayAnnouncement("Enemy skills blocked")
+        console.log('Monster has no skills')
+      }
 
       monsterModifiers.activeSkills.forEach((skill) =>
         skill(isCriticalAttack, true, reduceHealthBy)
@@ -435,7 +406,6 @@ export class MonsterMeat extends Character {
             enemyAttack
         )
       }
-      // createMissedLabel()
 
       const roundedAttack = Math.floor(enemyAttack)
       this.attackPlayer(roundedAttack)
@@ -489,6 +459,7 @@ export class MonsterMeat extends Character {
     player.impactAnimation?.()
     // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
+
     // setTimeout(1 * 1000, () => {
     //     checkHealth()
     // })
@@ -499,4 +470,4 @@ export class MonsterMeat extends Character {
   }
 }
 
-export default MonsterMeat
+export default MonsterMage
