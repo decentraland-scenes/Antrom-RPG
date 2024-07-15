@@ -257,10 +257,11 @@ export class MonsterOligar extends Character {
       1,
       [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
       () => {
-        console.log('trigger Attack')
+        engine.addSystem(this.attackSystem.attackSystem)
       },
       () => {
         console.log('im out')
+        engine.removeSystem(this.attackSystem.attackSystem)
       }
     )
   }
@@ -277,9 +278,16 @@ export class MonsterOligar extends Character {
       [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
       () => {
         console.log('<<< Attack >>>')
+        if (this.isDeadAnimation) return
+        this.createHealthBar()
+        this.handleAttack()
+        this.createLabel()
       },
       () => {
         console.log('im out')
+        if (this.healthBar != null) engine.removeEntity(this.healthBar)
+
+        if (this.label != null) engine.removeEntity(this.label)
       }
     )
   }
@@ -324,7 +332,10 @@ export class MonsterOligar extends Character {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
-      // engine.removeEntity(this.entity)
+      engine.removeEntity(this.entity)
+      engine.removeEntity(this.rangeAttackTrigger)
+      engine.removeEntity(this.engageAttackTrigger)
+      engine.removeEntity(this.attackTrigger)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -446,7 +457,6 @@ export class MonsterOligar extends Character {
             enemyAttack
         )
       }
-      // createMissedLabel()
 
       const roundedAttack = Math.floor(enemyAttack)
       this.attackPlayer(roundedAttack)
@@ -500,8 +510,6 @@ export class MonsterOligar extends Character {
     player.impactAnimation?.()
     // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-    // this.attackSound.playOnce()
 
     // setTimeout(1 * 1000, () => {
     //     checkHealth()
