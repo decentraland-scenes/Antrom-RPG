@@ -4,12 +4,12 @@ import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   WIDTH_FACTOR,
-  type CharacterFactionsType,
+  type CharacterAlliancesType,
   type CharacterStatsType
 } from './creationPlayerData'
 
 type creationPlayerSelectedOptionProps = {
-  selectedOption: CharacterStatsType | CharacterFactionsType | undefined
+  selectedOption: CharacterStatsType | CharacterAlliancesType | undefined
   isSkill?: boolean
 }
 

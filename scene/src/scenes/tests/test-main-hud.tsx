@@ -1,6 +1,7 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import MainHud from '../../ui/main-hud/mainHudComponent'
-import * as utils from '@dcl-sdk/utils'
+import { openExternalUrl } from '~system/RestrictedActions'
+import { CharacterClasses, CharacterAlliances, CharacterRaces } from '../../ui/creation-player/creationPlayerData'
 
 export class UI {
   public isVisible: boolean
@@ -23,7 +24,12 @@ export class UI {
         isInfoOpen={this.isInfoOpen}
         playerRollOnClick={this.playerRollVisibility.bind(this)}
         showInfo={this.showInfo.bind(this)}
-      />
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        openLink={this.openLink.bind(this)}
+        characterRace={CharacterRaces.CR_ELF}
+        characterClass={CharacterClasses.CC_CLERIC}
+        characterAlliance={CharacterAlliances.CF_REBELS}
+        gainedExperience={0} playerRoll={0} enemyRoll={0} playerAttack={0} EnemmyAttack={0} />
     )
   }
 
@@ -31,15 +37,13 @@ export class UI {
     this.isPlayerRollOpen = visibility
   }
 
-  showInfo(): void {
-    if (!this.isInfoOpen) {
-      this.isInfoOpen = true
-      utils.timers.setTimeout(() => {
-        this.isInfoOpen = false
-      }, 1 * 1000)
+  showInfo(visibility: boolean): void {
+    this.isInfoOpen = visibility
   }
-    }
-    
+
+  async openLink(url: string): Promise<void> {
+    await openExternalUrl({ url })
+  }
 }
 
 export let gameUi: UI

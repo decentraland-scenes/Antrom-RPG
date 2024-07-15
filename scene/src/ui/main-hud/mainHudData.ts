@@ -116,17 +116,20 @@ export const mainHudSprites: Record<string, Sprite> = {
   discordLogo: {
     atlasSrc: 'assets/images/main_spritesheet.png',
     atlasSize: { x: 1261, y: 727 },
-    x: 553,
+    x: 561,
     y: 0,
-    w: 76,
+    w: 60,
     h: 60
   },
   twitterLogo: {
     atlasSrc: 'assets/images/main_spritesheet.png',
     atlasSize: { x: 1261, y: 727 },
-    x: 825,
+    x: 833,
     y: 512,
-    w: 76,
+    w: 60,
     h: 60
   }
 }
+
+export const DISCORD_URL: string = 'https://discord.gg/Q9ztapgEAA'
+export const TWITTER_URL:string = 'https://twitter.com/KnightsOfAntrom'
