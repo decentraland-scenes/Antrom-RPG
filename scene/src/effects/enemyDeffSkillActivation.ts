@@ -34,7 +34,7 @@ export const applyDefSkillEffectToEnemyLocation = (
     ]
   })
   Animator.playSingleAnimation(area, 'action')
-  
+
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
     engine.removeEntity(area)
