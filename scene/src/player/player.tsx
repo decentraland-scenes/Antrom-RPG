@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
 import { type Item, type buffItem, itemTypes } from './Items'
-import LevelManager from './LevelManager'
+import LevelManager, { LEVEL_TYPES } from './LevelManager'
 import { Character } from '../enemies/character'
 import { PetManager } from './petManager'
-import { LEVEL_TYPES } from '../enemies/types'
 import { getRandomIntRange } from '../utils/getRandomInt'
 import { WearablesConfig } from './wearables-config'
 import { PlayerInventory } from '../inventory/playerInventory'

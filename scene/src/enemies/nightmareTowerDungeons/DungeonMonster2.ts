@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { player } from '../../player/player'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ITEM_TYPES } from '../playerInventoryMaps'
 import { Transform } from '@dcl/sdk/ecs'
 

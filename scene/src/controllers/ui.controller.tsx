@@ -110,7 +110,7 @@ export class UIController {
         <Canvas>{NpcUtilsUi()}</Canvas>
 
         {/* Loadin screen */}
-        {this.loadingUI.isVisible && this.loadingUI.mainUi()}
+        {this.loadingUI.visible() && this.loadingUI.mainUi()}
       </UiEntity>
     )
   }

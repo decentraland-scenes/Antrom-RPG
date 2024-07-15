@@ -42,7 +42,7 @@ export default class HalloweenButcher extends MonsterOligar {
 
   onDropLoot(): void {
     // TODO in player player.writeDataToServer()
-    this.gameController.uicontroller.displayAnnouncement(
+    this.gameController.uiController.displayAnnouncement(
       `You Collected /3 pumpkins from the butchers.`,
       Color4.Red(),
       3000

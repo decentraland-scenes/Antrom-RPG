@@ -119,7 +119,7 @@ export class DemonKingDungeon extends Realm {
             Animator.playSingleAnimation(this.dungeon_door1, 'idle')
           }, 60 * 1000)
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Defeat the Oligar!',
             Color4.Yellow(),
             3000
