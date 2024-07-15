@@ -1,35 +1,42 @@
-import { type Vector3 } from '@dcl/sdk/math'
+import {
+  Animator,
+  AudioSource,
+  GltfContainer,
+  Transform,
+  engine
+} from '@dcl/sdk/ecs'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import * as utils from '@dcl-sdk/utils'
 
 export const applyDefSkillEffectToEnemyLocation = (
   position: Vector3,
-  duration?: number
+  duration: number
 ): void => {
-  // const area = new Entity("area")
-  // const transform60 = new Transform({
-  //     position,
-  //     rotation: new Quaternion(0, 0, 0, 1),
-  //     scale: new Vector3(1, 1, 1),
-  // })
-  // area.addComponentOrReplace(transform60)
-  // const gltfShape20 = new GLTFShape("models/Skill_FX/ShieldSkill.glb")
-  // gltfShape20.visible = true
-  // area.addComponentOrReplace(gltfShape20)
-  // const clip = new AudioClip("sounds/attack.mp3")
-  // const attackSound = new AudioSource(clip)
-  // area.addComponent(attackSound)
-  // attackSound.volume = 0.5
-  // let d2animator = new Animator()
-  // // Add animator component to the entity
-  // area.addComponent(d2animator)
-  // // Instance animation clip object
-  // const idleClip = new AnimationState("idle", { looping: true })
-  // const actionClip = new AnimationState("action", { looping: true })
-  // // Add animation clip to Animator component
-  // d2animator.addClip(idleClip)
-  // d2animator.addClip(actionClip)
-  // // Add entity to engine
-  // engine.addEntity(area)
-  // actionClip.play()
-  // attackSound.playOnce()
-  // setTimeout(duration, () => engine.removeEntity(area))
+  const area = engine.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/ShieldSkill.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'action',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'action')
+  
+  AudioSource.playSound(area, 'assets/sounds/attack.mp3')
+  utils.timers.setTimeout(() => {
+    engine.removeEntity(area)
+  }, duration)
 }
