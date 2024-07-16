@@ -1,5 +1,5 @@
 // Run the main scene
-// export * from './scenes/main'
+export * from './scenes/main'
 
 // tests scenes
-export * from './scenes/tests/test-main-hud'
+// export * from './scenes/tests/test-main-hud'
