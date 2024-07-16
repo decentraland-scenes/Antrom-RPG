@@ -1,7 +1,11 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import MainHud from '../../ui/main-hud/mainHudComponent'
 import { openExternalUrl } from '~system/RestrictedActions'
-import { CharacterClasses, CharacterAlliances, CharacterRaces } from '../../ui/creation-player/creationPlayerData'
+import {
+  CharacterClasses,
+  CharacterAlliances,
+  CharacterRaces
+} from '../../ui/creation-player/creationPlayerData'
 
 export class UI {
   public isVisible: boolean
@@ -29,7 +33,20 @@ export class UI {
         characterRace={CharacterRaces.CR_ELF}
         characterClass={CharacterClasses.CC_CLERIC}
         characterAlliance={CharacterAlliances.CF_REBELS}
-        gainedExperience={0} playerRoll={0} enemyRoll={0} playerAttack={0} EnemmyAttack={0} />
+        lastRoll={{
+          gainedExperience: 25,
+          playerRoll: 12,
+          enemyRoll: 4,
+          playerAttack: 50,
+          EnemyAttack: 'MISSED'
+        }}
+        playerProfessions={{
+          lumberjackLevel: 1,
+          butcherLevel: 0,
+          miningLevel: 1,
+          assasinLevel: 0
+        }}
+      />
     )
   }
 

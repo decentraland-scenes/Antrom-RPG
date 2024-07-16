@@ -116,9 +116,9 @@ export const mainHudSprites: Record<string, Sprite> = {
   discordLogo: {
     atlasSrc: 'assets/images/main_spritesheet.png',
     atlasSize: { x: 1261, y: 727 },
-    x: 561,
+    x: 553,
     y: 0,
-    w: 60,
+    w: 76,
     h: 60
   },
   twitterLogo: {
@@ -131,5 +131,20 @@ export const mainHudSprites: Record<string, Sprite> = {
   }
 }
 
+export type lastRollType = {
+  gainedExperience: number
+  playerRoll: number
+  enemyRoll: number
+  playerAttack: number | 'MISSED'
+  EnemyAttack: number | 'MISSED'
+}
+
+export type playersProfessionsType = {
+  lumberjackLevel: number
+  butcherLevel: number
+  miningLevel: number
+  assasinLevel: number
+}
+
 export const DISCORD_URL: string = 'https://discord.gg/Q9ztapgEAA'
-export const TWITTER_URL:string = 'https://twitter.com/KnightsOfAntrom'
+export const TWITTER_URL: string = 'https://twitter.com/KnightsOfAntrom'
