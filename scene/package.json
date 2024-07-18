@@ -32,6 +32,8 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
+    "dcl-ui-toolkit": "^0.10.0",
+    "fp-future": "^1.0.1",
     "typescript": "^5.3.2"
   }
 }

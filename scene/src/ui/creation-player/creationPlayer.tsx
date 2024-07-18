@@ -2,24 +2,29 @@ import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type Sprite, getUvs } from '../../utils/ui-utils'
 import {
-  CHARACTER_CLASSES,
-  CHARACTER_ALLIANCES,
-  CHARACTER_RACES,
-  HEIGTH_FACTOR,
-  WIDTH_FACTOR,
-  creationPlayerSprites,
+  ALLIANCES,
+  CLASSES_STATS,
   type CharacterAlliancesType,
-  type CharacterStatsType
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType,
+  HEIGTH_FACTOR,
+  RACES,
+  WIDTH_FACTOR,
+  creationPlayerSprites
 } from './creationPlayerData'
 import { CreationPlayerOption } from './creationPlayerOption'
 import { CreationPlayerSelectedOption } from './creationPlayerSelectedOption'
 import { CreationPlayerStat } from './creationPlayerStat'
 
 type CreationPlayerProps = {
-  isVisible: boolean
-  selectOption: (arg: CharacterStatsType | CharacterAlliancesType) => void
-  selectedClass: CharacterStatsType | undefined
-  selectedRace: CharacterStatsType | undefined
+  selectOption: (
+    arg:
+      | CharacterRaceStatsType
+      | CharacterClassStatsType
+      | CharacterAlliancesType
+  ) => void
+  selectedClass: CharacterClassStatsType | undefined
+  selectedRace: CharacterRaceStatsType | undefined
   selectedAlliance: CharacterAlliancesType | undefined
   clearOptionsClicked: boolean
   clearOptionsMouseDown: () => void
@@ -30,7 +35,6 @@ type CreationPlayerProps = {
 }
 
 function CreationPlayer({
-  isVisible,
   selectOption,
   selectedClass,
   selectedRace,
@@ -64,7 +68,6 @@ function CreationPlayer({
       uiTransform={{
         width: canvasInfo.width,
         height: canvasInfo.height,
-        display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
@@ -100,7 +103,7 @@ function CreationPlayer({
               margin: { top: '27.5%' }
             }}
           >
-            {CHARACTER_ALLIANCES.map((characterAlliance, index) => (
+            {Object.values(ALLIANCES).map((characterAlliance, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -125,7 +128,7 @@ function CreationPlayer({
               margin: { top: '15%' }
             }}
           >
-            {CHARACTER_RACES.map((characterRace, index) => (
+            {Object.values(RACES).map((characterRace, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -150,7 +153,7 @@ function CreationPlayer({
               margin: { top: '14%' }
             }}
           >
-            {CHARACTER_CLASSES.map((characterClass, index) => (
+            {Object.values(CLASSES_STATS).map((characterClass, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{

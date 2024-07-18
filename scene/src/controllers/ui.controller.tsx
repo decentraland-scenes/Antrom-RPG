@@ -2,6 +2,7 @@ import * as utils from '@dcl-sdk/utils'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { NpcUtilsUi } from 'dcl-npc-toolkit'
+import * as ui from 'dcl-ui-toolkit'
 import { Player } from '../player/player'
 import Announcement from '../ui/announcement/announcement'
 import Banner from '../ui/banner/bannerComponent'
@@ -10,10 +11,11 @@ import {
   BannerPosition,
   type BannerType
 } from '../ui/banner/bannerConstants'
+import Canvas from '../ui/canvas/Canvas'
 import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
+import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
-import Canvas from '../ui/canvas/Canvas'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -30,6 +32,8 @@ export class UIController {
   announcement: string = ''
   announcement_color: Color4 = Color4.White()
   announcementTimerId: utils.TimerId | undefined = undefined
+
+  creationPlayerUi: CreationPlayerController | null = null
 
   constructor(gameController: GameController) {
     this.gameController = gameController
@@ -81,6 +85,24 @@ export class UIController {
     }, BANNER_DURATION * 1000)
   }
 
+  /**
+   * Start the player creation process and wait until it's done
+   * @returns true if
+   */
+  async startPlayerCreation(): Promise<{
+    created: boolean
+    tutorial: boolean
+  }> {
+    this.creationPlayerUi = new CreationPlayerController()
+    await this.creationPlayerUi.ready()
+    const tutorial = this.creationPlayerUi.isTutorialActive()
+
+    // cleanup
+    this.creationPlayerUi = null
+
+    return { created: true, tutorial }
+  }
+
   ui(): ReactEcs.JSX.Element {
     return (
       <UiEntity>
@@ -106,8 +128,14 @@ export class UIController {
         {/* Player HUD */}
         {Player.getInstance().PlayerUI()}
 
-        {/* NP utils library UI */}
+        {/* Creation Player step if it applies */}
+        {this.creationPlayerUi?.render()}
+
+        {/* NPC utils library UI */}
         <Canvas>{NpcUtilsUi()}</Canvas>
+
+        {/* ui utils library */}
+        <Canvas>{ui.render()}</Canvas>
 
         {/* Loadin screen */}
         {this.loadingUI.visible() && this.loadingUI.mainUi()}

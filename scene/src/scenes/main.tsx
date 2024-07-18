@@ -1,6 +1,11 @@
-import { CreatePlayer, GetPlayerInfo } from '../api/api'
+import { Color4 } from '@dcl/sdk/math'
+import { GetPlayerInfo } from '../api/api'
 import { GameController } from '../controllers/game.controller'
-import { isThereAnyGltfLoading, setPlayerPosition, waitNextTick } from '../utils/engine'
+import {
+  isThereAnyGltfLoading,
+  setPlayerPosition,
+  waitNextTick
+} from '../utils/engine'
 
 let gameInstance: GameController
 
@@ -15,21 +20,9 @@ export function main(): void {
   })
 }
 
-async function init(triedCreate: boolean = false): Promise<void> {
-  const playerInfoResponse = await GetPlayerInfo()
-  console.log({ playerInfoResponse })
-
-  if (playerInfoResponse?.player !== null) {
-    const player = playerInfoResponse.player
-    console.log({ player })
-  } else {
-    console.log('player not found')
-    if (!triedCreate) {
-      await CreatePlayer(0, 1, 2)
-      await init(true)
-      return
-    }
-  }
+async function init(): Promise<void> {
+  let playerInfoResponse = await GetPlayerInfo()
+  const shouldCreatePlayer = !(playerInfoResponse?.player !== null)
 
   // Wait until every gltf is loaded
   while (isThereAnyGltfLoading()) {
@@ -41,6 +34,28 @@ async function init(triedCreate: boolean = false): Promise<void> {
   await waitNextTick()
 
   // UI
-  gameInstance.uiController.playDungeonUI.setVisibility(true)
   gameInstance.uiController.loadingUI.finishLoading()
+  if (shouldCreatePlayer) {
+    const result = await gameInstance.uiController.startPlayerCreation()
+    playerInfoResponse = await GetPlayerInfo()
+
+    const failedCreation = !(playerInfoResponse?.player !== null)
+    if (failedCreation) {
+      gameInstance.uiController.displayAnnouncement(
+        'Player creation failed',
+        Color4.Red(),
+        5
+      )
+      await init()
+      return
+    }
+
+    if (result.tutorial) {
+      // TODO: assign first quest
+    }
+  }
+
+  // TODO: load player data
+
+  gameInstance.uiController.playDungeonUI.setVisibility(true)
 }

@@ -75,7 +75,7 @@ export class LoadingUI {
               display: this.isLoading ? 'none' : 'flex',
               alignItems: 'flex-end'
             }}
-            uiBackground={{ texture: { src: 'assets/images/classic.png' } }} 
+            uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
             onMouseDown={() => {
               this.isVisible = false
             }}

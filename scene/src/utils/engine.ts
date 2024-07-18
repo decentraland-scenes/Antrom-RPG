@@ -33,9 +33,8 @@ export function setPlayerPosition(x: number, y: number, z: number): void {
   // )
 }
 
-
 export function isThereAnyGltfLoading(): boolean {
-  return Array.from(
-    engine.getEntitiesWith(GltfContainerLoadingState)
-  ).some(([_, value]) => value.currentState === LoadingState.LOADING)
+  return Array.from(engine.getEntitiesWith(GltfContainerLoadingState)).some(
+    ([_, value]) => value.currentState === LoadingState.LOADING
+  )
 }
