@@ -307,13 +307,13 @@ export type CharacterStatsType = {
   type: 'class' | 'race'
 }
 
-export type CharacterFactionsType = {
+export type CharacterAlliancesType = {
   name: string
   selectedSprite: Sprite
   unselectedSprite: Sprite
   infoSprite: Sprite
   id: string
-  type: 'faction'
+  type: 'alliance'
 }
 
 export enum CharacterClasses {
@@ -331,7 +331,7 @@ export enum CharacterRaces {
   CR_ELF = 'elf'
 }
 
-export enum CharacterFactions {
+export enum CharacterAlliances {
   CF_REBELS = 'rebels',
   CF_DISCIPLES = 'disciples'
 }
@@ -469,28 +469,28 @@ export const RACES: Record<CharacterRaces, CharacterStatsType> = {
   }
 }
 
-export const FACTIONS: Record<CharacterFactions, CharacterFactionsType> = {
-  [CharacterFactions.CF_REBELS]: {
+export const ALLIANCES: Record<CharacterAlliances, CharacterAlliancesType> = {
+  [CharacterAlliances.CF_REBELS]: {
     name: 'The Rebels',
     selectedSprite: creationPlayerSprites.rebels,
     unselectedSprite: creationPlayerSprites.rebelsUnselected,
     infoSprite: creationPlayerSprites.rebelsInfo,
-    id: CharacterFactions.CF_REBELS,
-    type: 'faction'
+    id: CharacterAlliances.CF_REBELS,
+    type: 'alliance'
   },
-  [CharacterFactions.CF_DISCIPLES]: {
+  [CharacterAlliances.CF_DISCIPLES]: {
     name: 'The Disciples',
     selectedSprite: creationPlayerSprites.disciples,
     unselectedSprite: creationPlayerSprites.disciplesUnselected,
     infoSprite: creationPlayerSprites.disciplesInfo,
-    id: CharacterFactions.CF_DISCIPLES,
-    type: 'faction'
+    id: CharacterAlliances.CF_DISCIPLES,
+    type: 'alliance'
   }
 }
 
-export const CHARACTER_FACTIONS: CharacterFactionsType[] = [
-  FACTIONS.disciples,
-  FACTIONS.rebels
+export const CHARACTER_ALLIANCES: CharacterAlliancesType[] = [
+  ALLIANCES.disciples,
+  ALLIANCES.rebels
 ]
 
 export const CHARACTER_CLASSES: CharacterStatsType[] = [
