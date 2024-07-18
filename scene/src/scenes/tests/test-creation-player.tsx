@@ -1,7 +1,7 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import CreationPlayer from '../../ui/creation-player/creationPlayer'
 import {
-  type CharacterFactionsType,
+  type CharacterAlliancesType,
   type CharacterStatsType
 } from '../../ui/creation-player/creationPlayerData'
 
@@ -9,7 +9,7 @@ export class UI {
   public isVisible: boolean = true
   public selectedClass: CharacterStatsType | undefined
   public selectedRace: CharacterStatsType | undefined
-  public selectedFaction: CharacterFactionsType | undefined
+  public selectedAlliance: CharacterAlliancesType | undefined
   public clearOptionsClicked: boolean
   public acceptClicked: boolean
 
@@ -20,7 +20,7 @@ export class UI {
     this.acceptClicked = false
   }
 
-  selectOption(option: CharacterStatsType | CharacterFactionsType): void {
+  selectOption(option: CharacterStatsType | CharacterAlliancesType): void {
     switch (option.type) {
       case 'race':
         this.selectedRace = option
@@ -28,8 +28,8 @@ export class UI {
       case 'class':
         this.selectedClass = option
         break
-      case 'faction':
-        this.selectedFaction = option
+      case 'alliance':
+        this.selectedAlliance = option
         break
     }
   }
@@ -37,7 +37,7 @@ export class UI {
   clearOptionsMouseDown(): void {
     this.selectedClass = undefined
     this.selectedRace = undefined
-    this.selectedFaction = undefined
+    this.selectedAlliance = undefined
     this.clearOptionsClicked = true
   }
 
@@ -60,7 +60,7 @@ export class UI {
         isVisible={this.isVisible}
         selectedClass={this.selectedClass}
         selectedRace={this.selectedRace}
-        selectedFaction={this.selectedFaction}
+        selectedAlliance={this.selectedAlliance}
         selectOption={this.selectOption.bind(this)}
         clearOptionsClicked={this.clearOptionsClicked}
         clearOptionsMouseDown={this.clearOptionsMouseDown.bind(this)}
