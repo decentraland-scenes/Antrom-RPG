@@ -1,10 +1,10 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
-import { LEVEL_TYPES } from '../types'
 import { Transform } from '@dcl/sdk/ecs'
 import { player } from '../../player/player'
 import { getRandomInt } from '../../utils/getRandomInt'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
 export default class BetaBoss1 extends MonsterOligar {
   shapeFile = 'assets/models/Butcher.glb'

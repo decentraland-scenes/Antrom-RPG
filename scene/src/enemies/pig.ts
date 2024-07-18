@@ -35,7 +35,7 @@ export default class Pig extends MonsterMeat {
   }
 
   onDropXp(): void {
-    this.gameController.uicontroller.displayBanner(BannerType.B_MEAT)
+    this.gameController.uiController.displayBanner(BannerType.B_MEAT)
     // TODO PLAYER
     // log("onDropXp - Chicken")
     // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {

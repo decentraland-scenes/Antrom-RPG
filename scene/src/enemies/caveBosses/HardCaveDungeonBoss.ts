@@ -3,8 +3,8 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import MonsterMob from '../MonsterMob'
 import { ITEM_TYPES } from '../playerInventoryMaps'
-import { LEVEL_TYPES } from '../types'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
 const DEFAULT_XP = 60
 

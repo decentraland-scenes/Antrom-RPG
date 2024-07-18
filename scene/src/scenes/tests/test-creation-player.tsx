@@ -1,14 +1,14 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import CreationPlayer from '../../ui/creation-player/creationPlayer'
 import {
+  type CharacterClassStatsType,
   type CharacterAlliancesType,
-  type CharacterStatsType
+  type CharacterRaceStatsType
 } from '../../ui/creation-player/creationPlayerData'
 
 export class UI {
-  public isVisible: boolean = true
-  public selectedClass: CharacterStatsType | undefined
-  public selectedRace: CharacterStatsType | undefined
+  public selectedClass: CharacterClassStatsType | undefined
+  public selectedRace: CharacterRaceStatsType | undefined
   public selectedAlliance: CharacterAlliancesType | undefined
   public clearOptionsClicked: boolean
   public acceptClicked: boolean
@@ -20,7 +20,12 @@ export class UI {
     this.acceptClicked = false
   }
 
-  selectOption(option: CharacterStatsType | CharacterAlliancesType): void {
+  selectOption(
+    option:
+      | CharacterClassStatsType
+      | CharacterRaceStatsType
+      | CharacterAlliancesType
+  ): void {
     switch (option.type) {
       case 'race':
         this.selectedRace = option
@@ -57,7 +62,6 @@ export class UI {
   creationPlayerUI(): ReactEcs.JSX.Element {
     return (
       <CreationPlayer
-        isVisible={this.isVisible}
         selectedClass={this.selectedClass}
         selectedRace={this.selectedRace}
         selectedAlliance={this.selectedAlliance}

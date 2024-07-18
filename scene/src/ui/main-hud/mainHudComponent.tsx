@@ -3,20 +3,20 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import Canvas from '../canvas/Canvas'
 import {
-  ALLIANCES,
-  CLASSES,
-  RACES,
-  type CharacterAlliances,
-  type CharacterClasses,
-  type CharacterRaces
-} from '../creation-player/creationPlayerData'
-import {
   DISCORD_URL,
   TWITTER_URL,
   mainHudSprites,
   type lastRollType,
   type playersProfessionsType
 } from './mainHudData'
+import {
+  ALLIANCES,
+  CLASSES_STATS,
+  RACES,
+  type CharacterAlliances,
+  type CharacterClasses,
+  type CharacterRaces
+} from '../creation-player/creationPlayerData'
 
 type MainHudProps = {
   isVisible: boolean
@@ -209,9 +209,9 @@ function MainHud({
                   }}
                   uiBackground={{
                     textureMode: 'stretch',
-                    uvs: getUvs(CLASSES[characterClass].selectedSprite),
+                    uvs: getUvs(CLASSES_STATS[characterClass].selectedSprite),
                     texture: {
-                      src: CLASSES[characterClass].selectedSprite.atlasSrc
+                      src: CLASSES_STATS[characterClass].selectedSprite.atlasSrc
                     }
                   }}
                 />

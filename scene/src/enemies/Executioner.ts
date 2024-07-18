@@ -2,7 +2,7 @@ import { Transform, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { player } from '../player/player'
 import MonsterMob from './MonsterMob'
-import { LEVEL_TYPES } from './types'
+import { LEVEL_TYPES } from '../player/LevelManager'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)

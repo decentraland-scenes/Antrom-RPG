@@ -10,7 +10,7 @@ import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { DungeonStage } from '../../counters'
 import { player } from '../../player/player'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../playerInventoryMaps'
 

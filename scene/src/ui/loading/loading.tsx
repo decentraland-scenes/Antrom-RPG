@@ -1,22 +1,31 @@
-import * as utils from '@dcl-sdk/utils'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type UIController } from '../../controllers/ui.controller'
-import { setPlayerPosition } from '../../utils/engine'
 import Canvas from '../canvas/Canvas'
 
 export class LoadingUI {
-  public isLoading: boolean
-  public isVisible: boolean
+  private isLoading: boolean
+  private isVisible: boolean
   public timer: number = 2
+
   private readonly uiController: UIController
+
   constructor(uiController: UIController) {
     this.uiController = uiController
+    this.isLoading = false
+    this.isVisible = false
+  }
+
+  startLoading(): void {
     this.isLoading = true
     this.isVisible = true
+  }
 
-    utils.timers.setTimeout(() => {
-      this.isLoading = false
-    }, 2000)
+  finishLoading(): void {
+    this.isLoading = false
+  }
+
+  visible(): boolean {
+    return this.isVisible
   }
 
   mainUi(): ReactEcs.JSX.Element {
@@ -68,9 +77,7 @@ export class LoadingUI {
             }}
             uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
             onMouseDown={() => {
-              this.uiController.playDungeonUI.setVisibility(true)
               this.isVisible = false
-              setPlayerPosition(-22.21, 5.43, -26.53)
             }}
           />
         </UiEntity>

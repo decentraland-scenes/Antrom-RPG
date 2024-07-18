@@ -4,7 +4,7 @@ import { DungeonStage } from '../../counters'
 import { getRandomIntRange } from '../../utils/getRandomInt'
 import { player } from '../../player/player'
 import { ITEM_TYPES } from '../playerInventoryMaps'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
 const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 50

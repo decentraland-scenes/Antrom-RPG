@@ -371,7 +371,7 @@ export class Dungeon extends Realm {
           this.gem
         )
       ) {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'You have picked up the Essence of the Lich God, open a support ticket in Discord for your reward!',
           Color4.Yellow(),
           3000

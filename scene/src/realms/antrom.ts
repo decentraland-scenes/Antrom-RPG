@@ -763,7 +763,7 @@ export class Antrom extends Realm {
           }
           setCurrentActiveScene('LegacyDungeon')
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Locked',
             Color4.Yellow(),
             3000
@@ -906,7 +906,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Ranger Upgrades Coming Soon!',
           Color4.Yellow(),
           3000
@@ -952,7 +952,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Ranger Upgrades Coming Soon!',
           Color4.Yellow(),
           3000
@@ -1051,7 +1051,7 @@ export class Antrom extends Realm {
         //             player.inventory.reduceItem(ITEM_TYPES.COIN, 2000)
         //             CreationHUD.show(true)
         //         } else {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Need more coins!',
           Color4.Yellow(),
           3000
@@ -1148,7 +1148,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Daily Rewards Coming Soon!',
           Color4.Yellow(),
           3000
@@ -1279,7 +1279,7 @@ export class Antrom extends Realm {
             Animator.playSingleAnimation(this.cellDoor, 'close')
           }, 3000)
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Need jail key',
             Color4.Yellow(),
             3000
@@ -1350,7 +1350,7 @@ export class Antrom extends Realm {
           if (jailOpenOnce.read() === 1) {
             Animator.playSingleAnimation(this.cellEntranceDoor, 'open')
           } else {
-            this.gameController.uicontroller.displayAnnouncement(
+            this.gameController.uiController.displayAnnouncement(
               'Defeat Jail Guards',
               Color4.Yellow(),
               3000
@@ -1505,14 +1505,14 @@ export class Antrom extends Realm {
         //                 )
         //                 setRefreshTimer(6)
         //                 player.writeDataToServer()
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Cooking...',
           Color4.Yellow(),
           3000
         )
         //                 setTimeout(6000, () => {
         //                     //player.inventory.incrementItem(ITEM_TYPES.TREE, 10)
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'COOOOOOKED!',
           Color4.Yellow(),
           3000
@@ -1521,7 +1521,7 @@ export class Antrom extends Realm {
         //                     player.writeDataToServer()
         //                 })
         //             } else {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'You dont have enough MEAT!',
           Color4.Yellow(),
           3000

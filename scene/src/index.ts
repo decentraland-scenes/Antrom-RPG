@@ -2,4 +2,4 @@
 export * from './scenes/main'
 
 // tests scenes
-// export * from './scenes/tests/test-main-hud'
+// export * from './scenes/tests/test-npc-dialog'

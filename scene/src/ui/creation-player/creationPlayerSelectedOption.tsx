@@ -5,11 +5,16 @@ import {
   HEIGTH_FACTOR,
   WIDTH_FACTOR,
   type CharacterAlliancesType,
-  type CharacterStatsType
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType
 } from './creationPlayerData'
 
 type creationPlayerSelectedOptionProps = {
-  selectedOption: CharacterStatsType | CharacterAlliancesType | undefined
+  selectedOption:
+    | CharacterClassStatsType
+    | CharacterRaceStatsType
+    | CharacterAlliancesType
+    | undefined
   isSkill?: boolean
 }
 
@@ -51,7 +56,8 @@ export function CreationPlayerSelectedOption({
       <UiEntity
         uiTransform={{
           width: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4,
-          height: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4
+          height: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4,
+          display: selectedOptionSprite === undefined ? 'none' : 'flex'
         }}
         uiBackground={{
           textureMode: 'stretch',
