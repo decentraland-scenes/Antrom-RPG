@@ -137,7 +137,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  rangeUnselected: {
+  rangerUnselected: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 563,
@@ -145,7 +145,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  range: {
+  ranger: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 673,
@@ -153,7 +153,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  rangeSkill: {
+  rangerSkill: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 784,
@@ -398,11 +398,11 @@ export const CLASSES_STATS: Record<CharacterClasses, CharacterClassStatsType> =
       type: 'class'
     },
     [CharacterClasses.CC_RANGER]: {
-      name: 'Range',
+      name: 'Ranger',
       skill: 'Keen Eye',
-      selectedSprite: creationPlayerSprites.range,
-      unselectedSprite: creationPlayerSprites.rangeUnselected,
-      skillSprite: creationPlayerSprites.rangeSkill,
+      selectedSprite: creationPlayerSprites.ranger,
+      unselectedSprite: creationPlayerSprites.rangerUnselected,
+      skillSprite: creationPlayerSprites.rangerSkill,
       attack: 10,
       defense: 0,
       luck: 0,
@@ -507,3 +507,75 @@ export const ASPECT_RATIO = 0.56
 export const WIDTH_FACTOR = 0.5
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 export const ITEM_SIZE_FACTOR = 0.12
+
+// TODO: check duplicated data (CLASS_STATS and RACES)
+
+export const RACE_BUFF_VARIABLES = {
+  [CharacterRaces.CR_UNDEAD]: {
+    attackBuff: 75,
+    defBuff: 0.14,
+    luckBuff: 7,
+    maxHealth: 100
+  },
+  [CharacterRaces.CR_ORC]: {
+    attackBuff: 75,
+    defBuff: 0.08,
+    luckBuff: 9,
+    maxHealth: 110
+  },
+  [CharacterRaces.CR_HUMAN]: {
+    attackBuff: 65,
+    defBuff: 0.1,
+    luckBuff: 9,
+    maxHealth: 80
+  },
+  [CharacterRaces.CR_ELF]: {
+    attackBuff: 80,
+    defBuff: 0.07,
+    luckBuff: 11,
+    maxHealth: 80
+  }
+}
+
+export const CLASS_BUFF_VARIABLES = {
+  [CharacterClasses.CC_CLERIC]: {
+    atkBuff: 0,
+    defBuff: 0.05,
+    luckBuff: 0,
+    critRate: 0,
+    critDmg: 0,
+    maxHealth: 30
+  },
+  [CharacterClasses.CC_THIEF]: {
+    atkBuff: 6,
+    defBuff: 0,
+    luckBuff: 4,
+    critRate: 2,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_RANGER]: {
+    atkBuff: 10,
+    defBuff: 0,
+    luckBuff: 0,
+    critRate: 6,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_BERSERKER]: {
+    atkBuff: 11,
+    defBuff: 0.05,
+    luckBuff: 0,
+    critRate: 0,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_MAGE]: {
+    atkBuff: 0,
+    defBuff: 0,
+    luckBuff: 3,
+    critRate: 3,
+    critDmg: 0,
+    maxHealth: 20
+  }
+}

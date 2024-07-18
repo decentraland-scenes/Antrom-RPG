@@ -63,7 +63,7 @@ export type Sprite = {
   h: number
 }
 
-export type slotsInputs =
+export type SlotsInputs =
   | InputAction.IA_PRIMARY
   | InputAction.IA_SECONDARY
   | InputAction.IA_ACTION_3
@@ -71,7 +71,7 @@ export type slotsInputs =
   | InputAction.IA_ACTION_5
   | InputAction.IA_ACTION_6
 
-export const InputKeys: Record<slotsInputs, string> = {
+export const InputKeys: Record<SlotsInputs, string> = {
   [InputAction.IA_PRIMARY]: 'E',
   [InputAction.IA_SECONDARY]: 'F',
   [InputAction.IA_ACTION_3]: '1',
@@ -80,7 +80,7 @@ export const InputKeys: Record<slotsInputs, string> = {
   [InputAction.IA_ACTION_6]: '4'
 }
 
-export const inputKeysArray: slotsInputs[] = [
+export const INPUT_KEYS_ARRAY: SlotsInputs[] = [
   InputAction.IA_ACTION_3,
   InputAction.IA_PRIMARY,
   InputAction.IA_SECONDARY,

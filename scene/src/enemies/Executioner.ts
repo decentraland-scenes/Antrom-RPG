@@ -1,8 +1,8 @@
 import { Transform, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { player } from '../player/player'
 import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from '../player/LevelManager'
+import { Player } from '../player/player'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -12,19 +12,16 @@ function getRandomIntRange(min: number, max: number): number {
 
 export default class Executioner extends MonsterMob {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
-  hoverText = `Attack LVL ${player.levels.getLevel(
-    LEVEL_TYPES.PLAYER
-  )} Executioner!`
+  hoverText: string
 
   minLuck = 10
 
   constructor() {
-    super(
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 20,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 60,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) - 10,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) * 100
-    )
+    const player = Player.getInstanceOrNull()
+    const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
+    super(level + 20, level + 60, level - 10, level * 100)
+    this.hoverText = `Attack LVL ${level} Executioner!`
+
     Transform.createOrReplace(this.entity, {
       position: Vector3.create(0, 0, 0)
     })

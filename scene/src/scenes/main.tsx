@@ -1,19 +1,24 @@
 import { Color4 } from '@dcl/sdk/math'
 import { GetPlayerInfo } from '../api/api'
 import { GameController } from '../controllers/game.controller'
+import { Player } from '../player/player'
+import {
+  type CharacterClasses,
+  type CharacterRaces,
+  CLASS_BUFF_VARIABLES,
+  RACE_BUFF_VARIABLES
+} from '../ui/creation-player/creationPlayerData'
 import {
   isThereAnyGltfLoading,
   setPlayerPosition,
   waitNextTick
 } from '../utils/engine'
+import { LEVEL_TYPES } from '../player/LevelManager'
+import { CLASS_MAIN_SKILL } from '../player/skills/classes-main-skill'
 
 let gameInstance: GameController
 
 export function main(): void {
-  gameInstance = new GameController()
-  gameInstance.uiController.loadingUI.startLoading()
-  gameInstance.realmController.switchRealm('antrom')
-
   init().catch((e) => {
     console.error('Fatal error during init')
     console.error(e)
@@ -21,6 +26,14 @@ export function main(): void {
 }
 
 async function init(): Promise<void> {
+  await waitNextTick()
+
+  gameInstance = new GameController()
+  gameInstance.uiController.loadingUI.startLoading()
+  gameInstance.realmController.switchRealm('antrom')
+
+  await waitNextTick()
+
   let playerInfoResponse = await GetPlayerInfo()
   const shouldCreatePlayer = !(playerInfoResponse?.player !== null)
 
@@ -55,7 +68,53 @@ async function init(): Promise<void> {
     }
   }
 
-  // TODO: load player data
+  if (playerInfoResponse?.player == null) {
+    console.error('Player not found')
+    await init()
+    return
+  }
+
+  // Set all the player info
+  const myPlayer = new Player(
+    gameInstance,
+    playerInfoResponse.player.race,
+    playerInfoResponse.player.skill,
+    playerInfoResponse.player.alliance
+  )
+
+  // Set up player
+  Player.createInstance(myPlayer)
+  updateClassBuffs(myPlayer, myPlayer.class)
+  updateRaceBuffs(myPlayer, myPlayer.race)
+
+  if (myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) > 1) {
+    const multipleValue =
+      myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) <= 60
+        ? myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER)
+        : 60
+    myPlayer.updateMaxHp(multipleValue * 4 - 4)
+    myPlayer.attack += multipleValue - 1
+  }
+
+  myPlayer.setSkill(0, CLASS_MAIN_SKILL[myPlayer.class]())
 
   gameInstance.uiController.playDungeonUI.setVisibility(true)
+  gameInstance.uiController.showMainHud()
+}
+
+function updateRaceBuffs(player: Player, race: CharacterRaces): void {
+  const raceBuff = RACE_BUFF_VARIABLES[race]
+  player.updateAtkBuff(raceBuff.attackBuff)
+  player.updateDefBuff(raceBuff.defBuff)
+  player.updateAtkBuff(raceBuff.luckBuff)
+  player.updateMaxHp(raceBuff.maxHealth)
+}
+
+function updateClassBuffs(player: Player, classType: CharacterClasses): void {
+  const classBuff = CLASS_BUFF_VARIABLES[classType]
+  player.updateAtkBuff(classBuff.atkBuff)
+  player.updateDefBuff(classBuff.defBuff)
+  player.updateAtkBuff(classBuff.luckBuff)
+  player.updateMaxHp(classBuff.maxHealth)
+  player.updateCritRate(classBuff.critRate)
 }

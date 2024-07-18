@@ -2,9 +2,9 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { Transform } from '@dcl/sdk/ecs'
-import { player } from '../../player/player'
 import { getRandomInt } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { Player } from '../../player/player'
 
 export default class BetaBoss1 extends MonsterOligar {
   shapeFile = 'assets/models/Butcher.glb'
@@ -12,13 +12,11 @@ export default class BetaBoss1 extends MonsterOligar {
   minLuck = 10
 
   constructor() {
+    const player = Player.getInstanceOrNull()
+    const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     const stage = DungeonStage.read()
-    super(
-      5 + stage * 7,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 100,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 1,
-      100 * (stage * 3)
-    )
+
+    super(5 + stage * 7, level + 100, level + 1, 100 * (stage * 3))
     this.initMonster()
     this.topOffSet = 3.75
     // # in %

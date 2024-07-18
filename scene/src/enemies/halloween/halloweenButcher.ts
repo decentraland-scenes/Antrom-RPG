@@ -7,10 +7,10 @@ import {
   VisibilityComponent,
   engine
 } from '@dcl/sdk/ecs'
-import { player } from '../../player/player'
 import * as utils from '@dcl-sdk/utils'
 import { getRandomInt } from '../../utils/getRandomInt'
 import { type GameController } from '../../controllers/game.controller'
+import { Player } from '../../player/player'
 
 const DEFAULT_XP = 240
 
@@ -35,6 +35,7 @@ export default class HalloweenButcher extends MonsterOligar {
   hoverText = 'Attack the butcher!'
   gameController: GameController
   constructor(gameController: GameController) {
+    const player = Player.getInstance()
     super(player.attack + 7, DEFAULT_XP, player.level, player.maxHealth)
     this.initMonster()
     this.gameController = gameController

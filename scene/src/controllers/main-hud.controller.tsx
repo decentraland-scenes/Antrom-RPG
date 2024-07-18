@@ -1,13 +1,9 @@
-import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
-import MainHud from '../../ui/main-hud/mainHudComponent'
+import ReactEcs from '@dcl/sdk/react-ecs'
 import { openExternalUrl } from '~system/RestrictedActions'
-import {
-  CharacterClasses,
-  CharacterAlliances,
-  CharacterRaces
-} from '../../ui/creation-player/creationPlayerData'
+import { Player } from '../player/player'
+import MainHud from '../ui/main-hud/mainHudComponent'
 
-export class UI {
+export class MainHudController {
   public isVisible: boolean
   public isPlayerRollOpen: boolean
   public isInfoOpen: boolean
@@ -16,22 +12,22 @@ export class UI {
     this.isVisible = true
     this.isPlayerRollOpen = false
     this.isInfoOpen = false
-    const uiComponent = (): ReactEcs.JSX.Element[] => [this.mainHudUI()]
-    ReactEcsRenderer.setUiRenderer(uiComponent)
   }
 
-  mainHudUI(): ReactEcs.JSX.Element {
+  render(): ReactEcs.JSX.Element {
+    const player = Player.getInstance()
+
     return (
       <MainHud
         isPlayerRollOpen={this.isPlayerRollOpen}
         isInfoOpen={this.isInfoOpen}
         playerRollOnClick={this.playerRollVisibility.bind(this)}
         showInfo={this.showInfo.bind(this)}
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         openLink={this.openLink.bind(this)}
-        characterRace={CharacterRaces.CR_ELF}
-        characterClass={CharacterClasses.CC_CLERIC}
-        characterAlliance={CharacterAlliances.CF_REBELS}
+        characterRace={player.race}
+        characterClass={player.class}
+        characterAlliance={player.alliance}
+        // TODO: add player roll
         lastRoll={{
           gainedExperience: 25,
           playerRoll: 12,
@@ -39,6 +35,7 @@ export class UI {
           playerAttack: 50,
           EnemyAttack: 'MISSED'
         }}
+        // TODO: Add player professions
         playerProfessions={{
           lumberjackLevel: 1,
           butcherLevel: 0,
@@ -57,13 +54,7 @@ export class UI {
     this.isInfoOpen = visibility
   }
 
-  async openLink(url: string): Promise<void> {
-    await openExternalUrl({ url })
+  openLink(url: string): void {
+    openExternalUrl({ url }).catch(console.error)
   }
-}
-
-export let gameUi: UI
-export function main(): void {
-  // all the initializing logic
-  gameUi = new UI()
 }

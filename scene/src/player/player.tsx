@@ -1,15 +1,26 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
-import { type Item, type buffItem, itemTypes } from './Items'
-import LevelManager, { LEVEL_TYPES } from './LevelManager'
-import { Character } from '../enemies/character'
-import { PetManager } from './petManager'
-import { getRandomIntRange } from '../utils/getRandomInt'
-import { WearablesConfig } from './wearables-config'
-import { PlayerInventory } from '../inventory/playerInventory'
-import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
-import BottomBar from '../ui/bottom-bar/bottomBar'
+import { engine, inputSystem, PointerEventType } from '@dcl/sdk/ecs'
 import ReactEcs from '@dcl/sdk/react-ecs'
+import { Character } from '../enemies/character'
+import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
+import { PlayerInventory } from '../inventory/playerInventory'
+import BottomBar from '../ui/bottom-bar/bottomBar'
+import {
+  type CharacterAlliances,
+  type CharacterClasses,
+  type CharacterRaces
+} from '../ui/creation-player/creationPlayerData'
+import { getRandomIntRange } from '../utils/getRandomInt'
+import { INPUT_KEYS_ARRAY } from '../utils/ui-utils'
+import { type buffItem, type Item, itemTypes } from './Items'
+import LevelManager, { LEVEL_TYPES } from './LevelManager'
+import { PetManager } from './petManager'
+import { type MaybeSkill, type PlayerSkill } from './skills'
+import { WearablesConfig } from './wearables-config'
+import { type GameController } from '../controllers/game.controller'
+import { setPlayerPosition } from '../utils/engine'
+import { Color4 } from '@dcl/sdk/math'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,6 +34,10 @@ enum ITEM_GLBS {
 }
 
 export class Player extends Character {
+  private critRateBuff: number = 0
+  private defBuff: number = 0
+  private atkBuff: number = 0
+
   static instance: Player
   static globalHasSkill: boolean = true
   static globalHasSkillActive: boolean = false
@@ -67,8 +82,6 @@ export class Player extends Character {
   public hasInit!: boolean
   public attackBuff!: number
   public luckBuff!: number
-  public defBuff!: number
-  public critRateBuff!: number
   public critDamageBuff!: number
   public magicBuff!: number
 
@@ -82,15 +95,38 @@ export class Player extends Character {
   public xpEvent!: Function
   public lvEvent!: Function
   equiped: string = ITEM_GLBS.SWORD
-  public race!: number
-  public class!: number
-  public alliance!: number
+
+  public race: number
+  public class: CharacterClasses
+  public alliance: number
+
+  public skills: PlayerSkill = [
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
+  ]
+
+  gameController: GameController
 
   static getInstance(): Player {
     if (!this.instance) {
-      this.instance = new this(1, 0, 1, 100)
+      throw new Error('Player instance not created')
     }
     return this.instance
+  }
+
+  static getInstanceOrNull(): Player | null {
+    if (!this.instance) {
+      return null
+    }
+    return this.instance
+  }
+
+  static createInstance(self: Player): void {
+    this.instance = self
   }
 
   static setGlobalHasSkill(value: boolean): void {
@@ -101,12 +137,25 @@ export class Player extends Character {
     Player.globalHasSkillActive = value
   }
 
-  constructor(attack: number, xp: number, level: number, health: number = 1) {
+  constructor(
+    gameController: GameController,
+    race: CharacterRaces,
+    playerClass: CharacterClasses,
+    alliance: CharacterAlliances,
+    attack: number = 1,
+    xp: number = 0,
+    level: number = 1,
+    health: number = 100
+  ) {
     super(attack, xp, level, health)
+    this.race = race
+    this.class = playerClass
+    this.alliance = alliance
     this.levels = new LevelManager()
     this.levels.setLevel(LEVEL_TYPES.PLAYER, level, xp)
     this.inventory = new PlayerInventory()
     this.petManager = new PetManager()
+    this.gameController = gameController
 
     this.avatarModelList = ['models/BaseCharacter.glb']
 
@@ -166,6 +215,8 @@ export class Player extends Character {
     // executeTask(async () => {
     //     await WriteUserUsername()
     // })
+
+    engine.addSystem(this.process.bind(this))
   }
 
   // async CreatePlayerAvatar(shape?: GLTFShape) {
@@ -363,6 +414,7 @@ export class Player extends Character {
 
   updateHealthBar(): void {
     if (this.health > this.maxHealth) this.health = this.maxHealth
+    this.checkHealth()
     // this.hpEvent(this.health, this.maxHealth)
     // StatusHUD.updateHp(this.health, this.maxHealth)
     // InventoryHUD.getInstance().pages[0].updateHp(
@@ -425,16 +477,80 @@ export class Player extends Character {
   PlayerUI(): ReactEcs.JSX.Element {
     return (
       <BottomBar
-        isVisible={true}
         currentHpPercent={(100.0 * this.health) / this.maxHealth}
         levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
         currentXp={this.xp}
         level={this.level}
-        onClickSlot={() => {}}
-        slotsData={undefined}
+        slotsData={this.skills}
       />
     )
   }
-}
 
-export const player = Player.getInstance()
+  updateCritRate(value: number): void {
+    this.critRateBuff += value
+  }
+
+  updateMaxHp(value: number): void {
+    this.maxHealth += value
+  }
+
+  updateDefBuff(value: number): void {
+    this.defBuff += value
+  }
+
+  updateAtkBuff(value: number): void {
+    this.atkBuff += value
+  }
+
+  updateMagic(value: number): void {
+    this.magicBuff += value
+  }
+
+  updateLuckBuff(value: number): void {
+    this.luckBuff += value
+  }
+
+  setSkill(index: number, skill: MaybeSkill): void {
+    this.skills[index] = skill
+  }
+
+  process(dt: number): void {
+    this.skills.forEach((skill, index) => {
+      if (skill) {
+        if (
+          inputSystem.isTriggered(
+            INPUT_KEYS_ARRAY[index],
+            PointerEventType.PET_DOWN
+          )
+        ) {
+          skill.trigger()
+        }
+
+        skill.process(dt)
+      }
+    })
+  }
+
+  checkHealth(): boolean {
+    if (this.health > 0) return false
+    if (this.gameController.realmController.currentRealm === null) return false
+    this.gameController.realmController.currentRealm.deadPosition()
+
+    const telepPosition =
+      this.gameController.realmController.currentRealm.deadPosition()
+    if (telepPosition !== null) {
+      setPlayerPosition(telepPosition.x, telepPosition.y, telepPosition.z)
+    }
+    if (this.gameController.realmController.currentRealm.getId() === 'antrom') {
+      this.gameController.uiController.displayAnnouncement(
+        'Back to training!',
+        Color4.Yellow(),
+        5000
+      )
+    }
+
+    this.refillHealthBar()
+
+    return true
+  }
+}

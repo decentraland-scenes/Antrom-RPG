@@ -16,6 +16,7 @@ import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
 import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
+import { MainHudController } from './main-hud.controller'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -34,12 +35,17 @@ export class UIController {
   announcementTimerId: utils.TimerId | undefined = undefined
 
   creationPlayerUi: CreationPlayerController | null = null
+  mainHud: MainHudController | null = null
 
   constructor(gameController: GameController) {
     this.gameController = gameController
     this.loadingUI = new LoadingUI(this)
     this.playDungeonUI = new PlayDungeonUI(this)
     ReactEcsRenderer.setUiRenderer(this.ui.bind(this))
+  }
+
+  showMainHud(): void {
+    this.mainHud = new MainHudController()
   }
 
   displayAnnouncement(
@@ -126,7 +132,10 @@ export class UIController {
         {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
 
         {/* Player HUD */}
-        {Player.getInstance().PlayerUI()}
+        {Player.getInstanceOrNull()?.PlayerUI()}
+
+        {/* Main HUD */}
+        {this.mainHud?.render()}
 
         {/* Creation Player step if it applies */}
         {this.creationPlayerUi?.render()}

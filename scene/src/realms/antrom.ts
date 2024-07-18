@@ -34,9 +34,9 @@ import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
-import { Realm } from './types'
+import { type RealmType, type Realm } from './types'
 
-export class Antrom extends Realm {
+export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
   private readonly boardParent = engine.addEntity()
   private readonly leaderBoard: LeaderBoard
@@ -90,8 +90,6 @@ export class Antrom extends Realm {
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
-
     this.gameController = gameController
     this.executioners = []
     this.pigs = []
@@ -1609,5 +1607,13 @@ export class Antrom extends Realm {
     this.berryTrees.forEach((berryTree) => {
       berryTree.removeBerryTree()
     })
+  }
+
+  deadPosition(): Vector3 {
+    return { x: -38.34, y: 10.43, z: -39.75 }
+  }
+
+  getId(): RealmType {
+    return 'antrom'
   }
 }

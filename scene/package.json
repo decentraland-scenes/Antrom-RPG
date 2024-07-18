@@ -13,13 +13,8 @@
     "format:fix": "prettier -w --config .prettierrc -c ./**/*.{ts,tsx}"
   },
   "devDependencies": {
-    "@dcl/asset-packs": "^1.19.0",
-    "@dcl/js-runtime": "7.5.7-9891810625.commit-d9f5cf2",
-    "@dcl/sdk": "7.5.7-9891810625.commit-d9f5cf2",
-    "@dcl/sdk-commands": "7.5.7-9891810625.commit-d9f5cf2",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
-    "dcl-npc-toolkit": "^1.2.2",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-standard-with-typescript": "^39.1.1",
@@ -32,6 +27,12 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
+    "@dcl-sdk/utils": "^1.2.8",
+    "@dcl/asset-packs": "^1.19.0",
+    "@dcl/js-runtime": "7.5.7-9891810625.commit-d9f5cf2",
+    "@dcl/sdk": "7.5.7-9891810625.commit-d9f5cf2",
+    "@dcl/sdk-commands": "7.5.7-9891810625.commit-d9f5cf2",
+    "dcl-npc-toolkit": "^1.2.2",
     "dcl-ui-toolkit": "^0.10.0",
     "fp-future": "^1.0.1",
     "typescript": "^5.3.2"
