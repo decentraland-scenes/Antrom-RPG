@@ -1,12 +1,6 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type MonsterOligar } from './monster'
-import {
-  Animator,
-  type Entity,
-  GltfContainer,
-  Transform,
-  engine
-} from '@dcl/sdk/ecs'
+import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
 
@@ -70,7 +64,8 @@ export class MonsterAttackRanged {
   }
 
   attackSystem = (dt: number): void => {
-    const playerPos = Transform.get(engine.PlayerEntity).position
+    const playerPos =
+      Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.Zero()
     const monsterPos = Transform.getMutable(this.monster.entity).position
     const distanceToPlayer = Vector3.distance(playerPos, monsterPos)
     const moveMonsterTowardsPlayer = (
@@ -92,11 +87,11 @@ export class MonsterAttackRanged {
     }
     if (this.hasBeenHit && distanceToPlayer > this.stopDistance) {
       moveMonsterTowardsPlayer(playerPos, monsterPos, dt)
-      Animator.playSingleAnimation(
-        this.monster.entity,
-        this.monster.walkClip,
-        false
-      )
+      // Animator.playSingleAnimation(
+      //   this.monster.entity,
+      //   this.monster.walkClip,
+      //   false
+      // )
     }
     if (arrow != null) {
       arrowMove(arrow, dt)

@@ -19,7 +19,7 @@ export default class EasyCaveDungeonBoss extends MonsterMob {
 
     this.initMonster()
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }

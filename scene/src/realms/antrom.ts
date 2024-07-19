@@ -34,6 +34,7 @@ import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
+import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
 
 export class Antrom implements Realm {
@@ -67,7 +68,8 @@ export class Antrom implements Realm {
   private npc_Witch = engine.addEntity()
   private npc_Witch2 = engine.addEntity()
   private npc_Vendor = engine.addEntity()
-  private npc_KingGeraldOld = engine.addEntity()
+  public npc_KingGeraldOld = engine.addEntity()
+  private readonly npc_Guyonknees = engine.addEntity()
   private npc_RandomVillager1 = engine.addEntity()
   private npc_RandomVillager2 = engine.addEntity()
   private npc_RandomVillager3 = engine.addEntity()
@@ -87,6 +89,8 @@ export class Antrom implements Realm {
   private readonly executioners: Executioner[]
   private readonly pigs: Pig[]
   private readonly chickens: Chicken[]
+  public butcher!: BetaBoss1
+  private readonly execu: Executioner
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
@@ -94,6 +98,8 @@ export class Antrom implements Realm {
     this.executioners = []
     this.pigs = []
     this.chickens = []
+    this.execu = new Executioner()
+
     GltfContainer.createOrReplace(this.antromForestTest, {
       src: 'assets/models/Antrom/AntromForestTest.glb'
     })
@@ -282,13 +288,13 @@ export class Antrom implements Realm {
     for (let i = 0; i < 5; i++) {
       this.executioners.push(new Executioner())
     }
+
     for (let i = 0; i < 4; i++) {
       this.pigs.push(new Pig(this.gameController))
     }
     for (let i = 0; i < 8; i++) {
       this.chickens.push(new Chicken())
     }
-
     this.AntromNPCs()
     this.DungeonDoor()
     this.createTriggerZoneForBerserkerUpgradeMarket()
@@ -1546,6 +1552,25 @@ export class Antrom implements Realm {
     })
   }
 
+  spawnSingleEntity(entityName: string): void {
+    console.log('singleentit', entityName, this.butcher)
+    switch (entityName) {
+      case 'butcher':
+        this.butcher = new BetaBoss1(this.gameController)
+    }
+  }
+
+  removeSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case 'KingGeraldOld':
+        if (this.npc_KingGeraldOld != null) {
+          engine.removeEntity(this.npc_KingGeraldOld)
+          console.log('King removed')
+          break
+        }
+    }
+  }
+
   removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
     this.leaderBoard.destroy()
@@ -1587,7 +1612,7 @@ export class Antrom implements Realm {
     engine.removeEntity(this.npc_RandomVillager9)
     engine.removeEntity(this.npc_RandomVillager10)
     engine.removeEntity(this.npc_RandomVillager11)
-
+    this.butcher.removeEntity()
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()
     })

@@ -1,9 +1,12 @@
 import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { type GameController } from '../controllers/game.controller'
+import { LEVEL_TYPES } from '../player/LevelManager'
+import { Player } from '../player/player'
+import { BannerType } from '../ui/banner/bannerConstants'
 import { getRandomIntRange } from './../utils/getRandomInt'
 import MonsterMeat from './monsterMeat'
-import { type GameController } from '../controllers/game.controller'
-import { BannerType } from '../ui/banner/bannerConstants'
+import { ITEM_TYPES } from './playerInventoryMaps'
 
 const DEFAULT_ATTACK = 2
 const DEFAULT_XP = 10
@@ -27,54 +30,52 @@ export default class Pig extends MonsterMeat {
     this.isPrey = true
     this.minLuck = -1000
     this.loadTransformation()
-  }
-
-  create(): void {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const mons = new Pig(this.gameController)
+    this.setupAttackTriggerBox()
+    this.setTopOffset(1.2)
   }
 
   onDropXp(): void {
     this.gameController.uiController.displayBanner(BannerType.B_MEAT)
-    // TODO PLAYER
-    // log("onDropXp - Chicken")
-    // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {
-    //     player.levels.addXp(LEVEL_TYPES.PLAYER, 20)
-    // } else {
-    //     player.levels.addXp(LEVEL_TYPES.PLAYER, this.xp)
-    // }
-    // player.levels.addXp(LEVEL_TYPES.MEAT, 1)
-    // showGetXPIcon()
-    // log("onDrop - Chicken")
-    // const isWearableFound = checkWearableInUserData(
-    //     //Butcher
-    //     "0x855ec57cc60c28187a021a3757a80ac4758e0b06:0"
-    // )
-    // if ((await isWearableFound) === true) {
-    //     player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
-    //     showGetBonusMeatIcon()
-    //     DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
-    //         ITEM_TYPES.CHICKEN,
-    //         2
-    //     )
-    // } else {
-    //     player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
-    //     showGetMeatIcon()
-    //     DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
-    //         ITEM_TYPES.CHICKEN,
-    //         1
-    //     )
-    // }
-    // if (getRandomInt(10) === 1) {
-    //     player.inventory.incrementItem(ITEM_TYPES.EGG)
-    // }
-    // player.writeDataToServer()
+    const player = Player.getInstance()
+
+    console.log('onDropXp - PIG')
+    player.levels.addXp(
+      LEVEL_TYPES.PLAYER,
+      getRandomIntRange(this.xp, this.xp + 10)
+    )
+
+    player.levels.addXp(LEVEL_TYPES.MEAT, 1)
+    this.gameController.uiController.displayBanner(BannerType.B_XP)
+
+    console.log('onDrop - PIG')
+
+    if (
+      player.hasWearableEquipped('0x855ec57cc60c28187a021a3757a80ac4758e0b06:0')
+    ) {
+      player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 4)
+      this.gameController.uiController.displayBanner(BannerType.B_MEAT_PLUS)
+
+      // TODO
+      // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
+      //     ITEM_TYPES.CHICKEN,
+      //     2
+      // )
+    } else {
+      player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 4)
+      this.gameController.uiController.displayBanner(BannerType.B_MEAT)
+
+      // TODO
+      // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
+      //     ITEM_TYPES.CHICKEN,
+      //     1
+      // )
+    }
   }
 
   async onDropLoot(): Promise<void> {}
 
   setupAttackTriggerBox(): void {
-    // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
+    super.setupAttackTriggerBox()
   }
 
   loadTransformation(): void {
@@ -91,11 +92,9 @@ export default class Pig extends MonsterMeat {
   }
 
   removeEntity(): void {
+    super.cleanup()
     engine.removeEntity(this.rangeAttackTrigger)
     engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.attackTrigger)
-    engine.removeEntity(this.healthBar)
-    engine.removeEntity(this.label)
     engine.removeEntity(this.entity)
   }
 }

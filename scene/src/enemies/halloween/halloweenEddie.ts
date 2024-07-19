@@ -1,15 +1,8 @@
+import { Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterOligar from '../monster'
-import {
-  Billboard,
-  MeshRenderer,
-  Transform,
-  VisibilityComponent,
-  engine
-} from '@dcl/sdk/ecs'
-import * as utils from '@dcl-sdk/utils'
-import { getRandomInt } from '../../utils/getRandomInt'
 import { Player } from '../../player/player'
+import { getRandomInt } from '../../utils/getRandomInt'
+import MonsterOligar from '../monster'
 
 const POSITIONS = [
   Vector3.create(4.6, 0.49, 2.46),
@@ -104,28 +97,12 @@ export default class HalloweenEddie extends MonsterOligar {
     // console.log("on drop here")
   }
 
-  setupAttackTriggerBox(): void {
-    this.attackTrigger = engine.addEntity()
-    Transform.create(this.attackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.attackTrigger)
-    VisibilityComponent.create(this.attackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.attackTrigger,
-      1,
-      1,
-      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
-      () => {
-        console.log('<<< Attack >>>')
-        Billboard.create(this.entity, {})
-      },
-      () => {
-        console.log('im out')
-        this.refillHealthBar(1)
-      }
-    )
-  }
-
   create(): void {}
+
+  setupAttackTriggerBox(): void {
+    super.setupAttackTriggerBox()
+    // TODO setup billboard?
+  }
 
   loadTransformation(): void {
     const initialPosition = POSITIONS[getRandomInt(POSITIONS.length)]

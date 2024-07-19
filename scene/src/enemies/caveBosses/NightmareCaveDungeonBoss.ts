@@ -40,7 +40,7 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
 
     // TODO super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }

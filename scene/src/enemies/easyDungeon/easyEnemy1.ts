@@ -38,7 +38,7 @@ export default class easyEnemy1 extends MonsterOligar {
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()
-    this.topOffSet = 2.5
+    this.setTopOffset(2.5)
     // # in %
     this.dropRate = 100
     easyEnemy1.currentInstance = this

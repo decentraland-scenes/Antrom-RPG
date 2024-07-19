@@ -22,7 +22,7 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
 
     // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 4
+    this.setTopOffset(4)
     // # in %
     this.dropRate = -1
   }

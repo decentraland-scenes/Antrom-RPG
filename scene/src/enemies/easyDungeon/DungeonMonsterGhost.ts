@@ -16,7 +16,7 @@ export default class GhostE extends MonsterOligar {
   constructor() {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP)
     this.initMonster()
-    this.topOffSet = 2.25
+    this.setTopOffset(2.25)
     // # in %
     this.dropRate = 100
   }

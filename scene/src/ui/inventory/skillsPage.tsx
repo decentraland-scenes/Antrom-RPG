@@ -174,11 +174,11 @@ function SkillsPage({
           <UiEntity
             uiTransform={{ width: '70%', height: '10%' }}
                       uiBackground={{
-                color:Color4.Blue()
-            //   textureMode: 'stretch',
-            //   uvs: getUvs(unequipButtonSprite),
-            //   texture: {
-            //     src: unequipButtonSprite.atlasSrc
+                color:Color4.Blue(),
+              textureMode: 'stretch',
+              uvs: getUvs(unequipButtonSprite),
+              texture: {
+                src: unequipButtonSprite.atlasSrc
               }
             }}
           />
