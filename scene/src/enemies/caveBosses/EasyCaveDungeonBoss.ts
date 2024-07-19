@@ -1,10 +1,10 @@
 import { Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterMob from '../MonsterMob'
-import { Player } from '../../player/player'
-import { ITEM_TYPES } from '../playerInventoryMaps'
-import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { Player } from '../../player/player'
+import MonsterMob from '../MonsterMob'
+import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 
 const DEFAULT_XP = 60
 

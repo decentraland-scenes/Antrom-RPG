@@ -1,6 +1,6 @@
 import { type Sprite } from '../../utils/ui-utils'
 
-export const creationPlayerSprites: Record<string, Sprite> = {
+export const creationPlayerSprites = {
   background: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },

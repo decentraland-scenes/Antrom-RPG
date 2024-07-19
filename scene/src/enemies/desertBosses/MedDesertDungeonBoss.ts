@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { quest } from '../../utils/refresherTimer'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 

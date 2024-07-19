@@ -4,7 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { quest } from '../../utils/refresherTimer'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 
 // const DEFAULT_ATTACK = 35

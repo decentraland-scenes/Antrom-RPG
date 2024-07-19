@@ -6,7 +6,7 @@ import { Player } from '../player/player'
 import { BannerType } from '../ui/banner/bannerConstants'
 import { getRandomIntRange } from './../utils/getRandomInt'
 import MonsterMeat from './monsterMeat'
-import { ITEM_TYPES } from './playerInventoryMaps'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 
 const DEFAULT_ATTACK = 2
 const DEFAULT_XP = 10

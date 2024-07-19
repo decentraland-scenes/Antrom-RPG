@@ -3,8 +3,8 @@ import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { Player } from '../player/player'
-import { ITEM_TYPES } from './playerInventoryMaps'
 import { BannerType } from '../ui/banner/bannerConstants'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -97,5 +97,9 @@ export default class Executioner extends MonsterMob {
     engine.removeEntity(this.entity)
   }
 
-  create(): void {}
+  create(): void {
+    // TODO: this is not being added to the entities list
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const newChar = new Executioner()
+  }
 }

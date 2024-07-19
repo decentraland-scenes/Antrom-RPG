@@ -2,7 +2,7 @@ import { type Vector3 } from '@dcl/sdk/math'
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomIntRange } from '../../utils/getRandomInt'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { Player } from '../../player/player'
 

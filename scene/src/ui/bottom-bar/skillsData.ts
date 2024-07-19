@@ -1,6 +1,12 @@
-import { type MaybeSkill, type PlayerSkill } from '../../player/skills'
-import { type SlotsInputs, type Sprite } from '../../utils/ui-utils'
-import { creationPlayerSprites } from '../creation-player/creationPlayerData'
+import {
+  type SkillDefinition,
+  type MaybeSkill,
+  type PlayerSkill
+} from '../../player/skills'
+import { type SlotsInputs } from '../../utils/ui-utils'
+
+export const GENERAL_SKILLS_TO_SHOW = 24
+export const CLASS_SKILLS_TO_SHOW = 8
 
 export type BottomBarProps = {
   slotsData: PlayerSkill
@@ -15,7 +21,47 @@ export type SkillSlotProps = {
   hotKey: SlotsInputs
 }
 
-const skillsPlayerSprites: Record<string, Sprite> = {
+const skillsPlayerSprites = {
+  clericSkill: {
+    atlasSrc: 'assets/images/skills/cleric.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  thiefSkill: {
+    atlasSrc: 'assets/images/skills/thief.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  berserkerSkill: {
+    atlasSrc: 'assets/images/skills/berserker.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  rangerSkill: {
+    atlasSrc: 'assets/images/skills/ranger.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  mageSkill: {
+    atlasSrc: 'assets/images/skills/mage.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
   shield: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
@@ -310,7 +356,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Priestskill_24: {
+  priestSkill_24: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 1280,
@@ -346,7 +392,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Skill_282: {
+  skill_282: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 512,
@@ -355,7 +401,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Skill_294: {
+  skill_294: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 768,
@@ -364,7 +410,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Skill_322: {
+  skill_322: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 1024,
@@ -373,7 +419,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Skill_328: {
+  skill_328: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 1280,
@@ -382,7 +428,7 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   },
 
-  Skill_481: {
+  skill_481: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 1536,
@@ -553,126 +599,572 @@ const skillsPlayerSprites: Record<string, Sprite> = {
     h: 256
   }
 }
+const skillsGeneralSprites = {
+  '13_summon_raven': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  '18_shield': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  '21_axe': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  '23_axe': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  '33_wand_shot': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  '35_wand_shot': {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  skill_238: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  skill_243: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_279: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_319: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_329: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_354: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_393: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_395: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_407: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  skill_408: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  skill_483: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  Warriorskill_40: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  Warriorskill_42: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  Warriorskill_45: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  cooldown: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  skill_100: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_110: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_114: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_123: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_131: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_133: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_134: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_140: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_15: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_151: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_154: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_156: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_162: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_164: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  skill_166: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_167: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_175: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_185: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_199: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_24: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_254: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+  skill_29: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 0,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_34: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 256,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_35: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 512,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_38: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 768,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_41: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1024,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_43: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1280,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_451: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1536,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+  skill_54: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1792,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  skill_65: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1792,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+  skill_66: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1792,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+  skill_72: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1792,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+  skill_98: {
+    atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
+    atlasSize: { x: 2048, y: 1792 },
+    x: 1792,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+  rotated: false,
+  trimmed: false,
+  spriteSourceSize: {
+    x: 0,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+  sourceSize: {
+    w: 256,
+    h: 256
+  }
+}
 
 export const SKILL_DATA = {
   clericSkill: {
     name: 'Healing Touch',
-    sprite: creationPlayerSprites.clericSkill,
+    sprite: skillsPlayerSprites.clericSkill,
     cooldown: 8
   },
   thiefSkill: {
     name: `Assasin's Ambition`,
-    sprite: creationPlayerSprites.thiefSkill,
+    sprite: skillsPlayerSprites.thiefSkill,
     cooldown: 12
   },
   rangerSkill: {
     name: 'Keen Eye',
-    sprite: creationPlayerSprites.thiefSkill,
+    sprite: skillsPlayerSprites.rangerSkill,
     cooldown: 12
   },
   berserkerSkill: {
     name: 'Big Swing',
-    sprite: creationPlayerSprites.berserkerSkill,
+    sprite: skillsPlayerSprites.berserkerSkill,
     cooldown: 6
   },
   mageSkill: {
     name: 'Smoke Screen',
-    sprite: creationPlayerSprites.mageSkill,
+    sprite: skillsPlayerSprites.mageSkill,
     cooldown: 12
   },
   geraldsBlessing: {
     name: `Gerald's Blessing`,
-    sprite: creationPlayerSprites.Priestskill_49,
+    sprite: skillsPlayerSprites.Priestskill_49,
     cooldown: 10,
     minLevel: 10
   },
   protectorBlessing: {
     name: `Protector's Blessing`,
-    sprite: creationPlayerSprites.skill_189,
+    sprite: skillsPlayerSprites.skill_189,
     cooldown: 10,
     minLevel: 20
   },
   healingTouch: {
     name: 'Healing Touch',
-    sprite: creationPlayerSprites.Paladinskill_15,
+    sprite: skillsPlayerSprites.Paladinskill_15,
     cooldown: 4,
     minLevel: 30
   },
   sacredBarrier: {
     name: 'Sacred Barrier',
-    sprite: creationPlayerSprites.shield,
+    sprite: skillsPlayerSprites.shield,
     cooldown: 10,
     minLevel: 40
   },
   holyRetribution: {
     name: 'Holy Retribution',
-    sprite: creationPlayerSprites.Shamanskill_21,
+    sprite: skillsPlayerSprites.Shamanskill_21,
     cooldown: 15,
     minLevel: 50
   },
   smiteEvil: {
     name: 'Smite Evil',
-    sprite: creationPlayerSprites.Mageskill_23,
+    sprite: skillsPlayerSprites.Mageskill_23,
     cooldown: 8,
     minLevel: 60
   },
   arcaneMissile: {
     name: 'Arcane Missile',
-    sprite: creationPlayerSprites.Engineerskill_27,
+    sprite: skillsPlayerSprites.Engineerskill_27,
     cooldown: 6,
     minLevel: 10
   },
   shadowChains: {
     name: 'Shadow Chains',
-    sprite: creationPlayerSprites.skill_27,
+    sprite: skillsPlayerSprites.skill_27,
     cooldown: 20,
     minLevel: 20
   },
   armorSap: {
     name: 'Armor Sap',
-    sprite: creationPlayerSprites.skill_8,
+    sprite: skillsPlayerSprites.skill_8,
     cooldown: 30,
     minLevel: 30
   },
   etherProtection: {
     name: 'Ether Protection',
-    sprite: creationPlayerSprites.Skill_322,
+    sprite: skillsPlayerSprites.skill_322,
     cooldown: 20,
     minLevel: 40
   },
   restoration: {
     name: 'Restoration',
-    sprite: creationPlayerSprites.Priestskill_24,
+    sprite: skillsPlayerSprites.priestSkill_24,
     cooldown: 15,
     minLevel: 50
   },
   fireball: {
     name: 'Fireball Aura',
-    sprite: creationPlayerSprites.Mageskill_19,
+    sprite: skillsPlayerSprites.Mageskill_19,
     cooldown: 10,
     minLevel: 60
   },
   Swiftfoot: {
     name: 'Swiftfoot',
-    sprite: creationPlayerSprites.skill_128,
+    sprite: skillsPlayerSprites.skill_128,
     cooldown: 14,
     minLevel: 10
   },
   shadowstrike: {
     name: 'Shadowstrike',
-    sprite: creationPlayerSprites.skill_188,
+    sprite: skillsPlayerSprites.skill_188,
     cooldown: 8,
     minLevel: 20
   },
   fortunesFavor: {
     name: 'Fortunes Favor',
-    sprite: creationPlayerSprites.skill_44,
+    sprite: skillsPlayerSprites.skill_44,
     cooldown: 12,
     minLevel: 30
   },
   stoneheart: {
     name: 'Stoneheart',
-    sprite: creationPlayerSprites.skill_114,
+    sprite: skillsPlayerSprites.skill_114,
     cooldown: 12,
     minLevel: 40
   },
@@ -742,7 +1234,7 @@ export const SKILL_DATA = {
     minLevel: 60,
     description:
       'Deal 150% of your inflicted damage back to the enemy for for 15 s',
-    sprite: skillsPlayerSprites.Skill_282,
+    sprite: skillsPlayerSprites.skill_282,
     cooldown: 15
   },
 
@@ -805,7 +1297,7 @@ export const SKILL_DATA = {
     minLevel: 1,
     description:
       'Strike your opponents with a disruptive force! \n\nAttack increase by 50 for 6s.\n\ncooldown: 9 s \n\n*If the next attack is unsuccessful, inflict bleeding damage of 60 every 2 seconds for 30 seconds if you are wearing Double Hatchets.',
-    sprite: skillsPlayerSprites.axe, // SkillsConfig.json["skill_113,
+    sprite: skillsPlayerSprites.axe, // skillsConfig.json["skill_113,
     cooldown: 9 // Adjust the cooldown as needed
   },
   // Support Healing lvl 1 25%
@@ -813,7 +1305,7 @@ export const SKILL_DATA = {
     name: 'First Aid Kit',
     minLevel: 2,
     description: 'Heal the 25% of your missing HP. \n\ncooldown: 4 s',
-    sprite: skillsPlayerSprites.Skill_407, // "FirstAidKit.png", substitute
+    sprite: skillsGeneralSprites.skill_407, // "FirstAidKit.png", substitute
     cooldown: 4
   },
   // AOE Attack lvl 1 Single player attack
@@ -821,14 +1313,14 @@ export const SKILL_DATA = {
     name: 'Fireball',
     minLevel: 3,
     description: `Deal ATTACK damage to all enemies. \n\ncooldown: 5 s \n\n*Damage increases to +300 if you are wearing Legionnaire, Pinnacle of Echoes.`,
-    sprite: skillsPlayerSprites.Skill_279,
+    sprite: skillsGeneralSprites.skill_279,
     cooldown: 5
   },
   GENERAL_STORM: {
     name: 'Sanctified Storm',
     minLevel: 4,
     description: `Deal MAGIC damage to all enemies. \n\ncooldown: 5 s`,
-    sprite: skillsPlayerSprites.skill_72,
+    sprite: skillsGeneralSprites.skill_72,
     cooldown: 5
   },
 
@@ -837,7 +1329,7 @@ export const SKILL_DATA = {
     name: 'Lucky Charm',
     minLevel: 5,
     description: 'Luck is increased by 10%. \n\ncooldown: 9 s ',
-    sprite: skillsPlayerSprites.skill_254,
+    sprite: skillsGeneralSprites.skill_254,
     cooldown: 9 // 40 seconds in milliseconds
   },
   // Support Crit Rate lvl 1 30%
@@ -845,7 +1337,7 @@ export const SKILL_DATA = {
     name: 'Precision Focus',
     minLevel: 10,
     description: 'Critical rate is increased by 30%. \n\ncooldown: 9 s ',
-    sprite: skillsPlayerSprites.skill_29,
+    sprite: skillsGeneralSprites.skill_29,
     cooldown: 9 // 25 seconds in milliseconds
   },
   // Support Defense lvl 2 - enemy attack by 50%
@@ -853,7 +1345,7 @@ export const SKILL_DATA = {
     name: 'Quake!',
     minLevel: 15,
     description: 'Deal ATTACK damage to all enemies. \n\ncooldown: 2 s ',
-    sprite: skillsPlayerSprites.skill_54,
+    sprite: skillsGeneralSprites.skill_54,
     cooldown: 2
   },
   // Support Defense lvl 1 25%
@@ -861,14 +1353,14 @@ export const SKILL_DATA = {
     name: 'Thunder Strike',
     minLevel: 20,
     description: 'Deal ranged MAGIC damage to all enemies! \n\ncooldown: 3 s ',
-    sprite: skillsPlayerSprites.skill_100,
+    sprite: skillsGeneralSprites.skill_100,
     cooldown: 3
   },
   GENERAL_IRON_DEFENSE: {
     name: 'Iron Defense',
     minLevel: 20,
     description: 'Defense is increased by 25%. \n\ncooldown: 6 s ',
-    sprite: skillsPlayerSprites.skill_133,
+    sprite: skillsGeneralSprites.skill_133,
     cooldown: 6 // 30 seconds in milliseconds
   },
   // Support Heal lvl 2 MAX +50%
@@ -876,7 +1368,7 @@ export const SKILL_DATA = {
     name: 'Vitality Surge',
     minLevel: 25,
     description: 'Maximum health is increased by 10%. \n\ncooldown: 15 s ',
-    sprite: skillsPlayerSprites.skill_175,
+    sprite: skillsGeneralSprites.skill_175,
     cooldown: 15 // 45 seconds in milliseconds
   },
   // Attack buffer lvl 2 25% of MAX HP
@@ -893,7 +1385,7 @@ export const SKILL_DATA = {
     name: 'Shield Wall',
     minLevel: 35,
     description: 'Gain 50% Defense. \n\ncooldown: 12 s ',
-    sprite: skillsPlayerSprites.Warriorskill_40,
+    sprite: skillsGeneralSprites.Warriorskill_40,
     cooldown: 12
   },
   // AOE Attack lvl 2 Double player attack
@@ -901,7 +1393,7 @@ export const SKILL_DATA = {
     name: 'Double Hammer Shot',
     minLevel: 40,
     description: 'Deal ATTACK damage to all enemies twice. \n\ncooldown: 3 s ',
-    sprite: skillsPlayerSprites.Warriorskill_45, // "9_club_attack.png", substitute
+    sprite: skillsGeneralSprites.Warriorskill_45, // "9_club_attack.png", substitute
     cooldown: 3
   },
   // Support Defense lvl 2 - enemy attack by 50% (DUPE)
@@ -910,7 +1402,7 @@ export const SKILL_DATA = {
     minLevel: 45,
     description:
       'Increase MAGIC by double (triple for MAGEs). \n\ncooldown: 12 s ',
-    sprite: skillsPlayerSprites.skill_15,
+    sprite: skillsGeneralSprites.skill_15,
     cooldown: 12
   },
 
@@ -927,7 +1419,7 @@ export const SKILL_DATA = {
     name: 'Mighty Assault',
     minLevel: 50,
     description: 'Attacks deal 30% increased damage. \n\ncooldown: 8 s ',
-    sprite: skillsPlayerSprites.skill_65,
+    sprite: skillsGeneralSprites.skill_65,
     cooldown: 8 // 20 seconds in milliseconds
   },
 
@@ -937,7 +1429,7 @@ export const SKILL_DATA = {
     minLevel: 60,
     description:
       'Increase your HP instantly using a potion. \n\ncooldown: 0 s ',
-    sprite: skillsPlayerSprites.skill_451, // Replace with the actual icon filename
+    sprite: skillsGeneralSprites.skill_451, // Replace with the actual icon filename
     cooldown: 0 // 25 seconds cooldown
   },
   // Support Special missing hp
@@ -946,7 +1438,7 @@ export const SKILL_DATA = {
     minLevel: 65,
     description:
       'Pledge allegiance to the power of the Demon King decrease your health by 90% \n\ncooldown: 5 s ',
-    sprite: skillsPlayerSprites.skill_185,
+    sprite: skillsGeneralSprites.skill_185,
     cooldown: 5 // 25 seconds cooldown
   },
   // Support Special no luck
@@ -964,7 +1456,7 @@ export const SKILL_DATA = {
     minLevel: 75,
     description:
       'Deal 70% of your inflicted damage back to the enemy. \n\ncooldown: 12 s ',
-    sprite: skillsPlayerSprites.skill_38,
+    sprite: skillsGeneralSprites.skill_38,
     cooldown: 12
   },
 
@@ -973,15 +1465,15 @@ export const SKILL_DATA = {
     name: 'Venomous Blade',
     minLevel: 80,
     description: 'POISON enemy. \n\ncooldown: 6 s ',
-    sprite: skillsPlayerSprites.skill_24,
+    sprite: skillsGeneralSprites.skill_24,
     cooldown: 6 // Adjust the cooldown as needed
   },
 
   GENERAL_SPELL_CANCEL: {
     name: 'Intimidation',
     minLevel: 90,
-    description: 'Block Enemy Skills. \n\ncooldown: 15 s',
-    sprite: skillsPlayerSprites.skill_123,
+    description: 'Block Enemy skills. \n\ncooldown: 15 s',
+    sprite: skillsGeneralSprites.skill_123,
     cooldown: 15
   },
 
@@ -990,7 +1482,7 @@ export const SKILL_DATA = {
     minLevel: 110,
     description:
       'Remove all ATTACK and add it to your MAGIC for 30 seconds. Additionally, absorb 100% of the damage dealt by your magic attacks as health. \n\ncooldown: 20 s',
-    sprite: skillsPlayerSprites.Skill_354,
+    sprite: skillsGeneralSprites.skill_354,
     cooldown: 30
   },
 
@@ -999,7 +1491,7 @@ export const SKILL_DATA = {
     minLevel: 120,
     description:
       'Deal 150% of your inflicted damage back to the enemy for 15 seconds. Additionally, for every instance of damage reflected, gain a stack of Celestial Essence increasing all stats by 5% per stack for the duration.',
-    sprite: skillsPlayerSprites.skill_151,
+    sprite: skillsGeneralSprites.skill_151,
     cooldown: 15
   },
 
@@ -1008,7 +1500,9 @@ export const SKILL_DATA = {
     minLevel: 130,
     description:
       'If your next roll is successful gain a stack of Fortune, increasing all stats by 5% per stack for the duration. for 20 s',
-    sprite: skillsPlayerSprites.skill_43,
+    sprite: skillsGeneralSprites.skill_43,
     cooldown: 20
   }
 }
+
+export const arrayOfSkills: SkillDefinition[] = Object.values(SKILL_DATA)

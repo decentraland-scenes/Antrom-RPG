@@ -2,4 +2,4 @@
 export * from './scenes/main'
 
 // tests scenes
-// export * from './scenes/tests/test-banner'
+// export * from './scenes/tests/test-inventory'
