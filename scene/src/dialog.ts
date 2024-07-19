@@ -1,9 +1,11 @@
 import { type Dialog } from 'dcl-npc-toolkit'
 import { type GameController } from './controllers/game.controller'
-import { Color4 } from '@dcl/sdk/math'
+import { Color4, Vector3 } from '@dcl/sdk/math'
 import { createQuestTimerText } from './utils/refresherTimer'
 import { engine } from '@dcl/sdk/ecs'
-import { spawnBoss1 } from './enemies/betaBosses/betaBoss1'
+import { DungeonStage } from './counters'
+import { movePlayerTo } from '~system/RestrictedActions'
+import * as utils from '@dcl-sdk/utils'
 
 export class Dialogs {
   public randomDialog1: Dialog[]
@@ -28,11 +30,58 @@ export class Dialogs {
   public vendorDialog: Dialog[]
   public inGameWeaponSmithDialog: Dialog[]
   public garrisonAlaraDialog2: Dialog[]
+  public FoundChryseDialog: Dialog[]
   public kingCount: number
   gameController: GameController
   constructor(gameController: GameController) {
     this.kingCount = 0
     this.gameController = gameController
+    this.FoundChryseDialog = [
+      {
+        text: `You've come here seeking to cast me as the villain, but it's the king who should be under suspicion!`
+      },
+      {
+        text: `Ever since I uncovered the location of one of the Lich God's essences, he's been relentlessly pursuing me.
+        `,
+        isQuestion: true,
+        isEndOfDialog: true,
+        buttons: [
+          {
+            label: `Essences?`,
+            goToDialog: 2,
+            triggeredActions: () => {
+              const stage = DungeonStage.read()
+              if (stage <= 2) {
+                this.gameController.uiController.loadingUI.startLoading()
+                utils.timers.setTimeout(() => {
+                  this.gameController.uiController.loadingUI.finishLoading()
+                }, 3000)
+              }
+              void movePlayerTo({
+                newRelativePosition: Vector3.create(85.93, 4.28, 68.6)
+              })
+              this.gameController.uiController.displayAnnouncement(
+                'Talk to Alara.',
+                Color4.Yellow(),
+                2000
+              )
+              this.gameController.npcs.createAlara1NPC()
+            }
+          },
+          { label: `OK`, goToDialog: 3, triggeredActions: () => {} }
+        ]
+      },
+      {
+        name: 'Fight',
+        text: `Uugghh... Betrayed and ambushed by the King's soldiers, left to die...`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'OK',
+        text: `Now leave!`,
+        isEndOfDialog: true
+      }
+    ]
     this.lukanDialog = [
       {
         text: `I do not know anything about Lord Callan whereabouts! Even if I did, I wouldn't tell you!`,
@@ -42,7 +91,10 @@ export class Dialogs {
             label: `Tell me!`,
             goToDialog: 1,
             triggeredActions: () => {
-              spawnBoss1()
+              this.gameController.realmController.currentRealm?.spawnSingleEntity(
+                'butcher'
+              )
+
               engine.removeEntity(this.gameController.npcs.Noir)
             }
           },

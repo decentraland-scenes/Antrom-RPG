@@ -175,6 +175,12 @@ export class DemonKingDungeon implements Realm {
     )
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
+  }
+
   removeAllEntities(): void {
     engine.removeEntity(this.dungeon_collider)
     engine.removeEntity(this.dungeon_door1)

@@ -13,6 +13,7 @@ export class NPCs {
   public Trews!: Entity
   public Plawman!: Entity
   public Noir!: Entity
+  public Chryse!: Entity
   constructor(gameController: GameController) {
     this.gameController = gameController
   }
@@ -186,4 +187,79 @@ export class NPCs {
       }
     )
   }
+
+  createChryseNPC(): void {
+    console.log('CHRYSE CREATED')
+    this.Chryse = engine.addEntity()
+    this.Chryse = npc.create(
+      {
+        position: Vector3.create(-41.39, 0, 26.89),
+        rotation: Quaternion.create(0, 1, 0, 1),
+        scale: Vector3.create(1.2, 1.2, 1.2)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/Villager2.glb',
+        onActivate: () => {
+          console.log('npc activated')
+          openDialogWindow(
+            this.Chryse,
+            this.gameController.dialogs.FoundChryseDialog
+          )
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+
+    this.soldierC = engine.addEntity()
+    this.soldierC = npc.create(
+      {
+        position: Vector3.create(-40.04, 0, 25.11),
+        rotation: Quaternion.create(0, -1, 0, 1),
+        scale: Vector3.create(0.9, 0.9, 0.9)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/DarkKnight.glb',
+        onActivate: () => {
+          console.log('npc activated', this.soldierC)
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+
+    this.Trews = engine.addEntity()
+    this.Trews = npc.create(
+      {
+        position: Vector3.create(-41.27, 0, 29.25),
+        rotation: Quaternion.create(0, -1, 0, 1),
+        scale: Vector3.create(1.3, 1.3, 1.3)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/Trews.glb',
+        onActivate: () => {
+          console.log('npc activated')
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+  }
+
+  createAlara1NPC(): void {}
 }

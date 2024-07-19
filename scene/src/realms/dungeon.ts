@@ -721,6 +721,13 @@ export class Dungeon implements Realm {
     })
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+       
+    }
+  }
+
   removeAllEntities(): void {
     engine.removeEntity(this.boardParent)
     this.leaderBoard.destroy()

@@ -295,7 +295,6 @@ export class Antrom implements Realm {
     for (let i = 0; i < 8; i++) {
       this.chickens.push(new Chicken())
     }
-
     this.AntromNPCs()
     this.DungeonDoor()
     this.createTriggerZoneForBerserkerUpgradeMarket()
@@ -1465,10 +1464,6 @@ export class Antrom implements Realm {
     })
   }
 
-  createButcher(): void {
-    this.butcher = new BetaBoss1()
-  }
-
   createCampfireA(): void {
     GltfContainer.create(this.campFire, { src: 'assets/models/Fireplace.glb' })
     Transform.create(this.campFire, {
@@ -1555,6 +1550,14 @@ export class Antrom implements Realm {
         }
       ]
     })
+  }
+
+  spawnSingleEntity(entityName: string): void {
+    console.log('singleentit', entityName, this.butcher)
+    switch (entityName) {
+      case 'butcher':
+        this.butcher = new BetaBoss1(this.gameController)
+    }
   }
 
   removeSingleEntity(entityName: string): void {
