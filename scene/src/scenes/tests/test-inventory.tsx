@@ -10,7 +10,7 @@ import SkillsPage from '../../ui/inventory/skillsPage'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import InventoryPage from '../../ui/inventory/inventoryPage'
 import ProfessionsPage from '../../ui/inventory/professionsPage'
-import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
+import { arrayOfSkills, CLASS_SKILLS_TO_SHOW } from '../../ui/bottom-bar/skillsData'
 import { type SkillDefinition } from '../../player/skills'
 
 export class UI {
@@ -25,11 +25,19 @@ export class UI {
   public rightSprite: Sprite = inventorySprites.rightArrowButton
 
   // Skills Page
-  public selectedSkill: SkillDefinition | undefined =
-    SKILL_DATA.thiefSkill
-  
+  public selectedSkill: SkillDefinition | undefined   
   public equipButtonSprite: Sprite = skillsPageSprites.equipButton
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
+  public classSkillsIndex: number = 0
+  public generalSkillsIndex: number = 0
+  public generalSkillsArray: SkillDefinition[] = arrayOfSkills
+  public classSkillsArray: SkillDefinition[] = arrayOfSkills
+  public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
+  public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
+  public leftClassSprite: Sprite = inventorySprites.leftArrowButton
+  public rightClassSprite: Sprite = inventorySprites.rightArrowButton
+  public playerLevel: number = 10 // TODO get level from player 
+
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
@@ -70,6 +78,10 @@ export class UI {
     this.professions = undefined
   }
 
+  selectSkill(skill:SkillDefinition): void {
+    this.selectedSkill = skill
+  }
+
   updateTab(index: number): void {
     this.hideAllPages()
     this.tabIndex = index
@@ -88,6 +100,22 @@ export class UI {
             selectedSkillType=""
             equipButtonSprite={this.equipButtonSprite}
             unequipButtonSprite={this.unequipButtonSprite}
+            generalSkillsIndex={this.generalSkillsIndex}
+            classSkillsIndex={this.classSkillsIndex}
+            playerLevel={this.playerLevel}
+            selectSkill={this.selectSkill.bind(this)}
+            scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
+            scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
+            scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
+            scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
+            generalSkillsLeftSprite={this.leftGeneralSprite}
+            generalSkillsRightSprite={this.rightGeneralSprite}
+            classSkillsLeftSprite={this.leftClassSprite}
+            classSkillsRightSprite={this.rightClassSprite}
+            generalSkills={this.generalSkillsArray}
+            classSkills={this.classSkillsArray}
+            equipSkill={this.equipSkill.bind(this) }
+            disableSkill={this.disableSkill.bind(this)}
           />
         )
         break
@@ -113,6 +141,42 @@ export class UI {
     }
   }
 
+  increaseGeneralSkillIndex(): void {
+    if (this.generalSkillsIndex < Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)) {
+      console.log(this.generalSkillsIndex)
+      this.rightGeneralSprite = inventorySprites.rightArrowButtonClicked
+      this.generalSkillsIndex++
+      this.updateSpritesButtons(150)
+
+    }
+  }
+
+  decreaseGeneralSkillIndex(): void {
+    if (this.generalSkillsIndex > 0) {
+      this.leftGeneralSprite = inventorySprites.leftArrowButtonClicked
+      this.generalSkillsIndex--
+      this.updateSpritesButtons(150)
+    }
+  }
+
+  increaseClassSkillIndex(): void {
+    if (this.classSkillsIndex < 3) {
+      this.rightSprite = inventorySprites.rightArrowButtonClicked
+      this.classSkillsIndex++
+      this.updateSpritesButtons(150)
+
+    }
+  }
+
+  decreaseClassSkillIndex(): void {
+    if (this.classSkillsIndex > 0) {
+      this.leftSprite = inventorySprites.leftArrowButtonClicked
+      this.classSkillsIndex--
+      this.updateSpritesButtons(150)
+
+    }
+  }
+
   updateSpritesButtons(milisecs: number): void {
     utils.timers.setTimeout(() => {
       if (this.tabIndex === 0) {
@@ -125,9 +189,40 @@ export class UI {
       } else {
         this.rightSprite = inventorySprites.rightArrowButton
       }
+      if (this.generalSkillsIndex === 0) {
+        this.leftGeneralSprite = inventorySprites.leftArrowButtonUnavailable
+      } else {
+        this.leftGeneralSprite = inventorySprites.leftArrowButton
+      }
+      if (this.generalSkillsIndex === Math.floor(this.generalSkillsArray.length/CLASS_SKILLS_TO_SHOW)-1) {
+        this.rightGeneralSprite = inventorySprites.rightArrowButtonUnavailable
+      } else {
+        this.rightGeneralSprite = inventorySprites.rightArrowButton
+      }
     }, milisecs)
   }
+
+  equipSkill(): void {
+    // TODO Equip this.selectedSkill if it isn't equiped.
+    if (this.selectedSkill !== undefined) {
+      console.log('Equiped skill')
+    } else {
+      console.error('You should choise a skill to equip')
+    }
+  }
+
+  disableSkill(): void {
+    // TODO Disable this.selectedSkill if it is equiped.
+    if (this.selectedSkill !== undefined) {
+      console.log('Disabled skill') 
+    } else {
+      console.error('You should choise a skill to disable')
+      
+    }
+  }
 }
+
+
 
 export function main(): void {
   const gameUI = new UI()

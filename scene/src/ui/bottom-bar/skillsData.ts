@@ -1,5 +1,8 @@
-import { type MaybeSkill, type PlayerSkill } from '../../player/skills'
+import { type SkillDefinition, type MaybeSkill, type PlayerSkill } from '../../player/skills'
 import { type SlotsInputs } from '../../utils/ui-utils'
+
+export const GENERAL_SKILLS_TO_SHOW = 24
+export const CLASS_SKILLS_TO_SHOW = 8
 
 export type BottomBarProps = {
   slotsData: PlayerSkill
@@ -1497,3 +1500,5 @@ export const SKILL_DATA = {
     cooldown: 20
   }
 }
+
+export const arrayOfSkills: SkillDefinition[] = Object.values(SKILL_DATA)

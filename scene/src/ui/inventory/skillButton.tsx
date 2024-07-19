@@ -1,4 +1,4 @@
-// import { Color4 } from '@dcl/sdk/math'
+import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type SkillDefinition } from '../../player/skills'
 import { getUvs } from '../../utils/ui-utils'
@@ -7,15 +7,15 @@ import { resourcesMarketSprites } from '../resources-market/resourcesData'
 type SkillButtonType = {
     skill: SkillDefinition
     selectedSkill: SkillDefinition | undefined
-    // isAvailable: boolean
-    // selectSkill: (arg: SkillDefinition) => void
+    isAvailable: boolean
+    selectSkill: (arg: SkillDefinition) => void
 }
 
 export function SkillButton({
   skill,
   selectedSkill,
-//   isAvailable,
-//   selectSkill
+  isAvailable,
+  selectSkill
 }: SkillButtonType): ReactEcs.JSX.Element {
   return (
     <UiEntity
@@ -26,15 +26,27 @@ export function SkillButton({
           (skill !== undefined) ? 'flex' : 'none'
       }}
           uiBackground={{
-        //   color:isAvailable?Color4.create(0,0,0,0):Color4.create(0,0,0,0.5),
         textureMode: 'stretch',
         uvs: getUvs(skill.sprite),
         texture: { src: skill.sprite !== undefined ?  skill.sprite.atlasSrc : '' }
       }}
       onMouseDown={() => {
-        // selectSkill(skill)
+        selectSkill(skill)
       }}
-    >
+      >
+           <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          width: '100%',
+          height: '100%',
+          display:
+            !isAvailable ? 'flex' : 'none'
+        }}
+        uiBackground={{
+          color:Color4.create(1,1,1,0.5)
+          
+        }}
+      />
       <UiEntity
         uiTransform={{
           positionType: 'absolute',
