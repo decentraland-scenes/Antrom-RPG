@@ -1,6 +1,5 @@
 import { type MaybeSkill, type PlayerSkill } from '../../player/skills'
 import { type SlotsInputs } from '../../utils/ui-utils'
-import { creationPlayerSprites } from '../creation-player/creationPlayerData'
 
 export type BottomBarProps = {
   slotsData: PlayerSkill
@@ -16,6 +15,46 @@ export type SkillSlotProps = {
 }
 
 const skillsPlayerSprites = {
+  clericSkill: {
+    atlasSrc: 'assets/images/skills/cleric.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  thiefSkill: {
+    atlasSrc: 'assets/images/skills/thief.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  berserkerSkill: {
+    atlasSrc: 'assets/images/skills/berserker.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  rangerSkill: {
+    atlasSrc: 'assets/images/skills/ranger.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
+  mageSkill: {
+    atlasSrc: 'assets/images/skills/mage.png',
+    atlasSize: { x: 128, y: 128 },
+    x: 0,
+    y: 0,
+    w: 128,
+    h: 128
+  },
   shield: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
@@ -310,7 +349,7 @@ const skillsPlayerSprites = {
     h: 256
   },
 
-  Priestskill_24: {
+  priestSkill_24: {
     atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
     atlasSize: { x: 2048, y: 2048 },
     x: 1280,
@@ -1003,122 +1042,122 @@ const skillsGeneralSprites = {
 export const SKILL_DATA = {
   clericSkill: {
     name: 'Healing Touch',
-    sprite: creationPlayerSprites.clericSkill,
+    sprite: skillsPlayerSprites.clericSkill,
     cooldown: 8
   },
   thiefSkill: {
     name: `Assasin's Ambition`,
-    sprite: creationPlayerSprites.thiefSkill,
+    sprite: skillsPlayerSprites.thiefSkill,
     cooldown: 12
   },
   rangerSkill: {
     name: 'Keen Eye',
-    sprite: creationPlayerSprites.rangerSkill,
+    sprite: skillsPlayerSprites.rangerSkill,
     cooldown: 12
   },
   berserkerSkill: {
     name: 'Big Swing',
-    sprite: creationPlayerSprites.berserkerSkill,
+    sprite: skillsPlayerSprites.berserkerSkill,
     cooldown: 6
   },
   mageSkill: {
     name: 'Smoke Screen',
-    sprite: creationPlayerSprites.mageSkill,
+    sprite: skillsPlayerSprites.mageSkill,
     cooldown: 12
   },
   geraldsBlessing: {
     name: `Gerald's Blessing`,
-    sprite: creationPlayerSprites.PriestSkill_49,
+    sprite: skillsPlayerSprites.Priestskill_49,
     cooldown: 10,
     minLevel: 10
   },
   protectorBlessing: {
     name: `Protector's Blessing`,
-    sprite: creationPlayerSprites.skill_189,
+    sprite: skillsPlayerSprites.skill_189,
     cooldown: 10,
     minLevel: 20
   },
   healingTouch: {
     name: 'Healing Touch',
-    sprite: creationPlayerSprites.Paladinskill_15,
+    sprite: skillsPlayerSprites.Paladinskill_15,
     cooldown: 4,
     minLevel: 30
   },
   sacredBarrier: {
     name: 'Sacred Barrier',
-    sprite: creationPlayerSprites.shield,
+    sprite: skillsPlayerSprites.shield,
     cooldown: 10,
     minLevel: 40
   },
   holyRetribution: {
     name: 'Holy Retribution',
-    sprite: creationPlayerSprites.ShamanSkill_21,
+    sprite: skillsPlayerSprites.Shamanskill_21,
     cooldown: 15,
     minLevel: 50
   },
   smiteEvil: {
     name: 'Smite Evil',
-    sprite: creationPlayerSprites.MageSkill_23,
+    sprite: skillsPlayerSprites.Mageskill_23,
     cooldown: 8,
     minLevel: 60
   },
   arcaneMissile: {
     name: 'Arcane Missile',
-    sprite: creationPlayerSprites.EngineerSkill_27,
+    sprite: skillsPlayerSprites.Engineerskill_27,
     cooldown: 6,
     minLevel: 10
   },
   shadowChains: {
     name: 'Shadow Chains',
-    sprite: creationPlayerSprites.skill_27,
+    sprite: skillsPlayerSprites.skill_27,
     cooldown: 20,
     minLevel: 20
   },
   armorSap: {
     name: 'Armor Sap',
-    sprite: creationPlayerSprites.skill_8,
+    sprite: skillsPlayerSprites.skill_8,
     cooldown: 30,
     minLevel: 30
   },
   etherProtection: {
     name: 'Ether Protection',
-    sprite: creationPlayerSprites.skill_322,
+    sprite: skillsPlayerSprites.skill_322,
     cooldown: 20,
     minLevel: 40
   },
   restoration: {
     name: 'Restoration',
-    sprite: creationPlayerSprites.Priestskill_24,
+    sprite: skillsPlayerSprites.priestSkill_24,
     cooldown: 15,
     minLevel: 50
   },
   fireball: {
     name: 'Fireball Aura',
-    sprite: creationPlayerSprites.Mageskill_19,
+    sprite: skillsPlayerSprites.Mageskill_19,
     cooldown: 10,
     minLevel: 60
   },
   Swiftfoot: {
     name: 'Swiftfoot',
-    sprite: creationPlayerSprites.skill_128,
+    sprite: skillsPlayerSprites.skill_128,
     cooldown: 14,
     minLevel: 10
   },
   shadowstrike: {
     name: 'Shadowstrike',
-    sprite: creationPlayerSprites.skill_188,
+    sprite: skillsPlayerSprites.skill_188,
     cooldown: 8,
     minLevel: 20
   },
   fortunesFavor: {
     name: 'Fortunes Favor',
-    sprite: creationPlayerSprites.skill_44,
+    sprite: skillsPlayerSprites.skill_44,
     cooldown: 12,
     minLevel: 30
   },
   stoneheart: {
     name: 'Stoneheart',
-    sprite: creationPlayerSprites.skill_114,
+    sprite: skillsPlayerSprites.skill_114,
     cooldown: 12,
     minLevel: 40
   },

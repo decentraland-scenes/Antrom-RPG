@@ -26,10 +26,10 @@ export class UI {
 
   // Skills Page
   public selectedSkill: SkillDefinition | undefined =
-    SKILL_DATA.GENERAL_DEFENSIVE_AURA
+    SKILL_DATA.thiefSkill
   
   public equipButtonSprite: Sprite = skillsPageSprites.equipButton
-  public unequipButtonSprite: Sprite = skillsPageSprites.equipUnavailableButton
+  public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
