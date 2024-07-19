@@ -1,5 +1,5 @@
 import { Color4 } from '@dcl/sdk/math'
-import { GetPlayerInfo } from '../api/api'
+import { GetPlayerInfo, GetPlayerInventory, GetPlayerLevels } from '../api/api'
 import { GameController } from '../controllers/game.controller'
 import { Player } from '../player/player'
 import {
@@ -19,13 +19,13 @@ import { CLASS_MAIN_SKILL } from '../player/skills/classes-main-skill'
 let gameInstance: GameController
 
 export function main(): void {
-  init().catch((e) => {
+  init(false).catch((e) => {
     console.error('Fatal error during init')
     console.error(e)
   })
 }
 
-async function init(): Promise<void> {
+async function init(retry: boolean): Promise<void> {
   await waitNextTick()
 
   gameInstance = new GameController()
@@ -59,7 +59,12 @@ async function init(): Promise<void> {
         Color4.Red(),
         5
       )
-      await init()
+
+      if (retry) {
+        throw new Error('Player creation failed after retry')
+      } else {
+        await init(true)
+      }
       return
     }
 
@@ -70,9 +75,18 @@ async function init(): Promise<void> {
 
   if (playerInfoResponse?.player == null) {
     console.error('Player not found')
-    await init()
+    if (retry) {
+      throw new Error('Player creation failed after retry')
+    } else {
+      await init(true)
+    }
     return
   }
+
+  const [inventory, levels] = await Promise.all([
+    GetPlayerInventory(),
+    GetPlayerLevels()
+  ])
 
   // Set all the player info
   const myPlayer = new Player(
@@ -97,6 +111,32 @@ async function init(): Promise<void> {
   }
 
   myPlayer.setSkill(0, CLASS_MAIN_SKILL[myPlayer.class]())
+
+  if (
+    inventory?.computed_player_inventory !== undefined &&
+    Array.isArray(inventory.computed_player_inventory)
+  ) {
+    console.log({ inventory })
+  } else {
+    console.error('Inventory not found')
+  }
+
+  if (levels?.levels !== undefined) {
+    const levelTypes = Array.from(Object.values(LEVEL_TYPES).values())
+    for (const level of levels.levels) {
+      if (levelTypes.includes(level.level_type as LEVEL_TYPES)) {
+        myPlayer.levels.setLevel(
+          level.level_type as LEVEL_TYPES,
+          level.level,
+          level.xp
+        )
+      }
+    }
+
+    console.log({ levels })
+  } else {
+    console.error('Levels not found')
+  }
 
   gameInstance.uiController.playDungeonUI.setVisibility(true)
   gameInstance.uiController.showMainHud()

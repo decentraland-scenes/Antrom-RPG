@@ -38,7 +38,7 @@ export default class nightmareEnemy1 extends MonsterOligar {
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()
-    this.topOffSet = 2.5
+    this.setTopOffset(2.5)
     this.dropRate = dropRate
     if (this.shapeFile === 'assets/models/DarkKnight.glb') {
       this.attack += 50 // Increase attack by 50

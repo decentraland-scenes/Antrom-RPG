@@ -21,7 +21,7 @@ export default class HardCaveDungeonBoss extends MonsterMob {
 
     super.setupEngageTriggerBox()
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }

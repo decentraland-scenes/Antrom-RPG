@@ -12,7 +12,7 @@ export default class AntromGuard extends MonsterOligar {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP)
 
     this.initMonster()
-    this.topOffSet = 2.25
+    this.setTopOffset(2.25)
   }
 
   // onDropXp() {

@@ -18,7 +18,7 @@ export default class BetaBoss1 extends MonsterOligar {
 
     super(5 + stage * 7, level + 100, level + 1, 100 * (stage * 3))
     this.initMonster()
-    this.topOffSet = 3.75
+    this.setTopOffset(3.75)
     // # in %
     this.dropRate = -1
   }

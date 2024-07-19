@@ -68,7 +68,7 @@ export default class Bosses extends MonsterOligar {
     this.shapeFile = MODEL_NAMES[Bosses.currentModelIndex]
     Bosses.currentModelIndex++
     this.initMonster()
-    this.topOffSet = 2.55
+    this.setTopOffset(2.55)
     this.dropRate = 0
     // ui.displayAnnouncement(
     //     `total: ${Bosses.currentModelIndex} max: ${MODEL_NAMES.length}`
