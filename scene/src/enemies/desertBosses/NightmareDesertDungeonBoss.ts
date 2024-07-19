@@ -9,10 +9,10 @@ import {
 import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { DungeonStage } from '../../counters'
-import { player } from '../../player/player'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../playerInventoryMaps'
+import { Player } from '../../player/player'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -28,6 +28,7 @@ export default class NightmareDesertDungeonBoss extends MonsterOligar {
 
   constructor(difficulty: number) {
     const stage = DungeonStage.read()
+    const player = Player.getInstance()
     super(
       600 + 75 * stage,
       player.levels.getLevel(LEVEL_TYPES.PLAYER) + 100,
@@ -229,6 +230,7 @@ export async function backToAntrom(difficulty: string): Promise<void> {
     function () {
       quest.removeKingQuestTimer()
       engine.removeEntity(door1)
+      const player = Player.getInstance()
       const currentDungeonTokens = player.inventory.getItemCount(
         ITEM_TYPES.ICESHARD
       )

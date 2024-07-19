@@ -43,6 +43,7 @@ function npcDialog({
     >
       <UiEntity
         uiTransform={{
+          // Keep the aspect ratio
           width: canvasInfo.width * DIALOG_WIDTH_FACTOR,
           height: canvasInfo.width * DIALOG_HEIGHT_FACTOR,
           flexDirection: 'column',
@@ -50,6 +51,7 @@ function npcDialog({
         }}
         uiBackground={{
           textureMode: 'stretch',
+          // Texture from the atlas
           uvs: getUvs(npcDialogsSprites.background),
           texture: { src: npcDialogsSprites.background.atlasSrc }
         }}

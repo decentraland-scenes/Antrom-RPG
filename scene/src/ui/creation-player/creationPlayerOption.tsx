@@ -1,14 +1,27 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
-  type CharacterFactionsType,
-  type CharacterStatsType
+  type CharacterAlliancesType,
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType
 } from './creationPlayerData'
 
 type creationPlayerOptionProps = {
-  option: CharacterStatsType | CharacterFactionsType
-  selectedOption: CharacterStatsType | CharacterFactionsType | undefined
-  selectOption: (arg: CharacterStatsType | CharacterFactionsType) => void
+  option:
+    | CharacterClassStatsType
+    | CharacterRaceStatsType
+    | CharacterAlliancesType
+  selectedOption:
+    | CharacterClassStatsType
+    | CharacterRaceStatsType
+    | CharacterAlliancesType
+    | undefined
+  selectOption: (
+    arg:
+      | CharacterClassStatsType
+      | CharacterRaceStatsType
+      | CharacterAlliancesType
+  ) => void
 }
 
 export function CreationPlayerOption({

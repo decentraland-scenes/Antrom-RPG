@@ -1,11 +1,11 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 // import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
-import { LEVEL_TYPES } from '../types'
 import { Transform, engine } from '@dcl/sdk/ecs'
-import { player } from '../../player/player'
 import { getRandomInt } from '../../utils/getRandomInt'
 import MonsterMob from '../MonsterMob'
+import { Player } from '../../player/player'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
 export default class BetaBoss1 extends MonsterMob {
   shapeFile = 'assets/models/Butcher.glb'
@@ -13,13 +13,11 @@ export default class BetaBoss1 extends MonsterMob {
   minLuck = 10
 
   constructor() {
+    const player = Player.getInstanceOrNull()
+    const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     const stage = DungeonStage.read()
-    super(
-      5 + stage * 7,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 100,
-      player.levels.getLevel(LEVEL_TYPES.PLAYER) + 1,
-      100 * (stage * 3)
-    )
+
+    super(5 + stage * 7, level + 100, level + 1, 100 * (stage * 3))
     Transform.createOrReplace(this.entity, {
       position: Vector3.create(0, 0, 0)
     })

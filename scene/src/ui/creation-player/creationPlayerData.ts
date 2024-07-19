@@ -137,7 +137,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  rangeUnselected: {
+  rangerUnselected: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 563,
@@ -145,7 +145,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  range: {
+  ranger: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 673,
@@ -153,7 +153,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
     w: 103,
     h: 109
   },
-  rangeSkill: {
+  rangerSkill: {
     atlasSrc: 'assets/images/creation_spritesheet.png',
     atlasSize: { x: 2124, y: 1771 },
     x: 784,
@@ -291,7 +291,7 @@ export const creationPlayerSprites: Record<string, Sprite> = {
   }
 }
 
-export type CharacterStatsType = {
+export type CharacterClassStatsType = {
   name: string
   skill?: string
   selectedSprite: Sprite
@@ -303,118 +303,133 @@ export type CharacterStatsType = {
   healthPoints: number
   critRate: number
   critDamage: number
-  id: string
-  type: 'class' | 'race'
+  id: CharacterClasses
+  type: 'class'
 }
 
-export type CharacterFactionsType = {
+export type CharacterRaceStatsType = {
+  name: string
+  selectedSprite: Sprite
+  unselectedSprite: Sprite
+  attack: number
+  defense: number
+  luck: number
+  healthPoints: number
+  critRate: number
+  critDamage: number
+  id: CharacterRaces
+  type: 'race'
+}
+
+export type CharacterAlliancesType = {
   name: string
   selectedSprite: Sprite
   unselectedSprite: Sprite
   infoSprite: Sprite
-  id: string
-  type: 'faction'
+  id: CharacterAlliances
+  type: 'alliance'
 }
 
 export enum CharacterClasses {
-  CC_CLERIC = 'cleric',
-  CC_MAGE = 'mage',
-  CC_THIEF = 'thief',
-  CC_RANGE = 'range',
-  CC_BERSERKER = 'berserker'
+  CC_CLERIC,
+  CC_MAGE,
+  CC_THIEF,
+  CC_RANGER,
+  CC_BERSERKER
 }
 
 export enum CharacterRaces {
-  CR_UNDEAD = 'undead',
-  CR_ORC = 'orc',
-  CR_HUMAN = 'human',
-  CR_ELF = 'elf'
+  CR_UNDEAD,
+  CR_ORC,
+  CR_HUMAN,
+  CR_ELF
 }
 
-export enum CharacterFactions {
-  CF_REBELS = 'rebels',
-  CF_DISCIPLES = 'disciples'
+export enum CharacterAlliances {
+  CF_DISCIPLES,
+  CF_REBELS
 }
 
-export const CLASSES: Record<CharacterClasses, CharacterStatsType> = {
-  [CharacterClasses.CC_CLERIC]: {
-    name: 'Cleric',
-    skill: 'Healing Touch',
-    selectedSprite: creationPlayerSprites.cleric,
-    unselectedSprite: creationPlayerSprites.clericUnselected,
-    skillSprite: creationPlayerSprites.clericSkill,
-    attack: 0,
-    defense: 5,
-    luck: 0,
-    healthPoints: 30,
-    critRate: 0,
-    critDamage: 0,
-    id: CharacterClasses.CC_CLERIC,
-    type: 'class'
-  },
-  [CharacterClasses.CC_MAGE]: {
-    name: 'Mage',
-    skill: 'Smoke Screen',
-    selectedSprite: creationPlayerSprites.mage,
-    unselectedSprite: creationPlayerSprites.mageUnselected,
-    skillSprite: creationPlayerSprites.mageSkill,
-    attack: 0,
-    defense: 0,
-    luck: 3,
-    healthPoints: 20,
-    critRate: 3,
-    critDamage: 0,
-    id: CharacterClasses.CC_MAGE,
-    type: 'class'
-  },
-  [CharacterClasses.CC_THIEF]: {
-    name: 'Thief',
-    skill: "Assasin's Ambition",
-    selectedSprite: creationPlayerSprites.thief,
-    unselectedSprite: creationPlayerSprites.thiefUnselected,
-    skillSprite: creationPlayerSprites.thiefSkill,
-    attack: 6,
-    defense: 0,
-    luck: 4,
-    healthPoints: 0,
-    critRate: 2,
-    critDamage: 0,
-    id: CharacterClasses.CC_THIEF,
-    type: 'class'
-  },
-  [CharacterClasses.CC_RANGE]: {
-    name: 'Range',
-    skill: 'Keen Eye',
-    selectedSprite: creationPlayerSprites.range,
-    unselectedSprite: creationPlayerSprites.rangeUnselected,
-    skillSprite: creationPlayerSprites.rangeSkill,
-    attack: 10,
-    defense: 0,
-    luck: 0,
-    healthPoints: 0,
-    critRate: 6,
-    critDamage: 0,
-    id: CharacterClasses.CC_RANGE,
-    type: 'class'
-  },
-  [CharacterClasses.CC_BERSERKER]: {
-    name: 'Berserker',
-    skill: 'Big Swing',
-    selectedSprite: creationPlayerSprites.berserker,
-    unselectedSprite: creationPlayerSprites.berserkerUnselected,
-    skillSprite: creationPlayerSprites.berserkerSkill,
-    attack: 11,
-    defense: 5,
-    luck: 0,
-    healthPoints: 0,
-    critRate: 0,
-    critDamage: 0,
-    id: CharacterClasses.CC_BERSERKER,
-    type: 'class'
+export const CLASSES_STATS: Record<CharacterClasses, CharacterClassStatsType> =
+  {
+    [CharacterClasses.CC_CLERIC]: {
+      name: 'Cleric',
+      skill: 'Healing Touch',
+      selectedSprite: creationPlayerSprites.cleric,
+      unselectedSprite: creationPlayerSprites.clericUnselected,
+      skillSprite: creationPlayerSprites.clericSkill,
+      attack: 0,
+      defense: 5,
+      luck: 0,
+      healthPoints: 30,
+      critRate: 0,
+      critDamage: 0,
+      id: CharacterClasses.CC_CLERIC,
+      type: 'class'
+    },
+    [CharacterClasses.CC_MAGE]: {
+      name: 'Mage',
+      skill: 'Smoke Screen',
+      selectedSprite: creationPlayerSprites.mage,
+      unselectedSprite: creationPlayerSprites.mageUnselected,
+      skillSprite: creationPlayerSprites.mageSkill,
+      attack: 0,
+      defense: 0,
+      luck: 3,
+      healthPoints: 20,
+      critRate: 3,
+      critDamage: 0,
+      id: CharacterClasses.CC_MAGE,
+      type: 'class'
+    },
+    [CharacterClasses.CC_THIEF]: {
+      name: 'Thief',
+      skill: "Assasin's Ambition",
+      selectedSprite: creationPlayerSprites.thief,
+      unselectedSprite: creationPlayerSprites.thiefUnselected,
+      skillSprite: creationPlayerSprites.thiefSkill,
+      attack: 6,
+      defense: 0,
+      luck: 4,
+      healthPoints: 0,
+      critRate: 2,
+      critDamage: 0,
+      id: CharacterClasses.CC_THIEF,
+      type: 'class'
+    },
+    [CharacterClasses.CC_RANGER]: {
+      name: 'Ranger',
+      skill: 'Keen Eye',
+      selectedSprite: creationPlayerSprites.ranger,
+      unselectedSprite: creationPlayerSprites.rangerUnselected,
+      skillSprite: creationPlayerSprites.rangerSkill,
+      attack: 10,
+      defense: 0,
+      luck: 0,
+      healthPoints: 0,
+      critRate: 6,
+      critDamage: 0,
+      id: CharacterClasses.CC_RANGER,
+      type: 'class'
+    },
+    [CharacterClasses.CC_BERSERKER]: {
+      name: 'Berserker',
+      skill: 'Big Swing',
+      selectedSprite: creationPlayerSprites.berserker,
+      unselectedSprite: creationPlayerSprites.berserkerUnselected,
+      skillSprite: creationPlayerSprites.berserkerSkill,
+      attack: 11,
+      defense: 5,
+      luck: 0,
+      healthPoints: 0,
+      critRate: 0,
+      critDamage: 0,
+      id: CharacterClasses.CC_BERSERKER,
+      type: 'class'
+    }
   }
-}
 
-export const RACES: Record<CharacterRaces, CharacterStatsType> = {
+export const RACES: Record<CharacterRaces, CharacterRaceStatsType> = {
   [CharacterRaces.CR_UNDEAD]: {
     name: 'Undead',
     selectedSprite: creationPlayerSprites.undead,
@@ -469,46 +484,98 @@ export const RACES: Record<CharacterRaces, CharacterStatsType> = {
   }
 }
 
-export const FACTIONS: Record<CharacterFactions, CharacterFactionsType> = {
-  [CharacterFactions.CF_REBELS]: {
+export const ALLIANCES: Record<CharacterAlliances, CharacterAlliancesType> = {
+  [CharacterAlliances.CF_REBELS]: {
     name: 'The Rebels',
     selectedSprite: creationPlayerSprites.rebels,
     unselectedSprite: creationPlayerSprites.rebelsUnselected,
     infoSprite: creationPlayerSprites.rebelsInfo,
-    id: CharacterFactions.CF_REBELS,
-    type: 'faction'
+    id: CharacterAlliances.CF_REBELS,
+    type: 'alliance'
   },
-  [CharacterFactions.CF_DISCIPLES]: {
+  [CharacterAlliances.CF_DISCIPLES]: {
     name: 'The Disciples',
     selectedSprite: creationPlayerSprites.disciples,
     unselectedSprite: creationPlayerSprites.disciplesUnselected,
     infoSprite: creationPlayerSprites.disciplesInfo,
-    id: CharacterFactions.CF_DISCIPLES,
-    type: 'faction'
+    id: CharacterAlliances.CF_DISCIPLES,
+    type: 'alliance'
   }
 }
-
-export const CHARACTER_FACTIONS: CharacterFactionsType[] = [
-  FACTIONS.disciples,
-  FACTIONS.rebels
-]
-
-export const CHARACTER_CLASSES: CharacterStatsType[] = [
-  CLASSES.mage,
-  CLASSES.cleric,
-  CLASSES.thief,
-  CLASSES.range,
-  CLASSES.berserker
-]
-
-export const CHARACTER_RACES: CharacterStatsType[] = [
-  RACES.undead,
-  RACES.orc,
-  RACES.human,
-  RACES.elf
-]
 
 export const ASPECT_RATIO = 0.56
 export const WIDTH_FACTOR = 0.5
 export const HEIGTH_FACTOR = WIDTH_FACTOR * ASPECT_RATIO
 export const ITEM_SIZE_FACTOR = 0.12
+
+// TODO: check duplicated data (CLASS_STATS and RACES)
+
+export const RACE_BUFF_VARIABLES = {
+  [CharacterRaces.CR_UNDEAD]: {
+    attackBuff: 75,
+    defBuff: 0.14,
+    luckBuff: 7,
+    maxHealth: 100
+  },
+  [CharacterRaces.CR_ORC]: {
+    attackBuff: 75,
+    defBuff: 0.08,
+    luckBuff: 9,
+    maxHealth: 110
+  },
+  [CharacterRaces.CR_HUMAN]: {
+    attackBuff: 65,
+    defBuff: 0.1,
+    luckBuff: 9,
+    maxHealth: 80
+  },
+  [CharacterRaces.CR_ELF]: {
+    attackBuff: 80,
+    defBuff: 0.07,
+    luckBuff: 11,
+    maxHealth: 80
+  }
+}
+
+export const CLASS_BUFF_VARIABLES = {
+  [CharacterClasses.CC_CLERIC]: {
+    atkBuff: 0,
+    defBuff: 0.05,
+    luckBuff: 0,
+    critRate: 0,
+    critDmg: 0,
+    maxHealth: 30
+  },
+  [CharacterClasses.CC_THIEF]: {
+    atkBuff: 6,
+    defBuff: 0,
+    luckBuff: 4,
+    critRate: 2,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_RANGER]: {
+    atkBuff: 10,
+    defBuff: 0,
+    luckBuff: 0,
+    critRate: 6,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_BERSERKER]: {
+    atkBuff: 11,
+    defBuff: 0.05,
+    luckBuff: 0,
+    critRate: 0,
+    critDmg: 0,
+    maxHealth: 0
+  },
+  [CharacterClasses.CC_MAGE]: {
+    atkBuff: 0,
+    defBuff: 0,
+    luckBuff: 3,
+    critRate: 3,
+    critDmg: 0,
+    maxHealth: 20
+  }
+}

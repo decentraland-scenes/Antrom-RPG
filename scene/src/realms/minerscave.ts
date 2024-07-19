@@ -14,9 +14,9 @@ import { type GameController } from '../controllers/game.controller'
 import { Gem, Items, Pot } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
 import { getRandomInt } from '../utils/getRandomInt'
-import { Realm } from './types'
+import { type Realm, type RealmType } from './types'
 
-export class MinersCave extends Realm {
+export class MinersCave implements Realm {
   private readonly cave = engine.addEntity()
   private readonly ladder = engine.addEntity()
   private readonly pot_positions: Vector3[]
@@ -24,7 +24,6 @@ export class MinersCave extends Realm {
   private readonly gems_entities: Gem[]
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
     this.gameController = gameController
     GltfContainer.create(this.cave, { src: 'models/cave.glb' })
     GltfContainer.create(this.ladder, { src: 'models/CaveLadder.glb' })
@@ -143,5 +142,13 @@ export class MinersCave extends Realm {
     this.pots_entities.forEach((pot) => {
       pot.removepot()
     })
+  }
+
+  deadPosition(): Vector3 | null {
+    return null
+  }
+
+  getId(): RealmType {
+    return 'minersCave'
   }
 }

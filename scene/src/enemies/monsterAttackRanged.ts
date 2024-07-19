@@ -1,7 +1,7 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type MonsterOligar } from './monster'
 import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
-import { Player, player } from '../player/player'
+import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
 
 let arrow: Entity | null = null
@@ -120,13 +120,15 @@ export class MonsterAttackRanged {
           this.hasBeenHit = false
           return
         }
-        this.monster.performAttack(Player.getInstance().getMagic() / 3, false)
+        const player = Player.getInstanceOrNull()
+        if (player === null) return
+        this.monster.performAttack(player.getMagic() / 3, false)
         // const monsterDiceResult = this.monster.rollDice()
         // const playerDiceResult = player.rollDice()
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const playerAttack = Math.round(
-          player.getPlayerAttack(getRandomInt(100) <= player.critRateBuff)
+          player.getPlayerAttack(getRandomInt(100) <= player.getCritRate())
         )
 
         // MainHUD.getInstance().updateStats(

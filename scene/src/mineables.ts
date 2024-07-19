@@ -443,7 +443,7 @@ export class Gem {
     // Animator.playSingleAnimation(this.gem, 'action')
     // AudioSource.playSound(this.gem, 'assets/sounds/mining.mp3')
     // if (result1 === true && result2 === true) {
-    //   this.gameController.uicontroller.displayAnnouncement(
+    //   this.gameController.uiController.displayAnnouncement(
     //     '+2 CRYSTAL',
     //     Color4.Red(),
     //     3000

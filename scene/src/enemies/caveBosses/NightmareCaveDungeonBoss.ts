@@ -9,10 +9,10 @@ import {
 import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { DungeonStage } from '../../counters'
-import { player } from '../../player/player'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../playerInventoryMaps'
+import { Player } from '../../player/player'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -28,6 +28,7 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
 
   constructor(difficulty: number) {
     const stage = DungeonStage.read()
+    const player = Player.getInstance()
     super(
       1200 + 75 * stage,
       player.levels.getLevel(LEVEL_TYPES.PLAYER) + 100,
@@ -245,6 +246,7 @@ export async function backToAntromFromCave(difficulty: string): Promise<void> {
       }
     },
     function () {
+      const player = Player.getInstance()
       quest.removeKingQuestTimer()
       engine.removeEntity(door1)
       const currentDungeonTokens = player.inventory.getItemCount(
