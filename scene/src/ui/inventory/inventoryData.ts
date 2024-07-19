@@ -401,3 +401,121 @@ export const inventorySprites: Record<string, Sprite> = {
     h: 65
   }
 }
+
+export const skillsPageSprites: Record<string, Sprite> = {
+  disableButton: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 0,
+    y: 0,
+    w: 250,
+    h: 54
+  },
+
+  disableUnavailableButton: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 250,
+    y: 0,
+    w: 250,
+    h: 54
+  },
+  equipButton: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 500,
+    y: 0,
+    w: 250,
+    h: 54
+  },
+  lockedSkill: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 750,
+    y: 0,
+    w: 613,
+    h: 679
+  },
+
+  skillsPageFrame: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 1363,
+    y: 0,
+    w: 1882,
+    h: 956
+  },
+
+  equipUnavailableButton: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 3245,
+    y: 0,
+    w: 250,
+    h: 54
+  },
+  leftArrowReg: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 3495,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+  leftArrowUnavail: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 3559,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+  leftArrowWhileClicked: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 3623,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+  rightArrowBtnUnavail: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 3687,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+  rightArrowReg: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 0,
+    y: 64,
+    w: 64,
+    h: 64
+  },
+  rightArrowWhileClicked: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 64,
+    y: 64,
+    w: 64,
+    h: 64
+  },
+  selectionFrame: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 128,
+    y: 64,
+    w: 160,
+    h: 160
+  },
+  skillslotNumber: {
+    atlasSrc: 'assets/images/skillpage_spritesheet.png',
+    atlasSize: { x: 3751, y: 956 },
+    x: 288,
+    y: 64,
+    w: 40,
+    h: 40
+  }
+}
