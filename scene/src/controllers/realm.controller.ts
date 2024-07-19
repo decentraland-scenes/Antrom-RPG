@@ -3,15 +3,8 @@ import { DemonKingDungeon } from '../realms/demonKingDungeon'
 import { Dungeon } from '../realms/dungeon'
 import { DungeonBase } from '../realms/dungeonBase'
 import { MinersCave } from '../realms/minerscave'
-import { type Realm } from '../realms/types'
+import { type RealmType, type Realm } from '../realms/types'
 import { type GameController } from './game.controller'
-
-type RealmType =
-  | 'antrom'
-  | 'demonKingDungeon'
-  | 'dungeon'
-  | 'dungeonBase'
-  | 'minersCave'
 
 export class RealmController {
   public currentRealm: Realm | null = null

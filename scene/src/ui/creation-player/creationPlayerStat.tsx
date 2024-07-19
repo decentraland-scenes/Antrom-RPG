@@ -1,10 +1,14 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { HEIGTH_FACTOR, type CharacterStatsType } from './creationPlayerData'
+import {
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType,
+  HEIGTH_FACTOR
+} from './creationPlayerData'
 
 type creationPlayerStatProps = {
-  selectedClass: CharacterStatsType | undefined
-  selectedRace: CharacterStatsType | undefined
+  selectedClass: CharacterClassStatsType | undefined
+  selectedRace: CharacterRaceStatsType | undefined
   stat: 'attack' | 'defense' | 'luck' | 'hp' | 'critRate' | 'critDamage'
   marginTop: number
 }

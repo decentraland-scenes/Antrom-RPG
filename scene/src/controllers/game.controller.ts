@@ -3,11 +3,11 @@ import { RealmController } from './realm.controller'
 import { UIController } from './ui.controller'
 
 export class GameController {
-  uicontroller: UIController
+  uiController: UIController
   realmController: RealmController
   dialogs: Dialogs
   constructor() {
-    this.uicontroller = new UIController(this)
+    this.uiController = new UIController(this)
     this.realmController = new RealmController(this)
     this.dialogs = new Dialogs(this)
   }

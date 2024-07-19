@@ -336,7 +336,7 @@ export class Dialogs {
               //     removeNPCFromMap("king")
               //     createQuestTimerText()
               //     //quest.turnOnKingQuestTimer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'QUEST STARTED',
                 Color4.Yellow(),
                 3000
@@ -344,7 +344,7 @@ export class Dialogs {
               //     kingCount.increase(1)
               //     createCallanQuestLabel()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'QUEST ALREADY STARTED STARTED FIND CPT TREWS!',
                 Color4.Yellow(),
                 3000
@@ -393,7 +393,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 35)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -412,7 +412,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 100)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -432,7 +432,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 500)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -491,7 +491,7 @@ export class Dialogs {
               //     createNPC("Vendor")
               //     loader.showShamanLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE ARMOR',
                 Color4.Yellow(),
                 3000
@@ -508,13 +508,13 @@ export class Dialogs {
               //     createNPC("Vendor")
               //     loader.showShamanLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE ARMOR',
                 Color4.Yellow(),
                 3000
               )
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU DONT HAVE ENOUGH MEAT',
                 Color4.Yellow(),
                 3000
@@ -572,7 +572,7 @@ export class Dialogs {
               //     loader.showAPLoader(5000)
               //     player.writeDataToServer()
               //     // AddAvatarModels('assets/models/KnightSword.glb', 2)
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE A WEAPON',
                 Color4.Yellow(),
                 3000
@@ -590,13 +590,13 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.ROCK, 50)
               //     loader.showAPLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE A WEAPON',
                 Color4.Yellow(),
                 3000
               )
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU DONT HAVE ENOUGH IRON ORE',
                 Color4.Yellow(),
                 3000
