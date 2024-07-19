@@ -7,6 +7,7 @@ import SkillsPage from '../../ui/inventory/skillsPage'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import InventoryPage from '../../ui/inventory/inventoryPage'
 import ProfessionsPage from '../../ui/inventory/professionsPage'
+import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
 
 export class UI {
   public isVisible: boolean = false
@@ -14,7 +15,7 @@ export class UI {
   public skills: (() => ReactEcs.JSX.Element) | undefined
   public companions: (() => ReactEcs.JSX.Element) | undefined
   public professions: (() => ReactEcs.JSX.Element) | undefined
-  public tabIndex: number = 0
+  public tabIndex: number = 2
   public leftSprite: Sprite = inventorySprites.leftArrowButton
   public rightSprite: Sprite = inventorySprites.rightArrowButton
   constructor() {
@@ -62,16 +63,21 @@ export class UI {
     this.updateSpritesButtons(150)
     switch (this.tabIndex) {
       case 0:
-        this.inventory = () => <InventoryPage prop={undefined}/>
+        this.inventory = () => <InventoryPage prop={undefined} />
         break
       case 1:
-        this.companions = () => <CompanionsPage prop={undefined}/>
+        this.companions = () => <CompanionsPage prop={undefined} />
         break
       case 2:
-        this.skills = () => <SkillsPage selectedSkill={undefined}/>
+        this.skills = () => (
+          <SkillsPage
+            selectedSkill={SKILL_DATA.BERSERKER_BLOOD_DANCE}
+            selectedSkillType=""
+          />
+        )
         break
       case 3:
-        this.professions = () => <ProfessionsPage prop={undefined}/>
+        this.professions = () => <ProfessionsPage prop={undefined} />
         break
     }
   }

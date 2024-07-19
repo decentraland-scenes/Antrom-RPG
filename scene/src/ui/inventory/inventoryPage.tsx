@@ -17,11 +17,11 @@ function InventoryPage({ prop }: InventoryPageProps): ReactEcs.JSX.Element {
         alignItems: 'center',
         flexDirection: 'column'
       }}
-    //   uiBackground={{
-    //     textureMode: 'stretch',
-    //     uvs: getUvs(skillsPageSprites.skillsPageFrame),
-    //     texture: { src: skillsPageSprites.skillsPageFrame.atlasSrc }
-    //   }}
+      //   uiBackground={{
+      //     textureMode: 'stretch',
+      //     uvs: getUvs(skillsPageSprites.skillsPageFrame),
+      //     texture: { src: skillsPageSprites.skillsPageFrame.atlasSrc }
+      //   }}
       uiText={{ value: 'Inventory', fontSize: 50 }}
     ></UiEntity>
   )
