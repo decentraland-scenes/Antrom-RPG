@@ -6,10 +6,10 @@ import { inventorySprites } from './inventoryData'
 
 type InventoryProps = {
   isVisible: boolean
-  isInventory: boolean
-  isCompanions: boolean
-  isSkills: boolean
-  isProfessions: boolean
+  inventory: (() => ReactEcs.JSX.Element) | undefined
+  companions: (() => ReactEcs.JSX.Element) | undefined
+  skills: (() => ReactEcs.JSX.Element) | undefined
+  professions: (() => ReactEcs.JSX.Element) | undefined
   scrollRight: () => void
   scrollLeft: () => void
   leftSprite: Sprite
@@ -19,10 +19,10 @@ type InventoryProps = {
 
 function Inventory({
   isVisible,
-  isInventory,
-  isCompanions,
-  isSkills,
-  isProfessions,
+  inventory,
+  companions,
+  skills,
+  professions,
   scrollRight,
   scrollLeft,
   leftSprite,
@@ -72,7 +72,7 @@ function Inventory({
               uiBackground={{
                 textureMode: 'stretch',
                 uvs: getUvs(
-                  isInventory
+                  inventory !== undefined
                     ? inventorySprites.inventoryButtonSelected
                     : inventorySprites.inventoryButton
                 ),
@@ -91,7 +91,7 @@ function Inventory({
               uiBackground={{
                 textureMode: 'stretch',
                 uvs: getUvs(
-                  isCompanions
+                  companions !== undefined
                     ? inventorySprites.companionsButtonSelected
                     : inventorySprites.companionsButton
                 ),
@@ -110,7 +110,7 @@ function Inventory({
               uiBackground={{
                 textureMode: 'stretch',
                 uvs: getUvs(
-                  isSkills
+                  skills !== undefined
                     ? inventorySprites.skillsButtonSelected
                     : inventorySprites.skillsButton
                 ),
@@ -129,7 +129,7 @@ function Inventory({
               uiBackground={{
                 textureMode: 'stretch',
                 uvs: getUvs(
-                  isProfessions
+                  professions !== undefined
                     ? inventorySprites.professionsButtonSelected
                     : inventorySprites.professionsButton
                 ),
@@ -168,19 +168,45 @@ function Inventory({
             />
           </UiEntity>
 
-          {isInventory && (
-            <UiEntity uiText={{ value: 'Inventory', fontSize: 50 }}></UiEntity>
-          )}
-          {isCompanions && (
-            <UiEntity uiText={{ value: 'Companions', fontSize: 50 }}></UiEntity>
-          )}
-          {isSkills && (
-            <UiEntity uiText={{ value: 'Skills', fontSize: 50 }}></UiEntity>
-          )}
-          {isProfessions && (
+          {inventory !== undefined && (
             <UiEntity
-              uiText={{ value: 'Professions', fontSize: 50 }}
-            ></UiEntity>
+              uiTransform={{
+                width: canvasInfo.width * 0.8,
+                height: canvasInfo.width * 0.8 * 0.51
+              }}
+            >
+              {inventory()}
+            </UiEntity>
+          )}
+          {companions !== undefined && (
+            <UiEntity
+              uiTransform={{
+                width: canvasInfo.width * 0.8,
+                height: canvasInfo.width * 0.8 * 0.51
+              }}
+            >
+              {companions()}
+            </UiEntity>
+          )}
+          {skills !== undefined && (
+            <UiEntity
+              uiTransform={{
+                width: canvasInfo.width * 0.8,
+                height: canvasInfo.width * 0.8 * 0.51
+              }}
+            >
+              {skills()}
+            </UiEntity>
+          )}
+          {professions !== undefined && (
+            <UiEntity
+              uiTransform={{
+                width: canvasInfo.width * 0.8,
+                height: canvasInfo.width * 0.8 * 0.51
+              }}
+            >
+              {professions()}
+            </UiEntity>
           )}
         </UiEntity>
       )}

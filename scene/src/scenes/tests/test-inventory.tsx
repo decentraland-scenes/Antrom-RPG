@@ -3,14 +3,18 @@ import Inventory from '../../ui/inventory/inventoryComponent'
 import { inventorySprites } from '../../ui/inventory/inventoryData'
 import { type Sprite } from '../../utils/ui-utils'
 import * as utils from '@dcl-sdk/utils'
+import SkillsPage from '../../ui/inventory/skillsPage'
+import CompanionsPage from '../../ui/inventory/companionsPage'
+import InventoryPage from '../../ui/inventory/inventoryPage'
+import ProfessionsPage from '../../ui/inventory/professionsPage'
 
 export class UI {
   public isVisible: boolean = false
-  public isInventory: boolean = false
-  public isSkills: boolean = false
-  public isCompanions: boolean = false
-  public isProfessions: boolean = false
-  public tabIndex: number = 2
+  public inventory: (() => ReactEcs.JSX.Element) | undefined
+  public skills: (() => ReactEcs.JSX.Element) | undefined
+  public companions: (() => ReactEcs.JSX.Element) | undefined
+  public professions: (() => ReactEcs.JSX.Element) | undefined
+  public tabIndex: number = 0
   public leftSprite: Sprite = inventorySprites.leftArrowButton
   public rightSprite: Sprite = inventorySprites.rightArrowButton
   constructor() {
@@ -22,10 +26,10 @@ export class UI {
     return (
       <Inventory
         isVisible={this.isVisible}
-        isInventory={this.isInventory}
-        isCompanions={this.isCompanions}
-        isSkills={this.isSkills}
-        isProfessions={this.isProfessions}
+        inventory={this.inventory}
+        companions={this.companions}
+        skills={this.skills}
+        professions={this.professions}
         scrollRight={this.increaseTabIndex.bind(this)}
         scrollLeft={this.decreaseTabIndex.bind(this)}
         leftSprite={this.leftSprite}
@@ -45,29 +49,29 @@ export class UI {
     this.tabIndex = 0
   }
 
-  setAllFalse(): void {
-    this.isInventory = false
-    this.isSkills = false
-    this.isCompanions = false
-    this.isProfessions = false
+  hideAllPages(): void {
+    this.inventory = undefined
+    this.skills = undefined
+    this.companions = undefined
+    this.professions = undefined
   }
 
   updateTab(index: number): void {
-    this.setAllFalse()
+    this.hideAllPages()
     this.tabIndex = index
     this.updateSpritesButtons(150)
     switch (this.tabIndex) {
       case 0:
-        this.isInventory = true
+        this.inventory = () => <InventoryPage prop={undefined}/>
         break
       case 1:
-        this.isCompanions = true
+        this.companions = () => <CompanionsPage prop={undefined}/>
         break
       case 2:
-        this.isSkills = true
+        this.skills = () => <SkillsPage selectedSkill={undefined}/>
         break
       case 3:
-        this.isProfessions = true
+        this.professions = () => <ProfessionsPage prop={undefined}/>
         break
     }
   }
