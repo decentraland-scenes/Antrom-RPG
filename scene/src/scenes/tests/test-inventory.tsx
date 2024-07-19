@@ -1,6 +1,9 @@
 import ReactEcs, { ReactEcsRenderer } from '@dcl/sdk/react-ecs'
 import Inventory from '../../ui/inventory/inventoryComponent'
-import { inventorySprites } from '../../ui/inventory/inventoryData'
+import {
+  inventorySprites,
+  skillsPageSprites
+} from '../../ui/inventory/inventoryData'
 import { type Sprite } from '../../utils/ui-utils'
 import * as utils from '@dcl-sdk/utils'
 import SkillsPage from '../../ui/inventory/skillsPage'
@@ -8,8 +11,10 @@ import CompanionsPage from '../../ui/inventory/companionsPage'
 import InventoryPage from '../../ui/inventory/inventoryPage'
 import ProfessionsPage from '../../ui/inventory/professionsPage'
 import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
+import { type SkillDefinition } from '../../player/skills'
 
 export class UI {
+  // Nav Bar
   public isVisible: boolean = false
   public inventory: (() => ReactEcs.JSX.Element) | undefined
   public skills: (() => ReactEcs.JSX.Element) | undefined
@@ -18,6 +23,14 @@ export class UI {
   public tabIndex: number = 2
   public leftSprite: Sprite = inventorySprites.leftArrowButton
   public rightSprite: Sprite = inventorySprites.rightArrowButton
+
+  // Skills Page
+  public selectedSkill: SkillDefinition | undefined =
+    SKILL_DATA.GENERAL_DEFENSIVE_AURA
+  
+  public equipButtonSprite: Sprite = skillsPageSprites.equipButton
+  public unequipButtonSprite: Sprite = skillsPageSprites.equipUnavailableButton
+
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
     ReactEcsRenderer.setUiRenderer(uiComponent)
@@ -71,8 +84,10 @@ export class UI {
       case 2:
         this.skills = () => (
           <SkillsPage
-            selectedSkill={SKILL_DATA.BERSERKER_BLOOD_DANCE}
+            selectedSkill={this.selectedSkill}
             selectedSkillType=""
+            equipButtonSprite={this.equipButtonSprite}
+            unequipButtonSprite={this.unequipButtonSprite}
           />
         )
         break

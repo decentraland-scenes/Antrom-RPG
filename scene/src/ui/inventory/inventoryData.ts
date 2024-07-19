@@ -402,7 +402,7 @@ export const inventorySprites: Record<string, Sprite> = {
   }
 }
 
-export const skillsPageSprites: Record<string, Sprite> = {
+export const skillsPageSprites = {
   disableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
     atlasSize: { x: 3751, y: 956 },
