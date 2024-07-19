@@ -1,35 +1,32 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
+import * as utils from '@dcl-sdk/utils'
 import {
   Animator,
   GltfContainer,
-  Transform,
-  MeshRenderer,
-  engine,
-  VisibilityComponent,
-  pointerEventsSystem,
   InputAction,
-  TextShape,
-  Material,
+  MeshRenderer,
+  Transform,
+  VisibilityComponent,
+  engine,
+  pointerEventsSystem,
   type Entity
 } from '@dcl/sdk/ecs'
-import { Character } from './character'
-import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import * as utils from '@dcl-sdk/utils'
-import { MonsterAttackRanged } from './monsterAttackRanged'
-import { monsterModifiers } from './skillEffects'
+import { Vector3 } from '@dcl/sdk/math'
+import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { MonsterAttack } from './monsterAttack'
-import { Player } from '../player/player'
+import { MonsterAttackRanged } from './monsterAttackRanged'
+import { GenericMonster } from './monsterGeneric'
+import { monsterModifiers } from './skillEffects'
 
-export class MonsterMeat extends Character {
+export class MonsterMeat extends GenericMonster {
   static globalHasSkill: boolean = true
   monsterShape?: string
   chickenShape?: { src: '' }
   shapeFile?: string
   shape: string = ''
   audioFile?: string
-  healthBar!: Entity
   idleClip: string = 'idle'
   attackClip: string = 'attack'
   walkClip: string = 'walk'
@@ -43,9 +40,6 @@ export class MonsterMeat extends Character {
   // playerAttackUI: ui.CornerLabel
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
-  attackTrigger!: Entity
-  label?: any
-  topOffSet?: number
   initialPosition?: Vector3
   attackSystemRanged!: MonsterAttackRanged
   attackSystem!: MonsterAttack
@@ -65,11 +59,10 @@ export class MonsterMeat extends Character {
     engageDistance: number = 9,
     topOffset: number = 2.5
   ) {
-    super(attack, xp, level, health, baseDefense)
+    super(attack, xp, level, health, baseDefense, topOffset)
     this.isDead = false
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
-    this.topOffSet = topOffset
     // monster sounds
     // this.dyingSound = enemyDyingAudioSource
     // this.addComponentOrReplace(this.dyingSound)
@@ -145,39 +138,6 @@ export class MonsterMeat extends Character {
     this.setupAttackHandler()
   }
 
-  createHealthBar(): void {
-    const hb = engine.addEntity()
-    Transform.createOrReplace(hb, {
-      scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
-      position: Vector3.create(0, this.topOffSet, 0),
-      parent: this.entity
-    })
-    MeshRenderer.setBox(hb)
-    Material.setPbrMaterial(hb, {
-      albedoColor: Color4.create(1, 0, 0, 0.5),
-      metallic: 0,
-      roughness: 1,
-      specularIntensity: 0,
-      emissiveIntensity: 0.4
-    })
-
-    this.healthBar = hb
-  }
-
-  createLabel(): void {
-    this.label = engine.addEntity()
-    TextShape.create(this.label, {
-      text: `${this.health}`,
-      textColor: Color4.White(),
-      fontSize: 1
-    })
-    Transform.createOrReplace(this.label, {
-      position: Vector3.create(0, this.topOffSet, -0.1),
-      rotation: Quaternion.fromEulerDegrees(0, 180, 0),
-      parent: this.entity
-    })
-  }
-
   refillHealthBar(percentage = 1): void {
     this.health += this.maxHealth * percentage
     if (this.health > this.maxHealth) {
@@ -190,16 +150,6 @@ export class MonsterMeat extends Character {
     this.health -= damage
     if (this.health < 0) {
       this.health = 0
-    }
-  }
-
-  updateHealthBar(): void {
-    if (this.healthBar) {
-      Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
-    }
-
-    if (this.label) {
-      TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
 
@@ -265,25 +215,6 @@ export class MonsterMeat extends Character {
     )
   }
 
-  setupAttackTriggerBox(): void {
-    this.attackTrigger = engine.addEntity()
-    Transform.create(this.attackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.attackTrigger)
-    VisibilityComponent.create(this.attackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.attackTrigger,
-      1,
-      1,
-      [{ type: 'box', scale: Vector3.create(4, 2, 4) }],
-      () => {
-        console.log('<<< Attack >>>')
-      },
-      () => {
-        console.log('im out')
-      }
-    )
-  }
-
   setDistance(distance: number): void {
     pointerEventsSystem.onPointerDown(
       {
@@ -324,12 +255,10 @@ export class MonsterMeat extends Character {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
+      super.cleanup()
       engine.removeEntity(this.entity)
       engine.removeEntity(this.rangeAttackTrigger)
       engine.removeEntity(this.engageAttackTrigger)
-      engine.removeEntity(this.attackTrigger)
-      engine.removeEntity(this.healthBar)
-      engine.removeEntity(this.label)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -344,16 +273,10 @@ export class MonsterMeat extends Character {
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
-    if (this.healthBar) {
-      engine.removeEntity(this.healthBar)
-    }
-    if (this.label) {
-      engine.removeEntity(this.label)
-    }
+    super.cleanup()
     if (this.rangeAttackTrigger != null) {
       engine.removeEntity(this.rangeAttackTrigger)
       engine.removeEntity(this.engageAttackTrigger)
-      engine.removeEntity(this.attackTrigger)
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()

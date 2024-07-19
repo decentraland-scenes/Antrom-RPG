@@ -41,4 +41,4 @@ export const BANNER: Record<BannerType, string> = {
   [BannerType.B_LEVEL_UP]: 'assets/images/lvl_up_2.png'
 }
 
-export const BANNER_DURATION: number = 2
+export const BANNER_DURATION: number = 4

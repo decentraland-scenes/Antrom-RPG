@@ -24,7 +24,8 @@ export default class BetaBoss1 extends MonsterMob {
     })
     this.initMonster()
     this.loadTransformation()
-    this.topOffSet = 3.75
+    this.setTopOffset(3.75)
+    // # in %
     this.dropRate = -1
   }
 
@@ -54,11 +55,9 @@ export default class BetaBoss1 extends MonsterMob {
   create(): void {}
 
   removeEntity(): void {
+    super.cleanup()
     engine.removeEntity(this.rangeAttackTrigger)
     engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.attackTrigger)
-    engine.removeEntity(this.healthBar)
-    engine.removeEntity(this.label)
     engine.removeEntity(this.entity)
   }
 }

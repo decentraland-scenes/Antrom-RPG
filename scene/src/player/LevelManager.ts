@@ -1,3 +1,5 @@
+import { WriteXpToServer } from '../api/api'
+
 export enum LEVEL_TYPES {
   PLAYER = 'player',
   TREE = 'tree', // Lumberjack
@@ -7,48 +9,76 @@ export enum LEVEL_TYPES {
   MEAT = 'meat', // Butcher
   ENEMY = 'enemy' // Assassin
 }
-type LevelItem = {
+
+export type LevelItem = {
   type: LEVEL_TYPES
   level: number
+  // This value is the accumulated experience points across all levels
   xp: number
 }
 
-type onUpdatePayload = {
+export type onUpdatePayload = {
   type: LEVEL_TYPES
   level: number
   xp: number
   total: number
   levelChange: boolean
 }
+
 export class LevelManager {
-  levels: Record<LEVEL_TYPES | string, LevelItem>
+  levels: Record<LEVEL_TYPES, LevelItem>
 
   public onUpdate?: (payload: onUpdatePayload) => void
 
   constructor() {
-    this.levels = {}
+    this.levels = {
+      [LEVEL_TYPES.PLAYER]: {
+        type: LEVEL_TYPES.PLAYER,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.TREE]: {
+        type: LEVEL_TYPES.TREE,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.GEM]: {
+        type: LEVEL_TYPES.GEM,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.KNOWLEDGE]: {
+        type: LEVEL_TYPES.KNOWLEDGE,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.ROCK]: {
+        type: LEVEL_TYPES.ROCK,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.MEAT]: {
+        type: LEVEL_TYPES.MEAT,
+        level: 1,
+        xp: 0
+      },
+      [LEVEL_TYPES.ENEMY]: {
+        type: LEVEL_TYPES.ENEMY,
+        level: 1,
+        xp: 0
+      }
+    }
   }
 
   static xpRequiredForNextLevel(level: number): number {
-    return 500 * Math.pow(level, 2) - 500 * level + 1000
-  }
-
-  static getLabelText(name: string, level: number, xp: number): string {
-    return `${name} Level: ${level} xp: ${xp}`
-  }
-
-  createOrUpdateLevelLabel(type: LEVEL_TYPES): void {
-    // const { level, xp } = this.levels?.[type] || {}
-    // Player.getInstance().uiCallback(type, level)
+    return 500 * (level * level - level + 2)
   }
 
   updateItem(type: LEVEL_TYPES, item: LevelItem): void {
     this.levels[type] = {
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      ...(this.levels[type] || {}),
+      ...this.levels[type],
       ...item
     }
-    this.createOrUpdateLevelLabel(type)
   }
 
   static shouldLevelUp(level: number, xp: number): boolean {
@@ -56,11 +86,9 @@ export class LevelManager {
   }
 
   addXp(type: LEVEL_TYPES, xp: number): void {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const currentXp = this.levels[type]?.xp || 0
+    const currentXp = this.levels[type]?.xp ?? 0
     const newXp = xp + currentXp
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const currentLevel = this.levels[type]?.level || 1
+    const currentLevel = this.levels[type]?.level ?? 1
     const shouldLevelUp = LevelManager.shouldLevelUp(currentLevel, newXp)
     const increaseBy = shouldLevelUp ? 1 : 0
     const newLevel = currentLevel + increaseBy
@@ -78,18 +106,38 @@ export class LevelManager {
       total: newXp,
       levelChange: shouldLevelUp
     })
-    // TODO api
-    // WriteXpToServer(type, newLevel, xp, newXp)
+
+    WriteXpToServer(type, newLevel, xp, newXp).catch(console.error)
+  }
+
+  getXpThisLevel(type: LEVEL_TYPES): number {
+    const currentLevel = this.getLevel(type)
+    const currentXp = this.getXp(type)
+    const previousLevelXp = LevelManager.xpRequiredForNextLevel(
+      currentLevel - 1
+    )
+    return currentXp - previousLevelXp
+  }
+
+  getXpNeededThisLevel(type: LEVEL_TYPES): number {
+    const currentLevel = this.getLevel(type)
+    const previousLevelXp = LevelManager.xpRequiredForNextLevel(
+      currentLevel - 1
+    )
+    const neededLevelXp = LevelManager.xpRequiredForNextLevel(currentLevel)
+    return neededLevelXp - previousLevelXp
   }
 
   getXp(type: LEVEL_TYPES): number {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    return this.levels[type]?.xp || 0
+    return this.getLevelItem(type).xp
   }
 
   getLevel(type: LEVEL_TYPES): number {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    return this.levels[type]?.level || 1
+    return this.getLevelItem(type).level
+  }
+
+  private getLevelItem(type: LEVEL_TYPES): LevelItem {
+    return this.levels[type] ?? { type, level: 1, xp: 0 }
   }
 
   setLevel(type: LEVEL_TYPES, level: number, xp: number = 0): void {
