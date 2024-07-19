@@ -73,7 +73,7 @@ export class Dialogs {
             goToDialog: 4,
             triggeredActions: () => {
               this.gameController.npcs.createNoirNPC()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'Find Nori \nthe farmer.',
                 Color4.Yellow(),
                 2000
@@ -123,7 +123,7 @@ export class Dialogs {
             goToDialog: 3,
             triggeredActions: () => {
               this.gameController.npcs.createPlowmanNPC()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'Find the \nPlowman \nin the tavern.',
                 Color4.Yellow(),
                 2000
@@ -464,11 +464,16 @@ export class Dialogs {
             triggeredActions: () => {
               if (this.kingCount === 0) {
                 this.gameController.npcs.createQuest1NPCs()
-                this.gameController.realmController.currentRealm?.removeSingleEntity(
-                  'KingGeraldOld'
-                )
+                if (
+                  this.gameController.realmController.currentRealm
+                    ?.removeSingleEntity !== undefined
+                ) {
+                  this.gameController.realmController.currentRealm?.removeSingleEntity(
+                    'KingGeraldOld'
+                  )
+                }
                 createQuestTimerText()
-                this.gameController.uicontroller.displayAnnouncement(
+                this.gameController.uiController.displayAnnouncement(
                   'QUEST STARTED',
                   Color4.Yellow(),
                   3000
@@ -476,7 +481,7 @@ export class Dialogs {
                 this.kingCount++
                 //  createCallanQuestLabel()
               } else {
-                this.gameController.uicontroller.displayAnnouncement(
+                this.gameController.uiController.displayAnnouncement(
                   'QUEST ALREADY STARTED STARTED FIND CPT TREWS!',
                   Color4.Yellow(),
                   3000
@@ -525,7 +530,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 35)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -544,7 +549,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 100)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -564,7 +569,7 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.BERRY, 500)
               //     player.writeDataToServer()
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'You dont have enough berries',
                 Color4.Yellow(),
                 3000
@@ -623,7 +628,7 @@ export class Dialogs {
               //     createNPC("Vendor")
               //     loader.showShamanLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE ARMOR',
                 Color4.Yellow(),
                 3000
@@ -640,13 +645,13 @@ export class Dialogs {
               //     createNPC("Vendor")
               //     loader.showShamanLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE ARMOR',
                 Color4.Yellow(),
                 3000
               )
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU DONT HAVE ENOUGH MEAT',
                 Color4.Yellow(),
                 3000
@@ -704,7 +709,7 @@ export class Dialogs {
               //     loader.showAPLoader(5000)
               //     player.writeDataToServer()
               //     // AddAvatarModels('assets/models/KnightSword.glb', 2)
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE A WEAPON',
                 Color4.Yellow(),
                 3000
@@ -722,13 +727,13 @@ export class Dialogs {
               //     player.inventory.reduceItem(ITEM_TYPES.ROCK, 50)
               //     loader.showAPLoader(5000)
               //     player.writeDataToServer()
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU HAVE A WEAPON',
                 Color4.Yellow(),
                 3000
               )
               // } else {
-              this.gameController.uicontroller.displayAnnouncement(
+              this.gameController.uiController.displayAnnouncement(
                 'YOU DONT HAVE ENOUGH IRON ORE',
                 Color4.Yellow(),
                 3000

@@ -1,10 +1,9 @@
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomIntRange } from '../../utils/getRandomInt'
-import { LEVEL_TYPES } from '../types'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ITEM_TYPES } from '../playerInventoryMaps'
-
-import { player } from '../../player/player'
+import { Player } from '../../player/player'
 
 const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 50
@@ -51,7 +50,8 @@ export default class easyEnemy1 extends MonsterOligar {
 
     if (randomNumber <= 0.1) {
       // ui.displayAnnouncement("+1 POTIONS")
-      player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
+      const player = Player.getInstanceOrNull()
+      if (player !== null) player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const exp = [

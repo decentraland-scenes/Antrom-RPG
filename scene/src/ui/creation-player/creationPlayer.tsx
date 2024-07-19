@@ -2,25 +2,30 @@ import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type Sprite, getUvs } from '../../utils/ui-utils'
 import {
-  CHARACTER_CLASSES,
-  CHARACTER_FACTIONS,
-  CHARACTER_RACES,
+  ALLIANCES,
+  CLASSES_STATS,
+  type CharacterAlliancesType,
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType,
   HEIGTH_FACTOR,
+  RACES,
   WIDTH_FACTOR,
-  creationPlayerSprites,
-  type CharacterFactionsType,
-  type CharacterStatsType
+  creationPlayerSprites
 } from './creationPlayerData'
 import { CreationPlayerOption } from './creationPlayerOption'
 import { CreationPlayerSelectedOption } from './creationPlayerSelectedOption'
 import { CreationPlayerStat } from './creationPlayerStat'
 
 type CreationPlayerProps = {
-  isVisible: boolean
-  selectOption: (arg: CharacterStatsType | CharacterFactionsType) => void
-  selectedClass: CharacterStatsType | undefined
-  selectedRace: CharacterStatsType | undefined
-  selectedFaction: CharacterFactionsType | undefined
+  selectOption: (
+    arg:
+      | CharacterRaceStatsType
+      | CharacterClassStatsType
+      | CharacterAlliancesType
+  ) => void
+  selectedClass: CharacterClassStatsType | undefined
+  selectedRace: CharacterRaceStatsType | undefined
+  selectedAlliance: CharacterAlliancesType | undefined
   clearOptionsClicked: boolean
   clearOptionsMouseDown: () => void
   clearOptionsMouseUp: () => void
@@ -30,11 +35,10 @@ type CreationPlayerProps = {
 }
 
 function CreationPlayer({
-  isVisible,
   selectOption,
   selectedClass,
   selectedRace,
-  selectedFaction,
+  selectedAlliance,
   clearOptionsClicked,
   clearOptionsMouseDown,
   clearOptionsMouseUp,
@@ -50,7 +54,7 @@ function CreationPlayer({
   if (
     selectedClass !== undefined &&
     selectedRace !== undefined &&
-    selectedFaction !== undefined
+    selectedAlliance !== undefined
   ) {
     if (acceptClicked) {
       acceptSprite = creationPlayerSprites.acceptClicked
@@ -64,7 +68,6 @@ function CreationPlayer({
       uiTransform={{
         width: canvasInfo.width,
         height: canvasInfo.height,
-        display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center'
@@ -83,7 +86,7 @@ function CreationPlayer({
           texture: { src: creationPlayerSprites.background.atlasSrc }
         }}
       >
-        {/* Create your character: Faction, Race, Class */}
+        {/* Create your character: Alliance, Race, Class */}
         <UiEntity
           uiTransform={{
             width: canvasInfo.width * WIDTH_FACTOR * 0.525,
@@ -100,7 +103,7 @@ function CreationPlayer({
               margin: { top: '27.5%' }
             }}
           >
-            {CHARACTER_FACTIONS.map((characterFaction, index) => (
+            {Object.values(ALLIANCES).map((characterAlliance, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -110,8 +113,8 @@ function CreationPlayer({
                 }}
               >
                 <CreationPlayerOption
-                  option={characterFaction}
-                  selectedOption={selectedFaction}
+                  option={characterAlliance}
+                  selectedOption={selectedAlliance}
                   selectOption={selectOption}
                 />
               </UiEntity>
@@ -125,7 +128,7 @@ function CreationPlayer({
               margin: { top: '15%' }
             }}
           >
-            {CHARACTER_RACES.map((characterRace, index) => (
+            {Object.values(RACES).map((characterRace, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -150,7 +153,7 @@ function CreationPlayer({
               margin: { top: '14%' }
             }}
           >
-            {CHARACTER_CLASSES.map((characterClass, index) => (
+            {Object.values(CLASSES_STATS).map((characterClass, index) => (
               <UiEntity
                 key={index}
                 uiTransform={{
@@ -176,7 +179,7 @@ function CreationPlayer({
             height: '100%'
           }}
         >
-          {selectedFaction !== undefined &&
+          {selectedAlliance !== undefined &&
           (selectedClass === undefined || selectedRace === undefined) ? (
             <UiEntity
               uiTransform={{
@@ -186,8 +189,8 @@ function CreationPlayer({
               }}
               uiBackground={{
                 textureMode: 'stretch',
-                uvs: getUvs(selectedFaction.infoSprite),
-                texture: { src: selectedFaction.infoSprite.atlasSrc }
+                uvs: getUvs(selectedAlliance.infoSprite),
+                texture: { src: selectedAlliance.infoSprite.atlasSrc }
               }}
             />
           ) : (
@@ -271,7 +274,7 @@ function CreationPlayer({
             flexDirection: 'column'
           }}
         >
-          <CreationPlayerSelectedOption selectedOption={selectedFaction} />
+          <CreationPlayerSelectedOption selectedOption={selectedAlliance} />
           <CreationPlayerSelectedOption selectedOption={selectedRace} />
           <CreationPlayerSelectedOption selectedOption={selectedClass} />
           <CreationPlayerSelectedOption

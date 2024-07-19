@@ -15,9 +15,9 @@ import { openDialogWindow } from 'dcl-npc-toolkit'
 import { type GameController } from '../controllers/game.controller'
 import { DungeonStage, demonKill } from '../counters'
 import { setPlayerPosition } from '../utils/engine'
-import { Realm } from './types'
+import { type RealmType, type Realm } from './types'
 
-export class DemonKingDungeon extends Realm {
+export class DemonKingDungeon implements Realm {
   private readonly dungeon_collider = engine.addEntity()
   private readonly dungeon_door1 = engine.addEntity()
   private readonly dungeon = engine.addEntity()
@@ -26,7 +26,6 @@ export class DemonKingDungeon extends Realm {
   private npc_garrisonAlara = engine.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
     this.gameController = gameController
     GltfContainer.createOrReplace(this.dungeon_collider, {
       src: 'assets/models/Dungeon_collider.glb'
@@ -119,7 +118,7 @@ export class DemonKingDungeon extends Realm {
             Animator.playSingleAnimation(this.dungeon_door1, 'idle')
           }, 60 * 1000)
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Defeat the Oligar!',
             Color4.Yellow(),
             3000
@@ -183,5 +182,13 @@ export class DemonKingDungeon extends Realm {
     engine.removeEntity(this.dungeon_props1)
     engine.removeEntity(this.dungeon_platforms)
     engine.removeEntity(this.npc_garrisonAlara)
+  }
+
+  deadPosition(): Vector3 | null {
+    return null
+  }
+
+  getId(): RealmType {
+    return 'demonKingDungeon'
   }
 }

@@ -2,26 +2,16 @@ import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { InputKeys, getUvs } from '../../utils/ui-utils'
-import type { skillSlotData, skillSlotProps } from './skillsData'
+import { type SkillSlotProps } from './skillsData'
 
 export function BottomBarSkillSlot({
-  slotsData,
-  onClick,
-  index
-}: skillSlotProps): ReactEcs.JSX.Element | null {
-  if (slotsData === undefined) {
+  slot,
+  hotKey
+}: SkillSlotProps): ReactEcs.JSX.Element | null {
+  if (slot === undefined) {
     return null
   }
-  if (slotsData[index] === undefined) {
-    return null
-  }
-  const slot: skillSlotData = slotsData[index]
-  if (slot.skill === undefined) {
-    return null
-  }
-  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
-  if (canvasInfo === null) return null
-
+  const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   return (
     <UiEntity
       uiTransform={{
@@ -31,20 +21,22 @@ export function BottomBarSkillSlot({
       }}
       uiBackground={{
         textureMode: 'stretch',
-        uvs: getUvs(slot.skill.sprite),
-        texture: { src: slot.skill.sprite.atlasSrc }
+        uvs: getUvs(slot.definition.sprite),
+        texture: { src: slot.definition.sprite.atlasSrc }
       }}
       onMouseDown={() => {
-        onClick(index)
-        console.log('Need to implement cooldown and execute the skill code')
+        slot.trigger()
       }}
     >
-      {slot.isCooling && (
+      {slot.state.isCooling && (
         <UiEntity
           uiTransform={{
-            display: slot.isCooling ? 'flex' : 'none',
+            display: slot.state.isCooling ? 'flex' : 'none',
             width: '100%',
-            height: `${(slot.cooldownTime / slot.skill.cooldown) * 100}%`,
+            height: `${
+              (slot.state.cooldownRemainingTime / slot.definition.cooldown) *
+              100
+            }%`,
             positionType: 'absolute',
             position: { bottom: 0 }
           }}
@@ -53,7 +45,7 @@ export function BottomBarSkillSlot({
           }}
         />
       )}
-      {slot.isCooling && (
+      {slot.state.isCooling && (
         <UiEntity
           uiTransform={{
             width: '100%',
@@ -62,8 +54,8 @@ export function BottomBarSkillSlot({
             position: { bottom: 0 }
           }}
           uiText={{
-            value: slot.cooldownTime.toFixed(0).toString(),
-            fontSize: canvasInfo.height * 0.02,
+            value: slot.state.cooldownRemainingTime.toFixed(1).toString(),
+            fontSize: canvasInfo.height * 0.016,
             textAlign: 'middle-center'
           }}
         />
@@ -75,10 +67,10 @@ export function BottomBarSkillSlot({
           positionType: 'absolute'
         }}
         uiText={{
-          value: InputKeys[slot.hotKey],
+          value: InputKeys[hotKey],
           fontSize: canvasInfo.height * 0.02,
           textAlign: 'top-left',
-          color: slot.isCooling ? Color4.Red() : Color4.White()
+          color: slot.state.isCooling ? Color4.Red() : Color4.White()
         }}
       />
     </UiEntity>

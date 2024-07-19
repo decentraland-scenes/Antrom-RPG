@@ -34,10 +34,10 @@ import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
-import { Realm } from './types'
 import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
+import { type RealmType, type Realm } from './types'
 
-export class Antrom extends Realm {
+export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
   private readonly boardParent = engine.addEntity()
   private readonly leaderBoard: LeaderBoard
@@ -94,8 +94,6 @@ export class Antrom extends Realm {
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
-
     this.gameController = gameController
     this.executioners = []
     this.pigs = []
@@ -770,7 +768,7 @@ export class Antrom extends Realm {
           }
           setCurrentActiveScene('LegacyDungeon')
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Locked',
             Color4.Yellow(),
             3000
@@ -913,7 +911,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Ranger Upgrades Coming Soon!',
           Color4.Yellow(),
           3000
@@ -959,7 +957,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Ranger Upgrades Coming Soon!',
           Color4.Yellow(),
           3000
@@ -1058,7 +1056,7 @@ export class Antrom extends Realm {
         //             player.inventory.reduceItem(ITEM_TYPES.COIN, 2000)
         //             CreationHUD.show(true)
         //         } else {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Need more coins!',
           Color4.Yellow(),
           3000
@@ -1155,7 +1153,7 @@ export class Antrom extends Realm {
       1,
       [{ type: 'box', scale: Vector3.create(1, 1, 1) }],
       () => {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Daily Rewards Coming Soon!',
           Color4.Yellow(),
           3000
@@ -1286,7 +1284,7 @@ export class Antrom extends Realm {
             Animator.playSingleAnimation(this.cellDoor, 'close')
           }, 3000)
         } else {
-          this.gameController.uicontroller.displayAnnouncement(
+          this.gameController.uiController.displayAnnouncement(
             'Need jail key',
             Color4.Yellow(),
             3000
@@ -1357,7 +1355,7 @@ export class Antrom extends Realm {
           if (jailOpenOnce.read() === 1) {
             Animator.playSingleAnimation(this.cellEntranceDoor, 'open')
           } else {
-            this.gameController.uicontroller.displayAnnouncement(
+            this.gameController.uiController.displayAnnouncement(
               'Defeat Jail Guards',
               Color4.Yellow(),
               3000
@@ -1516,14 +1514,14 @@ export class Antrom extends Realm {
         //                 )
         //                 setRefreshTimer(6)
         //                 player.writeDataToServer()
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'Cooking...',
           Color4.Yellow(),
           3000
         )
         //                 setTimeout(6000, () => {
         //                     //player.inventory.incrementItem(ITEM_TYPES.TREE, 10)
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'COOOOOOKED!',
           Color4.Yellow(),
           3000
@@ -1532,7 +1530,7 @@ export class Antrom extends Realm {
         //                     player.writeDataToServer()
         //                 })
         //             } else {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'You dont have enough MEAT!',
           Color4.Yellow(),
           3000
@@ -1631,5 +1629,13 @@ export class Antrom extends Realm {
     this.berryTrees.forEach((berryTree) => {
       berryTree.removeBerryTree()
     })
+  }
+
+  deadPosition(): Vector3 {
+    return { x: -38.34, y: 10.43, z: -39.75 }
+  }
+
+  getId(): RealmType {
+    return 'antrom'
   }
 }

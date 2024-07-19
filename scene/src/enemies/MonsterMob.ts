@@ -15,11 +15,11 @@ import { Character } from './character'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { MonsterAttackRanged } from './monsterAttackRanged'
-import { player } from '../player/player'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
 import { monsterModifiers } from './skillEffects'
 import { getRandomInt } from '../utils/getRandomInt'
 import { MonsterAttack } from './monsterAttack'
+import { Player } from '../player/player'
 
 export class MonsterMob extends Character {
   static globalHasSkill: boolean = true
@@ -371,6 +371,9 @@ export class MonsterMob extends Character {
   }
 
   handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
     if (this.health <= 0) {
       this.onDead()
       return
@@ -411,6 +414,9 @@ export class MonsterMob extends Character {
         }
       },
       () => {
+        const player = Player.getInstanceOrNull()
+        if (player === null) return
+
         if (this.health <= 0) {
           this.onDead()
           return
@@ -436,7 +442,7 @@ export class MonsterMob extends Character {
             console.log('def %', defPercent)
           }
 
-          const isCriticalAttack = getRandomInt(100) <= player.critRateBuff
+          const isCriticalAttack = getRandomInt(100) <= player.getCritRate()
 
           const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
           const playerAttack = Math.round(reduceHealthBy)
@@ -470,6 +476,9 @@ export class MonsterMob extends Character {
   }
 
   attackPlayer(enemyAttack: number): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
     player.reduceHealth(enemyAttack)
 
     this.playAttack()
