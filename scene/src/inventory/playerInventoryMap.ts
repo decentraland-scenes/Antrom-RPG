@@ -35,6 +35,13 @@ export enum ITEM_TYPES {
   OLIGAR_HEAD = 'oligar_head'
 }
 
+export type InventoryConfigItem = {
+  name: string
+  image: string
+  sprite: string
+  type: ITEM_TYPES
+}
+
 export const INVENTORY_CONFIG = {
   [ITEM_TYPES.OLIGAR_HEAD]: {
     name: 'OLIGAR_HEAD',

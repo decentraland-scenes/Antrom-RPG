@@ -5,7 +5,7 @@ import { getRandomInt, getRandomIntRange } from './../utils/getRandomInt'
 import { Player } from '../player/player'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { BannerType } from '../ui/banner/bannerConstants'
-import { ITEM_TYPES } from './playerInventoryMaps'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 
 const DEFAULT_ATTACK = 0
 const DEFAULT_XP = 9

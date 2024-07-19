@@ -2,7 +2,7 @@ import { Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import MonsterMob from '../MonsterMob'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 

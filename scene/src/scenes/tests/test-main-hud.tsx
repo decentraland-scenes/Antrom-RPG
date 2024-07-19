@@ -27,6 +27,7 @@ export class UI {
         isInfoOpen={this.isInfoOpen}
         playerRollOnClick={this.playerRollVisibility.bind(this)}
         showInfo={this.showInfo.bind(this)}
+        showInventory={() => null}
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         openLink={this.openLink.bind(this)}
         characterRace={CharacterRaces.CR_ELF}

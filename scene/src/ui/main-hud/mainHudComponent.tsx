@@ -23,6 +23,7 @@ type MainHudProps = {
   isInfoOpen: boolean
   playerRollOnClick: (arg: boolean) => void
   showInfo: (arg: boolean) => void
+  showInventory: () => void
   openLink: (arg: string) => void
   characterRace: CharacterRaces
   characterClass: CharacterClasses
@@ -36,6 +37,7 @@ function MainHud({
   isInfoOpen,
   playerRollOnClick,
   showInfo,
+  showInventory,
   openLink,
   characterAlliance,
   characterRace,
@@ -92,6 +94,9 @@ function MainHud({
             texture: {
               src: mainHudSprites.inventoryIcon.atlasSrc
             }
+          }}
+          onMouseDown={() => {
+            showInventory()
           }}
         />
         <UiEntity
@@ -337,7 +342,6 @@ function MainHud({
         <UiEntity
           uiTransform={{
             display: isInfoOpen ? 'flex' : 'none',
-
             width: canvasInfo.height * 0.8,
             height: canvasInfo.height * 0.8,
             positionType: 'absolute',

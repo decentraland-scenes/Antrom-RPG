@@ -1,6 +1,4 @@
-import { type Sprite } from '../../utils/ui-utils'
-
-export const inventorySprites: Record<string, Sprite> = {
+export const inventorySprites = {
   inventoryButton: {
     atlasSrc: 'assets/images/inventory_spritesheet.png',
     atlasSize: { x: 1886, y: 1480 },

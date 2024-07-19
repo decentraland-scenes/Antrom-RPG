@@ -5,7 +5,7 @@ import { Player } from '../../player/player'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 import { quest } from '../../utils/refresherTimer'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 
 const DEFAULT_XP = 60
 

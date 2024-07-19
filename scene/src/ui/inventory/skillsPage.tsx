@@ -4,7 +4,10 @@ import { type SkillDefinition } from '../../player/skills'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import { skillsPageSprites } from './inventoryData'
 import { Color4 } from '@dcl/sdk/math'
-import { CLASS_SKILLS_TO_SHOW, GENERAL_SKILLS_TO_SHOW } from '../bottom-bar/skillsData'
+import {
+  CLASS_SKILLS_TO_SHOW,
+  GENERAL_SKILLS_TO_SHOW
+} from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
 
 type SkillsPageProps = {
@@ -12,11 +15,11 @@ type SkillsPageProps = {
   selectedSkillType: string
   equipButtonSprite: Sprite
   unequipButtonSprite: Sprite
-    generalSkills: SkillDefinition[]
-    classSkills: SkillDefinition[]
-  selectSkill: (arg:SkillDefinition) => void
-      equipSkill: () => void
-    disableSkill: () => void
+  generalSkills: SkillDefinition[]
+  classSkills: SkillDefinition[]
+  selectSkill: (arg: SkillDefinition) => void
+  equipSkill: () => void
+  disableSkill: () => void
   scrollRightGeneralSkills: () => void
   scrollLeftGeneralSkills: () => void
   scrollRightClassSkills: () => void
@@ -26,10 +29,9 @@ type SkillsPageProps = {
   generalSkillsRightSprite: Sprite
   classSkillsLeftSprite: Sprite
   classSkillsRightSprite: Sprite
-  classSkillsIndex: number,
+  classSkillsIndex: number
   playerLevel: number
 }
-
 
 function SkillsPage({
   generalSkills,
@@ -55,7 +57,6 @@ function SkillsPage({
 }: SkillsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
 
-  
   return (
     <UiEntity
       uiTransform={{
@@ -177,7 +178,7 @@ function SkillsPage({
         <UiEntity
           uiTransform={{
             width: '100%',
-            height:'30%',
+            height: '30%',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -194,144 +195,160 @@ function SkillsPage({
               }
             }}
             onMouseDown={equipSkill}
-
           />
           {/* Unequip Skill Button */}
           <UiEntity
             uiTransform={{ width: '70%', height: '45%' }}
-                      uiBackground={{
+            uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(unequipButtonSprite),
               texture: {
                 src: unequipButtonSprite.atlasSrc
               }
-                      }}
+            }}
             onMouseDown={disableSkill}
           />
         </UiEntity>
-
-        
-
       </UiEntity>
       {/* General Skills */}
       <UiEntity
-          uiTransform={{
-            width: '75%',
-            height:'50%',
+        uiTransform={{
+          width: '75%',
+          height: '50%',
           flexDirection: 'row',
-            alignContent:'flex-start',
-            flexWrap: 'wrap',
+          alignContent: 'flex-start',
+          flexWrap: 'wrap',
           positionType: 'absolute',
-            position:{top:'17.25%', left:'31.5%'}
-          }}
-      >        
-      <UiEntity
-            uiTransform={{
-              width: canvasInfo.width * 0.03,
+          position: { top: '17.25%', left: '31.5%' }
+        }}
+      >
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * 0.03,
             height: canvasInfo.width * 0.03,
             positionType: 'absolute',
-            position: {left:0, top:"-20%"}
+            position: { left: 0, top: '-20%' }
           }}
-          
-            uiBackground={{
-              textureMode: 'stretch',
-              uvs: getUvs(generalSkillsLeftSprite),
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(generalSkillsLeftSprite),
 
-              texture: { src: generalSkillsLeftSprite.atlasSrc }
-            }}
-            onMouseDown={scrollLeftGeneralSkills}
-      />
-      <UiEntity
-            uiTransform={{
-              width: canvasInfo.width * 0.03,
-              height: canvasInfo.width * 0.03,
-            positionType:'absolute',
-            position: {right:"12.5%", top:"-20%"}
-            }}
-            uiBackground={{
-              textureMode: 'stretch',
-              uvs: getUvs(generalSkillsRightSprite),
-
-              texture: { src: generalSkillsRightSprite.atlasSrc }
-            }}
-            onMouseDown={scrollRightGeneralSkills}
-          />
-        
-        {generalSkills.slice(
-              generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1),
-              generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1) + GENERAL_SKILLS_TO_SHOW
-            ).map((skill, index) => (
-          <UiEntity key={index} uiTransform={{
-            width: '9.5%',
-            height: '29.5%',
-            margin:{bottom:'1.2%', right:'1.65%'}
-          }}>
-                <SkillButton
-                  skill={skill}
-                  selectedSkill={selectedSkill}
-                  isAvailable={skill.minLevel === undefined || (skill.minLevel!==undefined && playerLevel >= skill.minLevel)}
-                  selectSkill={()=>{selectSkill(skill)}} />
-          </UiEntity>
-        ))}
-          
-        </UiEntity>
-       {/* Class Skills */}
-       <UiEntity
-          uiTransform={{
-            width: '66.25%',
-            height:'15%',
-            flexDirection: 'column',
-            alignItems: 'center',
-          justifyContent: 'space-between',
-          positionType: 'absolute',
-            position:{top:'79.5%', right:'2.45%'}
+            texture: { src: generalSkillsLeftSprite.atlasSrc }
           }}
-          uiBackground={{color:Color4.create(0,1,0,0.1)}}
-      >  
-        {classSkills.slice(
-              classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1),
-              classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1) + GENERAL_SKILLS_TO_SHOW
-            ).map((skill, index) => (
-          <UiEntity key={index} uiTransform={{
-            width: '9.5%',
-            height: '29.5%',
-            margin:{bottom:'1.2%', right:'1.65%'}
-          }}>
-                <SkillButton
-                  skill={skill}
-                  selectedSkill={selectedSkill}
-                  isAvailable={true}
-                  selectSkill={()=>{selectSkill(skill)}} />
-          </UiEntity>
-            ))}
-        
-        <UiEntity
-              uiTransform={{
-                width: canvasInfo.width * 0.03,
-                height: canvasInfo.width * 0.03
-              }}
-              uiBackground={{
-                textureMode: 'stretch',
-                uvs: getUvs(classSkillsLeftSprite),
-
-                texture: { src: classSkillsLeftSprite.atlasSrc }
-              }}
-              onMouseDown={scrollLeftClassSkills}
+          onMouseDown={scrollLeftGeneralSkills}
         />
         <UiEntity
-              uiTransform={{
-                width: canvasInfo.width * 0.03,
-                height: canvasInfo.width * 0.03
-              }}
-              uiBackground={{
-                textureMode: 'stretch',
-                uvs: getUvs(classSkillsRightSprite),
+          uiTransform={{
+            width: canvasInfo.width * 0.03,
+            height: canvasInfo.width * 0.03,
+            positionType: 'absolute',
+            position: { right: '12.5%', top: '-20%' }
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(generalSkillsRightSprite),
 
-                texture: { src: classSkillsRightSprite.atlasSrc }
+            texture: { src: generalSkillsRightSprite.atlasSrc }
+          }}
+          onMouseDown={scrollRightGeneralSkills}
+        />
+
+        {generalSkills
+          .slice(
+            generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1),
+            generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1) +
+              GENERAL_SKILLS_TO_SHOW
+          )
+          .map((skill, index) => (
+            <UiEntity
+              key={index}
+              uiTransform={{
+                width: '9.5%',
+                height: '29.5%',
+                margin: { bottom: '1.2%', right: '1.65%' }
               }}
-              onMouseDown={scrollRightClassSkills}
-            />
-        </UiEntity>
+            >
+              <SkillButton
+                skill={skill}
+                selectedSkill={selectedSkill}
+                isAvailable={
+                  skill.minLevel === undefined ||
+                  (skill.minLevel !== undefined &&
+                    playerLevel >= skill.minLevel)
+                }
+                selectSkill={() => {
+                  selectSkill(skill)
+                }}
+              />
+            </UiEntity>
+          ))}
+      </UiEntity>
+      {/* Class Skills */}
+      <UiEntity
+        uiTransform={{
+          width: '66.25%',
+          height: '15%',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          positionType: 'absolute',
+          position: { top: '79.5%', right: '2.45%' }
+        }}
+        uiBackground={{ color: Color4.create(0, 1, 0, 0.1) }}
+      >
+        {classSkills
+          .slice(
+            classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1),
+            classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1) +
+              GENERAL_SKILLS_TO_SHOW
+          )
+          .map((skill, index) => (
+            <UiEntity
+              key={index}
+              uiTransform={{
+                width: '9.5%',
+                height: '29.5%',
+                margin: { bottom: '1.2%', right: '1.65%' }
+              }}
+            >
+              <SkillButton
+                skill={skill}
+                selectedSkill={selectedSkill}
+                isAvailable={true}
+                selectSkill={() => {
+                  selectSkill(skill)
+                }}
+              />
+            </UiEntity>
+          ))}
+
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * 0.03,
+            height: canvasInfo.width * 0.03
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(classSkillsLeftSprite),
+
+            texture: { src: classSkillsLeftSprite.atlasSrc }
+          }}
+          onMouseDown={scrollLeftClassSkills}
+        />
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * 0.03,
+            height: canvasInfo.width * 0.03
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(classSkillsRightSprite),
+
+            texture: { src: classSkillsRightSprite.atlasSrc }
+          }}
+          onMouseDown={scrollRightClassSkills}
+        />
+      </UiEntity>
     </UiEntity>
   )
 }

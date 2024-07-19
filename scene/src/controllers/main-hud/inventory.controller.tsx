@@ -1,5 +1,6 @@
 import * as utils from '@dcl-sdk/utils'
-import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
+import ReactEcs from '@dcl/sdk/react-ecs'
+import { Player } from '../../player/player'
 import { type SkillDefinition } from '../../player/skills'
 import {
   arrayOfSkills,
@@ -11,13 +12,16 @@ import {
   inventorySprites,
   skillsPageSprites
 } from '../../ui/inventory/inventoryData'
+import InventoryPage, {
+  type InventoryItemSlot
+} from '../../ui/inventory/inventoryPage'
 import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
-export class UI {
+export class InventoryController {
   // Nav Bar
-  public isVisible: boolean = false
   public inventory: (() => ReactEcs.JSX.Element) | undefined
   public skills: (() => ReactEcs.JSX.Element) | undefined
   public companions: (() => ReactEcs.JSX.Element) | undefined
@@ -38,14 +42,12 @@ export class UI {
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
-  public playerLevel: number = 10 // TODO get level from player
 
   constructor() {
-    const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
-    ReactEcsRenderer.setUiRenderer(uiComponent)
+    this.updateTab(0)
   }
 
-  inventoryUI(): ReactEcs.JSX.Element {
+  render(): ReactEcs.JSX.Element {
     return (
       <Inventory
         inventory={this.inventory}
@@ -61,25 +63,11 @@ export class UI {
     )
   }
 
-  showInventory(): void {
-    this.isVisible = true
-    this.updateTab(this.tabIndex)
-  }
-
-  hideInventory(): void {
-    this.isVisible = false
-    this.tabIndex = 0
-  }
-
   hideAllPages(): void {
     this.inventory = undefined
     this.skills = undefined
     this.companions = undefined
     this.professions = undefined
-  }
-
-  selectSkill(skill: SkillDefinition): void {
-    this.selectedSkill = skill
   }
 
   updateTab(index: number): void {
@@ -88,45 +76,28 @@ export class UI {
     this.updateSpritesButtons(150)
     switch (this.tabIndex) {
       case 0:
-        this.inventory = () => (
-          <UiEntity />
-          // <InventoryPage
-          //   inventorySlots={[
-          //     {
-          //       itemId: 'berry',
-          //       count: 84
-          //     },
-          //     {
-          //       itemId: 'bone',
-          //       count: 172
-          //     },
-          //     {
-          //       itemId: 'potion',
-          //       count: 9
-          //     },
-          //     {
-          //       itemId: 'chicken',
-          //       count: 302
-          //     },
-          //     {
-          //       itemId: 'rock',
-          //       count: 84
-          //     },
-          //     {
-          //       itemId: 'egg',
-          //       count: 5
-          //     },
-          //     {
-          //       itemId: 'ice-shard',
-          //       count: 6
-          //     },
-          //     {
-          //       itemId: 'tree',
-          //       count: 84
-          //     }
-          //   ]}
-          // />
-        )
+        this.inventory = () => {
+          const player = Player.getInstance()
+          const items: InventoryItemSlot[] = Object.entries(
+            player.inventory.inventory
+          ).map(([key, value]) => ({
+            itemId: key,
+            count: value.count
+          }))
+          return (
+            <InventoryPage
+              inventorySlots={items}
+              physicalAttack={player.getPlayerAttack(false)}
+              magic={player.getMagic()}
+              physicalDefense={player.getDefensePercent() * 100.0}
+              luck={player.getLuckRange()}
+              criticalHitRate={player.getCritRate()}
+              criticalHitDamage={player.getCritDamage()}
+              healthPoints={player.health}
+              maxHealthPoints={player.maxHealth}
+            />
+          )
+        }
         break
       case 1:
         this.companions = () => <CompanionsPage prop={undefined} />
@@ -140,7 +111,9 @@ export class UI {
             unequipButtonSprite={this.unequipButtonSprite}
             generalSkillsIndex={this.generalSkillsIndex}
             classSkillsIndex={this.classSkillsIndex}
-            playerLevel={this.playerLevel}
+            playerLevel={Player.getInstance().levels.getLevel(
+              LEVEL_TYPES.PLAYER
+            )}
             selectSkill={this.selectSkill.bind(this)}
             scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
             scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
@@ -177,6 +150,10 @@ export class UI {
       this.tabIndex--
       this.updateTab(this.tabIndex)
     }
+  }
+
+  selectSkill(skill: SkillDefinition): void {
+    this.selectedSkill = skill
   }
 
   increaseGeneralSkillIndex(): void {
@@ -260,9 +237,4 @@ export class UI {
       console.error('You should choise a skill to disable')
     }
   }
-}
-
-export function main(): void {
-  const gameUI = new UI()
-  gameUI.showInventory()
 }

@@ -11,7 +11,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { DungeonStage } from '../../counters'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { quest } from '../../utils/refresherTimer'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Player } from '../../player/player'
 
 function getRandomIntRange(min: number, max: number): number {

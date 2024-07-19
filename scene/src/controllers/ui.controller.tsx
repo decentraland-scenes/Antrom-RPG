@@ -16,7 +16,7 @@ import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
 import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
-import { MainHudController } from './main-hud.controller'
+import { MainHudController } from './main-hud'
 
 export class UIController {
   loadingUI: LoadingUI

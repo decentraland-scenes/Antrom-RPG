@@ -6,7 +6,6 @@ import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
 import { type GameController } from '../controllers/game.controller'
 import { Character } from '../enemies/character'
-import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
 import { PlayerInventory } from '../inventory/playerInventory'
 import BottomBar from '../ui/bottom-bar/bottomBar'
 import {
@@ -22,6 +21,7 @@ import LevelManager, { LEVEL_TYPES } from './LevelManager'
 import { PetManager } from './petManager'
 import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,7 +81,6 @@ export class Player extends Character {
   // private defenseLabel: ui.CornerLabel
   public onInitDone?: (player: Player) => void
   public hasInit!: boolean
-  public attackBuff!: number
   public luckBuff!: number
   public critDamageBuff!: number
   public magicBuff!: number
@@ -202,7 +201,6 @@ export class Player extends Character {
     this.luckBuff = 0
     this.critRateBuff = 1
     this.critDamageBuff = 100
-    this.attackBuff = 0
     this.magicBuff = 0
     this.defBuff = 0
     this.lastLogin = 0
@@ -425,7 +423,7 @@ export class Player extends Character {
   getPlayerAttack(isCriticalAttack = false): number {
     return (
       (this.attack +
-        (this.attackBuff || 0) +
+        (this.atkBuff || 0) +
         this.items.reduce((accm, item: Item) => {
           const buff: buffItem[] | buffItem = item.buff
           if (item.type === itemTypes.SWORD) {

@@ -1,4 +1,8 @@
-import { type SkillDefinition, type MaybeSkill, type PlayerSkill } from '../../player/skills'
+import {
+  type SkillDefinition,
+  type MaybeSkill,
+  type PlayerSkill
+} from '../../player/skills'
 import { type SlotsInputs } from '../../utils/ui-utils'
 
 export const GENERAL_SKILLS_TO_SHOW = 24
