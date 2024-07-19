@@ -133,6 +133,12 @@ export class MinersCave implements Realm {
     }, 50)
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
+  }
+
   removeAllEntities(): void {
     engine.removeEntity(this.cave)
     engine.removeEntity(this.ladder)

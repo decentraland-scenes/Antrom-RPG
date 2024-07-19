@@ -116,6 +116,12 @@ export class DungeonBase implements Realm {
     return 'dungeonBase'
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
+  }
+
   removeAllEntities(): void {
     // TODO
   }

@@ -27,7 +27,7 @@ export class MonsterMob extends GenericMonster {
   shape: string = ''
   audioFile?: string
   idleClip: string = 'idle'
-  attackClip: string = 'attack'
+  public attackClip: string = 'attack'
   walkClip: string = 'walk'
   impactClip: string = 'impact'
   dieClip: string = 'die'
@@ -108,7 +108,7 @@ export class MonsterMob extends GenericMonster {
     })
 
     this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
+    // this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
@@ -170,6 +170,8 @@ export class MonsterMob extends GenericMonster {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.walkClip, false)
       },
       () => {
         console.log('im out')
@@ -220,7 +222,7 @@ export class MonsterMob extends GenericMonster {
   dyingAnimation(): void {
     this.isDeadAnimation = true
     if (this.dieClip != null) {
-      Animator.playSingleAnimation(this.entity, this.dieClip)
+      Animator.playSingleAnimation(this.entity, this.dieClip, false)
     }
     this.create()
   }
