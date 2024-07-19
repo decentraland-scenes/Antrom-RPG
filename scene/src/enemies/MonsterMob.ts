@@ -30,7 +30,7 @@ export class MonsterMob extends Character {
   audioFile?: string
   healthBar!: Entity
   idleClip: string = 'idle'
-  attackClip: string = 'attack'
+  public attackClip: string = 'attack'
   walkClip: string = 'walk'
   impactClip: string = 'impact'
   dieClip: string = 'die'
@@ -114,7 +114,7 @@ export class MonsterMob extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
+    // this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
@@ -220,6 +220,8 @@ export class MonsterMob extends Character {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.walkClip, false)
       },
       () => {
         console.log('im out')
@@ -265,6 +267,8 @@ export class MonsterMob extends Character {
         this.createHealthBar()
         this.handleAttack()
         this.createLabel()
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.attackClip, false)
       },
       () => {
         console.log('im out')
@@ -291,7 +295,7 @@ export class MonsterMob extends Character {
   dyingAnimation(): void {
     this.isDeadAnimation = true
     if (this.dieClip != null) {
-      Animator.playSingleAnimation(this.entity, this.dieClip)
+      Animator.playSingleAnimation(this.entity, this.dieClip, false)
     }
     this.create()
   }
@@ -316,6 +320,8 @@ export class MonsterMob extends Character {
       engine.removeEntity(this.rangeAttackTrigger)
       engine.removeEntity(this.engageAttackTrigger)
       engine.removeEntity(this.attackTrigger)
+      engine.removeSystem(this.attackSystemRanged.attackSystem)
+      engine.removeSystem(this.attackSystem.attackSystem)
       engine.removeEntity(this.healthBar)
       engine.removeEntity(this.label)
       console.log('entity removed')
