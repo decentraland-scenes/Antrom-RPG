@@ -1,6 +1,6 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
-import { getUvs, type Sprite } from '../../utils/ui-utils'
+import { getUvs, INPUT_KEYS_ARRAY, type Sprite } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   HP_BACKGROUND_FACTOR,
@@ -12,17 +12,15 @@ import {
   bottomBarSprites
 } from './bottomBarData'
 import { BottomBarSkillSlot } from './bottomBarSkillSlot'
-import { type bottomBarProps } from './skillsData'
+import { type BottomBarProps } from './skillsData'
 
 function BottomBar({
-  isVisible,
   currentXp,
   levelXp,
   currentHpPercent,
   level,
-  onClickSlot,
   slotsData
-}: bottomBarProps): ReactEcs.JSX.Element | null {
+}: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
 
@@ -42,7 +40,6 @@ function BottomBar({
         positionType: 'absolute',
         width: canvasInfo.width,
         height: canvasInfo.height,
-        display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-end'
@@ -178,7 +175,7 @@ function BottomBar({
               position: { top: -canvasInfo.width * HEIGTH_FACTOR * 0.28 }
             }}
             uiText={{
-              value: currentHpPercent.toString() + '%',
+              value: currentHpPercent.toFixed(0).toString() + '%',
               fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.15
             }}
           />
@@ -203,9 +200,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={0}
+              slot={slotsData[0]}
+              hotKey={INPUT_KEYS_ARRAY[0]}
             />
           </UiEntity>
           <UiEntity
@@ -215,9 +211,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={1}
+              slot={slotsData[1]}
+              hotKey={INPUT_KEYS_ARRAY[1]}
             />
           </UiEntity>
           <UiEntity
@@ -227,9 +222,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={2}
+              slot={slotsData[2]}
+              hotKey={INPUT_KEYS_ARRAY[2]}
             />
           </UiEntity>
         </UiEntity>
@@ -253,9 +247,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={3}
+              slot={slotsData[3]}
+              hotKey={INPUT_KEYS_ARRAY[3]}
             />
           </UiEntity>
           <UiEntity
@@ -265,9 +258,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={4}
+              slot={slotsData[4]}
+              hotKey={INPUT_KEYS_ARRAY[4]}
             />
           </UiEntity>
           <UiEntity
@@ -277,9 +269,8 @@ function BottomBar({
             }}
           >
             <BottomBarSkillSlot
-              slotsData={slotsData}
-              onClick={onClickSlot}
-              index={5}
+              slot={slotsData[5]}
+              hotKey={INPUT_KEYS_ARRAY[5]}
             />
           </UiEntity>
         </UiEntity>

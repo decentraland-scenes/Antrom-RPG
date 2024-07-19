@@ -7,9 +7,9 @@ import {
   VisibilityComponent,
   engine
 } from '@dcl/sdk/ecs'
-import { player } from '../../player/player'
 import * as utils from '@dcl-sdk/utils'
 import { getRandomInt } from '../../utils/getRandomInt'
+import { Player } from '../../player/player'
 
 const POSITIONS = [
   Vector3.create(4.6, 0.49, 2.46),
@@ -32,6 +32,7 @@ export default class HalloweenEddie extends MonsterOligar {
   hoverText = 'Attack Eddie!'
 
   constructor() {
+    const player = Player.getInstance()
     super(player.attack + 10, 240, player.level + 10, player.maxHealth * 5)
     this.initMonster()
   }

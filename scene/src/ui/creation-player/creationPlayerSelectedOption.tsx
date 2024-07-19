@@ -4,12 +4,17 @@ import { getUvs, type Sprite } from '../../utils/ui-utils'
 import {
   HEIGTH_FACTOR,
   WIDTH_FACTOR,
-  type CharacterFactionsType,
-  type CharacterStatsType
+  type CharacterAlliancesType,
+  type CharacterClassStatsType,
+  type CharacterRaceStatsType
 } from './creationPlayerData'
 
 type creationPlayerSelectedOptionProps = {
-  selectedOption: CharacterStatsType | CharacterFactionsType | undefined
+  selectedOption:
+    | CharacterClassStatsType
+    | CharacterRaceStatsType
+    | CharacterAlliancesType
+    | undefined
   isSkill?: boolean
 }
 
@@ -51,7 +56,8 @@ export function CreationPlayerSelectedOption({
       <UiEntity
         uiTransform={{
           width: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4,
-          height: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4
+          height: canvasInfo.width * WIDTH_FACTOR * 0.22 * 0.4,
+          display: selectedOptionSprite === undefined ? 'none' : 'flex'
         }}
         uiBackground={{
           textureMode: 'stretch',

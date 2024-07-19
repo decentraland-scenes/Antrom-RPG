@@ -2,6 +2,7 @@ import * as utils from '@dcl-sdk/utils'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { NpcUtilsUi } from 'dcl-npc-toolkit'
+import * as ui from 'dcl-ui-toolkit'
 import { Player } from '../player/player'
 import Announcement from '../ui/announcement/announcement'
 import Banner from '../ui/banner/bannerComponent'
@@ -10,10 +11,12 @@ import {
   BannerPosition,
   type BannerType
 } from '../ui/banner/bannerConstants'
+import Canvas from '../ui/canvas/Canvas'
 import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
+import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
-import Canvas from '../ui/canvas/Canvas'
+import { MainHudController } from './main-hud.controller'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -31,11 +34,18 @@ export class UIController {
   announcement_color: Color4 = Color4.White()
   announcementTimerId: utils.TimerId | undefined = undefined
 
+  creationPlayerUi: CreationPlayerController | null = null
+  mainHud: MainHudController | null = null
+
   constructor(gameController: GameController) {
     this.gameController = gameController
     this.loadingUI = new LoadingUI(this)
     this.playDungeonUI = new PlayDungeonUI(this)
     ReactEcsRenderer.setUiRenderer(this.ui.bind(this))
+  }
+
+  showMainHud(): void {
+    this.mainHud = new MainHudController()
   }
 
   displayAnnouncement(
@@ -81,6 +91,24 @@ export class UIController {
     }, BANNER_DURATION * 1000)
   }
 
+  /**
+   * Start the player creation process and wait until it's done
+   * @returns true if
+   */
+  async startPlayerCreation(): Promise<{
+    created: boolean
+    tutorial: boolean
+  }> {
+    this.creationPlayerUi = new CreationPlayerController()
+    await this.creationPlayerUi.ready()
+    const tutorial = this.creationPlayerUi.isTutorialActive()
+
+    // cleanup
+    this.creationPlayerUi = null
+
+    return { created: true, tutorial }
+  }
+
   ui(): ReactEcs.JSX.Element {
     return (
       <UiEntity>
@@ -104,13 +132,22 @@ export class UIController {
         {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
 
         {/* Player HUD */}
-        {Player.getInstance().PlayerUI()}
+        {Player.getInstanceOrNull()?.PlayerUI()}
 
-        {/* NP utils library UI */}
+        {/* Main HUD */}
+        {this.mainHud?.render()}
+
+        {/* Creation Player step if it applies */}
+        {this.creationPlayerUi?.render()}
+
+        {/* NPC utils library UI */}
         <Canvas>{NpcUtilsUi()}</Canvas>
 
+        {/* ui utils library */}
+        <Canvas>{ui.render()}</Canvas>
+
         {/* Loadin screen */}
-        {this.loadingUI.isVisible && this.loadingUI.mainUi()}
+        {this.loadingUI.visible() && this.loadingUI.mainUi()}
       </UiEntity>
     )
   }

@@ -1,4 +1,4 @@
-import { engine } from '@dcl/sdk/ecs'
+import { engine, GltfContainerLoadingState, LoadingState } from '@dcl/sdk/ecs'
 import { movePlayerTo } from '~system/RestrictedActions'
 
 const nextTickFuture: Array<() => void> = []
@@ -31,4 +31,10 @@ export function setPlayerPosition(x: number, y: number, z: number): void {
   //   y,
   //   z
   // )
+}
+
+export function isThereAnyGltfLoading(): boolean {
+  return Array.from(engine.getEntitiesWith(GltfContainerLoadingState)).some(
+    ([_, value]) => value.currentState === LoadingState.LOADING
+  )
 }

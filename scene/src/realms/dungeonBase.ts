@@ -10,14 +10,13 @@ import {
 } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type GameController } from '../controllers/game.controller'
-import { Realm } from './types'
+import { type RealmType, type Realm } from './types'
 
-export class DungeonBase extends Realm {
+export class DungeonBase implements Realm {
   private readonly area = engine.addEntity()
   private readonly door1 = engine.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
     this.gameController = gameController
     GltfContainer.createOrReplace(this.area, {
       src: 'assets/models/Fireplace.glb'
@@ -107,5 +106,17 @@ export class DungeonBase extends Realm {
         /* empty */
       }
     })
+  }
+
+  deadPosition(): Vector3 | null {
+    return null
+  }
+
+  getId(): RealmType {
+    return 'dungeonBase'
+  }
+
+  removeAllEntities(): void {
+    // TODO
   }
 }

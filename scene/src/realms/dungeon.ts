@@ -23,7 +23,7 @@ import { type GameController } from '../controllers/game.controller'
 import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { setPlayerPosition } from '../utils/engine'
-import { Realm } from './types'
+import { type RealmType, type Realm } from './types'
 
 type Difficulty = {
   EASY: 'easy'
@@ -147,7 +147,7 @@ const caveSoldierPositions = [
 //   Vector3.create(61.91, 3.29, 56.97)
 // ]
 
-export class Dungeon extends Realm {
+export class Dungeon implements Realm {
   private readonly boardParent = engine.addEntity()
   private readonly leaderBoard: LeaderBoard
   private readonly wall1 = engine.addEntity()
@@ -164,7 +164,6 @@ export class Dungeon extends Realm {
   private readonly doorOpening = engine.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
-    super()
     this.gameController = gameController
     GltfContainer.create(this.wall1, {
       src: 'assets/models/sandDungeonDoor.glb'
@@ -371,7 +370,7 @@ export class Dungeon extends Realm {
           this.gem
         )
       ) {
-        this.gameController.uicontroller.displayAnnouncement(
+        this.gameController.uiController.displayAnnouncement(
           'You have picked up the Essence of the Lich God, open a support ticket in Discord for your reward!',
           Color4.Yellow(),
           3000
@@ -738,5 +737,13 @@ export class Dungeon extends Realm {
     engine.removeEntity(this.sandDungeonSecret)
     engine.removeEntity(this.villager1)
     engine.removeEntity(this.doorOpening)
+  }
+
+  deadPosition(): Vector3 | null {
+    return null
+  }
+
+  getId(): RealmType {
+    return 'dungeon'
   }
 }
