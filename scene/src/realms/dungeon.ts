@@ -724,7 +724,6 @@ export class Dungeon implements Realm {
   spawnSingleEntity(entityName: string): void {
     switch (entityName) {
       case '':
-       
     }
   }
 
