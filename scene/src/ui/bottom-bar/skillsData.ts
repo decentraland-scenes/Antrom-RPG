@@ -1046,7 +1046,7 @@ const skillsGeneralSprites = {
   }
 }
 
-export const SKILL_DATA = {
+export const CLASS_SKILL_DATA = {
   clericSkill: {
     name: 'Healing Touch',
     sprite: skillsPlayerSprites.clericSkill,
@@ -1072,103 +1072,108 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.mageSkill,
     cooldown: 12
   },
-  geraldsBlessing: {
+}
+
+
+export const SKILL_DATA: Record<string, SkillDefinition>= {
+  
+  CLERIC_GERALDS_BLESSING: {
     name: `Gerald's Blessing`,
     sprite: skillsPlayerSprites.Priestskill_49,
     cooldown: 10,
     minLevel: 10
   },
-  protectorBlessing: {
+  CLERIC_PROTECTORSBLESSING: {
     name: `Protector's Blessing`,
     sprite: skillsPlayerSprites.skill_189,
     cooldown: 10,
     minLevel: 20
   },
-  healingTouch: {
+  CLERIC_HEALING_TOUCH: {
     name: 'Healing Touch',
     sprite: skillsPlayerSprites.Paladinskill_15,
     cooldown: 4,
     minLevel: 30
   },
-  sacredBarrier: {
+  CLERIC_SACREDBARRIER: {
     name: 'Sacred Barrier',
     sprite: skillsPlayerSprites.shield,
     cooldown: 10,
     minLevel: 40
   },
-  holyRetribution: {
+  CLERIC_HOLYRETRIBUTION: {
     name: 'Holy Retribution',
     sprite: skillsPlayerSprites.Shamanskill_21,
     cooldown: 15,
     minLevel: 50
   },
-  smiteEvil: {
+  CLERIC_SMITE_EVIL: {
     name: 'Smite Evil',
     sprite: skillsPlayerSprites.Mageskill_23,
     cooldown: 8,
     minLevel: 60
   },
-  arcaneMissile: {
+  MAGE_ARCANE_MISSILE: {
     name: 'Arcane Missile',
     sprite: skillsPlayerSprites.Engineerskill_27,
     cooldown: 6,
     minLevel: 10
   },
-  shadowChains: {
+  MAGE_SHADOW_CHAINS: {
     name: 'Shadow Chains',
     sprite: skillsPlayerSprites.skill_27,
     cooldown: 20,
     minLevel: 20
   },
-  armorSap: {
+  MAGE_ARMOR_SAP: {
     name: 'Armor Sap',
     sprite: skillsPlayerSprites.skill_8,
     cooldown: 30,
     minLevel: 30
   },
-  etherProtection: {
+  MAGE_BLINK: {
     name: 'Ether Protection',
     sprite: skillsPlayerSprites.skill_322,
     cooldown: 20,
     minLevel: 40
   },
-  restoration: {
+  MAGE_RESTORATION: {
     name: 'Restoration',
     sprite: skillsPlayerSprites.priestSkill_24,
     cooldown: 15,
     minLevel: 50
   },
-  fireball: {
+  MAGE_FIREBALL: {
     name: 'Fireball Aura',
     sprite: skillsPlayerSprites.Mageskill_19,
     cooldown: 10,
     minLevel: 60
   },
-  Swiftfoot: {
+  THIEF_SWIFTFOOT: {
     name: 'Swiftfoot',
     sprite: skillsPlayerSprites.skill_128,
     cooldown: 14,
     minLevel: 10
   },
-  shadowstrike: {
+  THIEF_SHADOWSTRIKE: {
     name: 'Shadowstrike',
     sprite: skillsPlayerSprites.skill_188,
     cooldown: 8,
     minLevel: 20
   },
-  fortunesFavor: {
+  THIEF_FORTUNES_FAVOR: {
     name: 'Fortunes Favor',
     sprite: skillsPlayerSprites.skill_44,
     cooldown: 12,
     minLevel: 30
   },
-  stoneheart: {
+  THIEF_STONEHEART: {
     name: 'Stoneheart',
     sprite: skillsPlayerSprites.skill_114,
     cooldown: 12,
     minLevel: 40
   },
-  bleedForMe: {
+  THIEF_BLEED_FOR_ME: {
     name: 'Bleed For Me',
     sprite: skillsPlayerSprites.skill_124,
     minLevel: 50,
@@ -1176,8 +1181,8 @@ export const SKILL_DATA = {
       'Increase Attack by your LUCK% multiplied by 30 after each successful attack for 20 s. ',
     cooldown: 25
   },
-  // Luck and Attack buff lvl 4
-  lastBlow: {
+  //  Luck and Attack buff lvl 4
+  THIEF_LAST_BLOW: {
     name: 'Last Blow',
     sprite: skillsPlayerSprites.wand_shot,
     minLevel: 60,
@@ -1185,24 +1190,24 @@ export const SKILL_DATA = {
     cooldown: 16
   },
 
-  // RANGER
-  // Support lvl 1 crit rate gain 30% crit rate
-  deadlyPrecision: {
+  //  RANGER
+  //  Support lvl 1 crit rate gain 30% crit rate
+  RANGER_DEADLY_PRECISION: {
     name: 'Deadly Precision',
     sprite: skillsPlayerSprites.skill_80,
     minLevel: 10,
     description: 'Gain 30% Critical chance for 12 s',
     cooldown: 12
   },
-  // Support lvl 1 crit dmg gain 200% crit dmg
-  savageStrike: {
+  //  Support lvl 1 crit dmg gain 200% crit dmg
+  RANGER_SAVAGE_STRIKE: {
     name: 'Savage Strike',
     sprite: skillsPlayerSprites.skill_74,
     minLevel: 20,
     description: 'Gain 200% Damage on your critical attacks for 12 s',
     cooldown: 12
   },
-  // Attack lvl 2 50% attack dmg
+  //  Attack lvl 2 50% attack dmg
   RANGER_MIGHTY_SHOT: {
     name: 'Mighty Shot',
     sprite: skillsPlayerSprites.skill_328,
@@ -1210,7 +1215,7 @@ export const SKILL_DATA = {
     description: 'Your Attacks deal 300% more damage for for 9 s',
     cooldown: 9
   },
-  // Attack lvl 2 POISON attack dmg
+  //  Attack lvl 2 POISON attack dmg
   RANGER_POISON_ARROWS: {
     name: 'Poison Arrows',
     sprite: skillsPlayerSprites.bow_shot,
@@ -1219,7 +1224,7 @@ export const SKILL_DATA = {
       "If the next attack is successful, decrease your opponents' HP by player ATTACK every 2 seconds for 20 seconds.",
     cooldown: 20
   },
-  // Support lvl 1 heal 100 when crit dmg
+  //  Support lvl 1 heal 100 when crit dmg
   RANGER_VITAL_SHOT: {
     name: 'Vital Shot',
     sprite: skillsPlayerSprites.skill_481,
@@ -1228,7 +1233,7 @@ export const SKILL_DATA = {
       'Heal 100% of your max HP when you deal critical damage for 20 s',
     cooldown: 20
   },
-  // Attack lvl 4 100% counter
+  //  Attack lvl 4 100% counter
   RANGER_RECOIL_SHOT: {
     name: 'Recoil Shot',
     minLevel: 60,
@@ -1238,8 +1243,8 @@ export const SKILL_DATA = {
     cooldown: 15
   },
 
-  // Berserker
-  // Support Heal lvl 1
+  //  Berserker
+  //  Support Heal lvl 1
   BERSERKER_BLOOD_FURY: {
     name: 'Blood Fury',
     minLevel: 10,
@@ -1247,7 +1252,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.Assassinskill_37,
     cooldown: 9
   },
-  // Attack lvl 1 gain 100%
+  //  Attack lvl 1 gain 100%
   BERSERKER_DEATH_STRIKE: {
     name: 'Death Strike',
     minLevel: 20,
@@ -1256,7 +1261,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.axe,
     cooldown: 6
   },
-  // Support Crit Rate lvl 1 50%
+  //  Support Crit Rate lvl 1 50%
   BERSERKER_SAVAGE_PRECISION: {
     name: 'Savage Precision',
     minLevel: 30,
@@ -1264,7 +1269,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.Archerskill_50,
     cooldown: 9
   },
-  // Attack lvl 3
+  //  Attack lvl 3
   BERSERKER_RAMPAGE: {
     name: 'Rampage',
     minLevel: 40,
@@ -1273,7 +1278,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.Warriorskill_30,
     cooldown: 15
   },
-  // Attack lvl 3
+  //  Attack lvl 3
   BERSERKER_BLOOD_DANCE: {
     name: 'Blood Dance',
     minLevel: 50,
@@ -1281,7 +1286,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.Assassinskill_17,
     cooldown: 12
   },
-  // Support Luck lvl 4
+  //  Support Luck lvl 4
   BERSERKER_FURYS_MOMENTUM: {
     name: "Fury's Momentum",
     minLevel: 60,
@@ -1290,41 +1295,37 @@ export const SKILL_DATA = {
     cooldown: 15
   },
 
-  // GENERAL
-  // Attack buffer lvl 1 25 attack
+  //  GENERAL
+  //  Attack buffer lvl 1 25 attack
   GENERAL_DISRUPTIVE_BLOW: {
     name: 'Disruptive Blow',
-    minLevel: 1,
     description:
       'Strike your opponents with a disruptive force! \n\nAttack increase by 50 for 6s.\n\ncooldown: 9 s \n\n*If the next attack is unsuccessful, inflict bleeding damage of 60 every 2 seconds for 30 seconds if you are wearing Double Hatchets.',
     sprite: skillsPlayerSprites.axe, // skillsConfig.json["skill_113,
     cooldown: 9 // Adjust the cooldown as needed
   },
-  // Support Healing lvl 1 25%
+  //  Support Healing lvl 1 25%
   GENERAL_FIRST_AID_KIT: {
     name: 'First Aid Kit',
-    minLevel: 2,
     description: 'Heal the 25% of your missing HP. \n\ncooldown: 4 s',
     sprite: skillsGeneralSprites.skill_407, // "FirstAidKit.png", substitute
     cooldown: 4
   },
-  // AOE Attack lvl 1 Single player attack
+  //  AOE Attack lvl 1 Single player attack
   GENERAL_FIREBALL: {
     name: 'Fireball',
-    minLevel: 3,
     description: `Deal ATTACK damage to all enemies. \n\ncooldown: 5 s \n\n*Damage increases to +300 if you are wearing Legionnaire, Pinnacle of Echoes.`,
     sprite: skillsGeneralSprites.skill_279,
     cooldown: 5
   },
   GENERAL_STORM: {
     name: 'Sanctified Storm',
-    minLevel: 4,
     description: `Deal MAGIC damage to all enemies. \n\ncooldown: 5 s`,
     sprite: skillsGeneralSprites.skill_72,
     cooldown: 5
   },
 
-  // Support Luck lvl 1 20%
+  //  Support Luck lvl 1 20%
   GENERAL_LUCKY_CHARM: {
     name: 'Lucky Charm',
     minLevel: 5,
@@ -1332,7 +1333,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_254,
     cooldown: 9 // 40 seconds in milliseconds
   },
-  // Support Crit Rate lvl 1 30%
+  //  Support Crit Rate lvl 1 30%
   GENERAL_PRECISION_FOCUS: {
     name: 'Precision Focus',
     minLevel: 10,
@@ -1340,7 +1341,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_29,
     cooldown: 9 // 25 seconds in milliseconds
   },
-  // Support Defense lvl 2 - enemy attack by 50%
+  //  Support Defense lvl 2 - enemy attack by 50%
   GENERAL_DEFENSIVE_POSTURE: {
     name: 'Quake!',
     minLevel: 15,
@@ -1348,7 +1349,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_54,
     cooldown: 2
   },
-  // Support Defense lvl 1 25%
+  //  Support Defense lvl 1 25%
   GENERAL_STRIKE: {
     name: 'Thunder Strike',
     minLevel: 20,
@@ -1363,7 +1364,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_133,
     cooldown: 6 // 30 seconds in milliseconds
   },
-  // Support Heal lvl 2 MAX +50%
+  //  Support Heal lvl 2 MAX +50%
   GENERAL_VITALITY_SURGE: {
     name: 'Vitality Surge',
     minLevel: 25,
@@ -1371,7 +1372,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_175,
     cooldown: 15 // 45 seconds in milliseconds
   },
-  // Attack buffer lvl 2 25% of MAX HP
+  //  Attack buffer lvl 2 25% of MAX HP
   GENERAL_VITALITY_BOOST: {
     name: 'Vitality Boost',
     minLevel: 30,
@@ -1380,7 +1381,7 @@ export const SKILL_DATA = {
     cooldown: 15
   },
 
-  // Support Defense lvl 2 50%
+  //  Support Defense lvl 2 50%
   GENERAL_SHIELD_WALL: {
     name: 'Shield Wall',
     minLevel: 35,
@@ -1388,7 +1389,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.Warriorskill_40,
     cooldown: 12
   },
-  // AOE Attack lvl 2 Double player attack
+  //  AOE Attack lvl 2 Double player attack
   GENERAL_HAMMER_SHOT: {
     name: 'Double Hammer Shot',
     minLevel: 40,
@@ -1396,7 +1397,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.Warriorskill_45, // "9_club_attack.png", substitute
     cooldown: 3
   },
-  // Support Defense lvl 2 - enemy attack by 50% (DUPE)
+  //  Support Defense lvl 2 - enemy attack by 50% (DUPE)
   GENERAL_DEFENSIVE_AURA: {
     name: 'Magic Aura',
     minLevel: 45,
@@ -1414,7 +1415,7 @@ export const SKILL_DATA = {
     cooldown: 15
   },
 
-  // Attack buffer lvl 3 30% attack
+  //  Attack buffer lvl 3 30% attack
   GENERAL_MIGHTY_ASSAULT: {
     name: 'Mighty Assault',
     minLevel: 50,
@@ -1423,7 +1424,7 @@ export const SKILL_DATA = {
     cooldown: 8 // 20 seconds in milliseconds
   },
 
-  // Support Defense lvl 3 10% for each unsuccessful roll
+  //  Support Defense lvl 3 10% for each unsuccessful roll
   GENERAL_FORTRESS_OF_RESILIENCE: {
     name: 'Big Red Resilience',
     minLevel: 60,
@@ -1432,7 +1433,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_451, // Replace with the actual icon filename
     cooldown: 0 // 25 seconds cooldown
   },
-  // Support Special missing hp
+  //  Support Special missing hp
   GENERAL_OATH_TO_DEMON_KING: {
     name: 'Oath to the King',
     minLevel: 65,
@@ -1441,7 +1442,7 @@ export const SKILL_DATA = {
     sprite: skillsGeneralSprites.skill_185,
     cooldown: 5 // 25 seconds cooldown
   },
-  // Support Special no luck
+  //  Support Special no luck
   GENERAL_GODRICS_BLESSING: {
     name: "Godric's Blessing",
     minLevel: 70,
@@ -1450,7 +1451,7 @@ export const SKILL_DATA = {
     sprite: skillsPlayerSprites.wand_shot,
     cooldown: 5 // 5 seconds cooldown
   },
-  // Attack lvl 4 counter
+  //  Attack lvl 4 counter
   GENERAL_CONFUSING_BLADES: {
     name: 'Confusing Blades',
     minLevel: 75,
@@ -1460,7 +1461,7 @@ export const SKILL_DATA = {
     cooldown: 12
   },
 
-  // Attack lvl 3 poison
+  //  Attack lvl 3 poison
   GENERAL_VENOMOUS_BLADE: {
     name: 'Venomous Blade',
     minLevel: 80,
@@ -1506,3 +1507,5 @@ export const SKILL_DATA = {
 }
 
 export const arrayOfSkills: SkillDefinition[] = Object.values(SKILL_DATA)
+
+

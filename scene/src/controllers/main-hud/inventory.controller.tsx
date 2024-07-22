@@ -3,8 +3,9 @@ import ReactEcs from '@dcl/sdk/react-ecs'
 import { Player } from '../../player/player'
 import { type SkillDefinition } from '../../player/skills'
 import {
-  arrayOfSkills,
-  CLASS_SKILLS_TO_SHOW
+  CLASS_SKILLS_TO_SHOW,
+  GENERAL_SKILLS_TO_SHOW,
+  SKILL_DATA
 } from '../../ui/bottom-bar/skillsData'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
@@ -36,8 +37,8 @@ export class InventoryController {
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
   public classSkillsIndex: number = 0
   public generalSkillsIndex: number = 0
-  public generalSkillsArray: SkillDefinition[] = arrayOfSkills
-  public classSkillsArray: SkillDefinition[] = arrayOfSkills
+  public generalSkillsArray: SkillDefinition[] = []
+  public classSkillsArray: SkillDefinition[] = []
   public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
@@ -103,32 +104,35 @@ export class InventoryController {
         this.companions = () => <CompanionsPage prop={undefined} />
         break
       case 2:
-        this.skills = () => (
-          <SkillsPage
-            selectedSkill={this.selectedSkill}
-            selectedSkillType=""
-            equipButtonSprite={this.equipButtonSprite}
-            unequipButtonSprite={this.unequipButtonSprite}
-            generalSkillsIndex={this.generalSkillsIndex}
-            classSkillsIndex={this.classSkillsIndex}
-            playerLevel={Player.getInstance().levels.getLevel(
-              LEVEL_TYPES.PLAYER
-            )}
-            selectSkill={this.selectSkill.bind(this)}
-            scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
-            scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
-            scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
-            scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
-            generalSkillsLeftSprite={this.leftGeneralSprite}
-            generalSkillsRightSprite={this.rightGeneralSprite}
-            classSkillsLeftSprite={this.leftClassSprite}
-            classSkillsRightSprite={this.rightClassSprite}
-            generalSkills={this.generalSkillsArray}
-            classSkills={this.classSkillsArray}
-            equipSkill={this.equipSkill.bind(this)}
-            disableSkill={this.disableSkill.bind(this)}
-          />
-        )
+        this.skills = () => {
+            this.loadSkills()
+          return (
+            <SkillsPage
+              selectedSkill={this.selectedSkill}
+              selectedSkillType=""
+              equipButtonSprite={this.equipButtonSprite}
+              unequipButtonSprite={this.unequipButtonSprite}
+              generalSkillsIndex={this.generalSkillsIndex}
+              classSkillsIndex={this.classSkillsIndex}
+              playerLevel={Player.getInstance().levels.getLevel(
+                LEVEL_TYPES.PLAYER
+              )}
+              selectSkill={this.selectSkill.bind(this)}
+              scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
+              scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
+              scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
+              scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
+              generalSkillsLeftSprite={this.leftGeneralSprite}
+              generalSkillsRightSprite={this.rightGeneralSprite}
+              classSkillsLeftSprite={this.leftClassSprite}
+              classSkillsRightSprite={this.rightClassSprite}
+              generalSkills={this.generalSkillsArray}
+              classSkills={this.classSkillsArray}
+              equipSkill={this.equipSkill.bind(this)}
+              disableSkill={this.disableSkill.bind(this)}
+            />
+          )
+        }
         break
       case 3:
         this.professions = () => <ProfessionsPage prop={undefined} />
@@ -159,7 +163,7 @@ export class InventoryController {
   increaseGeneralSkillIndex(): void {
     if (
       this.generalSkillsIndex <
-      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
     ) {
       console.log(this.generalSkillsIndex)
       this.rightGeneralSprite = inventorySprites.rightArrowButtonClicked
@@ -177,8 +181,8 @@ export class InventoryController {
   }
 
   increaseClassSkillIndex(): void {
-    if (this.classSkillsIndex < 3) {
-      this.rightSprite = inventorySprites.rightArrowButtonClicked
+    if (this.classSkillsIndex < Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)) {
+      this.rightClassSprite = inventorySprites.rightArrowButtonClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
     }
@@ -186,7 +190,7 @@ export class InventoryController {
 
   decreaseClassSkillIndex(): void {
     if (this.classSkillsIndex > 0) {
-      this.leftSprite = inventorySprites.leftArrowButtonClicked
+      this.leftClassSprite = inventorySprites.leftArrowButtonClicked
       this.classSkillsIndex--
       this.updateSpritesButtons(150)
     }
@@ -211,11 +215,24 @@ export class InventoryController {
       }
       if (
         this.generalSkillsIndex ===
-        Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW) - 1
+        Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
       ) {
         this.rightGeneralSprite = inventorySprites.rightArrowButtonUnavailable
       } else {
         this.rightGeneralSprite = inventorySprites.rightArrowButton
+      }
+      if (
+        this.classSkillsIndex ===
+        Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      ) {
+        this.rightClassSprite = inventorySprites.rightArrowButtonUnavailable
+      } else {
+        this.rightClassSprite = inventorySprites.rightArrowButton
+      }
+      if (this.classSkillsIndex === 0) {
+        this.leftClassSprite = inventorySprites.leftArrowButtonUnavailable
+      } else {
+        this.leftClassSprite = inventorySprites.leftArrowButton
       }
     }, milisecs)
   }
@@ -236,5 +253,20 @@ export class InventoryController {
     } else {
       console.error('You should choise a skill to disable')
     }
+  }
+
+  loadSkills(): void {
+    const generalSkills =  Object.keys(SKILL_DATA)
+    .filter(key => key.includes("GENERAL"))
+    .map(key => SKILL_DATA[key]);
+    
+    this.generalSkillsArray = generalSkills
+
+    const classSkills =  Object.keys(SKILL_DATA)
+    .filter(key => key.includes(Player.getInstance().class.toString().toUpperCase()))
+    .map(key => SKILL_DATA[key]);
+    
+    this.generalSkillsArray = classSkills
+    
   }
 }

@@ -2,8 +2,9 @@ import * as utils from '@dcl-sdk/utils'
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { type SkillDefinition } from '../../player/skills'
 import {
-  arrayOfSkills,
-  CLASS_SKILLS_TO_SHOW
+  CLASS_SKILLS_TO_SHOW,
+  GENERAL_SKILLS_TO_SHOW,
+  SKILL_DATA
 } from '../../ui/bottom-bar/skillsData'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
@@ -32,13 +33,14 @@ export class UI {
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
   public classSkillsIndex: number = 0
   public generalSkillsIndex: number = 0
-  public generalSkillsArray: SkillDefinition[] = arrayOfSkills
-  public classSkillsArray: SkillDefinition[] = arrayOfSkills
+  public generalSkillsArray: SkillDefinition[] = []
+  public classSkillsArray: SkillDefinition[] = []
   public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
-  public playerLevel: number = 10 // TODO get level from player
+  public playerLevel: number = 0 // TODO get level from player
+
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
@@ -80,6 +82,7 @@ export class UI {
 
   selectSkill(skill: SkillDefinition): void {
     this.selectedSkill = skill
+    // if (this.selectedSkill) { }
   }
 
   updateTab(index: number): void {
@@ -182,9 +185,8 @@ export class UI {
   increaseGeneralSkillIndex(): void {
     if (
       this.generalSkillsIndex <
-      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
     ) {
-      console.log(this.generalSkillsIndex)
       this.rightGeneralSprite = inventorySprites.rightArrowButtonClicked
       this.generalSkillsIndex++
       this.updateSpritesButtons(150)
@@ -200,8 +202,9 @@ export class UI {
   }
 
   increaseClassSkillIndex(): void {
-    if (this.classSkillsIndex < 3) {
-      this.rightSprite = inventorySprites.rightArrowButtonClicked
+    if ( this.classSkillsIndex <
+      Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)) {
+      this.rightClassSprite = inventorySprites.rightArrowButtonClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
     }
@@ -209,7 +212,7 @@ export class UI {
 
   decreaseClassSkillIndex(): void {
     if (this.classSkillsIndex > 0) {
-      this.leftSprite = inventorySprites.leftArrowButtonClicked
+      this.leftClassSprite = inventorySprites.leftArrowButtonClicked
       this.classSkillsIndex--
       this.updateSpritesButtons(150)
     }
@@ -234,11 +237,24 @@ export class UI {
       }
       if (
         this.generalSkillsIndex ===
-        Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW) - 1
+        Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
       ) {
         this.rightGeneralSprite = inventorySprites.rightArrowButtonUnavailable
       } else {
         this.rightGeneralSprite = inventorySprites.rightArrowButton
+      }
+      if (
+        this.classSkillsIndex ===
+        Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      ) {
+        this.rightClassSprite = inventorySprites.rightArrowButtonUnavailable
+      } else {
+        this.rightClassSprite = inventorySprites.rightArrowButton
+      }
+      if (this.classSkillsIndex === 0) {
+        this.leftClassSprite = inventorySprites.leftArrowButtonUnavailable
+      } else {
+        this.leftClassSprite = inventorySprites.leftArrowButton
       }
     }, milisecs)
   }
@@ -260,9 +276,27 @@ export class UI {
       console.error('You should choise a skill to disable')
     }
   }
+
+  loadSkills(): void {
+    const generalSkills =  Object.keys(SKILL_DATA)
+    .filter(key => key.includes("GENERAL"))
+    .map(key => SKILL_DATA[key]);
+    
+    this.generalSkillsArray = generalSkills
+    
+    const classSkills = Object.keys(SKILL_DATA)
+    .filter(key => key.includes("THIEF"))
+
+    // .filter(key => key.includes(Player.getInstance().class.toString().toUpperCase()))
+    .map(key => SKILL_DATA[key]);
+    
+    this.classSkillsArray = classSkills
+    
+  }
 }
 
 export function main(): void {
   const gameUI = new UI()
   gameUI.showInventory()
+  gameUI.loadSkills()
 }
