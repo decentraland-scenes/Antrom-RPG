@@ -17,6 +17,7 @@ type SkillsPageProps = {
   generalSkills: SkillDefinition[]
   classSkills: SkillDefinition[]
   selectSkill: (arg: SkillDefinition) => void
+  selectSkillType: (arg: 'general' | 'class') => void
   equipSkill: () => void
   disableSkill: () => void
   scrollRightGeneralSkills: () => void
@@ -43,6 +44,7 @@ function SkillsPage({
   classSkillsIndex,
   playerLevel,
   selectSkill,
+  selectSkillType,
   classSkillsLeftSprite,
   classSkillsRightSprite,
   scrollLeftClassSkills,
@@ -277,6 +279,7 @@ function SkillsPage({
                 }
                 selectSkill={() => {
                   selectSkill(skill)
+                  selectSkillType('general')
                 }}
               />
             </UiEntity>
@@ -350,6 +353,7 @@ function SkillsPage({
                 }
                 selectSkill={() => {
                   selectSkill(skill)
+                  selectSkillType('class')
                 }}
               />
             </UiEntity>

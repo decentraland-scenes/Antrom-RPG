@@ -29,6 +29,7 @@ export class UI {
 
   // Skills Page
   public selectedSkill: SkillDefinition | undefined
+  public selectedSkillType: string = ''
   public equipButtonSprite: Sprite = skillsPageSprites.equipButton
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
   public classSkillsIndex: number = 0
@@ -138,7 +139,7 @@ export class UI {
         this.skills = () => (
           <SkillsPage
             selectedSkill={this.selectedSkill}
-            selectedSkillType=""
+            selectedSkillType={this.selectedSkillType}
             equipButtonSprite={this.equipButtonSprite}
             unequipButtonSprite={this.unequipButtonSprite}
             generalSkillsIndex={this.generalSkillsIndex}
@@ -157,7 +158,7 @@ export class UI {
             classSkills={this.classSkillsArray}
             equipSkill={this.equipSkill.bind(this)}
             disableSkill={this.disableSkill.bind(this)}
-          />
+            selectSkillType={this.selectSkillType.bind(this)}          />
         )
         break
       case 3:
@@ -293,7 +294,18 @@ export class UI {
     this.classSkillsArray = classSkills
     
   }
-}
+
+  selectSkillType(type: 'class' | 'general'): void {
+    if (type === 'class') {
+      // this.selectedSkillType = Player.getInstance().class.toString().toUpperCase() + ' Skill'
+      this.selectedSkillType = 'Thief' + ' Skill'
+    } else {
+      this.selectedSkillType = 'General' + ' Skill'
+    }
+
+    }
+  }
+
 
 export function main(): void {
   const gameUI = new UI()

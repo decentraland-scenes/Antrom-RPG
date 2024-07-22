@@ -43,6 +43,7 @@ export class InventoryController {
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
+  public selectedSkillType: string = ''
 
   constructor() {
     this.updateTab(0)
@@ -109,7 +110,7 @@ export class InventoryController {
           return (
             <SkillsPage
               selectedSkill={this.selectedSkill}
-              selectedSkillType=""
+              selectedSkillType={this.selectedSkillType}
               equipButtonSprite={this.equipButtonSprite}
               unequipButtonSprite={this.unequipButtonSprite}
               generalSkillsIndex={this.generalSkillsIndex}
@@ -130,7 +131,7 @@ export class InventoryController {
               classSkills={this.classSkillsArray}
               equipSkill={this.equipSkill.bind(this)}
               disableSkill={this.disableSkill.bind(this)}
-            />
+              selectSkillType={this.selectSkillType.bind(this)} />
           )
         }
         break
@@ -269,4 +270,14 @@ export class InventoryController {
     this.generalSkillsArray = classSkills
     
   }
+
+  selectSkillType(type: 'class' | 'general'): void {
+    if (type === 'class') {
+      // this.selectedSkillType = Player.getInstance().class.toString().toUpperCase() + ' Skill'
+      this.selectedSkillType = 'Thief' + ' Skill'
+    } else {
+      this.selectedSkillType = 'General' + ' Skill'
+    }
+    }
+
 }
