@@ -19,9 +19,7 @@ export class ClericMainSkill extends SkillController {
     super(SKILL_DATA.clericSkill)
   }
 
-  trigger(): void {
-    if (this.state.isCooling) return
-
+  effect(): void {
     // heal 25%
     if (Player.getInstance().levels.getLevel(LEVEL_TYPES.PLAYER) <= 20) {
       Player.getInstance().refillHealthBar(0.25)
@@ -36,10 +34,7 @@ export class ThiefMainSkill extends SkillController {
     super(SKILL_DATA.thiefSkill)
   }
 
-  trigger(): void {
-    if (this.state.isCooling) return
-
-    super.trigger()
+  effect(): void {
     // +2 atk, +2 luck for 15 sec
     const ATTACK_BUFF = 15
     const LUCK_BUFF = 20
@@ -73,10 +68,7 @@ export class RangerMainSkill extends SkillController {
     super(SKILL_DATA.rangerSkill)
   }
 
-  trigger(): void {
-    if (this.state.isCooling) return
-
-    super.trigger()
+  effect(): void {
     // +4 luck for 10 sec
     const LUCK_BUFF = 8
     const LEVEL_20_LUCK_BUFF = 16
@@ -105,10 +97,7 @@ export class BerserkerMainSkill extends SkillController {
     super(SKILL_DATA.berserkerSkill)
   }
 
-  trigger(): void {
-    if (this.state.isCooling) return
-
-    super.trigger()
+  effect(): void {
     // +8 atk for 5 sec
     const ATTACK_BUFF =
       Player.getInstance().levels.getLevel(LEVEL_TYPES.PLAYER) * 10
@@ -136,10 +125,7 @@ export class MageMainSkill extends SkillController {
     super(SKILL_DATA.mageSkill)
   }
 
-  trigger(): void {
-    if (this.state.isCooling) return
-
-    super.trigger()
+  effect(): void {
     // +50% def for 5 sec
     const MAGIC_BUFF = 50
     const LEVEL_20_MAGIC_BUFF = 150
