@@ -403,7 +403,7 @@ export const inventorySprites = {
 export const skillsPageSprites = {
   disableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 0,
     y: 0,
     w: 250,
@@ -412,7 +412,7 @@ export const skillsPageSprites = {
 
   disableUnavailableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 250,
     y: 0,
     w: 250,
@@ -420,7 +420,7 @@ export const skillsPageSprites = {
   },
   equipButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 500,
     y: 0,
     w: 250,
@@ -428,7 +428,7 @@ export const skillsPageSprites = {
   },
   lockedSkill: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 750,
     y: 0,
     w: 613,
@@ -437,7 +437,7 @@ export const skillsPageSprites = {
 
   skillsPageFrame: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 1363,
     y: 0,
     w: 1882,
@@ -446,7 +446,7 @@ export const skillsPageSprites = {
 
   equipUnavailableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 3245,
     y: 0,
     w: 250,
@@ -454,7 +454,7 @@ export const skillsPageSprites = {
   },
   leftArrowReg: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 3495,
     y: 0,
     w: 64,
@@ -462,7 +462,7 @@ export const skillsPageSprites = {
   },
   leftArrowUnavail: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 3559,
     y: 0,
     w: 64,
@@ -470,7 +470,7 @@ export const skillsPageSprites = {
   },
   leftArrowWhileClicked: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 3623,
     y: 0,
     w: 64,
@@ -478,7 +478,7 @@ export const skillsPageSprites = {
   },
   rightArrowBtnUnavail: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 3687,
     y: 0,
     w: 64,
@@ -486,7 +486,7 @@ export const skillsPageSprites = {
   },
   rightArrowReg: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 0,
     y: 64,
     w: 64,
@@ -494,7 +494,7 @@ export const skillsPageSprites = {
   },
   rightArrowWhileClicked: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 64,
     y: 64,
     w: 64,
@@ -502,7 +502,7 @@ export const skillsPageSprites = {
   },
   selectionFrame: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 128,
     y: 64,
     w: 160,
@@ -510,10 +510,482 @@ export const skillsPageSprites = {
   },
   skillslotNumber: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 3751, y: 956 },
+    atlasSize: { x: 2166, y: 1656 },
     x: 288,
     y: 64,
     w: 40,
     h: 40
+  }
+}
+
+export const professionsPageSprites = {
+  xpGem100: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 0,
+    y: 0,
+    w: 40,
+    h: 40
+  },
+
+  xpGem25: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 40,
+    y: 0,
+    w: 40,
+    h: 40
+  },
+
+  xpGem50: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 80,
+    y: 0,
+    w: 40,
+    h: 40
+  },
+
+  TBDWearableIcon: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 120,
+    y: 0,
+    w: 300,
+    h: 300
+  },
+
+  AssasinProffesionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 420,
+    y: 0,
+    w: 289,
+    h: 350
+  },
+
+  BlankProfessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 0,
+    y: 350,
+    w: 1877,
+    h: 956
+  },
+
+  ButcherUnowned: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 709,
+    y: 0,
+    w: 300,
+    h: 300
+  },
+
+  ButcherWearableIcon: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1009,
+    y: 0,
+    w: 300,
+    h: 300
+  },
+
+  ButcherProfessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1309,
+    y: 0,
+    w: 289,
+    h: 350
+  },
+
+  GemcutterPofessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 0,
+    y: 1306,
+    w: 289,
+    h: 350
+  },
+
+  leftArrowReg: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1598,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+
+  leftArrowUnvailable: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1662,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+
+  leftArrowClicked: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1726,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+
+  lumberjackUnowned: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 289,
+    y: 1306,
+    w: 300,
+    h: 300
+  },
+
+  lumberjackWearableIcon: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 589,
+    y: 1306,
+    w: 300,
+    h: 300
+  },
+
+  lumberjackProfessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 889,
+    y: 1306,
+    w: 289,
+    h: 350
+  },
+
+  minerUnowned: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1178,
+    y: 1306,
+    w: 300,
+    h: 300
+  },
+
+  minerWearableIcon: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1478,
+    y: 1306,
+    w: 300,
+    h: 300
+  },
+
+  minerProfessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1790,
+    y: 0,
+    w: 289,
+    h: 350
+  },
+
+  professorProfessionFrame: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1877,
+    y: 350,
+    w: 289,
+    h: 350
+  },
+
+  rightArrowUnvailable: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 2079,
+    y: 0,
+    w: 64,
+    h: 64
+  },
+
+  rightArrowReg: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 0,
+    y: 64,
+    w: 64,
+    h: 64
+  },
+
+  rightArrowClicked: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1598,
+    y: 64,
+    w: 64,
+    h: 64
+  },
+
+  selectionTool: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 1877,
+    y: 700,
+    w: 211,
+    h: 125
+  },
+
+  wearableOwnedGem: {
+    atlasSrc: 'assets/images/professions_spritesheet.png',
+    atlasSize: { x: 2166, y: 1656 },
+    x: 64,
+    y: 64,
+    w: 40,
+    h: 40
+  }
+}
+
+export const companionPageSprites = {
+  'Disable_button.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 0,
+    y: 0,
+    w: 351,
+    h: 75
+  },
+
+  'Disable_button_unavailable.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 351,
+    y: 0,
+    w: 351,
+    h: 75
+  },
+
+  'Disable_button_while_clicked.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 702,
+    y: 0,
+    w: 351,
+    h: 75
+  },
+
+  'Dragon.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1053,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+
+  'Owl.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1309,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+
+  'Phoenix2.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1565,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+
+  'Purchase_reg.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 0,
+    y: 256,
+    w: 351,
+    h: 75
+  },
+
+  'Purchase_unavailable.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 351,
+    y: 256,
+    w: 351,
+    h: 75
+  },
+
+  'Purchase_while_clicked.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 702,
+    y: 256,
+    w: 351,
+    h: 75
+  },
+
+  'Reg equip button.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1053,
+    y: 256,
+    w: 351,
+    h: 76
+  },
+
+  'common frame .png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1404,
+    y: 256,
+    w: 140,
+    h: 140
+  },
+
+  'companion frame.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 0,
+    y: 396,
+    w: 1886,
+    h: 963
+  },
+
+  'equip button unavailable.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 0,
+    y: 1359,
+    w: 351,
+    h: 76
+  },
+
+  'equip button when clicked.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 351,
+    y: 1359,
+    w: 351,
+    h: 76
+  },
+
+  'slot10.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 702,
+    y: 1359,
+    w: 256,
+    h: 256
+  },
+
+  'slot11.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 958,
+    y: 1359,
+    w: 256,
+    h: 256
+  },
+
+  'slot12.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1214,
+    y: 1359,
+    w: 256,
+    h: 256
+  },
+
+  'slot13.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1470,
+    y: 1359,
+    w: 256,
+    h: 256
+  },
+
+  'slot14.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1821,
+    y: 0,
+    w: 256,
+    h: 256
+  },
+
+  'slot15.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1886,
+    y: 256,
+    w: 256,
+    h: 256
+  },
+
+  'slot16.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1886,
+    y: 512,
+    w: 256,
+    h: 256
+  },
+
+  'slot4.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1886,
+    y: 768,
+    w: 256,
+    h: 256
+  },
+
+  'slot5.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1886,
+    y: 1024,
+    w: 256,
+    h: 256
+  },
+
+  'slot6.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1886,
+    y: 1280,
+    w: 256,
+    h: 256
+  },
+
+  'slot7.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 0,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+
+  'slot8.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 256,
+    y: 1536,
+    w: 256,
+    h: 256
+  },
+
+  'slot9.png': {
+    atlasSrc: 'assets/images/companion_spritesheet.png',
+    atlasSize: { x: 2142, y: 1792 },
+    x: 1726,
+    y: 1536,
+    w: 256,
+    h: 256
   }
 }
