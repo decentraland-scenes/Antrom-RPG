@@ -331,8 +331,7 @@ function SkillsPage({
         {classSkills
           .slice(
             classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1),
-            classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1) +
-            CLASS_SKILLS_TO_SHOW
+            classSkillsIndex * (CLASS_SKILLS_TO_SHOW - 1) + CLASS_SKILLS_TO_SHOW
           )
           .map((skill, index) => (
             <UiEntity

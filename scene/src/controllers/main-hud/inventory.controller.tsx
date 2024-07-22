@@ -5,7 +5,8 @@ import { type SkillDefinition } from '../../player/skills'
 import {
   CLASS_SKILLS_TO_SHOW,
   GENERAL_SKILLS_TO_SHOW,
-  SKILL_DATA
+  SKILL_DATA,
+  type SkillKey
 } from '../../ui/bottom-bar/skillsData'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
@@ -107,7 +108,7 @@ export class InventoryController {
         break
       case 2:
         this.skills = () => {
-            this.loadSkills()
+          this.loadSkills()
           return (
             <SkillsPage
               selectedSkill={this.selectedSkill}
@@ -120,8 +121,12 @@ export class InventoryController {
                 LEVEL_TYPES.PLAYER
               )}
               selectSkill={this.selectSkill.bind(this)}
-              scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
-              scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
+              scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(
+                this
+              )}
+              scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(
+                this
+              )}
               scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
               scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
               generalSkillsLeftSprite={this.leftGeneralSprite}
@@ -132,7 +137,8 @@ export class InventoryController {
               classSkills={this.classSkillsArray}
               equipSkill={this.equipSkill.bind(this)}
               disableSkill={this.disableSkill.bind(this)}
-              selectSkillType={this.selectSkillType.bind(this)} />
+              selectSkillType={this.selectSkillType.bind(this)}
+            />
           )
         }
         break
@@ -183,7 +189,10 @@ export class InventoryController {
   }
 
   increaseClassSkillIndex(): void {
-    if (this.classSkillsIndex < Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)) {
+    if (
+      this.classSkillsIndex <
+      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+    ) {
       this.rightClassSprite = inventorySprites.rightArrowButtonClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
@@ -243,13 +252,16 @@ export class InventoryController {
     // TODO Equip this.selectedSkill if it isn't equiped.
     if (this.selectedSkill !== undefined) {
       console.log('Equiped skill')
-      Player.getInstance().setSkill(this.getLowerSkillIndex(), new ThiefMainSkill)
+      Player.getInstance().setSkill(
+        this.getLowerSkillIndex(),
+        new ThiefMainSkill()
+      )
     } else {
       console.error('You should choise a skill to equip')
     }
   }
 
-  getLowerSkillIndex(): number{
+  getLowerSkillIndex(): number {
     // TODO Obtain the skills array
     // const firstFreePosition = array.findIndex(element => element === undefined);
     // return firstFreePosition
@@ -266,18 +278,19 @@ export class InventoryController {
   }
 
   loadSkills(): void {
-    const generalSkills =  Object.keys(SKILL_DATA)
-    .filter(key => key.includes("GENERAL"))
-    .map(key => SKILL_DATA[key]);
-    
+    const generalSkills = Object.keys(SKILL_DATA)
+      .filter((key) => key.includes('GENERAL'))
+      .map((key) => SKILL_DATA[key as SkillKey])
+
     this.generalSkillsArray = generalSkills
 
-    const classSkills =  Object.keys(SKILL_DATA)
-    .filter(key => key.includes(Player.getInstance().class.toString().toUpperCase()))
-    .map(key => SKILL_DATA[key]);
-    
+    const classSkills = Object.keys(SKILL_DATA)
+      .filter((key) =>
+        key.includes(Player.getInstance().class.toString().toUpperCase())
+      )
+      .map((key) => SKILL_DATA[key as SkillKey])
+
     this.generalSkillsArray = classSkills
-    
   }
 
   selectSkillType(type: 'class' | 'general'): void {
@@ -287,6 +300,5 @@ export class InventoryController {
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }
-    }
-
+  }
 }

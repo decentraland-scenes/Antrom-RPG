@@ -12,13 +12,11 @@ export const CLASS_MAIN_SKILL: Record<CharacterClasses, () => SkillController> =
     [CharacterClasses.CC_RANGER]: () => new RangerMainSkill(),
     [CharacterClasses.CC_BERSERKER]: () => new BerserkerMainSkill(),
     [CharacterClasses.CC_MAGE]: () => new MageMainSkill()
-}
-  
-
+  }
 
 export class ClericMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.clericSkill)
+    super(SKILL_DATA.CLERIC_HEALING_TOUCH)
   }
 
   effect(): void {
@@ -33,7 +31,7 @@ export class ClericMainSkill extends SkillController {
 
 export class ThiefMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.thiefSkill)
+    super(SKILL_DATA.THIEF_BLEED_FOR_ME)
   }
 
   effect(): void {
@@ -67,7 +65,7 @@ export class ThiefMainSkill extends SkillController {
 
 export class RangerMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.rangerSkill)
+    super(SKILL_DATA.RANGER_DEADLY_PRECISION)
   }
 
   effect(): void {
@@ -96,7 +94,7 @@ export class RangerMainSkill extends SkillController {
 
 export class BerserkerMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.berserkerSkill)
+    super(SKILL_DATA.BERSERKER_BLOOD_DANCE)
   }
 
   effect(): void {
@@ -124,7 +122,7 @@ export class BerserkerMainSkill extends SkillController {
 
 export class MageMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.mageSkill)
+    super(SKILL_DATA.MAGE_ARMOR_SAP)
   }
 
   effect(): void {

@@ -4,7 +4,8 @@ import { type SkillDefinition } from '../../player/skills'
 import {
   CLASS_SKILLS_TO_SHOW,
   GENERAL_SKILLS_TO_SHOW,
-  SKILL_DATA
+  SKILL_DATA,
+  type SkillKey
 } from '../../ui/bottom-bar/skillsData'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
@@ -41,7 +42,6 @@ export class UI {
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
   public playerLevel: number = 0 // TODO get level from player
-
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
@@ -158,7 +158,8 @@ export class UI {
             classSkills={this.classSkillsArray}
             equipSkill={this.equipSkill.bind(this)}
             disableSkill={this.disableSkill.bind(this)}
-            selectSkillType={this.selectSkillType.bind(this)}          />
+            selectSkillType={this.selectSkillType.bind(this)}
+          />
         )
         break
       case 3:
@@ -203,8 +204,10 @@ export class UI {
   }
 
   increaseClassSkillIndex(): void {
-    if ( this.classSkillsIndex <
-      Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)) {
+    if (
+      this.classSkillsIndex <
+      Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+    ) {
       this.rightClassSprite = inventorySprites.rightArrowButtonClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
@@ -279,20 +282,19 @@ export class UI {
   }
 
   loadSkills(): void {
-    const generalSkills =  Object.keys(SKILL_DATA)
-    .filter(key => key.includes("GENERAL"))
-    .map(key => SKILL_DATA[key]);
-    
-    this.generalSkillsArray = generalSkills
-    
-    const classSkills = Object.keys(SKILL_DATA)
-    .filter(key => key.includes("THIEF"))
+    const generalSkills = Object.keys(SKILL_DATA)
+      .filter((key) => key.includes('GENERAL'))
+      .map((key) => SKILL_DATA[key as SkillKey])
 
-    // .filter(key => key.includes(Player.getInstance().class.toString().toUpperCase()))
-    .map(key => SKILL_DATA[key]);
-    
+    this.generalSkillsArray = generalSkills
+
+    const classSkills = Object.keys(SKILL_DATA)
+      .filter((key) => key.includes('THIEF'))
+
+      // .filter(key => key.includes(Player.getInstance().class.toString().toUpperCase()))
+      .map((key) => SKILL_DATA[key as SkillKey])
+
     this.classSkillsArray = classSkills
-    
   }
 
   selectSkillType(type: 'class' | 'general'): void {
@@ -302,10 +304,8 @@ export class UI {
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }
-
-    }
   }
-
+}
 
 export function main(): void {
   const gameUI = new UI()
