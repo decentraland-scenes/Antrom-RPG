@@ -48,7 +48,16 @@ export class SkillController {
   }
 
   trigger(): void {
+    if (this.state.isCooling) {
+      return
+    }
     this.state.isCooling = true
     this.state.cooldownRemainingTime = this.definition.cooldown
+
+    this.effect()
+  }
+
+  effect(): void {
+    throw new Error('Effect not implemented')
   }
 }
