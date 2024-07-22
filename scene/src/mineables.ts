@@ -12,6 +12,7 @@ import {
 import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
 import { type GameController } from './controllers/game.controller'
+import { entityController } from './realms/entityController'
 
 export enum Items {
   tree = 'assets/models/Pine.glb',
@@ -23,7 +24,7 @@ export enum Items {
   gem = 'assets/models/gem.glb'
 }
 export class Rock {
-  public rock = engine.addEntity()
+  public rock = entityController.addEntity()
   gameController: GameController
   constructor(
     gameController: GameController,
@@ -100,11 +101,11 @@ export class Rock {
   }
 
   removeRock(): void {
-    engine.removeEntity(this.rock)
+    entityController.removeEntity(this.rock)
   }
 }
 export class Tree {
-  public tree = engine.addEntity()
+  public tree = entityController.addEntity()
   public gameController: GameController
   constructor(
     gameController: GameController,
@@ -182,11 +183,11 @@ export class Tree {
   }
 
   removeTree(): void {
-    engine.removeEntity(this.tree)
+    entityController.removeEntity(this.tree)
   }
 }
 export class BerryTree {
-  public berryTree = engine.addEntity()
+  public berryTree = entityController.addEntity()
   public gameController: GameController
   constructor(gameController: GameController, treeShape: string) {
     this.gameController = gameController
@@ -261,12 +262,12 @@ export class BerryTree {
   }
 
   removeBerryTree(): void {
-    engine.removeEntity(this.berryTree)
+    entityController.removeEntity(this.berryTree)
   }
 }
 
 export class Pot {
-  public pot = engine.addEntity()
+  public pot = entityController.addEntity()
   gameController: GameController
   constructor(
     gameController: GameController,
@@ -335,12 +336,12 @@ export class Pot {
   }
 
   removepot(): void {
-    engine.removeEntity(this.pot)
+    entityController.removeEntity(this.pot)
   }
 }
 
 export class Gem {
-  public gem = engine.addEntity()
+  public gem = entityController.addEntity()
   gameController: GameController
   private readonly isDeadAnimation: boolean = false
   private isDead: boolean = false
@@ -415,8 +416,8 @@ export class Gem {
   }
 
   killChar(): void {
-    engine.removeEntity(this.gem)
-    this.gem = engine.addEntity()
+    entityController.removeEntity(this.gem)
+    this.gem = entityController.addEntity()
     Transform.createOrReplace(this.gem, {
       position: Vector3.create(
         getRandomInt(12) + 24,
@@ -465,6 +466,6 @@ export class Gem {
   }
 
   removeGem(): void {
-    engine.removeEntity(this.gem)
+    entityController.removeEntity(this.gem)
   }
 }

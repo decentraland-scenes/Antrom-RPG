@@ -15,7 +15,6 @@ const DEFAULT_HP = 550
 export default class DragonMotherE extends MonsterOligar {
   shapeFile = 'assets/models/Butcher.glb'
   hoverText = 'Attack LVL 15 Butcher!'
-  minLuck = 4
   static currentInstance: DragonMotherE
 
   constructor() {
@@ -26,6 +25,7 @@ export default class DragonMotherE extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 4
     this.initMonster()
     this.setTopOffset(3)
     // # in %

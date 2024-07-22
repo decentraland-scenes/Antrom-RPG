@@ -71,6 +71,7 @@ export class LevelManager {
   }
 
   static xpRequiredForNextLevel(level: number): number {
+    if (level === 0) return 0
     return 500 * (level * level - level + 2)
   }
 

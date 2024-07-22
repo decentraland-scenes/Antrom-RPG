@@ -19,6 +19,7 @@ import { MonsterAttack } from './monsterAttack'
 import { MonsterAttackRanged } from './monsterAttackRanged'
 import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
+import { entityController } from '../realms/entityController'
 
 export class MonsterMeat extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -171,7 +172,7 @@ export class MonsterMeat extends GenericMonster {
   }
 
   setupRangedAttackTriggerBox(): void {
-    this.rangeAttackTrigger = engine.addEntity()
+    this.rangeAttackTrigger = entityController.addEntity()
     Transform.create(this.rangeAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.rangeAttackTrigger)
     VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
@@ -197,7 +198,7 @@ export class MonsterMeat extends GenericMonster {
   }
 
   setupEngageTriggerBox(): void {
-    this.engageAttackTrigger = engine.addEntity()
+    this.engageAttackTrigger = entityController.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
@@ -256,9 +257,9 @@ export class MonsterMeat extends GenericMonster {
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
       super.cleanup()
-      engine.removeEntity(this.entity)
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.entity)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -275,8 +276,8 @@ export class MonsterMeat extends GenericMonster {
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()

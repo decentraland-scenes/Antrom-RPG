@@ -12,10 +12,9 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(250, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 20000)
+    this.minLuck = 10
 
     this.initMonster()
 

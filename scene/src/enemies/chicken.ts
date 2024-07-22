@@ -1,11 +1,12 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMeat from './monsterMeat'
-import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import { GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { getRandomInt, getRandomIntRange } from './../utils/getRandomInt'
 import { Player } from '../player/player'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { BannerType } from '../ui/banner/bannerConstants'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { entityController } from '../realms/entityController'
 
 const DEFAULT_ATTACK = 0
 const DEFAULT_XP = 9
@@ -92,9 +93,9 @@ export default class Chicken extends MonsterMeat {
 
   removeEntity(): void {
     super.cleanup()
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.entity)
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.entity)
   }
 
   create(): void {

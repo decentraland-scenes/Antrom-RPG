@@ -15,7 +15,6 @@ const POSITIONS: Vector3[] = [Vector3.create(-12.43, 40.2, -3.95)]
 export default class DragonMotherNightmare extends MonsterOligar {
   shapeFile = 'assets/models/Butcher.glb'
   hoverText = 'Attack Nightmare Butcher!'
-  minLuck = 20
   static currentInstance: DragonMotherNightmare
 
   constructor() {
@@ -26,6 +25,7 @@ export default class DragonMotherNightmare extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 20
     this.initMonster()
     this.setTopOffset(3)
     // # in %

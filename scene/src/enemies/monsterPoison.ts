@@ -19,6 +19,7 @@ import { monsterModifiers } from './skillEffects'
 import { Player } from '../player/player'
 import { type MonsterAttack } from './monsterAttack'
 import { GenericMonster } from './monsterGeneric'
+import { entityController } from '../realms/entityController'
 
 export class MonsterPoison extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -144,7 +145,7 @@ export class MonsterPoison extends GenericMonster {
   }
 
   setupEngageTriggerBox(): void {
-    this.engageAttackTrigger = engine.addEntity()
+    this.engageAttackTrigger = entityController.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
@@ -203,9 +204,9 @@ export class MonsterPoison extends GenericMonster {
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
       super.cleanup()
-      engine.removeEntity(this.entity)
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.entity)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
       console.log('entity removed')
       this.isDead = true
     }, 5 * 1000)
@@ -222,8 +223,8 @@ export class MonsterPoison extends GenericMonster {
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()
@@ -258,7 +259,7 @@ export class MonsterPoison extends GenericMonster {
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(0)
+    setRefreshTimer(1)
 
     const defPercent = player.getDefensePercent()
     let enemyAttack = this.attack * (1 - defPercent)
@@ -301,7 +302,7 @@ export class MonsterPoison extends GenericMonster {
         if (refreshtimer > 0) {
           return
         }
-        setRefreshTimer(0)
+        setRefreshTimer(1)
         const monsterDiceResult = this.rollDice()
         const playerDiceResult = player.rollDice()
 

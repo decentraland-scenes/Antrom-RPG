@@ -34,7 +34,7 @@ export default class AntromGuard extends MonsterOligar {
 
   // create(): void {
   //     // const mons = new AntromGuard()
-  //     // engine.addEntity(mons)
+  //     // entityController.addEntity(mons)
   // }
 
   // loadTransformation(): void {

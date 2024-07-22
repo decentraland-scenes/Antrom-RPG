@@ -21,7 +21,6 @@ const MODEL_NAMES = [
 
 export default class nightmareEnemy1 extends MonsterOligar {
   hoverText = 'Attack Skeleton Soldier!'
-  minLuck = 2
   hasDrop = false
   static currentInstance: nightmareEnemy1
 
@@ -35,6 +34,7 @@ export default class nightmareEnemy1 extends MonsterOligar {
       Math.round(DEFAULT_HP + stage * 60)
     )
 
+    this.minLuck = 2
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()

@@ -1,10 +1,11 @@
-import { Transform, engine } from '@dcl/sdk/ecs'
+import { Transform } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { Player } from '../player/player'
 import { BannerType } from '../ui/banner/bannerConstants'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { entityController } from '../realms/entityController'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -16,12 +17,11 @@ export default class Executioner extends MonsterMob {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
   hoverText: string
 
-  minLuck = 10
-
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     super(level + 20, level + 60, level - 10, level * 100)
+    this.minLuck = 10
     this.hoverText = `Attack LVL ${level} Executioner!`
 
     Transform.createOrReplace(this.entity, {
@@ -34,7 +34,6 @@ export default class Executioner extends MonsterMob {
   }
 
   onDropXp(): void {
-    this.create()
     const player = Player.getInstance()
     const xp = getRandomIntRange(this.xp, this.xp + 10)
     const randomNumber = Math.random()
@@ -92,9 +91,9 @@ export default class Executioner extends MonsterMob {
 
   removeEntity(): void {
     super.cleanup()
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.entity)
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.entity)
   }
 
   create(): void {

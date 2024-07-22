@@ -15,7 +15,6 @@ const DEFAULT_HP = 700
 export default class TrewsE extends MonsterOligar {
   shapeFile = 'assets/models/SkeletonwBow.glb'
   hoverText = 'Attack LVL 25 Skeleton Ranger!'
-  minLuck = 12
   static currentInstance: TrewsE
 
   constructor() {
@@ -26,6 +25,7 @@ export default class TrewsE extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 12
     this.initMonster()
     this.setTopOffset(3)
     // # in %

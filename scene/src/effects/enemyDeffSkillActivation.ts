@@ -1,18 +1,13 @@
-import {
-  Animator,
-  AudioSource,
-  GltfContainer,
-  Transform,
-  engine
-} from '@dcl/sdk/ecs'
+import { Animator, AudioSource, GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
+import { entityController } from '../realms/entityController'
 
 export const applyDefSkillEffectToEnemyLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -37,6 +32,6 @@ export const applyDefSkillEffectToEnemyLocation = (
 
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }

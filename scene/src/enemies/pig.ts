@@ -1,4 +1,4 @@
-import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import { GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type GameController } from '../controllers/game.controller'
 import { LEVEL_TYPES } from '../player/LevelManager'
@@ -7,6 +7,7 @@ import { BannerType } from '../ui/banner/bannerConstants'
 import { getRandomIntRange } from './../utils/getRandomInt'
 import MonsterMeat from './monsterMeat'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { entityController } from '../realms/entityController'
 
 const DEFAULT_ATTACK = 2
 const DEFAULT_XP = 10
@@ -93,8 +94,8 @@ export default class Pig extends MonsterMeat {
 
   removeEntity(): void {
     super.cleanup()
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.entity)
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.entity)
   }
 }

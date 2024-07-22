@@ -3,13 +3,14 @@ import { type MonsterOligar } from './monster'
 import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
+import { entityController } from '../realms/entityController'
 
 let arrow: Entity | null = null
 let arrowStartPosition: Vector3
 
 export function shootArrow(): void {
   if (arrow == null) {
-    arrow = engine.addEntity()
+    arrow = entityController.addEntity()
     Transform.create(arrow, {})
     GltfContainer.create(arrow, { src: 'assets/models/GreenOrb.glb' })
   }
@@ -105,7 +106,7 @@ export class MonsterAttackRanged {
         Transform.getMutable(this.monster.entity).position
       )
       if (traveledDistance > MAX_DISTANCE * MAX_DISTANCE) {
-        engine.removeEntity(arrow)
+        entityController.removeEntity(arrow)
         arrow = null
         return
       }

@@ -1,20 +1,22 @@
 // import { Scalar } from "decentraland-ecs"
 
-import { engine } from '@dcl/sdk/ecs'
+import { type Entity } from '@dcl/sdk/ecs'
 import { Scalar } from '@dcl/sdk/math'
 import { getRandomInt } from './../utils/getRandomInt'
+import { entityController } from '../realms/entityController'
 
 export class Character {
-  entity = engine.addEntity()
-  // triggerRangeAttack = engine.addEntity()
-  health: number
-  attack: number
-  xp: number
-  level: number
-  baseDefense: number
-  maxHealth: number
-  minLuck: number = 0
-  magic: number
+  _entity = entityController.addEntity()
+  // triggerRangeAttack = entityController.addEntity()
+  _health: number
+  _attack: number
+  _xp: number
+  _level: number
+  _baseDefense: number
+  _maxHealth: number
+  _minLuck: number = 0
+  _magic: number
+
   constructor(
     attack: number,
     xp: number,
@@ -23,43 +25,115 @@ export class Character {
     baseDefense: number = 0.01,
     magic: number = 0
   ) {
-    this.attack = attack
-    this.health = health
-    this.xp = xp
-    this.level = level
-    this.baseDefense = baseDefense
-    this.maxHealth = health
-    this.magic = magic
+    this._attack = attack
+    this._health = health
+    this._xp = xp
+    this._level = level
+    this._baseDefense = baseDefense
+    this._maxHealth = health
+    this._magic = magic
   }
 
   reduceHealth(attack: number): void {
     console.log('reducehealth', attack)
-    if (this.health - attack >= 0) {
-      this.health -= Math.round(attack)
+    if (this._health - attack >= 0) {
+      this._health -= Math.round(attack)
     } else {
-      this.health = 0
+      this._health = 0
     }
-    console.log(this.health, this.getHealthScaled())
+    console.log(this._health, this.getHealthScaled())
   }
 
   getHealthScaled(): number {
-    return this.health / this.maxHealth
+    return this._health / this._maxHealth
   }
 
   rollDice(): number {
-    const max = 20 + this.level / 2
-    const min = (this.minLuck / 100) * max
+    const max = 20 + this._level / 2
+    const min = (this._minLuck / 100) * max
     const randomNumber = Scalar.randomRange(Math.round(min), Math.round(max))
     return randomNumber
   }
 
   getLuckRange(): number {
-    return this.level
+    return this._level
   }
 
   getDefensePercent(): number {
     // TODO random Int function
-    const def = this.baseDefense * getRandomInt(Math.round(this.level / 2))
+    const def = this._baseDefense * getRandomInt(Math.round(this._level / 2))
     return def >= 1 ? 0.99 : def
+  }
+
+  get health(): number {
+    return this._health
+  }
+
+  set health(value: number) {
+    this._health = value
+  }
+
+  get attack(): number {
+    return this._attack
+  }
+
+  set attack(value: number) {
+    this._attack = value
+  }
+
+  get xp(): number {
+    return this._xp
+  }
+
+  set xp(value: number) {
+    this._xp = value
+  }
+
+  get level(): number {
+    return this._level
+  }
+
+  set level(value: number) {
+    this._level = value
+  }
+
+  get baseDefense(): number {
+    return this._baseDefense
+  }
+
+  set baseDefense(value: number) {
+    this._baseDefense = value
+  }
+
+  get maxHealth(): number {
+    return this._maxHealth
+  }
+
+  set maxHealth(value: number) {
+    this._maxHealth = value
+  }
+
+  get magic(): number {
+    return this._magic
+  }
+
+  set magic(value: number) {
+    this._magic = value
+  }
+
+  set minLuck(value: number) {
+    this._minLuck = value
+  }
+
+  get minLuck(): number {
+    return this._minLuck
+  }
+
+  set entity(value: Entity) {
+    this._entity = value
+  }
+
+  get entity(): Entity {
+    return this._entity
   }
 }

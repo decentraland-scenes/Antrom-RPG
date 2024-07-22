@@ -450,6 +450,10 @@ export class Player extends Character {
     )
   }
 
+  get level(): number {
+    return this.levels.getLevel(LEVEL_TYPES.PLAYER)
+  }
+
   PlayerUI(): ReactEcs.JSX.Element {
     return (
       <BottomBar

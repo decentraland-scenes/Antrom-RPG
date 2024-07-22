@@ -127,14 +127,14 @@ export class UIController {
           <Banner type={item.bannerType} position={item.bannerPosition} />
         ))}
 
-        {/* Dungoen HUD and screens */}
-        {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
-
         {/* Player HUD */}
         {Player.getInstanceOrNull()?.PlayerUI()}
 
         {/* Main HUD */}
         {this.mainHud?.render()}
+
+        {/* Dungoen HUD and screens */}
+        {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
 
         {/* Creation Player step if it applies */}
         {this.creationPlayerUi?.render()}
