@@ -746,7 +746,7 @@ export const professionsPageSprites = {
 }
 
 export const companionPageSprites = {
-  'Disable_button.png': {
+  disableButton: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 0,
@@ -755,7 +755,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Disable_button_unavailable.png': {
+  disableButtonUnavailable: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 351,
@@ -764,7 +764,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Disable_button_while_clicked.png': {
+  disableButtonClicked: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 702,
@@ -773,7 +773,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Dragon.png': {
+  dragon: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1053,
@@ -782,7 +782,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'Owl.png': {
+  owl: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1309,
@@ -791,7 +791,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'Phoenix2.png': {
+  phoenix2: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1565,
@@ -800,7 +800,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'Purchase_reg.png': {
+  purchaseButton: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 0,
@@ -809,7 +809,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Purchase_unavailable.png': {
+  purchaseButtonUnavailable: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 351,
@@ -818,7 +818,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Purchase_while_clicked.png': {
+  purchaseButtonClicked: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 702,
@@ -827,7 +827,7 @@ export const companionPageSprites = {
     h: 75
   },
 
-  'Reg equip button.png': {
+  equipButton: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1053,
@@ -836,7 +836,7 @@ export const companionPageSprites = {
     h: 76
   },
 
-  'common frame .png': {
+  commonFrame: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1404,
@@ -845,7 +845,7 @@ export const companionPageSprites = {
     h: 140
   },
 
-  'companion frame.png': {
+  companionFrame: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 0,
@@ -854,7 +854,7 @@ export const companionPageSprites = {
     h: 963
   },
 
-  'equip button unavailable.png': {
+  equipButtonUnvailable: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 0,
@@ -863,7 +863,7 @@ export const companionPageSprites = {
     h: 76
   },
 
-  'equip button when clicked.png': {
+  equipButtonClicked: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 351,
@@ -872,7 +872,7 @@ export const companionPageSprites = {
     h: 76
   },
 
-  'slot10.png': {
+  slot10: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 702,
@@ -881,7 +881,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot11.png': {
+  slot11: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 958,
@@ -890,7 +890,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot12.png': {
+  slot12: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1214,
@@ -899,7 +899,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot13.png': {
+  slot13: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1470,
@@ -908,7 +908,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot14.png': {
+  slot14: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1821,
@@ -917,7 +917,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot15.png': {
+  slot15: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1886,
@@ -926,7 +926,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot16.png': {
+  slot16: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1886,
@@ -935,7 +935,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot4.png': {
+  slot4: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1886,
@@ -944,7 +944,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot5.png': {
+  slot5: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1886,
@@ -953,7 +953,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot6.png': {
+  slot6: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1886,
@@ -962,7 +962,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot7.png': {
+  slot7: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 0,
@@ -971,7 +971,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot8.png': {
+  slot8: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 256,
@@ -980,7 +980,7 @@ export const companionPageSprites = {
     h: 256
   },
 
-  'slot9.png': {
+  slot9: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1726,
