@@ -403,7 +403,7 @@ export const inventorySprites = {
 export const skillsPageSprites = {
   disableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 0,
     y: 0,
     w: 250,
@@ -412,7 +412,7 @@ export const skillsPageSprites = {
 
   disableUnavailableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 250,
     y: 0,
     w: 250,
@@ -420,7 +420,7 @@ export const skillsPageSprites = {
   },
   equipButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 500,
     y: 0,
     w: 250,
@@ -428,7 +428,7 @@ export const skillsPageSprites = {
   },
   lockedSkill: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 750,
     y: 0,
     w: 613,
@@ -437,7 +437,7 @@ export const skillsPageSprites = {
 
   skillsPageFrame: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 1363,
     y: 0,
     w: 1882,
@@ -446,7 +446,7 @@ export const skillsPageSprites = {
 
   equipUnavailableButton: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 3245,
     y: 0,
     w: 250,
@@ -454,7 +454,7 @@ export const skillsPageSprites = {
   },
   leftArrowReg: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 3495,
     y: 0,
     w: 64,
@@ -462,7 +462,7 @@ export const skillsPageSprites = {
   },
   leftArrowUnavail: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 3559,
     y: 0,
     w: 64,
@@ -470,7 +470,7 @@ export const skillsPageSprites = {
   },
   leftArrowWhileClicked: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 3623,
     y: 0,
     w: 64,
@@ -478,7 +478,7 @@ export const skillsPageSprites = {
   },
   rightArrowBtnUnavail: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 3687,
     y: 0,
     w: 64,
@@ -486,7 +486,7 @@ export const skillsPageSprites = {
   },
   rightArrowReg: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 0,
     y: 64,
     w: 64,
@@ -494,7 +494,7 @@ export const skillsPageSprites = {
   },
   rightArrowWhileClicked: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 64,
     y: 64,
     w: 64,
@@ -502,7 +502,7 @@ export const skillsPageSprites = {
   },
   selectionFrame: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 128,
     y: 64,
     w: 160,
@@ -510,7 +510,7 @@ export const skillsPageSprites = {
   },
   skillslotNumber: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
-    atlasSize: { x: 2166, y: 1656 },
+    atlasSize: { x: 3751, y: 956 },
     x: 288,
     y: 64,
     w: 40,
