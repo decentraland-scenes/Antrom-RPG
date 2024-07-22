@@ -1,5 +1,5 @@
 import { SkillController } from '.'
-import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
+import { CLASS_SKILL_DATA } from '../../ui/bottom-bar/skillsData'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 import { setTimeout } from '../../utils/lib'
 import { LEVEL_TYPES } from '../LevelManager'
@@ -16,7 +16,7 @@ export const CLASS_MAIN_SKILL: Record<CharacterClasses, () => SkillController> =
 
 export class ClericMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.CLERIC_HEALING_TOUCH)
+    super(CLASS_SKILL_DATA.HEALING_TOUCH)
   }
 
   effect(): void {
@@ -31,7 +31,7 @@ export class ClericMainSkill extends SkillController {
 
 export class ThiefMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.THIEF_BLEED_FOR_ME)
+    super(CLASS_SKILL_DATA.ASSASINS_AMBITION)
   }
 
   effect(): void {
@@ -65,7 +65,7 @@ export class ThiefMainSkill extends SkillController {
 
 export class RangerMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.RANGER_DEADLY_PRECISION)
+    super(CLASS_SKILL_DATA.KEEN_EYE)
   }
 
   effect(): void {
@@ -94,7 +94,7 @@ export class RangerMainSkill extends SkillController {
 
 export class BerserkerMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.BERSERKER_BLOOD_DANCE)
+    super(CLASS_SKILL_DATA.BIG_SWING)
   }
 
   effect(): void {
@@ -122,7 +122,7 @@ export class BerserkerMainSkill extends SkillController {
 
 export class MageMainSkill extends SkillController {
   constructor() {
-    super(SKILL_DATA.MAGE_ARMOR_SAP)
+    super(CLASS_SKILL_DATA.SMOKE_SCREEN)
   }
 
   effect(): void {

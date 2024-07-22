@@ -22,6 +22,7 @@ import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
+import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 
 export class InventoryController {
   // Nav Bar
@@ -39,8 +40,8 @@ export class InventoryController {
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
   public classSkillsIndex: number = 0
   public generalSkillsIndex: number = 0
-  public generalSkillsArray: SkillDefinition[] = []
-  public classSkillsArray: SkillDefinition[] = []
+  public generalSkillsArray: SkillDefinition[] = this.loadSkills('general')
+  public classSkillsArray: SkillDefinition[] = this.loadSkills('class')
   public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
@@ -107,40 +108,33 @@ export class InventoryController {
         this.companions = () => <CompanionsPage prop={undefined} />
         break
       case 2:
-        this.skills = () => {
-          this.loadSkills()
-          return (
-            <SkillsPage
-              selectedSkill={this.selectedSkill}
-              selectedSkillType={this.selectedSkillType}
-              equipButtonSprite={this.equipButtonSprite}
-              unequipButtonSprite={this.unequipButtonSprite}
-              generalSkillsIndex={this.generalSkillsIndex}
-              classSkillsIndex={this.classSkillsIndex}
-              playerLevel={Player.getInstance().levels.getLevel(
-                LEVEL_TYPES.PLAYER
-              )}
-              selectSkill={this.selectSkill.bind(this)}
-              scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(
-                this
-              )}
-              scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(
-                this
-              )}
-              scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
-              scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
-              generalSkillsLeftSprite={this.leftGeneralSprite}
-              generalSkillsRightSprite={this.rightGeneralSprite}
-              classSkillsLeftSprite={this.leftClassSprite}
-              classSkillsRightSprite={this.rightClassSprite}
-              generalSkills={this.generalSkillsArray}
-              classSkills={this.classSkillsArray}
-              equipSkill={this.equipSkill.bind(this)}
-              disableSkill={this.disableSkill.bind(this)}
-              selectSkillType={this.selectSkillType.bind(this)}
-            />
-          )
-        }
+        this.skills = () => (
+          <SkillsPage
+            selectedSkill={this.selectedSkill}
+            selectedSkillType={this.selectedSkillType}
+            equipButtonSprite={this.equipButtonSprite}
+            unequipButtonSprite={this.unequipButtonSprite}
+            generalSkillsIndex={this.generalSkillsIndex}
+            classSkillsIndex={this.classSkillsIndex}
+            playerLevel={Player.getInstance().levels.getLevel(
+              LEVEL_TYPES.PLAYER
+            )}
+            selectSkill={this.selectSkill.bind(this)}
+            scrollRightGeneralSkills={this.increaseGeneralSkillIndex.bind(this)}
+            scrollLeftGeneralSkills={this.decreaseGeneralSkillIndex.bind(this)}
+            scrollRightClassSkills={this.increaseClassSkillIndex.bind(this)}
+            scrollLeftClassSkills={this.decreaseClassSkillIndex.bind(this)}
+            generalSkillsLeftSprite={this.leftGeneralSprite}
+            generalSkillsRightSprite={this.rightGeneralSprite}
+            classSkillsLeftSprite={this.leftClassSprite}
+            classSkillsRightSprite={this.rightClassSprite}
+            generalSkills={this.generalSkillsArray}
+            classSkills={this.classSkillsArray}
+            equipSkill={this.equipSkill.bind(this)}
+            disableSkill={this.disableSkill.bind(this)}
+            selectSkillType={this.selectSkillType.bind(this)}
+          />
+        )
         break
       case 3:
         this.professions = () => <ProfessionsPage prop={undefined} />
@@ -277,26 +271,28 @@ export class InventoryController {
     }
   }
 
-  loadSkills(): void {
-    const generalSkills = Object.keys(SKILL_DATA)
-      .filter((key) => key.includes('GENERAL'))
+  loadSkills(type: 'class' | 'general'): SkillDefinition[] {
+    let filterCriteria: string
+    if (type === 'class') {
+      filterCriteria = CharacterClasses[Player.getInstance().class].slice(3)
+    } else {
+      filterCriteria = 'GENERAL'
+    }
+
+    return Object.keys(SKILL_DATA)
+      .filter((key) => key.includes(filterCriteria))
       .map((key) => SKILL_DATA[key as SkillKey])
-
-    this.generalSkillsArray = generalSkills
-
-    const classSkills = Object.keys(SKILL_DATA)
-      .filter((key) =>
-        key.includes(Player.getInstance().class.toString().toUpperCase())
-      )
-      .map((key) => SKILL_DATA[key as SkillKey])
-
-    this.generalSkillsArray = classSkills
   }
 
   selectSkillType(type: 'class' | 'general'): void {
     if (type === 'class') {
-      // this.selectedSkillType = Player.getInstance().class.toString().toUpperCase() + ' Skill'
-      this.selectedSkillType = 'Thief' + ' Skill'
+      const characterClassName = CharacterClasses[Player.getInstance().class]
+        .slice(3)
+        .toLowerCase()
+      this.selectedSkillType =
+        characterClassName.charAt(0).toUpperCase() +
+        characterClassName.slice(1) +
+        ' Skill'
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }

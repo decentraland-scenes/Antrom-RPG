@@ -1047,27 +1047,27 @@ const skillsGeneralSprites = {
 }
 
 export const CLASS_SKILL_DATA = {
-  clericSkill: {
+  HEALING_TOUCH: {
     name: 'Healing Touch',
     sprite: skillsPlayerSprites.clericSkill,
     cooldown: 8
   },
-  thiefSkill: {
+  ASSASINS_AMBITION: {
     name: `Assasin's Ambition`,
     sprite: skillsPlayerSprites.thiefSkill,
     cooldown: 12
   },
-  rangerSkill: {
+  KEEN_EYE: {
     name: 'Keen Eye',
     sprite: skillsPlayerSprites.rangerSkill,
     cooldown: 12
   },
-  berserkerSkill: {
+  BIG_SWING: {
     name: 'Big Swing',
     sprite: skillsPlayerSprites.berserkerSkill,
     cooldown: 6
   },
-  mageSkill: {
+  SMOKE_SCREEN: {
     name: 'Smoke Screen',
     sprite: skillsPlayerSprites.mageSkill,
     cooldown: 12

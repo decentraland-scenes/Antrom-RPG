@@ -16,6 +16,7 @@ import {
 import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
+import { Player } from '../../player/player'
 
 export class UI {
   // Nav Bar
@@ -299,8 +300,8 @@ export class UI {
 
   selectSkillType(type: 'class' | 'general'): void {
     if (type === 'class') {
-      // this.selectedSkillType = Player.getInstance().class.toString().toUpperCase() + ' Skill'
-      this.selectedSkillType = 'Thief' + ' Skill'
+      this.selectedSkillType =
+        Player.getInstance().class.toString().toUpperCase() + ' Skill'
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }
