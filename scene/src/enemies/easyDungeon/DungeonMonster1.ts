@@ -15,7 +15,6 @@ const DEFAULT_HP = 570
 export default class BerserkerE extends MonsterOligar {
   shapeFile = 'assets/models/SkeletonSword.glb'
   hoverText = 'Attack LVL 15 Skeleton Soldier!'
-  minLuck = 3
   static currentInstance: BerserkerE
 
   constructor() {
@@ -26,6 +25,7 @@ export default class BerserkerE extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 3
     this.initMonster()
     this.setTopOffset(3)
     // # in %

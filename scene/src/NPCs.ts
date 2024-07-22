@@ -1,8 +1,9 @@
-import { type Entity, engine } from '@dcl/sdk/ecs'
+import { type Entity } from '@dcl/sdk/ecs'
 import { type GameController } from './controllers/game.controller'
 import * as npc from 'dcl-npc-toolkit'
 import { openDialogWindow } from 'dcl-npc-toolkit'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { entityController } from './realms/entityController'
 
 export class NPCs {
   gameController: GameController
@@ -19,7 +20,7 @@ export class NPCs {
   }
 
   createQuest1NPCs(): void {
-    this.Guyonknees = engine.addEntity()
+    this.Guyonknees = entityController.addEntity()
     this.Guyonknees = npc.create(
       {
         position: Vector3.create(-38.17, 9.53, -39.78),
@@ -45,7 +46,7 @@ export class NPCs {
       }
     )
 
-    this.soldierA = engine.addEntity()
+    this.soldierA = entityController.addEntity()
     this.soldierA = npc.create(
       {
         position: Vector3.create(-38.17, 9.53, -42.16),
@@ -67,7 +68,7 @@ export class NPCs {
       }
     )
 
-    this.soldierB = engine.addEntity()
+    this.soldierB = entityController.addEntity()
     this.soldierB = npc.create(
       {
         position: Vector3.create(-40.78, 9.53, -39.66),
@@ -89,7 +90,7 @@ export class NPCs {
       }
     )
 
-    this.soldierC = engine.addEntity()
+    this.soldierC = entityController.addEntity()
     this.soldierC = npc.create(
       {
         position: Vector3.create(-38.05, 9.53, -37.37),
@@ -111,7 +112,7 @@ export class NPCs {
       }
     )
 
-    this.Trews = engine.addEntity()
+    this.Trews = entityController.addEntity()
     this.Trews = npc.create(
       {
         position: Vector3.create(-34.93, 9.53, -39.42),
@@ -136,7 +137,7 @@ export class NPCs {
   }
 
   createPlowmanNPC(): void {
-    this.Plawman = engine.addEntity()
+    this.Plawman = entityController.addEntity()
     this.Plawman = npc.create(
       {
         position: Vector3.create(-59.75, 5, -19.05),
@@ -164,7 +165,7 @@ export class NPCs {
   }
 
   createNoirNPC(): void {
-    this.Noir = engine.addEntity()
+    this.Noir = entityController.addEntity()
     this.Noir = npc.create(
       {
         position: Vector3.create(-41.02, 0, 16.68),
@@ -190,7 +191,7 @@ export class NPCs {
 
   createChryseNPC(): void {
     console.log('CHRYSE CREATED')
-    this.Chryse = engine.addEntity()
+    this.Chryse = entityController.addEntity()
     this.Chryse = npc.create(
       {
         position: Vector3.create(-41.39, 0, 26.89),
@@ -216,7 +217,7 @@ export class NPCs {
       }
     )
 
-    this.soldierC = engine.addEntity()
+    this.soldierC = entityController.addEntity()
     this.soldierC = npc.create(
       {
         position: Vector3.create(-40.04, 0, 25.11),
@@ -238,7 +239,7 @@ export class NPCs {
       }
     )
 
-    this.Trews = engine.addEntity()
+    this.Trews = entityController.addEntity()
     this.Trews = npc.create(
       {
         position: Vector3.create(-41.27, 0, 29.25),

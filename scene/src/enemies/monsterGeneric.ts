@@ -1,6 +1,6 @@
 import * as utils from '@dcl-sdk/utils'
 import {
-  engine,
+  Billboard,
   Material,
   MeshRenderer,
   TextShape,
@@ -9,6 +9,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Character } from './character'
+import { entityController } from '../realms/entityController'
 
 export class GenericMonster extends Character {
   private attackTrigger?: Entity
@@ -31,7 +32,7 @@ export class GenericMonster extends Character {
   setupAttackTriggerBox(scale: Vector3 = Vector3.create(4, 2, 4)): void {
     this.cleanup()
 
-    this.attackTrigger = engine.addEntity()
+    this.attackTrigger = entityController.addEntity()
 
     Transform.create(this.attackTrigger, { parent: this.entity })
     // MeshRenderer.setBox(this.attackTrigger)
@@ -49,8 +50,9 @@ export class GenericMonster extends Character {
         this.handleAttack()
       },
       () => {
-        if (this.healthBar != null) engine.removeEntity(this.healthBar)
-        if (this.label != null) engine.removeEntity(this.label)
+        if (this.healthBar != null)
+          entityController.removeEntity(this.healthBar)
+        if (this.label != null) entityController.removeEntity(this.label)
       }
     )
   }
@@ -66,11 +68,11 @@ export class GenericMonster extends Character {
   }
 
   createHealthBar(): void {
-    if (this.healthBar != null) engine.removeEntity(this.healthBar)
-    if (this.label != null) engine.removeEntity(this.label)
+    if (this.healthBar != null) entityController.removeEntity(this.healthBar)
+    if (this.label != null) entityController.removeEntity(this.label)
 
-    this.healthBar = engine.addEntity()
-    this.label = engine.addEntity()
+    this.healthBar = entityController.addEntity()
+    this.label = entityController.addEntity()
 
     Transform.createOrReplace(this.healthBar, {
       scale: Vector3.create(1 * this.getHealthScaled(), 0.1, 0.1),
@@ -95,6 +97,8 @@ export class GenericMonster extends Character {
       rotation: Quaternion.fromEulerDegrees(0, 180, 0),
       parent: this.entity
     })
+    Billboard.create(this.label)
+    Billboard.create(this.healthBar)
   }
 
   handleAttack(): void {}
@@ -102,13 +106,13 @@ export class GenericMonster extends Character {
   cleanup(): void {
     if (this.attackTrigger !== undefined) {
       utils.triggers.removeTrigger(this.attackTrigger)
-      engine.removeEntity(this.attackTrigger)
+      entityController.removeEntity(this.attackTrigger)
     }
     if (this.healthBar !== undefined) {
-      engine.removeEntity(this.healthBar)
+      entityController.removeEntity(this.healthBar)
     }
     if (this.label !== undefined) {
-      engine.removeEntity(this.label)
+      entityController.removeEntity(this.label)
     }
   }
 

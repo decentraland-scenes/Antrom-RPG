@@ -22,7 +22,6 @@ const MODEL_NAMES = [
 export default class easyEnemy1 extends MonsterOligar {
   shapeFile = ''
   hoverText = 'Attack LVL 15 Butcher!'
-  minLuck = 2
   hasDrop = false
   static currentInstance: easyEnemy1
 
@@ -35,6 +34,7 @@ export default class easyEnemy1 extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 2
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()

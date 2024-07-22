@@ -24,6 +24,7 @@ import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { setPlayerPosition } from '../utils/engine'
 import { type RealmType, type Realm } from './types'
+import { entityController } from './entityController'
 
 type Difficulty = {
   EASY: 'easy'
@@ -148,20 +149,20 @@ const caveSoldierPositions = [
 // ]
 
 export class Dungeon implements Realm {
-  private readonly boardParent = engine.addEntity()
+  private readonly boardParent = entityController.addEntity()
   private readonly leaderBoard: LeaderBoard
-  private readonly wall1 = engine.addEntity()
-  private readonly wall2 = engine.addEntity()
-  private readonly wall3 = engine.addEntity()
-  private readonly wall4 = engine.addEntity()
-  private readonly wall5 = engine.addEntity()
-  private readonly wall6 = engine.addEntity()
-  private readonly secretwall = engine.addEntity()
-  private readonly lever = engine.addEntity()
-  private readonly gem = engine.addEntity()
-  private readonly sandDungeonSecret = engine.addEntity()
-  private readonly villager1 = engine.addEntity()
-  private readonly doorOpening = engine.addEntity()
+  private readonly wall1 = entityController.addEntity()
+  private readonly wall2 = entityController.addEntity()
+  private readonly wall3 = entityController.addEntity()
+  private readonly wall4 = entityController.addEntity()
+  private readonly wall5 = entityController.addEntity()
+  private readonly wall6 = entityController.addEntity()
+  private readonly secretwall = entityController.addEntity()
+  private readonly lever = entityController.addEntity()
+  private readonly gem = entityController.addEntity()
+  private readonly sandDungeonSecret = entityController.addEntity()
+  private readonly villager1 = entityController.addEntity()
+  private readonly doorOpening = entityController.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
     this.gameController = gameController
@@ -386,7 +387,7 @@ export class Dungeon implements Realm {
   buildDungeon(scene: string): void {
     // cleanupScene()
     utils.timers.setTimeout(() => {
-      const hideAvatarsEntity = engine.addEntity()
+      const hideAvatarsEntity = entityController.addEntity()
       AvatarModifierArea.create(hideAvatarsEntity, {
         area: Vector3.create(16000, 600, 16000),
         excludeIds: [''],
@@ -484,43 +485,43 @@ export class Dungeon implements Realm {
   resetCaveDungeonScene(): void {}
   createNightmareDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricNightmare())
-    // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
+    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new TrewsNightmare())
-    // trews.forEach((trews) => engine.addEntity(trews))
+    // trews.forEach((trews) => entityController.addEntity(trews))
     // const berserker = Array.from({ length: 1 }, () => new BerserkerNightmare())
-    // berserker.forEach((berserker) => engine.addEntity(berserker))
+    // berserker.forEach((berserker) => entityController.addEntity(berserker))
     // const undeadKing = Array.from({ length: 1 }, () => new UndeadKingNightmare())
-    // undeadKing.forEach((undeadKing) => engine.addEntity(undeadKing))
+    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
     // const dragonMothere = Array.from({ length: 1 }, () => new DragonMotherNightmare())
-    // dragonMothere.forEach((dragonMothere) => engine.addEntity(dragonMothere))
+    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
     // console.log('create easy enemies')
   }
 
   createHardDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodric())
-    // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
+    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new Trews())
-    // trews.forEach((trews) => engine.addEntity(trews))
+    // trews.forEach((trews) => entityController.addEntity(trews))
     // const berserker = Array.from({ length: 1 }, () => new Berserker())
-    // berserker.forEach((berserker) => engine.addEntity(berserker))
+    // berserker.forEach((berserker) => entityController.addEntity(berserker))
     // const undeadKing = Array.from({ length: 1 }, () => new UndeadKing())
-    // undeadKing.forEach((undeadKing) => engine.addEntity(undeadKing))
+    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
     // const dragonMothere = Array.from({ length: 1 }, () => new DragonMother())
-    // dragonMothere.forEach((dragonMothere) => engine.addEntity(dragonMothere))
+    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
     // console.log("create easy enemies")
   }
 
   createEasyDungeonLegacy(): void {
     // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricE())
-    // evilGodric.forEach((evilGodric) => engine.addEntity(evilGodric))
+    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
     // const trews = Array.from({ length: 1 }, () => new TrewsE())
-    // trews.forEach((trews) => engine.addEntity(trews))
+    // trews.forEach((trews) => entityController.addEntity(trews))
     // const berserker = Array.from({ length: 1 }, () => new BerserkerE())
-    // berserker.forEach((berserker) => engine.addEntity(berserker))
+    // berserker.forEach((berserker) => entityController.addEntity(berserker))
     // const undeadKing = Array.from({ length: 1 }, () => new UndeadKingE())
-    // undeadKing.forEach((undeadKing) => engine.addEntity(undeadKing))
+    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
     // const dragonMothere = Array.from({ length: 1 }, () => new DragonMotherE())
-    // dragonMothere.forEach((dragonMothere) => engine.addEntity(dragonMothere))
+    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
     // console.log("create easy enemies")
   }
 
@@ -608,7 +609,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new EasyCaveDungeonBoss(easyEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.MEDIUM) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -620,7 +621,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new MedCaveDungeonBoss(mediumEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.HARD) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -632,7 +633,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new HardCaveDungeonBoss(hardEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.NIGHTMARE) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -644,7 +645,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new NightmareCaveDungeonBoss(nightmareEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
       } else {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
         console.log(`Invalid difficulty level: ${difficulty}`)
@@ -662,7 +663,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new EasyDesertDungeonBoss(easyEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.MEDIUM) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -674,7 +675,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new MedDesertDungeonBoss(mediumEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.HARD) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -686,7 +687,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new HardCaveDungeonBoss(hardEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
         // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
       } else if (difficulty.NIGHTMARE) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -698,7 +699,7 @@ export class Dungeon implements Realm {
         //     { length: 1 },
         //     () => new NightmareCaveDungeonBoss(nightmareEnemyAttack)
         // )
-        // wastelandApex.forEach((wastelandApex) => engine.addEntity(wastelandApex))
+        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
       } else {
         // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
         console.log(`Invalid difficulty level: ${difficulty}`)
@@ -728,21 +729,21 @@ export class Dungeon implements Realm {
   }
 
   removeAllEntities(): void {
-    engine.removeEntity(this.boardParent)
+    entityController.removeEntity(this.boardParent)
     this.leaderBoard.destroy()
-    engine.removeEntity(this.leaderBoard.leaderBoard)
-    engine.removeEntity(this.wall1)
-    engine.removeEntity(this.wall2)
-    engine.removeEntity(this.wall3)
-    engine.removeEntity(this.wall4)
-    engine.removeEntity(this.wall5)
-    engine.removeEntity(this.wall6)
-    engine.removeEntity(this.secretwall)
-    engine.removeEntity(this.lever)
-    engine.removeEntity(this.gem)
-    engine.removeEntity(this.sandDungeonSecret)
-    engine.removeEntity(this.villager1)
-    engine.removeEntity(this.doorOpening)
+    entityController.removeEntity(this.leaderBoard.leaderBoard)
+    entityController.removeEntity(this.wall1)
+    entityController.removeEntity(this.wall2)
+    entityController.removeEntity(this.wall3)
+    entityController.removeEntity(this.wall4)
+    entityController.removeEntity(this.wall5)
+    entityController.removeEntity(this.wall6)
+    entityController.removeEntity(this.secretwall)
+    entityController.removeEntity(this.lever)
+    entityController.removeEntity(this.gem)
+    entityController.removeEntity(this.sandDungeonSecret)
+    entityController.removeEntity(this.villager1)
+    entityController.removeEntity(this.doorOpening)
   }
 
   deadPosition(): Vector3 | null {

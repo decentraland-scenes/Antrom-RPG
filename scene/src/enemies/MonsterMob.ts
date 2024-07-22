@@ -18,6 +18,7 @@ import { MonsterAttack } from './monsterAttack'
 import { MonsterAttackRanged } from './monsterAttackRanged'
 import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
+import { entityController } from '../realms/entityController'
 
 export class MonsterMob extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -157,7 +158,7 @@ export class MonsterMob extends GenericMonster {
   }
 
   setupRangedAttackTriggerBox(): void {
-    this.rangeAttackTrigger = engine.addEntity()
+    this.rangeAttackTrigger = entityController.addEntity()
     Transform.create(this.rangeAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.rangeAttackTrigger)
     VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
@@ -184,7 +185,7 @@ export class MonsterMob extends GenericMonster {
   }
 
   setupEngageTriggerBox(): void {
-    this.engageAttackTrigger = engine.addEntity()
+    this.engageAttackTrigger = entityController.addEntity()
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
@@ -243,12 +244,11 @@ export class MonsterMob extends GenericMonster {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
-      engine.removeEntity(this.entity)
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.entity)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
       super.cleanup()
       console.log('entity removed')
-      this.isDead = true
     }, 5 * 1000)
   }
 
@@ -257,14 +257,17 @@ export class MonsterMob extends GenericMonster {
   }
 
   onDead(): void {
+    if (this.isDead) return
+    this.isDead = true
+
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
-      engine.removeEntity(this.rangeAttackTrigger)
-      engine.removeEntity(this.engageAttackTrigger)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()
@@ -299,7 +302,7 @@ export class MonsterMob extends GenericMonster {
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(0)
+    setRefreshTimer(1)
 
     const defPercent = player.getDefensePercent()
     let enemyAttack = this.attack * (1 - defPercent)
@@ -334,15 +337,15 @@ export class MonsterMob extends GenericMonster {
         const player = Player.getInstanceOrNull()
         if (player === null) return
 
+        if (refreshtimer > 0) {
+          return
+        }
+        setRefreshTimer(1)
+
         if (this.health <= 0) {
           this.onDead()
           return
         }
-
-        if (refreshtimer > 0) {
-          return
-        }
-        setRefreshTimer(0)
 
         const monsterDiceResult = this.rollDice()
         const playerDiceResult = player.rollDice()

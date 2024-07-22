@@ -15,7 +15,6 @@ const DEFAULT_HP = 600
 export default class EvilGodricE extends MonsterOligar {
   shapeFile = 'assets/models/Ghost.glb'
   hoverText = 'Attack LVL 20 Deadly Apparition!'
-  minLuck = 2
   static currentInstance: EvilGodricE
 
   constructor() {
@@ -26,6 +25,7 @@ export default class EvilGodricE extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 2
     this.initMonster()
     this.setTopOffset(3)
     // # in %

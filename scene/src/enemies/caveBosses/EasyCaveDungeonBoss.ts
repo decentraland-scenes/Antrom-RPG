@@ -12,10 +12,9 @@ export default class EasyCaveDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(45, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 2500)
+    this.minLuck = 10
 
     this.initMonster()
 

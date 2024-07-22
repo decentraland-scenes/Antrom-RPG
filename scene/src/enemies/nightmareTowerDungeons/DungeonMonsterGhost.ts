@@ -17,10 +17,10 @@ function getRandomIntRange(min: number, max: number): number {
 export default class GhostNightmare extends MonsterOligar {
   shapeFile = 'models/Ghost.glb'
   hoverText = 'Attack Nightmare Ghost!'
-  minLuck = 100
 
   constructor() {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP)
+    this.minLuck = 100
     this.initMonster()
     this.setTopOffset(2.25)
   }
@@ -47,7 +47,7 @@ export default class GhostNightmare extends MonsterOligar {
 
   create(): void {
     // const mons = new GhostNightmare()
-    // engine.addEntity(mons)
+    // entityController.addEntity(mons)
   }
 
   loadTransformation(): void {

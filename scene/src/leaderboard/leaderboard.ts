@@ -1,12 +1,12 @@
 import {
   Font,
   type Entity,
-  engine,
   Transform,
   TextShape,
   TextAlignMode
 } from '@dcl/sdk/ecs'
 import { Color4, Vector3 } from '@dcl/sdk/math'
+import { entityController } from '../realms/entityController'
 
 const TiltleFont = Font.F_SERIF
 const SFFont = Font.F_SERIF
@@ -31,7 +31,7 @@ export class LeaderBoard {
 
   constructor() {
     console.log('leaderboard created')
-    this.leaderBoard = engine.addEntity()
+    this.leaderBoard = entityController.addEntity()
     Transform.createOrReplace(this.leaderBoard, {
       position: Vector3.create(0, 0, 0)
     })
@@ -56,7 +56,7 @@ export class LeaderBoard {
     position: Vector3,
     parent: Entity
   ): Entity {
-    const entity = engine.addEntity()
+    const entity = entityController.addEntity()
     Transform.createOrReplace(entity, { parent })
     Transform.getMutable(entity).position = position
     TextShape.createOrReplace(entity, { text, width: 10 })
@@ -174,14 +174,14 @@ export class LeaderBoard {
   }
 
   public destroy(): void {
-    engine.removeEntity(this.nameTitle)
-    engine.removeEntity(this.scoreTitle)
+    entityController.removeEntity(this.nameTitle)
+    entityController.removeEntity(this.scoreTitle)
     for (const entity of this.scoreBoardNames) {
-      engine.removeEntity(entity)
+      entityController.removeEntity(entity)
     }
     for (const entity of this.scoreBoardValues) {
-      engine.removeEntity(entity)
+      entityController.removeEntity(entity)
     }
-    engine.removeEntity(this.leaderBoard)
+    entityController.removeEntity(this.leaderBoard)
   }
 }

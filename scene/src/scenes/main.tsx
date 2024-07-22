@@ -27,10 +27,11 @@ export function main(): void {
 
 async function init(retry: boolean): Promise<void> {
   await waitNextTick()
+  await waitNextTick()
 
   gameInstance = new GameController()
   gameInstance.uiController.loadingUI.startLoading()
-  gameInstance.realmController.switchRealm('antrom')
+  gameInstance.realmController.switchRealm('minersCave')
 
   await waitNextTick()
 

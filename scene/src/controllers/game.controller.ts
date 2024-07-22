@@ -15,3 +15,12 @@ export class GameController {
     this.npcs = new NPCs(this)
   }
 }
+
+let currentGameController: GameController
+export function getCurrentGameController(): GameController {
+  return currentGameController
+}
+
+export function setCurrentGameController(controller: GameController): void {
+  currentGameController = controller
+}

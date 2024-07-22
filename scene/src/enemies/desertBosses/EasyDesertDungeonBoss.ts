@@ -17,10 +17,9 @@ export default class EasyDesertDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(20, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 1000)
+    this.minLuck = 10
 
     this.initMonster()
 

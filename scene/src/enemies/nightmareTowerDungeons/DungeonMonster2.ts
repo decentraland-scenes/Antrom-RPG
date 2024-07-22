@@ -19,7 +19,6 @@ const POSITIONS: Vector3[] = [
 export default class EvilGodricNightmare extends MonsterOligar {
   shapeFile = 'assets/models/Ghost.glb'
   hoverText = 'Attack Nightmare Deadly Apparition!'
-  minLuck = 30
   static currentInstance: EvilGodricNightmare
 
   constructor() {
@@ -31,6 +30,7 @@ export default class EvilGodricNightmare extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(player.maxHealth * 2 + stage * 60)
     )
+    this.minLuck = 30
     this.initMonster()
     this.setTopOffset(3)
     // # in %

@@ -3,7 +3,6 @@ import {
   InputAction,
   MeshCollider,
   Transform,
-  engine,
   pointerEventsSystem
 } from '@dcl/sdk/ecs'
 import MonsterOligar from '../monster'
@@ -13,6 +12,7 @@ import { LEVEL_TYPES } from '../../player/LevelManager'
 import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Player } from '../../player/player'
+import { entityController } from '../../realms/entityController'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -24,8 +24,6 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 50
-
   constructor(difficulty: number) {
     const stage = DungeonStage.read()
     const player = Player.getInstance()
@@ -35,6 +33,7 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
       player.levels.getLevel(LEVEL_TYPES.PLAYER) + 5,
       1250000 + 15000 * stage
     )
+    this.minLuck = 50
 
     this.initMonster()
 
@@ -229,7 +228,7 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
 }
 
 export async function backToAntromFromCave(difficulty: string): Promise<void> {
-  const door1 = engine.addEntity()
+  const door1 = entityController.addEntity()
   Transform.create(door1, {
     position: Vector3.create(48.14, 19, -5.73),
     rotation: Quaternion.create(0, -0.05, 0, 1),
@@ -248,7 +247,7 @@ export async function backToAntromFromCave(difficulty: string): Promise<void> {
     function () {
       const player = Player.getInstance()
       quest.removeKingQuestTimer()
-      engine.removeEntity(door1)
+      entityController.removeEntity(door1)
       const currentDungeonTokens = player.inventory.getItemCount(
         ITEM_TYPES.ICESHARD
       )
@@ -303,7 +302,7 @@ export async function backToAntromFromCave(difficulty: string): Promise<void> {
   // d1animator.addClip(idleClip)
 
   // // Add entity to engine
-  // engine.addEntity(door1)
+  // entityController.addEntity(door1)
 
   // // Default Animation
   // idleClip.play()

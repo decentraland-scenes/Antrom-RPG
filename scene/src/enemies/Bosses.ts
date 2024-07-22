@@ -43,7 +43,6 @@ function getRandomIntRange(min: number, max: number): number {
 export default class Bosses extends MonsterOligar {
   shapeFile = 'assets/models/Oligar.glb'
   hoverText = `Attack LVL 99999 Oligar!`
-  minLuck = 50
   static currentModelIndex: number = 0
   static currentStage: number = 1
   static canCreate(): boolean {
@@ -65,6 +64,7 @@ export default class Bosses extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 50
     this.shapeFile = MODEL_NAMES[Bosses.currentModelIndex]
     Bosses.currentModelIndex++
     this.initMonster()
@@ -86,7 +86,7 @@ export default class Bosses extends MonsterOligar {
       /// /player.inventory.incrementItem(ITEM_TYPES.OLIGAR_HEAD, 1)
 
       Bosses.currentStage = 1
-      // engine.removeEntity(Bosses.currentInstance)
+      // entityController.removeEntity(Bosses.currentInstance)
       // Bosses.currentInstance = null // Reset the reference
     }
   }
