@@ -12,7 +12,9 @@ export const CLASS_MAIN_SKILL: Record<CharacterClasses, () => SkillController> =
     [CharacterClasses.CC_RANGER]: () => new RangerMainSkill(),
     [CharacterClasses.CC_BERSERKER]: () => new BerserkerMainSkill(),
     [CharacterClasses.CC_MAGE]: () => new MageMainSkill()
-  }
+}
+  
+
 
 export class ClericMainSkill extends SkillController {
   constructor() {

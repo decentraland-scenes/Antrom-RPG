@@ -20,6 +20,7 @@ import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 
 export class InventoryController {
   // Nav Bar
@@ -242,9 +243,17 @@ export class InventoryController {
     // TODO Equip this.selectedSkill if it isn't equiped.
     if (this.selectedSkill !== undefined) {
       console.log('Equiped skill')
+      Player.getInstance().setSkill(this.getLowerSkillIndex(), new ThiefMainSkill)
     } else {
       console.error('You should choise a skill to equip')
     }
+  }
+
+  getLowerSkillIndex(): number{
+    // TODO Obtain the skills array
+    // const firstFreePosition = array.findIndex(element => element === undefined);
+    // return firstFreePosition
+    return 0
   }
 
   disableSkill(): void {
