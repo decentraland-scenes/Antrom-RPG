@@ -8,7 +8,7 @@ export function BottomBarSkillSlot({
   slot,
   hotKey
 }: SkillSlotProps): ReactEcs.JSX.Element | null {
-  if (slot === undefined) {
+  if (slot?.definition === undefined) {
     return null
   }
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)

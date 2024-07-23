@@ -78,6 +78,7 @@ export class LoadingUI {
             uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
             onMouseDown={() => {
               this.isVisible = false
+              console.log('clicked')
             }}
           />
         </UiEntity>

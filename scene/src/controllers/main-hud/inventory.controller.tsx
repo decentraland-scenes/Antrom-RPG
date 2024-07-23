@@ -3,8 +3,10 @@ import ReactEcs from '@dcl/sdk/react-ecs'
 import { Player } from '../../player/player'
 import { type SkillDefinition } from '../../player/skills'
 import {
-  arrayOfSkills,
-  CLASS_SKILLS_TO_SHOW
+  CLASS_SKILLS_TO_SHOW,
+  GENERAL_SKILLS_TO_SHOW,
+  SKILL_DATA,
+  type SkillKey
 } from '../../ui/bottom-bar/skillsData'
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
@@ -19,6 +21,8 @@ import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
+import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 
 export class InventoryController {
   // Nav Bar
@@ -36,12 +40,13 @@ export class InventoryController {
   public unequipButtonSprite: Sprite = skillsPageSprites.disableButton
   public classSkillsIndex: number = 0
   public generalSkillsIndex: number = 0
-  public generalSkillsArray: SkillDefinition[] = arrayOfSkills
-  public classSkillsArray: SkillDefinition[] = arrayOfSkills
+  public generalSkillsArray: SkillDefinition[] = this.loadSkills('general')
+  public classSkillsArray: SkillDefinition[] = this.loadSkills('class')
   public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
   public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
+  public selectedSkillType: string = ''
 
   constructor() {
     this.updateTab(0)
@@ -106,7 +111,7 @@ export class InventoryController {
         this.skills = () => (
           <SkillsPage
             selectedSkill={this.selectedSkill}
-            selectedSkillType=""
+            selectedSkillType={this.selectedSkillType}
             equipButtonSprite={this.equipButtonSprite}
             unequipButtonSprite={this.unequipButtonSprite}
             generalSkillsIndex={this.generalSkillsIndex}
@@ -127,6 +132,7 @@ export class InventoryController {
             classSkills={this.classSkillsArray}
             equipSkill={this.equipSkill.bind(this)}
             disableSkill={this.disableSkill.bind(this)}
+            selectSkillType={this.selectSkillType.bind(this)}
           />
         )
         break
@@ -159,7 +165,7 @@ export class InventoryController {
   increaseGeneralSkillIndex(): void {
     if (
       this.generalSkillsIndex <
-      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
     ) {
       console.log(this.generalSkillsIndex)
       this.rightGeneralSprite = inventorySprites.rightArrowButtonClicked
@@ -177,8 +183,11 @@ export class InventoryController {
   }
 
   increaseClassSkillIndex(): void {
-    if (this.classSkillsIndex < 3) {
-      this.rightSprite = inventorySprites.rightArrowButtonClicked
+    if (
+      this.classSkillsIndex <
+      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+    ) {
+      this.rightClassSprite = inventorySprites.rightArrowButtonClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
     }
@@ -186,7 +195,7 @@ export class InventoryController {
 
   decreaseClassSkillIndex(): void {
     if (this.classSkillsIndex > 0) {
-      this.leftSprite = inventorySprites.leftArrowButtonClicked
+      this.leftClassSprite = inventorySprites.leftArrowButtonClicked
       this.classSkillsIndex--
       this.updateSpritesButtons(150)
     }
@@ -211,11 +220,24 @@ export class InventoryController {
       }
       if (
         this.generalSkillsIndex ===
-        Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW) - 1
+        Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
       ) {
         this.rightGeneralSprite = inventorySprites.rightArrowButtonUnavailable
       } else {
         this.rightGeneralSprite = inventorySprites.rightArrowButton
+      }
+      if (
+        this.classSkillsIndex ===
+        Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      ) {
+        this.rightClassSprite = inventorySprites.rightArrowButtonUnavailable
+      } else {
+        this.rightClassSprite = inventorySprites.rightArrowButton
+      }
+      if (this.classSkillsIndex === 0) {
+        this.leftClassSprite = inventorySprites.leftArrowButtonUnavailable
+      } else {
+        this.leftClassSprite = inventorySprites.leftArrowButton
       }
     }, milisecs)
   }
@@ -224,9 +246,20 @@ export class InventoryController {
     // TODO Equip this.selectedSkill if it isn't equiped.
     if (this.selectedSkill !== undefined) {
       console.log('Equiped skill')
+      Player.getInstance().setSkill(
+        this.getLowerSkillIndex(),
+        new ThiefMainSkill()
+      )
     } else {
       console.error('You should choise a skill to equip')
     }
+  }
+
+  getLowerSkillIndex(): number {
+    // TODO Obtain the skills array
+    // const firstFreePosition = array.findIndex(element => element === undefined);
+    // return firstFreePosition
+    return 0
   }
 
   disableSkill(): void {
@@ -235,6 +268,33 @@ export class InventoryController {
       console.log('Disabled skill')
     } else {
       console.error('You should choise a skill to disable')
+    }
+  }
+
+  loadSkills(type: 'class' | 'general'): SkillDefinition[] {
+    let filterCriteria: string
+    if (type === 'class') {
+      filterCriteria = CharacterClasses[Player.getInstance().class].slice(3)
+    } else {
+      filterCriteria = 'GENERAL'
+    }
+
+    return Object.keys(SKILL_DATA)
+      .filter((key) => key.includes(filterCriteria))
+      .map((key) => SKILL_DATA[key as SkillKey])
+  }
+
+  selectSkillType(type: 'class' | 'general'): void {
+    if (type === 'class') {
+      const characterClassName = CharacterClasses[Player.getInstance().class]
+        .slice(3)
+        .toLowerCase()
+      this.selectedSkillType =
+        characterClassName.charAt(0).toUpperCase() +
+        characterClassName.slice(1) +
+        ' Skill'
+    } else {
+      this.selectedSkillType = 'General' + ' Skill'
     }
   }
 }
