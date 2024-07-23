@@ -1,7 +1,12 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMeat from './monsterMeat'
-import { GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
-import { getRandomIntRange } from './../utils/getRandomInt'
+import { GltfContainer, Transform } from '@dcl/sdk/ecs'
+import { getRandomInt, getRandomIntRange } from './../utils/getRandomInt'
+import { Player } from '../player/player'
+import { LEVEL_TYPES } from '../player/LevelManager'
+import { BannerType } from '../ui/banner/bannerConstants'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { entityController } from '../realms/entityController'
 
 const DEFAULT_ATTACK = 0
 const DEFAULT_XP = 9
@@ -15,7 +20,7 @@ export default class Chicken extends MonsterMeat {
   hoverText = 'Attack Chicken!'
 
   constructor() {
-    super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP, 1, 4)
+    super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP, 1, 4, 1)
     this.initMonster()
     this.loadTransformation()
     this.shape = this.shapeFile
@@ -25,45 +30,52 @@ export default class Chicken extends MonsterMeat {
   }
 
   onDropXp(): void {
-    // TODO PLAYER
-    // log("onDropXp - Chicken")
-    // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {
-    //     player.levels.addXp(LEVEL_TYPES.PLAYER, 20)
-    // } else {
-    //     player.levels.addXp(LEVEL_TYPES.PLAYER, this.xp)
-    // }
-    // player.levels.addXp(LEVEL_TYPES.MEAT, 1)
-    // showGetXPIcon()
-    // log("onDrop - Chicken")
-    // const isWearableFound = checkWearableInUserData(
-    //     //Butcher
-    //     "0x855ec57cc60c28187a021a3757a80ac4758e0b06:0"
-    // )
-    // if ((await isWearableFound) === true) {
-    //     player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
-    //     showGetBonusMeatIcon()
-    //     DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
-    //         ITEM_TYPES.CHICKEN,
-    //         2
-    //     )
-    // } else {
-    //     player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
-    //     showGetMeatIcon()
-    //     DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
-    //         ITEM_TYPES.CHICKEN,
-    //         1
-    //     )
-    // }
-    // if (getRandomInt(10) === 1) {
-    //     player.inventory.incrementItem(ITEM_TYPES.EGG)
-    // }
-    // player.writeDataToServer()
+    const player = Player.getInstance()
+    player.gameController.uiController.displayBanner(BannerType.B_MEAT)
+
+    console.log('onDropXp - Chicken')
+    if (player.levels.getLevel(LEVEL_TYPES.PLAYER) <= 5) {
+      player.levels.addXp(LEVEL_TYPES.PLAYER, 20)
+    } else {
+      player.levels.addXp(LEVEL_TYPES.PLAYER, this.xp)
+    }
+
+    player.levels.addXp(LEVEL_TYPES.MEAT, 1)
+    player.gameController.uiController.displayBanner(BannerType.B_XP)
+
+    console.log('onDrop - Chicken')
+
+    if (
+      player.hasWearableEquipped('0x855ec57cc60c28187a021a3757a80ac4758e0b06:0')
+    ) {
+      player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
+      player.gameController.uiController.displayBanner(BannerType.B_MEAT_PLUS)
+
+      // TODO
+      // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
+      //     ITEM_TYPES.CHICKEN,
+      //     2
+      // )
+    } else {
+      player.inventory.incrementItem(ITEM_TYPES.CHICKEN, 2)
+      player.gameController.uiController.displayBanner(BannerType.B_MEAT)
+
+      // TODO
+      // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
+      //     ITEM_TYPES.CHICKEN,
+      //     1
+      // )
+    }
+
+    if (getRandomInt(10) === 1) {
+      player.inventory.incrementItem(ITEM_TYPES.EGG)
+    }
   }
 
   async onDropLoot(): Promise<void> {}
 
   setupAttackTriggerBox(): void {
-    // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
+    super.setupAttackTriggerBox()
   }
 
   loadTransformation(): void {
@@ -80,11 +92,13 @@ export default class Chicken extends MonsterMeat {
   }
 
   removeEntity(): void {
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.attackTrigger)
-    engine.removeEntity(this.healthBar)
-    engine.removeEntity(this.label)
-    engine.removeEntity(this.entity)
+    super.cleanup()
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.entity)
+  }
+
+  create(): void {
+    // TODO
   }
 }

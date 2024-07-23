@@ -2,6 +2,7 @@ import { Antrom } from '../realms/antrom'
 import { DemonKingDungeon } from '../realms/demonKingDungeon'
 import { Dungeon } from '../realms/dungeon'
 import { DungeonBase } from '../realms/dungeonBase'
+import { entityController } from '../realms/entityController'
 import { MinersCave } from '../realms/minerscave'
 import { type RealmType, type Realm } from '../realms/types'
 import { type GameController } from './game.controller'
@@ -16,6 +17,9 @@ export class RealmController {
 
   switchRealm(realm: RealmType): void {
     this.cleanUpScene()
+
+    // TODO: utils and npc library should be cleaned as well
+    entityController.clean()
 
     switch (realm) {
       case 'antrom':

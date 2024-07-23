@@ -16,7 +16,7 @@ import { PlayDungeonUI } from '../ui/dungeon/playDungeon'
 import { LoadingUI } from '../ui/loading/loading'
 import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
-import { MainHudController } from './main-hud.controller'
+import { MainHudController } from './main-hud'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -24,10 +24,15 @@ export class UIController {
   // Banner
   gameController: GameController
 
-  isBannerVisible: boolean = false
-  bannerTimerId: utils.TimerId | undefined = undefined
-  bannerType: BannerType | undefined
-  bannerPosition: BannerPosition | undefined
+  bannerIdCounter: number = 0
+  banners = new Map<
+    number,
+    {
+      timerId: utils.TimerId
+      bannerType: BannerType
+      bannerPosition: BannerPosition
+    }
+  >()
 
   isAnnouncementVisible: boolean = false
   announcement: string = ''
@@ -76,19 +81,16 @@ export class UIController {
   }
 
   displayBanner(bannerType: BannerType, bannerPosition?: BannerPosition): void {
-    if (this.bannerTimerId !== undefined) {
-      utils.timers.clearInterval(this.bannerTimerId)
-    }
+    const id = this.bannerIdCounter
+    this.bannerIdCounter++
 
-    this.bannerType = bannerType
-    this.isBannerVisible = true
-    if (bannerPosition !== undefined) {
-      this.bannerPosition = bannerPosition
-    }
-
-    this.bannerTimerId = utils.timers.setTimeout(() => {
-      this.isBannerVisible = false
-    }, BANNER_DURATION * 1000)
+    this.banners.set(id, {
+      timerId: utils.timers.setTimeout(() => {
+        this.banners.delete(id)
+      }, BANNER_DURATION * 1000),
+      bannerType,
+      bannerPosition: bannerPosition ?? BannerPosition.BP_CENTER_TOP
+    })
   }
 
   /**
@@ -121,21 +123,18 @@ export class UIController {
         )}
 
         {/* Banner Overlay */}
-        {this.bannerType !== undefined && this.isBannerVisible && (
-          <Banner
-            type={this.bannerType}
-            position={this.bannerPosition ?? BannerPosition.BP_CENTER_TOP}
-          />
-        )}
-
-        {/* Dungoen HUD and screens */}
-        {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
+        {Array.from(this.banners.values()).map((item) => (
+          <Banner type={item.bannerType} position={item.bannerPosition} />
+        ))}
 
         {/* Player HUD */}
         {Player.getInstanceOrNull()?.PlayerUI()}
 
         {/* Main HUD */}
         {this.mainHud?.render()}
+
+        {/* Dungoen HUD and screens */}
+        {this.playDungeonUI.isVisible && this.playDungeonUI.DungeonUI()}
 
         {/* Creation Player step if it applies */}
         {this.creationPlayerUi?.render()}

@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Transform } from '@dcl/sdk/ecs'
 
 const DEFAULT_ATTACK = 22
@@ -15,7 +15,6 @@ const DEFAULT_HP = 570
 export default class BerserkerE extends MonsterOligar {
   shapeFile = 'assets/models/SkeletonSword.glb'
   hoverText = 'Attack LVL 15 Skeleton Soldier!'
-  minLuck = 3
   static currentInstance: BerserkerE
 
   constructor() {
@@ -26,8 +25,9 @@ export default class BerserkerE extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 3
     this.initMonster()
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = 100
     BerserkerE.currentInstance = this

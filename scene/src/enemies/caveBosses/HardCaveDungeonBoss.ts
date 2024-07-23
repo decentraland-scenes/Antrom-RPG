@@ -2,7 +2,7 @@ import { Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import MonsterMob from '../MonsterMob'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 
@@ -12,16 +12,15 @@ export default class HardCaveDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(750, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 280000)
+    this.minLuck = 10
 
     this.initMonster()
 
     super.setupEngageTriggerBox()
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }

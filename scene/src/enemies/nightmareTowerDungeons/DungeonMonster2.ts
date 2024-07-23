@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Transform } from '@dcl/sdk/ecs'
 import { Player } from '../../player/player'
 
@@ -19,7 +19,6 @@ const POSITIONS: Vector3[] = [
 export default class EvilGodricNightmare extends MonsterOligar {
   shapeFile = 'assets/models/Ghost.glb'
   hoverText = 'Attack Nightmare Deadly Apparition!'
-  minLuck = 30
   static currentInstance: EvilGodricNightmare
 
   constructor() {
@@ -31,8 +30,9 @@ export default class EvilGodricNightmare extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(player.maxHealth * 2 + stage * 60)
     )
+    this.minLuck = 30
     this.initMonster()
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = 100
     EvilGodricNightmare.currentInstance = this

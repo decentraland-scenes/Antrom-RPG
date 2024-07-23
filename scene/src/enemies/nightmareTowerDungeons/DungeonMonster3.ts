@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Transform } from '@dcl/sdk/ecs'
 
 const DEFAULT_ATTACK = 50
@@ -19,7 +19,6 @@ const POSITIONS: Vector3[] = [
 export default class TrewsNightmare extends MonsterOligar {
   shapeFile = 'assets/models/SkeletonwBow.glb'
   hoverText = 'Attack Nightmare Skeleton Ranger!'
-  minLuck = 40
   static currentInstance: TrewsNightmare
 
   constructor() {
@@ -30,8 +29,9 @@ export default class TrewsNightmare extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 40
     this.initMonster()
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = 100
     TrewsNightmare.currentInstance = this

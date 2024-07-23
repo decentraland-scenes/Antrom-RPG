@@ -11,10 +11,11 @@ import {
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type GameController } from '../controllers/game.controller'
 import { type RealmType, type Realm } from './types'
+import { entityController } from './entityController'
 
 export class DungeonBase implements Realm {
-  private readonly area = engine.addEntity()
-  private readonly door1 = engine.addEntity()
+  private readonly area = entityController.addEntity()
+  private readonly door1 = entityController.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
     this.gameController = gameController
@@ -114,6 +115,12 @@ export class DungeonBase implements Realm {
 
   getId(): RealmType {
     return 'dungeonBase'
+  }
+
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
   }
 
   removeAllEntities(): void {

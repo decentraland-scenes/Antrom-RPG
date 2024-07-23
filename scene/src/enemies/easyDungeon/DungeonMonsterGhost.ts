@@ -11,12 +11,12 @@ const DEFAULT_HP = 8
 export default class GhostE extends MonsterOligar {
   shapeFile = 'assets/models/Ghost.glb'
   hoverText = 'Attack Ghost!'
-  minLuck = 100
 
   constructor() {
     super(DEFAULT_ATTACK, DEFAULT_XP, DEFAULT_LEVEL, DEFAULT_HP)
+    this.minLuck = 100
     this.initMonster()
-    this.topOffSet = 2.25
+    this.setTopOffset(2.25)
     // # in %
     this.dropRate = 100
   }

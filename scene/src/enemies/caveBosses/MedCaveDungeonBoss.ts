@@ -2,7 +2,7 @@ import { Transform } from '@dcl/sdk/ecs'
 import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 
@@ -12,16 +12,15 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(250, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 20000)
+    this.minLuck = 10
 
     this.initMonster()
 
     // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }

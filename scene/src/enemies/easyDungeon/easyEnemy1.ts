@@ -2,7 +2,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Player } from '../../player/player'
 
 const DEFAULT_ATTACK = 35
@@ -22,7 +22,6 @@ const MODEL_NAMES = [
 export default class easyEnemy1 extends MonsterOligar {
   shapeFile = ''
   hoverText = 'Attack LVL 15 Butcher!'
-  minLuck = 2
   hasDrop = false
   static currentInstance: easyEnemy1
 
@@ -35,10 +34,11 @@ export default class easyEnemy1 extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 2
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()
-    this.topOffSet = 2.5
+    this.setTopOffset(2.5)
     // # in %
     this.dropRate = 100
     easyEnemy1.currentInstance = this

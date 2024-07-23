@@ -2,7 +2,7 @@ import { type Vector3 } from '@dcl/sdk/math'
 import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomIntRange } from '../../utils/getRandomInt'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { Player } from '../../player/player'
 
@@ -21,7 +21,6 @@ const MODEL_NAMES = [
 
 export default class nightmareEnemy1 extends MonsterOligar {
   hoverText = 'Attack Skeleton Soldier!'
-  minLuck = 2
   hasDrop = false
   static currentInstance: nightmareEnemy1
 
@@ -35,10 +34,11 @@ export default class nightmareEnemy1 extends MonsterOligar {
       Math.round(DEFAULT_HP + stage * 60)
     )
 
+    this.minLuck = 2
     this.shapeFile = MODEL_NAMES[randomModelIndex]
     this.initMonster()
     super.setupEngageTriggerBox()
-    this.topOffSet = 2.5
+    this.setTopOffset(2.5)
     this.dropRate = dropRate
     if (this.shapeFile === 'assets/models/DarkKnight.glb') {
       this.attack += 50 // Increase attack by 50

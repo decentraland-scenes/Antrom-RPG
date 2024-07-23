@@ -34,51 +34,54 @@ import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
 import { BerryTree, Items, Rock, Tree } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
+import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
+import { entityController } from './entityController'
 
 export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
-  private readonly boardParent = engine.addEntity()
+  private readonly boardParent = entityController.addEntity()
   private readonly leaderBoard: LeaderBoard
-  private readonly dungeonDoor = engine.addEntity()
-  private readonly tz_bersekerUpgradeMarket = engine.addEntity()
-  private readonly tz_resourceMarket = engine.addEntity()
-  private readonly tz_rangerUpgradeMarket = engine.addEntity()
-  private readonly tz_mageUpgradeMarket = engine.addEntity()
-  private readonly tz_apprenticeMarket = engine.addEntity()
-  private readonly tz_skillChange = engine.addEntity()
-  private readonly tz_magicalItemsMarketHUD = engine.addEntity()
-  private readonly tz_dailyRewards = engine.addEntity()
-  private readonly furanceUpgrade = engine.addEntity()
-  private readonly cellDoor = engine.addEntity()
-  private readonly cellEntranceDoor = engine.addEntity()
-  private readonly tavernDoor = engine.addEntity()
-  private readonly heavyGrinderCrown = engine.addEntity()
-  private readonly skybox = engine.addEntity()
-  private readonly campFire = engine.addEntity()
+  private readonly dungeonDoor = entityController.addEntity()
+  private readonly tz_bersekerUpgradeMarket = entityController.addEntity()
+  private readonly tz_resourceMarket = entityController.addEntity()
+  private readonly tz_rangerUpgradeMarket = entityController.addEntity()
+  private readonly tz_mageUpgradeMarket = entityController.addEntity()
+  private readonly tz_apprenticeMarket = entityController.addEntity()
+  private readonly tz_skillChange = entityController.addEntity()
+  private readonly tz_magicalItemsMarketHUD = entityController.addEntity()
+  private readonly tz_dailyRewards = entityController.addEntity()
+  private readonly furanceUpgrade = entityController.addEntity()
+  private readonly cellDoor = entityController.addEntity()
+  private readonly cellEntranceDoor = entityController.addEntity()
+  private readonly tavernDoor = entityController.addEntity()
+  private readonly heavyGrinderCrown = entityController.addEntity()
+  private readonly skybox = entityController.addEntity()
+  private readonly campFire = entityController.addEntity()
   // Build the World
-  private readonly antromForestTest = engine.addEntity()
-  private readonly antromCavesTest = engine.addEntity()
-  private readonly antromCastleTest = engine.addEntity()
-  private readonly antromColliderTest = engine.addEntity()
-  private readonly antromCastle2Test = engine.addEntity()
+  private readonly antromForestTest = entityController.addEntity()
+  private readonly antromCavesTest = entityController.addEntity()
+  private readonly antromCastleTest = entityController.addEntity()
+  private readonly antromColliderTest = entityController.addEntity()
+  private readonly antromCastle2Test = entityController.addEntity()
   // Antrom NPC's
-  private npc_TownHallWizard = engine.addEntity()
-  private npc_Witch = engine.addEntity()
-  private npc_Witch2 = engine.addEntity()
-  private npc_Vendor = engine.addEntity()
-  private npc_KingGeraldOld = engine.addEntity()
-  private npc_RandomVillager1 = engine.addEntity()
-  private npc_RandomVillager2 = engine.addEntity()
-  private npc_RandomVillager3 = engine.addEntity()
-  private npc_RandomVillager4 = engine.addEntity()
-  private npc_RandomVillager5 = engine.addEntity()
-  private npc_RandomVillager6 = engine.addEntity()
-  private npc_RandomVillager7 = engine.addEntity()
-  private npc_RandomVillager8 = engine.addEntity()
-  private npc_RandomVillager9 = engine.addEntity()
-  private npc_RandomVillager10 = engine.addEntity()
-  private readonly npc_RandomVillager11 = engine.addEntity()
+  private npc_TownHallWizard = entityController.addEntity()
+  private npc_Witch = entityController.addEntity()
+  private npc_Witch2 = entityController.addEntity()
+  private npc_Vendor = entityController.addEntity()
+  public npc_KingGeraldOld = entityController.addEntity()
+  private readonly npc_Guyonknees = entityController.addEntity()
+  private npc_RandomVillager1 = entityController.addEntity()
+  private npc_RandomVillager2 = entityController.addEntity()
+  private npc_RandomVillager3 = entityController.addEntity()
+  private npc_RandomVillager4 = entityController.addEntity()
+  private npc_RandomVillager5 = entityController.addEntity()
+  private npc_RandomVillager6 = entityController.addEntity()
+  private npc_RandomVillager7 = entityController.addEntity()
+  private npc_RandomVillager8 = entityController.addEntity()
+  private npc_RandomVillager9 = entityController.addEntity()
+  private npc_RandomVillager10 = entityController.addEntity()
+  private readonly npc_RandomVillager11 = entityController.addEntity()
   // Mineables
   private readonly rocks: Rock[]
   private readonly trees: Tree[]
@@ -87,6 +90,8 @@ export class Antrom implements Realm {
   private readonly executioners: Executioner[]
   private readonly pigs: Pig[]
   private readonly chickens: Chicken[]
+  public butcher!: BetaBoss1
+  private readonly execu: Executioner
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
@@ -94,6 +99,8 @@ export class Antrom implements Realm {
     this.executioners = []
     this.pigs = []
     this.chickens = []
+    this.execu = new Executioner()
+
     GltfContainer.createOrReplace(this.antromForestTest, {
       src: 'assets/models/Antrom/AntromForestTest.glb'
     })
@@ -282,13 +289,13 @@ export class Antrom implements Realm {
     for (let i = 0; i < 5; i++) {
       this.executioners.push(new Executioner())
     }
+
     for (let i = 0; i < 4; i++) {
       this.pigs.push(new Pig(this.gameController))
     }
     for (let i = 0; i < 8; i++) {
       this.chickens.push(new Chicken())
     }
-
     this.AntromNPCs()
     this.DungeonDoor()
     this.createTriggerZoneForBerserkerUpgradeMarket()
@@ -1546,48 +1553,67 @@ export class Antrom implements Realm {
     })
   }
 
-  removeAllEntities(): void {
-    engine.removeEntity(this.boardParent)
-    this.leaderBoard.destroy()
-    engine.removeEntity(this.leaderBoard.leaderBoard)
-    engine.removeEntity(this.dungeonDoor)
-    engine.removeEntity(this.tz_bersekerUpgradeMarket)
-    engine.removeEntity(this.tz_resourceMarket)
-    engine.removeEntity(this.tz_rangerUpgradeMarket)
-    engine.removeEntity(this.tz_mageUpgradeMarket)
-    engine.removeEntity(this.tz_apprenticeMarket)
-    engine.removeEntity(this.tz_skillChange)
-    engine.removeEntity(this.tz_magicalItemsMarketHUD)
-    engine.removeEntity(this.tz_dailyRewards)
-    engine.removeEntity(this.furanceUpgrade)
-    engine.removeEntity(this.cellDoor)
-    engine.removeEntity(this.cellEntranceDoor)
-    engine.removeEntity(this.tavernDoor)
-    engine.removeEntity(this.heavyGrinderCrown)
-    engine.removeEntity(this.skybox)
-    engine.removeEntity(this.campFire)
-    engine.removeEntity(this.antromForestTest)
-    engine.removeEntity(this.antromCavesTest)
-    engine.removeEntity(this.antromCastleTest)
-    engine.removeEntity(this.antromColliderTest)
-    engine.removeEntity(this.antromCastle2Test)
-    engine.removeEntity(this.npc_TownHallWizard)
-    engine.removeEntity(this.npc_Witch)
-    engine.removeEntity(this.npc_Witch2)
-    engine.removeEntity(this.npc_Vendor)
-    engine.removeEntity(this.npc_KingGeraldOld)
-    engine.removeEntity(this.npc_RandomVillager1)
-    engine.removeEntity(this.npc_RandomVillager2)
-    engine.removeEntity(this.npc_RandomVillager3)
-    engine.removeEntity(this.npc_RandomVillager4)
-    engine.removeEntity(this.npc_RandomVillager5)
-    engine.removeEntity(this.npc_RandomVillager6)
-    engine.removeEntity(this.npc_RandomVillager7)
-    engine.removeEntity(this.npc_RandomVillager8)
-    engine.removeEntity(this.npc_RandomVillager9)
-    engine.removeEntity(this.npc_RandomVillager10)
-    engine.removeEntity(this.npc_RandomVillager11)
+  spawnSingleEntity(entityName: string): void {
+    console.log('singleentit', entityName, this.butcher)
+    switch (entityName) {
+      case 'butcher':
+        this.butcher = new BetaBoss1(this.gameController)
+    }
+  }
 
+  removeSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case 'KingGeraldOld':
+        if (this.npc_KingGeraldOld != null) {
+          entityController.removeEntity(this.npc_KingGeraldOld)
+          console.log('King removed')
+          break
+        }
+    }
+  }
+
+  removeAllEntities(): void {
+    entityController.removeEntity(this.boardParent)
+    this.leaderBoard.destroy()
+    entityController.removeEntity(this.leaderBoard.leaderBoard)
+    entityController.removeEntity(this.dungeonDoor)
+    entityController.removeEntity(this.tz_bersekerUpgradeMarket)
+    entityController.removeEntity(this.tz_resourceMarket)
+    entityController.removeEntity(this.tz_rangerUpgradeMarket)
+    entityController.removeEntity(this.tz_mageUpgradeMarket)
+    entityController.removeEntity(this.tz_apprenticeMarket)
+    entityController.removeEntity(this.tz_skillChange)
+    entityController.removeEntity(this.tz_magicalItemsMarketHUD)
+    entityController.removeEntity(this.tz_dailyRewards)
+    entityController.removeEntity(this.furanceUpgrade)
+    entityController.removeEntity(this.cellDoor)
+    entityController.removeEntity(this.cellEntranceDoor)
+    entityController.removeEntity(this.tavernDoor)
+    entityController.removeEntity(this.heavyGrinderCrown)
+    entityController.removeEntity(this.skybox)
+    entityController.removeEntity(this.campFire)
+    entityController.removeEntity(this.antromForestTest)
+    entityController.removeEntity(this.antromCavesTest)
+    entityController.removeEntity(this.antromCastleTest)
+    entityController.removeEntity(this.antromColliderTest)
+    entityController.removeEntity(this.antromCastle2Test)
+    entityController.removeEntity(this.npc_TownHallWizard)
+    entityController.removeEntity(this.npc_Witch)
+    entityController.removeEntity(this.npc_Witch2)
+    entityController.removeEntity(this.npc_Vendor)
+    entityController.removeEntity(this.npc_KingGeraldOld)
+    entityController.removeEntity(this.npc_RandomVillager1)
+    entityController.removeEntity(this.npc_RandomVillager2)
+    entityController.removeEntity(this.npc_RandomVillager3)
+    entityController.removeEntity(this.npc_RandomVillager4)
+    entityController.removeEntity(this.npc_RandomVillager5)
+    entityController.removeEntity(this.npc_RandomVillager6)
+    entityController.removeEntity(this.npc_RandomVillager7)
+    entityController.removeEntity(this.npc_RandomVillager8)
+    entityController.removeEntity(this.npc_RandomVillager9)
+    entityController.removeEntity(this.npc_RandomVillager10)
+    entityController.removeEntity(this.npc_RandomVillager11)
+    this.butcher.removeEntity()
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()
     })

@@ -16,14 +16,15 @@ import { type GameController } from '../controllers/game.controller'
 import { DungeonStage, demonKill } from '../counters'
 import { setPlayerPosition } from '../utils/engine'
 import { type RealmType, type Realm } from './types'
+import { entityController } from './entityController'
 
 export class DemonKingDungeon implements Realm {
-  private readonly dungeon_collider = engine.addEntity()
-  private readonly dungeon_door1 = engine.addEntity()
-  private readonly dungeon = engine.addEntity()
-  private readonly dungeon_props1 = engine.addEntity()
-  private readonly dungeon_platforms = engine.addEntity()
-  private npc_garrisonAlara = engine.addEntity()
+  private readonly dungeon_collider = entityController.addEntity()
+  private readonly dungeon_door1 = entityController.addEntity()
+  private readonly dungeon = entityController.addEntity()
+  private readonly dungeon_props1 = entityController.addEntity()
+  private readonly dungeon_platforms = entityController.addEntity()
+  private npc_garrisonAlara = entityController.addEntity()
   gameController: GameController
   constructor(gameController: GameController) {
     this.gameController = gameController
@@ -113,7 +114,7 @@ export class DemonKingDungeon implements Realm {
           demonKill.decrease(1)
           //   removeNPCFromMap('GarrisonAlara')
           this.createGarrisonAlara2()
-          this.npc_garrisonAlara = engine.addEntity()
+          this.npc_garrisonAlara = entityController.addEntity()
           utils.timers.setTimeout(() => {
             Animator.playSingleAnimation(this.dungeon_door1, 'idle')
           }, 60 * 1000)
@@ -175,13 +176,19 @@ export class DemonKingDungeon implements Realm {
     )
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
+  }
+
   removeAllEntities(): void {
-    engine.removeEntity(this.dungeon_collider)
-    engine.removeEntity(this.dungeon_door1)
-    engine.removeEntity(this.dungeon)
-    engine.removeEntity(this.dungeon_props1)
-    engine.removeEntity(this.dungeon_platforms)
-    engine.removeEntity(this.npc_garrisonAlara)
+    entityController.removeEntity(this.dungeon_collider)
+    entityController.removeEntity(this.dungeon_door1)
+    entityController.removeEntity(this.dungeon)
+    entityController.removeEntity(this.dungeon_props1)
+    entityController.removeEntity(this.dungeon_platforms)
+    entityController.removeEntity(this.npc_garrisonAlara)
   }
 
   deadPosition(): Vector3 | null {

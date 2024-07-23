@@ -1,18 +1,13 @@
-import {
-  Animator,
-  AudioSource,
-  GltfContainer,
-  Transform,
-  engine
-} from '@dcl/sdk/ecs'
+import { Animator, AudioSource, GltfContainer, Transform } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
+import { entityController } from '../realms/entityController'
 
 export const applyFullOrangeSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -38,7 +33,7 @@ export const applyFullOrangeSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -46,7 +41,7 @@ export const applyFullBlueSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -70,7 +65,7 @@ export const applyFullBlueSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -78,7 +73,7 @@ export const applyFullRedSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -102,7 +97,7 @@ export const applyFullRedSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -110,7 +105,7 @@ export const applyFullWhiteSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -134,7 +129,7 @@ export const applyFullWhiteSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -142,7 +137,7 @@ export const applyFullYellowSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -168,7 +163,7 @@ export const applyFullYellowSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -176,7 +171,7 @@ export const applyFullGreenSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -202,7 +197,7 @@ export const applyFullGreenSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -210,7 +205,7 @@ export const applyRedSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -236,7 +231,7 @@ export const applyRedSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -244,7 +239,7 @@ export const applyEnemyAOESkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -270,7 +265,7 @@ export const applyEnemyAOESkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -278,7 +273,7 @@ export const applyEnemyAttackedMageEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -304,12 +299,12 @@ export const applyEnemyAttackedMageEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
 export const applyEnemyHealedEffectToLocation = (position: Vector3): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -335,12 +330,12 @@ export const applyEnemyHealedEffectToLocation = (position: Vector3): void => {
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, 10000)
 }
 
 export const applyMageAttackEffectToLocation = (position: Vector3): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -366,7 +361,7 @@ export const applyMageAttackEffectToLocation = (position: Vector3): void => {
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, 10000)
 }
 
@@ -374,7 +369,7 @@ export const applyEnemySkillFireBallEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -400,7 +395,7 @@ export const applyEnemySkillFireBallEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -408,7 +403,7 @@ export const applyGeneralSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -434,7 +429,7 @@ export const applyGeneralSkillEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -442,7 +437,7 @@ export const applyHealToLocation = (
   position: Vector3,
   duration: number = 10000
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -468,7 +463,7 @@ export const applyHealToLocation = (
   Animator.playSingleAnimation(area, 'heal')
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -476,7 +471,7 @@ export const applyPlayerSkillBladesEffectToLocation = (
   position: Vector3,
   duration: number = 10000
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -502,7 +497,7 @@ export const applyPlayerSkillBladesEffectToLocation = (
   Animator.playSingleAnimation(area, 'VFX')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -510,7 +505,7 @@ export const applyPlayerSkillFireBallEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -536,7 +531,7 @@ export const applyPlayerSkillFireBallEffectToLocation = (
   Animator.playSingleAnimation(area, 'VFX')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -544,7 +539,7 @@ export const applyrelicEnergyToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -570,7 +565,7 @@ export const applyrelicEnergyToLocation = (
   Animator.playSingleAnimation(area, 'Plane L1 FXAction')
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
@@ -578,7 +573,7 @@ export const applyAttackedEnemyEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -604,12 +599,12 @@ export const applyAttackedEnemyEffectToLocation = (
   Animator.playSingleAnimation(area, 'action')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }
 
 export const applyCritToLocation = (position: Vector3): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -630,7 +625,7 @@ export const applyCritToLocation = (position: Vector3): void => {
 
   AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, 2000)
 }
 
@@ -638,7 +633,7 @@ export const applyDefSkillEffectToEnemyLocation = (
   position: Vector3,
   duration: number
 ): void => {
-  const area = engine.addEntity()
+  const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
@@ -663,6 +658,6 @@ export const applyDefSkillEffectToEnemyLocation = (
 
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
-    engine.removeEntity(area)
+    entityController.removeEntity(area)
   }, duration)
 }

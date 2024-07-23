@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { quest } from '../../utils/refresherTimer'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 
@@ -13,16 +13,15 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(100, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 10000)
+    this.minLuck = 10
 
     this.initMonster()
 
     // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 4
+    this.setTopOffset(4)
     // # in %
     this.dropRate = -1
   }

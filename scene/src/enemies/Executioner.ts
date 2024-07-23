@@ -1,8 +1,11 @@
-import { Transform, engine } from '@dcl/sdk/ecs'
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
+import { Transform } from '@dcl/sdk/ecs'
+import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { Player } from '../player/player'
+import { BannerType } from '../ui/banner/bannerConstants'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { entityController } from '../realms/entityController'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -14,12 +17,11 @@ export default class Executioner extends MonsterMob {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
   hoverText: string
 
-  minLuck = 10
-
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     super(level + 20, level + 60, level - 10, level * 100)
+    this.minLuck = 10
     this.hoverText = `Attack LVL ${level} Executioner!`
 
     Transform.createOrReplace(this.entity, {
@@ -27,36 +29,44 @@ export default class Executioner extends MonsterMob {
     })
     this.initMonster()
     this.loadTransformation()
-    this.topOffSet = 2.55
+    // this.setTopOffset(2.55)
     this.dropRate = -1
   }
 
   onDropXp(): void {
-    // this.create()
-    // const xp = getRandomIntRange(this.xp, this.xp + 10)
-    // const randomNumber = Math.random()
-    // if (randomNumber <= 0.1) {
-    // ui.displayAnnouncement("+1 POTIONS")
-    // player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
-    // }
-    // const exp = [
-    //   {
-    //     type: LEVEL_TYPES.ENEMY,
-    //     value: 1
-    //   },
-    //   {
-    //     type: LEVEL_TYPES.PLAYER,
-    //     value: xp
-    //   }
-    // ]
-    // const loot = [
-    //   {
-    //     type: ITEM_TYPES.BONE,
-    //     value: 1
-    //   }
-    // ]
-    // UI
-    // addRewards(exp, loot)
+    const player = Player.getInstance()
+    const xp = getRandomIntRange(this.xp, this.xp + 10)
+    const randomNumber = Math.random()
+    if (randomNumber <= 0.1) {
+      player.gameController.uiController.displayAnnouncement(
+        '+1 POTIONS',
+        Color4.Yellow(),
+        3000
+      )
+      player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
+    }
+
+    const exp = [
+      {
+        type: LEVEL_TYPES.ENEMY,
+        value: 1
+      },
+      {
+        type: LEVEL_TYPES.PLAYER,
+        value: xp
+      }
+    ]
+    const loot = [
+      {
+        type: ITEM_TYPES.BONE,
+        value: 1
+      }
+    ]
+
+    player.gameController.uiController.displayBanner(BannerType.B_BONES)
+    player.addRewards(exp, loot)
+
+    // TODO
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
@@ -80,11 +90,15 @@ export default class Executioner extends MonsterMob {
   }
 
   removeEntity(): void {
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.attackTrigger)
-    engine.removeEntity(this.healthBar)
-    engine.removeEntity(this.label)
-    engine.removeEntity(this.entity)
+    super.cleanup()
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.entity)
+  }
+
+  create(): void {
+    // TODO: this is not being added to the entities list
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const newChar = new Executioner()
   }
 }

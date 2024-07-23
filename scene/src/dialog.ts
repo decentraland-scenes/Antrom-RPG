@@ -1,6 +1,11 @@
 import { type Dialog } from 'dcl-npc-toolkit'
 import { type GameController } from './controllers/game.controller'
-import { Color4 } from '@dcl/sdk/math'
+import { Color4, Vector3 } from '@dcl/sdk/math'
+import { createQuestTimerText } from './utils/refresherTimer'
+import { DungeonStage } from './counters'
+import { movePlayerTo } from '~system/RestrictedActions'
+import * as utils from '@dcl-sdk/utils'
+import { entityController } from './realms/entityController'
 
 export class Dialogs {
   public randomDialog1: Dialog[]
@@ -18,12 +23,184 @@ export class Dialogs {
   public kingDialog: Dialog[]
   public wizardDialog: Dialog[]
   public witchDialog: Dialog[]
+  public lukanDialog: Dialog[]
+  public guyOnKneesDialog: Dialog[]
+  public trewsDialog: Dialog[]
+  public plawmanDialog: Dialog[]
   public vendorDialog: Dialog[]
   public inGameWeaponSmithDialog: Dialog[]
   public garrisonAlaraDialog2: Dialog[]
+  public FoundChryseDialog: Dialog[]
+  public kingCount: number
   gameController: GameController
   constructor(gameController: GameController) {
+    this.kingCount = 0
     this.gameController = gameController
+    this.FoundChryseDialog = [
+      {
+        text: `You've come here seeking to cast me as the villain, but it's the king who should be under suspicion!`
+      },
+      {
+        text: `Ever since I uncovered the location of one of the Lich God's essences, he's been relentlessly pursuing me.
+        `,
+        isQuestion: true,
+        isEndOfDialog: true,
+        buttons: [
+          {
+            label: `Essences?`,
+            goToDialog: 2,
+            triggeredActions: () => {
+              const stage = DungeonStage.read()
+              if (stage <= 2) {
+                this.gameController.uiController.loadingUI.startLoading()
+                utils.timers.setTimeout(() => {
+                  this.gameController.uiController.loadingUI.finishLoading()
+                }, 3000)
+              }
+              void movePlayerTo({
+                newRelativePosition: Vector3.create(85.93, 4.28, 68.6)
+              })
+              this.gameController.uiController.displayAnnouncement(
+                'Talk to Alara.',
+                Color4.Yellow(),
+                2000
+              )
+              this.gameController.npcs.createAlara1NPC()
+            }
+          },
+          { label: `OK`, goToDialog: 3, triggeredActions: () => {} }
+        ]
+      },
+      {
+        name: 'Fight',
+        text: `Uugghh... Betrayed and ambushed by the King's soldiers, left to die...`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'OK',
+        text: `Now leave!`,
+        isEndOfDialog: true
+      }
+    ]
+    this.lukanDialog = [
+      {
+        text: `I do not know anything about Lord Callan whereabouts! Even if I did, I wouldn't tell you!`,
+        isQuestion: true,
+        buttons: [
+          {
+            label: `Tell me!`,
+            goToDialog: 1,
+            triggeredActions: () => {
+              this.gameController.realmController.currentRealm?.spawnSingleEntity(
+                'butcher'
+              )
+
+              entityController.removeEntity(this.gameController.npcs.Noir)
+            }
+          },
+          { label: `OK`, goToDialog: 2, triggeredActions: () => {} }
+        ]
+      },
+      {
+        name: 'Fight',
+        text: `Jameson's Butcher will provide Lord Callan with the opportunity to escape!`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'OK',
+        text: `Now leave!`,
+        isEndOfDialog: true
+      }
+    ]
+    this.plawmanDialog = [
+      {
+        text: `Welcome to The Plowman's Inn`
+      },
+      {
+        text: `Would you like to rent a room upstairs??`,
+        isQuestion: true,
+        buttons: [
+          {
+            label: `Callan?`,
+            goToDialog: 4,
+            triggeredActions: () => {
+              this.gameController.npcs.createNoirNPC()
+              this.gameController.uiController.displayAnnouncement(
+                'Find Nori \nthe farmer.',
+                Color4.Yellow(),
+                2000
+              )
+              entityController.removeEntity(this.gameController.npcs.Plawman)
+            }
+          },
+          {
+            label: `Yes`,
+            goToDialog: 2,
+            triggeredActions: () => {}
+          },
+          { label: `Nope`, goToDialog: 3, triggeredActions: () => {} }
+        ]
+      },
+      {
+        name: 'Yes',
+        text: `Sorry, we are all out of rooms for the night come back later!`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'No',
+        text: `Be careful the streets arent safe at night!`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'Chryse',
+        text: `This hunt for Callan is merely an excuse for the king to oppress the villagers. A farmer named Nori, who tends to Jameson's farm, might possess more information.`,
+
+        isEndOfDialog: true
+      }
+    ]
+    this.trewsDialog = [
+      {
+        text: `Ah, so you're the aid dispatched by the king? Excellent. We've just been informed by a villager that the plowman might have information regarding Callan's whereabouts.`
+      },
+      {
+        text: `Head to the tavern, where the plowman often frequents, and inquire further.`
+      },
+      {
+        text: `He tends to rent rooms there, so keep an eye out.`,
+        isQuestion: true,
+        buttons: [
+          {
+            label: `Plowman?`,
+            // to check
+            goToDialog: 3,
+            triggeredActions: () => {
+              this.gameController.npcs.createPlowmanNPC()
+              this.gameController.uiController.displayAnnouncement(
+                'Find the \nPlowman \nin the tavern.',
+                Color4.Yellow(),
+                2000
+              )
+              entityController.removeEntity(this.gameController.npcs.Trews)
+            }
+          },
+          {
+            label: `No, thanks.`,
+            goToDialog: 'OK',
+            triggeredActions: () => {}
+          }
+        ]
+      },
+      {
+        name: 'Plowman',
+        text: `Come back when you're ready.`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'OK',
+        text: `Off you go.`,
+        isEndOfDialog: true
+      }
+    ]
     this.randomDialog1 = [
       {
         text: `I am pleased to meet you.`,
@@ -315,7 +492,12 @@ export class Dialogs {
         buttons: []
       }
     ]
-
+    this.guyOnKneesDialog = [
+      {
+        text: `Please, I have no knowledge where Callan could be; I'm simply passing through!`,
+        isEndOfDialog: true
+      }
+    ]
     this.kingDialog = [
       {
         text: `Ah, finally you have arrived!`
@@ -326,30 +508,37 @@ export class Dialogs {
       {
         text: `His plot was discovered, and he fled with his young daughter, Alara.`,
         isQuestion: true,
+        isEndOfDialog: true,
         buttons: [
           {
             label: `Quest`,
-            goToDialog: 'Yes',
+            goToDialog: 3,
             triggeredActions: () => {
-              // if (kingCount.read() === 0) {
-              //     createQuest1NPCs()
-              //     removeNPCFromMap("king")
-              //     createQuestTimerText()
-              //     //quest.turnOnKingQuestTimer()
-              this.gameController.uiController.displayAnnouncement(
-                'QUEST STARTED',
-                Color4.Yellow(),
-                3000
-              )
-              //     kingCount.increase(1)
-              //     createCallanQuestLabel()
-              // } else {
-              this.gameController.uiController.displayAnnouncement(
-                'QUEST ALREADY STARTED STARTED FIND CPT TREWS!',
-                Color4.Yellow(),
-                3000
-              )
-              // }
+              if (this.kingCount === 0) {
+                this.gameController.npcs.createQuest1NPCs()
+                if (
+                  this.gameController.realmController.currentRealm
+                    ?.removeSingleEntity !== undefined
+                ) {
+                  this.gameController.realmController.currentRealm?.removeSingleEntity(
+                    'KingGeraldOld'
+                  )
+                }
+                createQuestTimerText()
+                this.gameController.uiController.displayAnnouncement(
+                  'QUEST STARTED',
+                  Color4.Yellow(),
+                  3000
+                )
+                this.kingCount++
+                //  createCallanQuestLabel()
+              } else {
+                this.gameController.uiController.displayAnnouncement(
+                  'QUEST ALREADY STARTED STARTED FIND CPT TREWS!',
+                  Color4.Yellow(),
+                  3000
+                )
+              }
             }
           },
           { label: `No`, goToDialog: 'No', triggeredActions: () => {} }
@@ -634,4 +823,121 @@ export class Dialogs {
       }
     ]
   }
+
+  // createQuest1NPCs(): void {
+  //   let Guyonknees = entityController.addEntity()
+  //   Guyonknees = npc.create(
+  //     {
+  //       position: Vector3.create(-38.17, 9.53, -39.78),
+  //       rotation: Quaternion.create(0, 1, 0, 1),
+  //       scale: Vector3.create(1, 1, 1)
+  //     },
+  //     {
+  //       type: npc.NPCType.CUSTOM,
+  //       model: 'assets/models/VillagerOnKnees.glb',
+  //       onActivate: () => {
+  //         console.log('npc activated')
+  //         openDialogWindow(
+  //           Guyonknees,
+  //           this.gameController.dialogs.guyOnKneesDialog
+  //         )
+  //       },
+  //       onWalkAway: () => {
+  //         console.log('walked away')
+  //       },
+  //       bubbleHeight: 256,
+  //       faceUser: true,
+  //       onlyClickTrigger: true
+  //     }
+  //   )
+
+  //   let soldierA = entityController.addEntity()
+  //   soldierA = npc.create(
+  //     {
+  //       position: Vector3.create(-38.17, 9.53, -42.16),
+  //       rotation: Quaternion.create(0, 1, 0, 1),
+  //       scale: Vector3.create(0.9, 0.9, 0.9)
+  //     },
+  //     {
+  //       type: npc.NPCType.CUSTOM,
+  //       model: 'assets/models/DarkKnight.glb',
+  //       onActivate: () => {
+  //         console.log('npc activated', soldierA)
+  //       },
+  //       onWalkAway: () => {
+  //         console.log('walked away')
+  //       },
+  //       bubbleHeight: 256,
+  //       faceUser: true,
+  //       onlyClickTrigger: true
+  //     }
+  //   )
+
+  //   let soldierB = entityController.addEntity()
+  //   soldierB = npc.create(
+  //     {
+  //       position: Vector3.create(-40.78, 9.53, -39.66),
+  //       rotation: Quaternion.create(0, 1, 0, 1),
+  //       scale: Vector3.create(0.9, 0.9, 0.9)
+  //     },
+  //     {
+  //       type: npc.NPCType.CUSTOM,
+  //       model: 'assets/models/DarkKnight.glb',
+  //       onActivate: () => {
+  //         console.log('npc activated', soldierB)
+  //       },
+  //       onWalkAway: () => {
+  //         console.log('walked away')
+  //       },
+  //       bubbleHeight: 256,
+  //       faceUser: true,
+  //       onlyClickTrigger: true
+  //     }
+  //   )
+
+  //   let soldierC = entityController.addEntity()
+  //   soldierC = npc.create(
+  //     {
+  //       position: Vector3.create(-38.05, 9.53, -37.37),
+  //       rotation: Quaternion.create(0, 1, 0, 1),
+  //       scale: Vector3.create(0.9, 0.9, 0.9)
+  //     },
+  //     {
+  //       type: npc.NPCType.CUSTOM,
+  //       model: 'assets/models/DarkKnight.glb',
+  //       onActivate: () => {
+  //         console.log('npc activated', soldierC)
+  //       },
+  //       onWalkAway: () => {
+  //         console.log('walked away')
+  //       },
+  //       bubbleHeight: 256,
+  //       faceUser: true,
+  //       onlyClickTrigger: true
+  //     }
+  //   )
+
+  //   let Trews = entityController.addEntity()
+  //   Trews = npc.create(
+  //     {
+  //       position: Vector3.create(-34.93, 9.53, -39.42),
+  //       rotation: Quaternion.create(0, -1, 0, 1),
+  //       scale: Vector3.create(1.3, 1.3, 1.3)
+  //     },
+  //     {
+  //       type: npc.NPCType.CUSTOM,
+  //       model: 'assets/models/Trews.glb',
+  //       onActivate: () => {
+  //         console.log('npc activated')
+  //         openDialogWindow(Trews, this.gameController.dialogs.trewsDialog)
+  //       },
+  //       onWalkAway: () => {
+  //         console.log('walked away')
+  //       },
+  //       bubbleHeight: 256,
+  //       faceUser: true,
+  //       onlyClickTrigger: true
+  //     }
+  //   )
+  // }
 }

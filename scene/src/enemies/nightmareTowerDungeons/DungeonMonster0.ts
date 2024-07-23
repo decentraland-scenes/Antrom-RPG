@@ -3,7 +3,7 @@ import MonsterOligar from '../monster'
 import { DungeonStage } from '../../counters'
 import { getRandomInt, getRandomIntRange } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Transform } from '@dcl/sdk/ecs'
 
 const DEFAULT_ATTACK = 30
@@ -15,7 +15,6 @@ const POSITIONS: Vector3[] = [Vector3.create(-12.43, 40.2, -3.95)]
 export default class DragonMotherNightmare extends MonsterOligar {
   shapeFile = 'assets/models/Butcher.glb'
   hoverText = 'Attack Nightmare Butcher!'
-  minLuck = 20
   static currentInstance: DragonMotherNightmare
 
   constructor() {
@@ -26,8 +25,9 @@ export default class DragonMotherNightmare extends MonsterOligar {
       Math.round(DEFAULT_LEVEL + stage * 0.25),
       Math.round(DEFAULT_HP + stage * 60)
     )
+    this.minLuck = 20
     this.initMonster()
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = 100
     DragonMotherNightmare.currentInstance = this

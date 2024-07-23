@@ -1,5 +1,5 @@
 import { Color4 } from '@dcl/sdk/math'
-import { GetPlayerInfo } from '../api/api'
+import { GetPlayerInfo, GetPlayerInventory, GetPlayerLevels } from '../api/api'
 import { GameController } from '../controllers/game.controller'
 import { Player } from '../player/player'
 import {
@@ -19,13 +19,14 @@ import { CLASS_MAIN_SKILL } from '../player/skills/classes-main-skill'
 let gameInstance: GameController
 
 export function main(): void {
-  init().catch((e) => {
+  init(false).catch((e) => {
     console.error('Fatal error during init')
     console.error(e)
   })
 }
 
-async function init(): Promise<void> {
+async function init(retry: boolean): Promise<void> {
+  await waitNextTick()
   await waitNextTick()
 
   gameInstance = new GameController()
@@ -59,7 +60,12 @@ async function init(): Promise<void> {
         Color4.Red(),
         5
       )
-      await init()
+
+      if (retry) {
+        throw new Error('Player creation failed after retry')
+      } else {
+        await init(true)
+      }
       return
     }
 
@@ -70,9 +76,18 @@ async function init(): Promise<void> {
 
   if (playerInfoResponse?.player == null) {
     console.error('Player not found')
-    await init()
+    if (retry) {
+      throw new Error('Player creation failed after retry')
+    } else {
+      await init(true)
+    }
     return
   }
+
+  const [inventory, levels] = await Promise.all([
+    GetPlayerInventory(),
+    GetPlayerLevels()
+  ])
 
   // Set all the player info
   const myPlayer = new Player(
@@ -98,6 +113,50 @@ async function init(): Promise<void> {
 
   myPlayer.setSkill(0, CLASS_MAIN_SKILL[myPlayer.class]())
 
+  if (
+    inventory?.computed_player_inventory !== undefined &&
+    Array.isArray(inventory.computed_player_inventory)
+  ) {
+    console.log({ inventory })
+
+    for (const item of inventory.computed_player_inventory) {
+      myPlayer.inventory.setItem(item.itemId, item.count)
+    }
+  } else {
+    console.error('Inventory not found')
+  }
+
+  if (levels?.levels !== undefined) {
+    const levelTypes = Array.from(Object.values(LEVEL_TYPES).values())
+    for (const level of levels.levels) {
+      if (levelTypes.includes(level.level_type as LEVEL_TYPES)) {
+        myPlayer.levels.setLevel(
+          level.level_type as LEVEL_TYPES,
+          level.level,
+          level.xp
+        )
+      }
+    }
+
+    console.log({ levels })
+  } else {
+    console.error('Levels not found')
+  }
+
+  myPlayer.maxHealth =
+    myPlayer.maxHealth + myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER)
+
+  if (myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) <= 6000000) {
+    myPlayer.attack =
+      myPlayer.attack + myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) * 2
+    // adjust magic stat as necessary
+    myPlayer.magic =
+      myPlayer.magic + myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) * 2
+  } else {
+    myPlayer.attack = myPlayer.attack + 60
+    myPlayer.magic = myPlayer.magic + 60
+  }
+
   gameInstance.uiController.playDungeonUI.setVisibility(true)
   gameInstance.uiController.showMainHud()
 }
@@ -106,7 +165,7 @@ function updateRaceBuffs(player: Player, race: CharacterRaces): void {
   const raceBuff = RACE_BUFF_VARIABLES[race]
   player.updateAtkBuff(raceBuff.attackBuff)
   player.updateDefBuff(raceBuff.defBuff)
-  player.updateAtkBuff(raceBuff.luckBuff)
+  player.updateLuckBuff(raceBuff.luckBuff)
   player.updateMaxHp(raceBuff.maxHealth)
 }
 
@@ -114,7 +173,7 @@ function updateClassBuffs(player: Player, classType: CharacterClasses): void {
   const classBuff = CLASS_BUFF_VARIABLES[classType]
   player.updateAtkBuff(classBuff.atkBuff)
   player.updateDefBuff(classBuff.defBuff)
-  player.updateAtkBuff(classBuff.luckBuff)
+  player.updateLuckBuff(classBuff.luckBuff)
   player.updateMaxHp(classBuff.maxHealth)
   player.updateCritRate(classBuff.critRate)
 }

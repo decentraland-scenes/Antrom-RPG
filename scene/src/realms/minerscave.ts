@@ -15,10 +15,11 @@ import { Gem, Items, Pot } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
 import { getRandomInt } from '../utils/getRandomInt'
 import { type Realm, type RealmType } from './types'
+import { entityController } from './entityController'
 
 export class MinersCave implements Realm {
-  private readonly cave = engine.addEntity()
-  private readonly ladder = engine.addEntity()
+  private readonly cave = entityController.addEntity()
+  private readonly ladder = entityController.addEntity()
   private readonly pot_positions: Vector3[]
   private readonly pots_entities: Pot[]
   private readonly gems_entities: Gem[]
@@ -133,9 +134,15 @@ export class MinersCave implements Realm {
     }, 50)
   }
 
+  spawnSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case '':
+    }
+  }
+
   removeAllEntities(): void {
-    engine.removeEntity(this.cave)
-    engine.removeEntity(this.ladder)
+    entityController.removeEntity(this.cave)
+    entityController.removeEntity(this.ladder)
     this.gems_entities.forEach((gem) => {
       gem.removeGem()
     })

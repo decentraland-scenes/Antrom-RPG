@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
 import { engine, inputSystem, PointerEventType } from '@dcl/sdk/ecs'
+import { Color4 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
+import { getPlayer } from '@dcl/sdk/src/players'
+import { type GameController } from '../controllers/game.controller'
 import { Character } from '../enemies/character'
-import { ITEM_TYPES } from '../enemies/playerInventoryMaps'
 import { PlayerInventory } from '../inventory/playerInventory'
 import BottomBar from '../ui/bottom-bar/bottomBar'
 import {
@@ -11,6 +13,7 @@ import {
   type CharacterClasses,
   type CharacterRaces
 } from '../ui/creation-player/creationPlayerData'
+import { setPlayerPosition } from '../utils/engine'
 import { getRandomIntRange } from '../utils/getRandomInt'
 import { INPUT_KEYS_ARRAY } from '../utils/ui-utils'
 import { type buffItem, type Item, itemTypes } from './Items'
@@ -18,9 +21,7 @@ import LevelManager, { LEVEL_TYPES } from './LevelManager'
 import { PetManager } from './petManager'
 import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
-import { type GameController } from '../controllers/game.controller'
-import { setPlayerPosition } from '../utils/engine'
-import { Color4 } from '@dcl/sdk/math'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,7 +81,6 @@ export class Player extends Character {
   // private defenseLabel: ui.CornerLabel
   public onInitDone?: (player: Player) => void
   public hasInit!: boolean
-  public attackBuff!: number
   public luckBuff!: number
   public critDamageBuff!: number
   public magicBuff!: number
@@ -91,9 +91,6 @@ export class Player extends Character {
   // public healthBarNew: UIBarManager
   // public expBar: UIBarManager
 
-  public hpEvent!: Function
-  public xpEvent!: Function
-  public lvEvent!: Function
   equiped: string = ITEM_GLBS.SWORD
 
   public race: number
@@ -204,7 +201,6 @@ export class Player extends Character {
     this.luckBuff = 0
     this.critRateBuff = 1
     this.critDamageBuff = 100
-    this.attackBuff = 0
     this.magicBuff = 0
     this.defBuff = 0
     this.lastLogin = 0
@@ -400,18 +396,6 @@ export class Player extends Character {
     return this.level
   }
 
-  subscribeHpEvent(f: Function): void {
-    this.hpEvent = f
-  }
-
-  subscribeXpEvent(f: Function): void {
-    this.xpEvent = f
-  }
-
-  subscribeLvEvent(f: Function): void {
-    this.lvEvent = f
-  }
-
   updateHealthBar(): void {
     if (this.health > this.maxHealth) this.health = this.maxHealth
     this.checkHealth()
@@ -423,15 +407,7 @@ export class Player extends Character {
     // )
   }
 
-  updateXpBar(): void {
-    const level = this.levels.getLevel(LEVEL_TYPES.PLAYER)
-    this.xpEvent(
-      this.levels.getXp(LEVEL_TYPES.PLAYER) -
-        (level > 1 ? LevelManager.xpRequiredForNextLevel(level - 1) : 0),
-      LevelManager.xpRequiredForNextLevel(level) -
-        (level > 1 ? LevelManager.xpRequiredForNextLevel(level - 1) : 0)
-    )
-  }
+  updateXpBar(): void {}
 
   rollDice(): number {
     const max = 20 + this.levels.getLevel(LEVEL_TYPES.PLAYER) / 2
@@ -447,7 +423,7 @@ export class Player extends Character {
   getPlayerAttack(isCriticalAttack = false): number {
     return (
       (this.attack +
-        (this.attackBuff || 0) +
+        (this.atkBuff || 0) +
         this.items.reduce((accm, item: Item) => {
           const buff: buffItem[] | buffItem = item.buff
           if (item.type === itemTypes.SWORD) {
@@ -474,12 +450,16 @@ export class Player extends Character {
     )
   }
 
+  get level(): number {
+    return this.levels.getLevel(LEVEL_TYPES.PLAYER)
+  }
+
   PlayerUI(): ReactEcs.JSX.Element {
     return (
       <BottomBar
         currentHpPercent={(100.0 * this.health) / this.maxHealth}
-        levelXp={this.levels.getXp(LEVEL_TYPES.PLAYER)}
-        currentXp={this.xp}
+        levelXp={this.levels.getXpNeededThisLevel(LEVEL_TYPES.PLAYER)}
+        currentXp={this.levels.getXpThisLevel(LEVEL_TYPES.PLAYER)}
         level={this.level}
         slotsData={this.skills}
       />
@@ -552,5 +532,30 @@ export class Player extends Character {
     this.refillHealthBar()
 
     return true
+  }
+
+  hasWearableEquipped(wearableId: string): boolean {
+    const player = getPlayer()
+    for (const wearable of player?.wearables ?? []) {
+      if (wearable === `urn:decentraland:matic:collections-v2:${wearableId}`) {
+        console.log(`WEARABLES: ${wearable}`)
+        return true
+      }
+    }
+    return false
+  }
+
+  addRewards(
+    exp: Array<{ type: LEVEL_TYPES; value: number }>,
+    loot: Array<{ type: ITEM_TYPES; value: number }>
+  ): void {
+    for (const i of exp) {
+      this.levels.addXp(i.type, i.value)
+      // if (exp[i].type == LEVEL_TYPES.PLAYER)
+      //     MainHUD.getInstance().updateXpGained(exp[i].value)
+    }
+    for (const i of loot) {
+      this.inventory.incrementItem(i.type, i.value)
+    }
   }
 }

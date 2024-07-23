@@ -5,7 +5,7 @@ import { Player } from '../../player/player'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 import { quest } from '../../utils/refresherTimer'
-import { ITEM_TYPES } from '../playerInventoryMaps'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 
 const DEFAULT_XP = 60
 
@@ -13,16 +13,15 @@ export default class HardDesertDungeonBoss extends MonsterOligar {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
-  minLuck = 10
-
   constructor(difficulty: number) {
     super(350, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 140000)
+    this.minLuck = 10
 
     this.initMonster()
 
     // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 4
+    this.setTopOffset(4)
     // # in %
     this.dropRate = -1
   }
