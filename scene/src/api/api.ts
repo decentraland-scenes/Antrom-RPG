@@ -22,7 +22,9 @@ export async function LogInventoryToServer(
   })
 }
 
-export async function GetPlayerInventory(): Promise<unknown> {
+export async function GetPlayerInventory(): Promise<{
+  computed_player_inventory?: Array<{ itemId: string; count: number }>
+}> {
   const { userId } = await ensurePlayer()
   return await getData(`/api/rest/inventory/${userId}`)
 }
@@ -43,7 +45,9 @@ export async function LogPlayerLanded(
   })
 }
 
-export async function GetPlayerLevels(): Promise<unknown> {
+export async function GetPlayerLevels(): Promise<{
+  levels?: Array<{ level_type: string; level: number; xp: number }>
+}> {
   const { userId } = await ensurePlayer()
   return await getData(`/api/rest/level/${userId}`)
 }

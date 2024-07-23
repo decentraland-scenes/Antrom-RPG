@@ -32,7 +32,7 @@ export default class EvilGodricNightmare extends MonsterOligar {
       Math.round(player.maxHealth * 2 + stage * 60)
     )
     this.initMonster()
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = 100
     EvilGodricNightmare.currentInstance = this

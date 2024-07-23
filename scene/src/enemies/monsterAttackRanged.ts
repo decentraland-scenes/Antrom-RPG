@@ -70,7 +70,8 @@ export class MonsterAttackRanged {
   }
 
   attackSystem = (dt: number): void => {
-    const playerPos = Transform.get(engine.PlayerEntity).position
+    const playerPos =
+      Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.Zero()
     const monsterPos = Transform.getMutable(this.monster.entity).position
     const distanceToPlayer = Vector3.distance(playerPos, monsterPos)
     const moveMonsterTowardsPlayer = (

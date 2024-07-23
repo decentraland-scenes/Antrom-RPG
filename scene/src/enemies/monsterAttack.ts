@@ -57,8 +57,14 @@ export class MonsterAttack {
       direction.x = -direction.x
       direction.z = -direction.z
     }
+
+    const rotation = Quaternion.lookRotation(direction)
+    const angles = Quaternion.toEulerAngles(rotation)
+    angles.z = 0
+    angles.x = 0
     Transform.getMutable(this.monster.entity).rotation =
-      Quaternion.lookRotation(direction)
+      Quaternion.fromEulerDegrees(angles.x, angles.y, angles.z)
+
     const distance = Vector3.distanceSquared(monsterPos, playerPos)
     if (distance >= this.engageDistance) {
       Animator.playSingleAnimation(

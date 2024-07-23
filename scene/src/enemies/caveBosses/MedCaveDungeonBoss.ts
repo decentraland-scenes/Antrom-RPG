@@ -21,7 +21,7 @@ export default class MedCaveDungeonBoss extends MonsterOligar {
 
     // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
 
-    this.topOffSet = 3
+    this.setTopOffset(3)
     // # in %
     this.dropRate = -1
   }
