@@ -287,14 +287,14 @@ export class Antrom implements Realm {
       new BerryTree(this.gameController, Items.berryTree),
       new BerryTree(this.gameController, Items.berryTree)
     ]
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 6; i++) {
       this.executioners.push(new Executioner())
     }
 
-    for (let i = 0; i < 0; i++) {
+    for (let i = 0; i < 4; i++) {
       this.pigs.push(new Pig(this.gameController))
     }
-    for (let i = 0; i < 0; i++) {
+    for (let i = 0; i < 8; i++) {
       this.chickens.push(new Chicken())
     }
 

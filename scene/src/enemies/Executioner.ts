@@ -83,7 +83,11 @@ export default class Executioner extends MonsterMob {
       0,
       getRandomIntRange(10, -12)
     )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialRotation = Quaternion.fromEulerDegrees(
+      0,
+      getRandomIntRange(0, 180),
+      0
+    )
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation
@@ -98,6 +102,4 @@ export default class Executioner extends MonsterMob {
     engine.removeEntity(this.engageAttackTrigger)
     engine.removeEntity(this.entity)
   }
-
-  create(): void {}
 }
