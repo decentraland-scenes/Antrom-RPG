@@ -37,6 +37,7 @@ import { setPlayerPosition } from '../utils/engine'
 import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
 import { entityController } from './entityController'
+import Minion from '../enemies/hardDungeons/DungeonBossHelp'
 
 export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
@@ -91,7 +92,9 @@ export class Antrom implements Realm {
   private readonly pigs: Pig[]
   private readonly chickens: Chicken[]
   public butcher!: BetaBoss1
-  private readonly execu: Executioner
+  public jailGuard1!: Minion
+  public jailGuard2!: Minion
+
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
@@ -99,7 +102,6 @@ export class Antrom implements Realm {
     this.executioners = []
     this.pigs = []
     this.chickens = []
-    this.execu = new Executioner()
 
     GltfContainer.createOrReplace(this.antromForestTest, {
       src: 'assets/models/Antrom/AntromForestTest.glb'
@@ -286,7 +288,7 @@ export class Antrom implements Realm {
       new BerryTree(this.gameController, Items.berryTree),
       new BerryTree(this.gameController, Items.berryTree)
     ]
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
       this.executioners.push(new Executioner())
     }
 
@@ -1344,9 +1346,9 @@ export class Antrom implements Realm {
         )
       ) {
         if (jailGuards.read() === 2) {
+          console.log('DOOR OPENED')
           Animator.playSingleAnimation(this.cellEntranceDoor, 'open')
-          jailGuards.decrease(2)
-          //     createChryseJailedNPCs()
+          this.gameController.npcs.createChryseJailedNPCs()
           jailOpenOnce.increase(1)
           utils.timers.setTimeout(() => {
             Animator.playSingleAnimation(this.cellEntranceDoor, 'close')
@@ -1558,6 +1560,18 @@ export class Antrom implements Realm {
     switch (entityName) {
       case 'butcher':
         this.butcher = new BetaBoss1(this.gameController)
+        break
+      case 'jailGuards':
+        console.log('Guards spawned')
+        this.jailGuard1 = new Minion(
+          this.gameController,
+          Vector3.create(-51.27, 4.15, -53.72)
+        )
+        this.jailGuard2 = new Minion(
+          this.gameController,
+          Vector3.create(-46.24, 4.15, -54.05)
+        )
+        break
     }
   }
 
@@ -1573,46 +1587,46 @@ export class Antrom implements Realm {
   }
 
   removeAllEntities(): void {
-    entityController.removeEntity(this.boardParent)
+    engine.removeEntity(this.boardParent)
     this.leaderBoard.destroy()
-    entityController.removeEntity(this.leaderBoard.leaderBoard)
-    entityController.removeEntity(this.dungeonDoor)
-    entityController.removeEntity(this.tz_bersekerUpgradeMarket)
-    entityController.removeEntity(this.tz_resourceMarket)
-    entityController.removeEntity(this.tz_rangerUpgradeMarket)
-    entityController.removeEntity(this.tz_mageUpgradeMarket)
-    entityController.removeEntity(this.tz_apprenticeMarket)
-    entityController.removeEntity(this.tz_skillChange)
-    entityController.removeEntity(this.tz_magicalItemsMarketHUD)
-    entityController.removeEntity(this.tz_dailyRewards)
-    entityController.removeEntity(this.furanceUpgrade)
-    entityController.removeEntity(this.cellDoor)
-    entityController.removeEntity(this.cellEntranceDoor)
-    entityController.removeEntity(this.tavernDoor)
-    entityController.removeEntity(this.heavyGrinderCrown)
-    entityController.removeEntity(this.skybox)
-    entityController.removeEntity(this.campFire)
-    entityController.removeEntity(this.antromForestTest)
-    entityController.removeEntity(this.antromCavesTest)
-    entityController.removeEntity(this.antromCastleTest)
-    entityController.removeEntity(this.antromColliderTest)
-    entityController.removeEntity(this.antromCastle2Test)
-    entityController.removeEntity(this.npc_TownHallWizard)
-    entityController.removeEntity(this.npc_Witch)
-    entityController.removeEntity(this.npc_Witch2)
-    entityController.removeEntity(this.npc_Vendor)
-    entityController.removeEntity(this.npc_KingGeraldOld)
-    entityController.removeEntity(this.npc_RandomVillager1)
-    entityController.removeEntity(this.npc_RandomVillager2)
-    entityController.removeEntity(this.npc_RandomVillager3)
-    entityController.removeEntity(this.npc_RandomVillager4)
-    entityController.removeEntity(this.npc_RandomVillager5)
-    entityController.removeEntity(this.npc_RandomVillager6)
-    entityController.removeEntity(this.npc_RandomVillager7)
-    entityController.removeEntity(this.npc_RandomVillager8)
-    entityController.removeEntity(this.npc_RandomVillager9)
-    entityController.removeEntity(this.npc_RandomVillager10)
-    entityController.removeEntity(this.npc_RandomVillager11)
+    engine.removeEntity(this.leaderBoard.leaderBoard)
+    engine.removeEntity(this.dungeonDoor)
+    engine.removeEntity(this.tz_bersekerUpgradeMarket)
+    engine.removeEntity(this.tz_resourceMarket)
+    engine.removeEntity(this.tz_rangerUpgradeMarket)
+    engine.removeEntity(this.tz_mageUpgradeMarket)
+    engine.removeEntity(this.tz_apprenticeMarket)
+    engine.removeEntity(this.tz_skillChange)
+    engine.removeEntity(this.tz_magicalItemsMarketHUD)
+    engine.removeEntity(this.tz_dailyRewards)
+    engine.removeEntity(this.furanceUpgrade)
+    engine.removeEntity(this.cellDoor)
+    engine.removeEntity(this.cellEntranceDoor)
+    engine.removeEntity(this.tavernDoor)
+    engine.removeEntity(this.heavyGrinderCrown)
+    engine.removeEntity(this.skybox)
+    engine.removeEntity(this.campFire)
+    engine.removeEntity(this.antromForestTest)
+    engine.removeEntity(this.antromCavesTest)
+    engine.removeEntity(this.antromCastleTest)
+    engine.removeEntity(this.antromColliderTest)
+    engine.removeEntity(this.antromCastle2Test)
+    engine.removeEntity(this.npc_TownHallWizard)
+    engine.removeEntity(this.npc_Witch)
+    engine.removeEntity(this.npc_Witch2)
+    engine.removeEntity(this.npc_Vendor)
+    engine.removeEntity(this.npc_KingGeraldOld)
+    engine.removeEntity(this.npc_RandomVillager1)
+    engine.removeEntity(this.npc_RandomVillager2)
+    engine.removeEntity(this.npc_RandomVillager3)
+    engine.removeEntity(this.npc_RandomVillager4)
+    engine.removeEntity(this.npc_RandomVillager5)
+    engine.removeEntity(this.npc_RandomVillager6)
+    engine.removeEntity(this.npc_RandomVillager7)
+    engine.removeEntity(this.npc_RandomVillager8)
+    engine.removeEntity(this.npc_RandomVillager9)
+    engine.removeEntity(this.npc_RandomVillager10)
+    engine.removeEntity(this.npc_RandomVillager11)
     this.butcher.removeEntity()
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()

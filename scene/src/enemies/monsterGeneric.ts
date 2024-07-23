@@ -12,10 +12,10 @@ import { Character } from './character'
 import { entityController } from '../realms/entityController'
 
 export class GenericMonster extends Character {
-  private attackTrigger?: Entity
-  private healthBar?: Entity
-  private label?: Entity
-  private topOffSet?: number
+  public attackTrigger!: Entity
+  public healthBar!: Entity
+  public label!: Entity
+  public topOffSet?: number
 
   constructor(
     attack: number,

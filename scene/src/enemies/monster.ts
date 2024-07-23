@@ -415,7 +415,7 @@ export class MonsterOligar extends GenericMonster {
   }
 
   run(): void {
-    Animator.playSingleAnimation(this.entity, this.walkClip)
+    Animator.playSingleAnimation(this.entity, this.walkClip, false)
   }
 
   playIdle(): void {

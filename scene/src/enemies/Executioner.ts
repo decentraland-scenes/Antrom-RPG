@@ -20,7 +20,7 @@ export default class Executioner extends MonsterMob {
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
-    super(level + 20, level + 60, level - 10, level * 100)
+    super(level + 20, level + 60, level - 10, level * 10)
     this.minLuck = 10
     this.hoverText = `Attack LVL ${level} Executioner!`
 
@@ -82,7 +82,11 @@ export default class Executioner extends MonsterMob {
       0,
       getRandomIntRange(10, -12)
     )
-    const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
+    const initialRotation = Quaternion.fromEulerDegrees(
+      0,
+      getRandomIntRange(0, 180),
+      0
+    )
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
       rotation: initialRotation

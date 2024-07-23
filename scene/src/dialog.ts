@@ -6,6 +6,7 @@ import { DungeonStage } from './counters'
 import { movePlayerTo } from '~system/RestrictedActions'
 import * as utils from '@dcl-sdk/utils'
 import { entityController } from './realms/entityController'
+import { engine } from '@dcl/sdk/ecs'
 
 export class Dialogs {
   public randomDialog1: Dialog[]
@@ -28,6 +29,9 @@ export class Dialogs {
   public trewsDialog: Dialog[]
   public plawmanDialog: Dialog[]
   public vendorDialog: Dialog[]
+  public foundChryseGarrisonDialog: Dialog[]
+  public alaraCallToArmsDialog: Dialog[]
+  public alaraWakenUpDialog: Dialog[]
   public inGameWeaponSmithDialog: Dialog[]
   public garrisonAlaraDialog2: Dialog[]
   public FoundChryseDialog: Dialog[]
@@ -36,6 +40,114 @@ export class Dialogs {
   constructor(gameController: GameController) {
     this.kingCount = 0
     this.gameController = gameController
+    this.foundChryseGarrisonDialog = [
+      {
+        text: `The essence? Ah, yes. Long ago, this town was saved by a legendary knight, the Royal Knight.`
+      },
+      {
+        text: `He defeated the Lich God, but before the Lich God was completely vanquished, he divided himself into essences that were scattered around the kingdom.`
+      },
+      {
+        text: `Legend has it that if one possesses all of the Lich God's essences, they can resurrect the god and wield his powers to command his undead army.`
+      },
+      {
+        text: `I happen to know the location of one of these essences. If you're interested, help me bring down the King!
+      `,
+        isEndOfDialog: true
+      }
+    ]
+    this.alaraCallToArmsDialog = [
+      {
+        text: `I've informed the other families of the men betrayed by the king and loyal to my father.`
+      },
+      {
+        text: `Among those families are the Almans, four brothers devoted to Antrom and skilled fighters. 
+      `
+      },
+      {
+        text: `They've become farmers now and made a pact not to fight again, but I believe they can be persuaded.
+      `
+      },
+      {
+        text: `We need to ensure my father reaches Lillian Alman.
+      `,
+        isQuestion: true,
+        buttons: [
+          {
+            label: `Lets go!`,
+            goToDialog: 4,
+            triggeredActions: () => {
+              this.gameController.uiController.displayAnnouncement(
+                'Assist Alara in \nreleasing Callan \nfrom jail.',
+                Color4.Yellow(),
+                2000
+              )
+              this.gameController.realmController.currentRealm?.spawnSingleEntity(
+                'jailGuards'
+              )
+            }
+          },
+          {
+            label: `I'm afraid.`,
+            goToDialog: 5,
+            triggeredActions: () => {}
+          }
+        ]
+      },
+      {
+        name: 'Help',
+        text: `In here, and down the stairs, quickly!`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'NO',
+        text: `We need you!`,
+        isEndOfDialog: true
+      }
+    ]
+    this.alaraWakenUpDialog = [
+      {
+        text: `You're awake? I thought we lost you... I'm Alara, Callan's daughter. I witnessed what happened— last week and `
+      },
+      {
+        text: `I brought you here to hide you from the soldiers. The King betrayed you, just as he did my father.`
+      },
+      {
+        text: `They've imprisoned my father beneath the castle, and I need your help to rescue him. Will you assist me?`,
+
+        isQuestion: true,
+        buttons: [
+          {
+            label: `Yes`,
+            goToDialog: 3,
+            triggeredActions: () => {
+              engine.removeEntity(this.gameController.npcs.Alara)
+              this.gameController.npcs.createAlara2NPC()
+              this.gameController.uiController.displayAnnouncement(
+                'Meet Alara \noutside the jail.',
+                Color4.Yellow(),
+                2000
+              )
+            }
+          },
+          {
+            label: `NO`,
+            goToDialog: 4,
+            triggeredActions: () => {}
+          }
+        ]
+      },
+      {
+        name: 'Yes',
+        text: `Meet me there!`,
+        isEndOfDialog: true
+      },
+      {
+        name: 'NO',
+        text: `We need you!`,
+        isEndOfDialog: true
+      }
+    ]
     this.FoundChryseDialog = [
       {
         text: `You've come here seeking to cast me as the villain, but it's the king who should be under suspicion!`
@@ -180,12 +292,16 @@ export class Dialogs {
                 Color4.Yellow(),
                 2000
               )
-              entityController.removeEntity(this.gameController.npcs.Trews)
+              engine.removeEntity(this.gameController.npcs.Trews)
+              engine.removeEntity(this.gameController.npcs.soldierA)
+              engine.removeEntity(this.gameController.npcs.soldierB)
+              engine.removeEntity(this.gameController.npcs.soldierC)
+              engine.removeEntity(this.gameController.npcs.Guyonknees)
             }
           },
           {
             label: `No, thanks.`,
-            goToDialog: 'OK',
+            goToDialog: 4,
             triggeredActions: () => {}
           }
         ]
@@ -541,7 +657,7 @@ export class Dialogs {
               }
             }
           },
-          { label: `No`, goToDialog: 'No', triggeredActions: () => {} }
+          { label: `No`, goToDialog: 4, triggeredActions: () => {} }
         ]
       },
       {
@@ -825,7 +941,7 @@ export class Dialogs {
   }
 
   // createQuest1NPCs(): void {
-  //   let Guyonknees = entityController.addEntity()
+  //   let Guyonknees = engine.addEntity()
   //   Guyonknees = npc.create(
   //     {
   //       position: Vector3.create(-38.17, 9.53, -39.78),
@@ -851,7 +967,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierA = entityController.addEntity()
+  //   let soldierA = engine.addEntity()
   //   soldierA = npc.create(
   //     {
   //       position: Vector3.create(-38.17, 9.53, -42.16),
@@ -873,7 +989,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierB = entityController.addEntity()
+  //   let soldierB = engine.addEntity()
   //   soldierB = npc.create(
   //     {
   //       position: Vector3.create(-40.78, 9.53, -39.66),
@@ -895,7 +1011,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierC = entityController.addEntity()
+  //   let soldierC = engine.addEntity()
   //   soldierC = npc.create(
   //     {
   //       position: Vector3.create(-38.05, 9.53, -37.37),
@@ -917,7 +1033,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let Trews = entityController.addEntity()
+  //   let Trews = engine.addEntity()
   //   Trews = npc.create(
   //     {
   //       position: Vector3.create(-34.93, 9.53, -39.42),

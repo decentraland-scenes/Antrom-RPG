@@ -37,7 +37,6 @@ export class MonsterMob extends GenericMonster {
   isDeadAnimation: boolean
   isDead: boolean
   // attackSound?: AudioSource
-  // playerAttackUI: ui.CornerLabel
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   initialPosition?: Vector3
@@ -204,6 +203,29 @@ export class MonsterMob extends GenericMonster {
     )
   }
 
+  setupAttackTriggerBox(): void {
+    // this.attackTrigger = engine.addEntity()
+    // Transform.create(this.attackTrigger, { parent: this.entity })
+    // MeshRenderer.setBox(this.attackTrigger)
+    // VisibilityComponent.create(this.attackTrigger, { visible: false })
+    // utils.triggers.addTrigger(
+    //   this.attackTrigger,
+    //   1,
+    //   1,
+    //   [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+    //   () => {
+    //     this.createHealthBar()
+    //     this.handleAttack()
+    //     this.createLabel()
+    //   },
+    //   () => {
+    //     console.log('im out')
+    //     if (this.healthBar != null) engine.removeEntity(this.healthBar)
+    //     if (this.label != null) engine.removeEntity(this.label)
+    //   }
+    // )
+  }
+
   setDistance(distance: number): void {
     pointerEventsSystem.onPointerDown(
       {
@@ -234,7 +256,7 @@ export class MonsterMob extends GenericMonster {
 
   killChar(): void {
     // TODO lootEvent
-
+    console.log('killchar')
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
     //         this.getComponent(Transform).position,
@@ -263,6 +285,7 @@ export class MonsterMob extends GenericMonster {
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
+    engine.removeSystem(this.attackSystem.attackSystem)
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
@@ -335,6 +358,7 @@ export class MonsterMob extends GenericMonster {
       },
       () => {
         const player = Player.getInstanceOrNull()
+        console.log(player, 'playerInstance')
         if (player === null) return
 
         if (refreshtimer > 0) {

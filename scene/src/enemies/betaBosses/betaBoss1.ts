@@ -1,23 +1,23 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
-// import MonsterOligar from '../monster'
-import { DungeonStage } from '../../counters'
-import MonsterMob from '../MonsterMob'
 import { Transform } from '@dcl/sdk/ecs'
-import { getRandomInt } from '../../utils/getRandomInt'
+import { type GameController } from '../../controllers/game.controller'
+import { DungeonStage } from '../../counters'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { Player } from '../../player/player'
-import { type GameController } from '../../controllers/game.controller'
 import { entityController } from '../../realms/entityController'
+import { getRandomInt } from '../../utils/getRandomInt'
+import MonsterMob from '../MonsterMob'
 
 export default class BetaBoss1 extends MonsterMob {
   shapeFile = 'assets/models/Butcher.glb'
   hoverText = `Attack LVL ${DungeonStage.read()} Jameson's Butcher`
+  
   gameController: GameController
   constructor(gameController: GameController) {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     const stage = DungeonStage.read()
-    super(5 + stage * 7, level + 100, level + 1, 100 * (stage * 3))
+    super(5 + stage * 7, level + 100, level + 1, 10) // ---> 100 * (stage * 3)
     this.minLuck = 10
     this.gameController = gameController
     Transform.createOrReplace(this.entity, {
@@ -32,7 +32,6 @@ export default class BetaBoss1 extends MonsterMob {
 
   onDropXp(): void {
     // TODO
-    this.isDead = true
     this.gameController.npcs.createChryseNPC()
   }
 
