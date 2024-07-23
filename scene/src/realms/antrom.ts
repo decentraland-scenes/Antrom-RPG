@@ -36,6 +36,7 @@ import { BerryTree, Items, Rock, Tree } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
 import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
+import Minion from '../enemies/hardDungeons/DungeonBossHelp'
 
 export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
@@ -90,7 +91,9 @@ export class Antrom implements Realm {
   private readonly pigs: Pig[]
   private readonly chickens: Chicken[]
   public butcher!: BetaBoss1
-  private readonly execu: Executioner
+  public jailGuard1!: Minion
+  public jailGuard2!: Minion
+
   // Controllers
   gameController: GameController
   constructor(gameController: GameController) {
@@ -98,7 +101,6 @@ export class Antrom implements Realm {
     this.executioners = []
     this.pigs = []
     this.chickens = []
-    this.execu = new Executioner()
 
     GltfContainer.createOrReplace(this.antromForestTest, {
       src: 'assets/models/Antrom/AntromForestTest.glb'
@@ -285,16 +287,17 @@ export class Antrom implements Realm {
       new BerryTree(this.gameController, Items.berryTree),
       new BerryTree(this.gameController, Items.berryTree)
     ]
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 1; i++) {
       this.executioners.push(new Executioner())
     }
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 0; i++) {
       this.pigs.push(new Pig(this.gameController))
     }
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 0; i++) {
       this.chickens.push(new Chicken())
     }
+
     this.AntromNPCs()
     this.DungeonDoor()
     this.createTriggerZoneForBerserkerUpgradeMarket()
@@ -1343,9 +1346,9 @@ export class Antrom implements Realm {
         )
       ) {
         if (jailGuards.read() === 2) {
+          console.log('DOOR OPENED')
           Animator.playSingleAnimation(this.cellEntranceDoor, 'open')
-          jailGuards.decrease(2)
-          //     createChryseJailedNPCs()
+          this.gameController.npcs.createChryseJailedNPCs()
           jailOpenOnce.increase(1)
           utils.timers.setTimeout(() => {
             Animator.playSingleAnimation(this.cellEntranceDoor, 'close')
@@ -1557,6 +1560,18 @@ export class Antrom implements Realm {
     switch (entityName) {
       case 'butcher':
         this.butcher = new BetaBoss1(this.gameController)
+        break
+      case 'jailGuards':
+        console.log('Guards spawned')
+        this.jailGuard1 = new Minion(
+          this.gameController,
+          Vector3.create(-51.27, 4.15, -53.72)
+        )
+        this.jailGuard2 = new Minion(
+          this.gameController,
+          Vector3.create(-46.24, 4.15, -54.05)
+        )
+        break
     }
   }
 

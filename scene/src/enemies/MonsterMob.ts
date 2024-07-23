@@ -39,7 +39,6 @@ export class MonsterMob extends Character {
   isDeadAnimation: boolean
   isDead: boolean
   // attackSound?: AudioSource
-  // playerAttackUI: ui.CornerLabel
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   attackTrigger!: Entity
@@ -114,7 +113,7 @@ export class MonsterMob extends Character {
     })
 
     this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
+    this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
@@ -220,8 +219,6 @@ export class MonsterMob extends Character {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         engine.addSystem(this.attackSystemRanged.attackSystem)
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.walkClip, false)
       },
       () => {
         console.log('im out')
@@ -262,16 +259,16 @@ export class MonsterMob extends Character {
       this.attackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(6, 2, 6) }],
+      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
       () => {
         this.createHealthBar()
         this.handleAttack()
         this.createLabel()
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.attackClip, false)
       },
       () => {
         console.log('im out')
+        if (this.healthBar != null) engine.removeEntity(this.healthBar)
+        if (this.label != null) engine.removeEntity(this.label)
       }
     )
   }
@@ -306,7 +303,7 @@ export class MonsterMob extends Character {
 
   killChar(): void {
     // TODO lootEvent
-
+    console.log('killchar')
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
     //         this.getComponent(Transform).position,
@@ -337,6 +334,7 @@ export class MonsterMob extends Character {
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
+    engine.removeSystem(this.attackSystem.attackSystem)
 
     if (this.healthBar != null) {
       engine.removeEntity(this.healthBar)
@@ -415,6 +413,7 @@ export class MonsterMob extends Character {
       },
       () => {
         const player = Player.getInstanceOrNull()
+        console.log(player, 'playerInstance')
         if (player === null) return
 
         if (this.health <= 0) {

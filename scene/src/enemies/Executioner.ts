@@ -19,7 +19,7 @@ export default class Executioner extends MonsterMob {
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
-    super(level + 20, level + 60, level - 10, level * 100)
+    super(level + 20, level + 60, level - 10, level * 10)
     this.hoverText = `Attack LVL ${level} Executioner!`
 
     Transform.createOrReplace(this.entity, {
@@ -78,6 +78,8 @@ export default class Executioner extends MonsterMob {
       rotation: initialRotation
     })
   }
+
+  create(): void {}
 
   removeEntity(): void {
     engine.removeEntity(this.rangeAttackTrigger)

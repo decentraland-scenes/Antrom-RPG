@@ -1,6 +1,12 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type MonsterOligar } from './monster'
-import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import {
+  type Entity,
+  GltfContainer,
+  Transform,
+  engine,
+  Animator
+} from '@dcl/sdk/ecs'
 import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
 
@@ -86,11 +92,11 @@ export class MonsterAttackRanged {
     }
     if (this.hasBeenHit && distanceToPlayer > this.stopDistance) {
       moveMonsterTowardsPlayer(playerPos, monsterPos, dt)
-      // Animator.playSingleAnimation(
-      //   this.monster.entity,
-      //   this.monster.walkClip,
-      //   false
-      // )
+      Animator.playSingleAnimation(
+        this.monster.entity,
+        this.monster.walkClip,
+        false
+      )
     }
     if (arrow != null) {
       arrowMove(arrow, dt)
@@ -121,7 +127,11 @@ export class MonsterAttackRanged {
           return
         }
         const player = Player.getInstanceOrNull()
-        if (player === null) return
+        if (player === null) {
+          console.log('player instance is null')
+          return
+        }
+
         this.monster.performAttack(player.getMagic() / 3, false)
         // const monsterDiceResult = this.monster.rollDice()
         // const playerDiceResult = player.rollDice()

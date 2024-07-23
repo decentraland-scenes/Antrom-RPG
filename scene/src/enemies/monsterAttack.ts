@@ -1,6 +1,6 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import type MonsterOligar from './monster'
-import { type Entity, Transform, engine } from '@dcl/sdk/ecs'
+import { type Entity, Transform, engine, Animator } from '@dcl/sdk/ecs'
 
 // Configuration
 const MOVE_SPEED = 1
@@ -61,7 +61,11 @@ export class MonsterAttack {
       Quaternion.lookRotation(direction)
     const distance = Vector3.distanceSquared(monsterPos, playerPos)
     if (distance >= this.engageDistance) {
-      this.monster.run()
+      Animator.playSingleAnimation(
+        this.monster.entity,
+        this.monster.walkClip,
+        false
+      )
       this.isIdle = false
 
       const dirVector = Vector3.Forward()
