@@ -1,9 +1,9 @@
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import { type MonsterOligar } from './monster'
 import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../player/player'
-import { getRandomInt } from '../utils/getRandomInt'
 import { entityController } from '../realms/entityController'
+import { getRandomInt } from '../utils/getRandomInt'
+import { type MonsterOligar } from './monster'
 
 let arrow: Entity | null = null
 let arrowStartPosition: Vector3
@@ -123,7 +123,11 @@ export class MonsterAttackRanged {
           return
         }
         const player = Player.getInstanceOrNull()
-        if (player === null) return
+        if (player === null) {
+          console.log('player instance is null')
+          return
+        }
+
         this.monster.performAttack(player.getMagic() / 3, false)
         // const monsterDiceResult = this.monster.rollDice()
         // const playerDiceResult = player.rollDice()

@@ -55,8 +55,8 @@ export class UIController {
 
   displayAnnouncement(
     announcement: string,
-    color: Color4,
-    duration: number
+    color: Color4 = Color4.Yellow(),
+    duration: number = 3000
   ): void {
     if (this.announcementTimerId !== undefined) {
       utils.timers.clearInterval(this.announcementTimerId)

@@ -10,7 +10,7 @@ import {
   pointerEventsSystem,
   type Entity
 } from '@dcl/sdk/ecs'
-import { Vector3 } from '@dcl/sdk/math'
+import { Color4, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../player/player'
 import { getRandomInt } from '../utils/getRandomInt'
 import { refreshtimer, setRefreshTimer } from '../utils/refresherTimer'
@@ -37,7 +37,6 @@ export class MonsterMob extends GenericMonster {
   isDeadAnimation: boolean
   isDead: boolean
   // attackSound?: AudioSource
-  // playerAttackUI: ui.CornerLabel
   rangeAttackTrigger!: Entity
   engageAttackTrigger!: Entity
   initialPosition?: Vector3
@@ -204,6 +203,29 @@ export class MonsterMob extends GenericMonster {
     )
   }
 
+  setupAttackTriggerBox(): void {
+    this.attackTrigger = entityController.addEntity()
+    Transform.create(this.attackTrigger, { parent: this.entity })
+    MeshRenderer.setBox(this.attackTrigger)
+    VisibilityComponent.create(this.attackTrigger, { visible: false })
+    utils.triggers.addTrigger(
+      this.attackTrigger,
+      1,
+      1,
+      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+      () => {
+        this.createHealthBar()
+        this.handleAttack()
+      },
+      () => {
+        console.log('im out')
+        if (this.healthBar != null)
+          entityController.removeEntity(this.healthBar)
+        if (this.label != null) entityController.removeEntity(this.label)
+      }
+    )
+  }
+
   setDistance(distance: number): void {
     pointerEventsSystem.onPointerDown(
       {
@@ -234,7 +256,7 @@ export class MonsterMob extends GenericMonster {
 
   killChar(): void {
     // TODO lootEvent
-
+    console.log('killchar')
     // lootEventManager.fireEvent(
     //     new LootDropEvent(
     //         this.getComponent(Transform).position,
@@ -263,6 +285,7 @@ export class MonsterMob extends GenericMonster {
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
+    engine.removeSystem(this.attackSystem.attackSystem)
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
@@ -270,7 +293,7 @@ export class MonsterMob extends GenericMonster {
       entityController.removeEntity(this.engageAttackTrigger)
     }
     utils.timers.setTimeout(() => {
-      this.isDeadOnce()
+      this.killChar()
     }, 1000)
   }
 
@@ -335,6 +358,7 @@ export class MonsterMob extends GenericMonster {
       },
       () => {
         const player = Player.getInstanceOrNull()
+        console.log(player, 'playerInstance')
         if (player === null) return
 
         if (refreshtimer > 0) {
@@ -377,6 +401,12 @@ export class MonsterMob extends GenericMonster {
 
           monsterModifiers.activeSkills.forEach((skill) =>
             skill(isCriticalAttack, true, reduceHealthBy)
+          )
+        } else {
+          Player.getInstance().gameController.uiController.displayAnnouncement(
+            'Attack missed!\nIncrease your luck!',
+            Color4.Yellow(),
+            1000
           )
         }
       }
