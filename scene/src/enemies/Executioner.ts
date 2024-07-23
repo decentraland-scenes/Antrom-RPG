@@ -20,7 +20,7 @@ export default class Executioner extends MonsterMob {
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
-    super(level + 20, level + 60, level - 10, level * 10)
+    super(level + 20, level + 60, level - 10, level * 100)
     this.minLuck = 10
     this.hoverText = `Attack LVL ${level} Executioner!`
 

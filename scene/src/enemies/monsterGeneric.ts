@@ -105,7 +105,6 @@ export class GenericMonster extends Character {
 
   cleanup(): void {
     if (this.attackTrigger !== undefined) {
-      utils.triggers.removeTrigger(this.attackTrigger)
       entityController.removeEntity(this.attackTrigger)
     }
     if (this.healthBar !== undefined) {
