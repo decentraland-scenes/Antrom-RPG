@@ -29,7 +29,6 @@ export default class Minion extends MonsterMob {
   }
 
   onDropXp(): void {
-    
     jailGuards.increase(1)
     console.log('Guard dead')
   }
@@ -39,7 +38,6 @@ export default class Minion extends MonsterMob {
   }
 
   loadTransformation(): void {
-   
     const initialPosition = Vector3.create(
       this.initialPosition?.x,
       this.initialPosition?.y,

@@ -11,10 +11,10 @@ import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Character } from './character'
 
 export class GenericMonster extends Character {
-  private attackTrigger?: Entity
-  private healthBar?: Entity
-  private label?: Entity
-  private topOffSet?: number
+  public attackTrigger!: Entity
+  public healthBar!: Entity
+  public label!: Entity
+  public topOffSet?: number
 
   constructor(
     attack: number,
