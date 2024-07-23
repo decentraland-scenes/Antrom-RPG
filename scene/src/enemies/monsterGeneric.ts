@@ -12,10 +12,10 @@ import { Character } from './character'
 import { entityController } from '../realms/entityController'
 
 export class GenericMonster extends Character {
-  private attackTrigger?: Entity
-  private healthBar?: Entity
-  private label?: Entity
-  private topOffSet?: number
+  public attackTrigger!: Entity
+  public healthBar!: Entity
+  public label!: Entity
+  public topOffSet?: number
 
   constructor(
     attack: number,
@@ -105,7 +105,6 @@ export class GenericMonster extends Character {
 
   cleanup(): void {
     if (this.attackTrigger !== undefined) {
-      utils.triggers.removeTrigger(this.attackTrigger)
       entityController.removeEntity(this.attackTrigger)
     }
     if (this.healthBar !== undefined) {

@@ -8,9 +8,10 @@ import { entityController } from './realms/entityController'
 export class NPCs {
   gameController: GameController
   public Guyonknees!: Entity
-  public soldierA: Entity | undefined
-  public soldierB: Entity | undefined
-  public soldierC: Entity | undefined
+  public Alara!: Entity
+  public soldierA!: Entity
+  public soldierB!: Entity
+  public soldierC!: Entity
   public Trews!: Entity
   public Plawman!: Entity
   public Noir!: Entity
@@ -190,7 +191,6 @@ export class NPCs {
   }
 
   createChryseNPC(): void {
-    console.log('CHRYSE CREATED')
     this.Chryse = entityController.addEntity()
     this.Chryse = npc.create(
       {
@@ -262,5 +262,87 @@ export class NPCs {
     )
   }
 
-  createAlara1NPC(): void {}
+  createAlara1NPC(): void {
+    this.Alara = entityController.addEntity()
+    this.Alara = npc.create(
+      {
+        position: Vector3.create(85.65, 3.18, 72.26),
+        rotation: Quaternion.create(0, -1, 0, 1),
+        scale: Vector3.create(1, 1, 1)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/FemKnight_withoutArmor.glb',
+        onActivate: () => {
+          console.log('npc activated')
+          openDialogWindow(
+            this.Alara,
+            this.gameController.dialogs.alaraWakenUpDialog
+          )
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+  }
+
+  createAlara2NPC(): void {
+    this.Alara = entityController.addEntity()
+    this.Alara = npc.create(
+      {
+        position: Vector3.create(-52.16, 9.55, -56.47),
+        rotation: Quaternion.create(0, -1, 0, 1),
+        scale: Vector3.create(1, 1, 1)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/FemKnight.glb',
+        onActivate: () => {
+          console.log('npc activated')
+          openDialogWindow(
+            this.Alara,
+            this.gameController.dialogs.alaraCallToArmsDialog
+          )
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+  }
+
+  createChryseJailedNPCs(): void {
+    this.Chryse = entityController.addEntity()
+    this.Chryse = npc.create(
+      {
+        position: Vector3.create(-52.93, 4.15, -42.99),
+        rotation: Quaternion.create(0, -1, 0, 1),
+        scale: Vector3.create(1.2, 1.2, 1.2)
+      },
+      {
+        type: npc.NPCType.CUSTOM,
+        model: 'assets/models/Villager2.glb',
+        onActivate: () => {
+          console.log('npc activated')
+          openDialogWindow(
+            this.Chryse,
+            this.gameController.dialogs.foundChryseGarrisonDialog
+          )
+        },
+        onWalkAway: () => {
+          console.log('walked away')
+        },
+        bubbleHeight: 256,
+        faceUser: true,
+        onlyClickTrigger: true
+      }
+    )
+  }
 }
