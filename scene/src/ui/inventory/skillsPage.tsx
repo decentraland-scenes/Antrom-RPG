@@ -8,6 +8,7 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
+import { Color4 } from '@dcl/sdk/math'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -214,13 +215,14 @@ function SkillsPage({
       {/* General Skills */}
       <UiEntity
         uiTransform={{
-          width: '75%',
+          width: '67%',
           height: '50%',
           flexDirection: 'row',
           alignContent: 'flex-start',
           flexWrap: 'wrap',
           positionType: 'absolute',
           position: { top: '17.25%', left: '31.5%' }
+          
         }}
       >
         <UiEntity
@@ -264,9 +266,9 @@ function SkillsPage({
             <UiEntity
               key={index}
               uiTransform={{
-                width: '9.5%',
+                width: '11%',
                 height: '29.5%',
-                margin: { bottom: '1.2%', right: '1.65%' }
+                margin: { bottom: '1.2%', right: '1.45%' }
               }}
             >
               <SkillButton
