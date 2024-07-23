@@ -11,7 +11,7 @@ import MonsterMob from '../MonsterMob'
 export default class BetaBoss1 extends MonsterMob {
   shapeFile = 'assets/models/Butcher.glb'
   hoverText = `Attack LVL ${DungeonStage.read()} Jameson's Butcher`
-  
+
   gameController: GameController
   constructor(gameController: GameController) {
     const player = Player.getInstanceOrNull()

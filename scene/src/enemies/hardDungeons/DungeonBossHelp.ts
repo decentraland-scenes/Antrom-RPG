@@ -1,22 +1,24 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { DungeonStage, jailGuards } from '../../counters'
 import MonsterMob from '../MonsterMob'
-import { engine, Transform } from '@dcl/sdk/ecs'
+import { Transform } from '@dcl/sdk/ecs'
 import { getRandomInt } from '../../utils/getRandomInt'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { Player } from '../../player/player'
 import { type GameController } from '../../controllers/game.controller'
+import { entityController } from '../../realms/entityController'
 
 export default class Minion extends MonsterMob {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
   hoverText = `Attack Guard!`
-  minLuck = 30
   gameController: GameController
+
   constructor(gameController: GameController, initialPos: Vector3) {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     const stage = DungeonStage.read()
     super(5 + stage * 7, level + 100, level + 1, 10) // ---->> 100 * (stage * 3)
+    this.minLuck = 30
     this.gameController = gameController
     this.initialPosition = initialPos
     Transform.createOrReplace(this.entity, {
@@ -57,11 +59,11 @@ export default class Minion extends MonsterMob {
   create(): void {}
 
   removeEntity(): void {
-    engine.removeEntity(this.rangeAttackTrigger)
-    engine.removeEntity(this.engageAttackTrigger)
-    engine.removeEntity(this.attackTrigger)
-    engine.removeEntity(this.healthBar)
-    engine.removeEntity(this.label)
-    engine.removeEntity(this.entity)
+    entityController.removeEntity(this.rangeAttackTrigger)
+    entityController.removeEntity(this.engageAttackTrigger)
+    entityController.removeEntity(this.attackTrigger)
+    entityController.removeEntity(this.healthBar)
+    entityController.removeEntity(this.label)
+    entityController.removeEntity(this.entity)
   }
 }

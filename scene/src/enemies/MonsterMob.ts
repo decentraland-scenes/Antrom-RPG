@@ -204,7 +204,7 @@ export class MonsterMob extends GenericMonster {
   }
 
   setupAttackTriggerBox(): void {
-    // this.attackTrigger = engine.addEntity()
+    // this.attackTrigger = entityController.addEntity()
     // Transform.create(this.attackTrigger, { parent: this.entity })
     // MeshRenderer.setBox(this.attackTrigger)
     // VisibilityComponent.create(this.attackTrigger, { visible: false })
@@ -220,8 +220,8 @@ export class MonsterMob extends GenericMonster {
     //   },
     //   () => {
     //     console.log('im out')
-    //     if (this.healthBar != null) engine.removeEntity(this.healthBar)
-    //     if (this.label != null) engine.removeEntity(this.label)
+    //     if (this.healthBar != null) entityController.removeEntity(this.healthBar)
+    //     if (this.label != null) entityController.removeEntity(this.label)
     //   }
     // )
   }

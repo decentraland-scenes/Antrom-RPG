@@ -6,7 +6,6 @@ import { DungeonStage } from './counters'
 import { movePlayerTo } from '~system/RestrictedActions'
 import * as utils from '@dcl-sdk/utils'
 import { entityController } from './realms/entityController'
-import { engine } from '@dcl/sdk/ecs'
 
 export class Dialogs {
   public randomDialog1: Dialog[]
@@ -121,7 +120,7 @@ export class Dialogs {
             label: `Yes`,
             goToDialog: 3,
             triggeredActions: () => {
-              engine.removeEntity(this.gameController.npcs.Alara)
+              entityController.removeEntity(this.gameController.npcs.Alara)
               this.gameController.npcs.createAlara2NPC()
               this.gameController.uiController.displayAnnouncement(
                 'Meet Alara \noutside the jail.',
@@ -292,11 +291,11 @@ export class Dialogs {
                 Color4.Yellow(),
                 2000
               )
-              engine.removeEntity(this.gameController.npcs.Trews)
-              engine.removeEntity(this.gameController.npcs.soldierA)
-              engine.removeEntity(this.gameController.npcs.soldierB)
-              engine.removeEntity(this.gameController.npcs.soldierC)
-              engine.removeEntity(this.gameController.npcs.Guyonknees)
+              entityController.removeEntity(this.gameController.npcs.Trews)
+              entityController.removeEntity(this.gameController.npcs.soldierA)
+              entityController.removeEntity(this.gameController.npcs.soldierB)
+              entityController.removeEntity(this.gameController.npcs.soldierC)
+              entityController.removeEntity(this.gameController.npcs.Guyonknees)
             }
           },
           {
@@ -941,7 +940,7 @@ export class Dialogs {
   }
 
   // createQuest1NPCs(): void {
-  //   let Guyonknees = engine.addEntity()
+  //   let Guyonknees = entityController.addEntity()
   //   Guyonknees = npc.create(
   //     {
   //       position: Vector3.create(-38.17, 9.53, -39.78),
@@ -967,7 +966,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierA = engine.addEntity()
+  //   let soldierA = entityController.addEntity()
   //   soldierA = npc.create(
   //     {
   //       position: Vector3.create(-38.17, 9.53, -42.16),
@@ -989,7 +988,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierB = engine.addEntity()
+  //   let soldierB = entityController.addEntity()
   //   soldierB = npc.create(
   //     {
   //       position: Vector3.create(-40.78, 9.53, -39.66),
@@ -1011,7 +1010,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let soldierC = engine.addEntity()
+  //   let soldierC = entityController.addEntity()
   //   soldierC = npc.create(
   //     {
   //       position: Vector3.create(-38.05, 9.53, -37.37),
@@ -1033,7 +1032,7 @@ export class Dialogs {
   //     }
   //   )
 
-  //   let Trews = engine.addEntity()
+  //   let Trews = entityController.addEntity()
   //   Trews = npc.create(
   //     {
   //       position: Vector3.create(-34.93, 9.53, -39.42),

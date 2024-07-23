@@ -8,14 +8,14 @@ import { entityController } from '../realms/entityController'
 export class Character {
   _entity = entityController.addEntity()
   // triggerRangeAttack = entityController.addEntity()
-  _health: number
-  _attack: number
-  _xp: number
-  _level: number
-  _baseDefense: number
-  _maxHealth: number
-  _minLuck: number = 0
-  _magic: number
+  private _health: number
+  private _attack: number
+  private _xp: number
+  private _level: number
+  private _baseDefense: number
+  private _maxHealth: number
+  private _minLuck: number = 0
+  private _magic: number
 
   constructor(
     attack: number,

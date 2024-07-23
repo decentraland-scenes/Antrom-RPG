@@ -1,9 +1,4 @@
-import {
-  type Entity,
-  GltfContainer,
-  Transform,
-  engine,
-} from '@dcl/sdk/ecs'
+import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
