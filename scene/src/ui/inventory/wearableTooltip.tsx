@@ -43,27 +43,35 @@ export function WearableTooltip({
       }}
     >
       <Label
-        uiTransform={{height:TITLE_FONT_SIZE * 1.1}}
+        uiTransform={{ height: TITLE_FONT_SIZE * 1.1 }}
         value={WEARABLES_MAPPING[wearableName].label}
         fontSize={TITLE_FONT_SIZE}
         color={Color4.Green()}
       />
-      <UiEntity uiTransform={{width:'80%', height:'60%', flexDirection:'column', justifyContent:'center', margin:{top:TITLE_FONT_SIZE * 0.3}}}>
-      {Object.entries(WEARABLES_MAPPING[wearableName].stats).map(
-        ([key, value]) => (
-          <Label
-          uiTransform={{height:STAT_FONT_SIZE * 1.2}}
-            fontSize={STAT_FONT_SIZE}
-            value={
-              (value > 0 ? '+' : '-') +
-              value.toString() +
-              ' ' +
-              processStat(key)
-            }
-          ></Label>
-        )
+      <UiEntity
+        uiTransform={{
+          width: '80%',
+          height: '60%',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          margin: { top: TITLE_FONT_SIZE * 0.3 }
+        }}
+      >
+        {Object.entries(WEARABLES_MAPPING[wearableName].stats).map(
+          ([key, value]) => (
+            <Label
+              uiTransform={{ height: STAT_FONT_SIZE * 1.2 }}
+              fontSize={STAT_FONT_SIZE}
+              value={
+                (value > 0 ? '+' : '-') +
+                value.toString() +
+                ' ' +
+                processStat(key)
+              }
+            ></Label>
+          )
         )}
-        </UiEntity>
+      </UiEntity>
     </UiEntity>
   )
 }

@@ -1,6 +1,5 @@
 import { type Sprite } from '../../utils/ui-utils'
 
-
 export const CHARACTER_WEARABLES_TO_SHOW = 5
 
 export const inventorySprites = {

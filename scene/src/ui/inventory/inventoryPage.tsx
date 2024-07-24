@@ -7,7 +7,11 @@ import {
   type InventoryConfigItem
 } from '../../inventory/playerInventoryMap'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
-import { CHARACTER_WEARABLES_TO_SHOW, inventorySprites, type WearableType } from './inventoryData'
+import {
+  CHARACTER_WEARABLES_TO_SHOW,
+  inventorySprites,
+  type WearableType
+} from './inventoryData'
 import { itemJson } from './itemData'
 import { WearableTooltip } from './wearableTooltip'
 
@@ -26,8 +30,8 @@ type InventoryPageProps = {
   selectWearable: (arg: WearableType) => void
   selectedWearable: WearableType | undefined
   processStatName: (arg: string) => string
-  characterWearables: WearableType[],
-  wearablesIndex: number,
+  characterWearables: WearableType[]
+  wearablesIndex: number
   scrollUpWearables: () => void
   scrollDownWearables: () => void
   scrollUpWearablesSprite: Sprite
@@ -180,10 +184,7 @@ function InventoryPage({
         uiBackground={{
           color: { r: 0, g: 1, b: 0, a: 0.02 }
         }}
-      >
-
-
-      </UiEntity>
+      ></UiEntity>
       {/* Wearables */}
       <UiEntity
         uiTransform={{
@@ -192,14 +193,13 @@ function InventoryPage({
           flexDirection: 'column',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: { top: wearableItemSize/4 }
+          padding: { top: wearableItemSize / 4 }
         }}
-
       >
         <UiEntity
           uiTransform={{
             width: wearableItemSize,
-            height: wearableItemSize,
+            height: wearableItemSize
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -209,39 +209,46 @@ function InventoryPage({
           }}
           onMouseDown={scrollUpWearables}
         />
-        <UiEntity uiTransform={{height:wearableItemSize * 0.05 * 10 + wearableItemSize * 5, width:'100%', flexDirection:'column', alignItems:'center'}}>
-          {characterWearables.slice(
-            wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1),
-            wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1) +
-            CHARACTER_WEARABLES_TO_SHOW
-          ).map(wearable => (
-            <UiEntity
+        <UiEntity
           uiTransform={{
-            height: wearableItemSize,
-            width: wearableItemSize,
-            margin: wearableItemSize * 0.05
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(inventorySprites.commonItemFrame),
-            texture: { src: inventorySprites.commonItemFrame.atlasSrc }
+            height: wearableItemSize * 0.05 * 10 + wearableItemSize * 5,
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'center'
           }}
         >
-            <WearableItem
-              wearable={wearable}
-              selectedWearable={selectedWearable}
-              selectWearable={selectWearable}
-              processStatName={processStatName}
-            />
-          </UiEntity>
-          ))}
-          
-          
+          {characterWearables
+            .slice(
+              wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1),
+              wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1) +
+                CHARACTER_WEARABLES_TO_SHOW
+            )
+            .map((wearable) => (
+              <UiEntity
+                uiTransform={{
+                  height: wearableItemSize,
+                  width: wearableItemSize,
+                  margin: wearableItemSize * 0.05
+                }}
+                uiBackground={{
+                  textureMode: 'stretch',
+                  uvs: getUvs(inventorySprites.commonItemFrame),
+                  texture: { src: inventorySprites.commonItemFrame.atlasSrc }
+                }}
+              >
+                <WearableItem
+                  wearable={wearable}
+                  selectedWearable={selectedWearable}
+                  selectWearable={selectWearable}
+                  processStatName={processStatName}
+                />
+              </UiEntity>
+            ))}
         </UiEntity>
         <UiEntity
           uiTransform={{
             width: wearableItemSize,
-            height: wearableItemSize,
+            height: wearableItemSize
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -251,7 +258,6 @@ function InventoryPage({
           }}
           onMouseDown={scrollDownWearables}
         />
-
       </UiEntity>
       {/* Equipment */}
       <UiEntity
@@ -369,12 +375,6 @@ function InventoryPage({
             fontSize={fontSizeDetails}
           />
         </UiEntity>
-
-        
-
-
-
-
 
         <UiEntity
           uiTransform={{

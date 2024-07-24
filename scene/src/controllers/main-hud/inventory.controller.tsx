@@ -53,7 +53,17 @@ export class InventoryController {
 
   // Inventory Page
   public selectedWearable: WearableType | undefined
-  public characterWearables: WearableType[] = [wearables.body[0],wearables.head[1], wearables.legs[0], wearables.crown[0], wearables.body[0],wearables.head[1], wearables.legs[0], wearables.crown[0]]
+  public characterWearables: WearableType[] = [
+    wearables.body[0],
+    wearables.head[1],
+    wearables.legs[0],
+    wearables.crown[0],
+    wearables.body[0],
+    wearables.head[1],
+    wearables.legs[0],
+    wearables.crown[0]
+  ]
+
   public wearableIndex: number = 0
   public increaseWearableIndexSprite: Sprite = inventorySprites.upArrow
   public decreaseWearableIndexSprite: Sprite = inventorySprites.downArrow
@@ -74,7 +84,6 @@ export class InventoryController {
         leftSprite={this.leftSprite}
         rightSprite={this.rightSprite}
         updateTab={this.updateTab.bind(this)}
-        
       />
     )
   }
@@ -165,15 +174,19 @@ export class InventoryController {
   selectWearable(wearable: WearableType): void {
     if (this.selectedWearable !== wearable) {
       this.selectedWearable = wearable
-    } else { this.selectedWearable = undefined}
+    } else {
+      this.selectedWearable = undefined
+    }
   }
 
   increaseWearableIndex(): void {
-    if (this.wearableIndex < Math.floor(this.characterWearables.length/CHARACTER_WEARABLES_TO_SHOW)) {
+    if (
+      this.wearableIndex <
+      Math.floor(this.characterWearables.length / CHARACTER_WEARABLES_TO_SHOW)
+    ) {
       this.increaseWearableIndexSprite = inventorySprites.downArrowClicked
       this.wearableIndex++
       this.updateSpritesButtons(150)
-
     }
   }
 
@@ -182,7 +195,6 @@ export class InventoryController {
       this.decreaseWearableIndexSprite = inventorySprites.upArrowClicked
       this.wearableIndex--
       this.updateSpritesButtons(150)
-
     }
   }
 
@@ -288,7 +300,10 @@ export class InventoryController {
       } else {
         this.decreaseWearableIndexSprite = inventorySprites.upArrow
       }
-      if (this.wearableIndex === Math.floor(this.characterWearables.length/CHARACTER_WEARABLES_TO_SHOW)) {
+      if (
+        this.wearableIndex ===
+        Math.floor(this.characterWearables.length / CHARACTER_WEARABLES_TO_SHOW)
+      ) {
         this.increaseWearableIndexSprite = inventorySprites.downArrowUnavailable
       } else {
         this.increaseWearableIndexSprite = inventorySprites.downArrow
