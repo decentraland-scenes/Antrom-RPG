@@ -7,7 +7,7 @@ import {
   type InventoryConfigItem
 } from '../../inventory/playerInventoryMap'
 import { getUvs } from '../../utils/ui-utils'
-import { inventorySprites } from './inventoryData'
+import { inventorySprites, wearables, type WearableType } from './inventoryData'
 import { itemJson } from './itemData'
 
 export type InventoryItemSlot = { itemId: string; count: number }
@@ -22,6 +22,8 @@ type InventoryPageProps = {
   criticalHitDamage: number
   healthPoints: number
   maxHealthPoints: number
+  selectWearable: (arg: WearableType) => void
+  selectedWearable: WearableType
 }
 
 const IMMUTABLE_INV_SLOT_ARRAY = Array.from({ length: 28 })
@@ -75,6 +77,54 @@ function InventorySlotItem(
   )
 }
 
+type wearableItemProp = {
+  wearable: WearableType
+  selectedWearable: WearableType
+  selectWearable: (arg: WearableType) => void
+}
+
+function WearableItem({
+  wearable,
+  selectedWearable,
+  selectWearable
+}: wearableItemProp): ReactEcs.JSX.Element {
+  return (
+    <UiEntity
+      uiTransform={{
+        width: '100%',
+        height: '100%',
+        display: wearable !== undefined ? 'flex' : 'none'
+      }}
+      uiBackground={{
+        textureMode: 'stretch',
+        uvs: getUvs(wearable.sprite),
+        texture: {
+          src: wearable.sprite !== undefined ? wearable.sprite.atlasSrc : ''
+        }
+      }}
+      onMouseDown={() => {
+        selectWearable(wearable)
+      }}
+    >
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          width: '400%',
+          height: '150%',
+          position: { right: '100%', top: '-25%' },
+          display: selectedWearable?.name === wearable.name ? 'flex' : 'none'
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: {
+            src: 'assets/images/stat.png'
+          }
+        }}
+      />
+    </UiEntity>
+  )
+}
+
 function InventoryPage({
   inventorySlots,
   physicalAttack,
@@ -84,10 +134,13 @@ function InventoryPage({
   criticalHitRate,
   criticalHitDamage,
   healthPoints,
-  maxHealthPoints
+  maxHealthPoints,
+  selectWearable,
+  selectedWearable
 }: InventoryPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   const fontSizeDetails = canvasInfo.height * 0.02
+  const wearableItemSize = canvasInfo.height * 0.1
   return (
     <UiEntity
       uiTransform={{
@@ -235,6 +288,25 @@ function InventoryPage({
           />
         </UiEntity>
 
+        <UiEntity
+          uiTransform={{
+            positionType: 'absolute',
+            height: wearableItemSize,
+            width: wearableItemSize,
+            position: { top: '0%', right: '50%' }
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(inventorySprites.commonItemFrame),
+            texture: { src: inventorySprites.commonItemFrame.atlasSrc }
+          }}
+        >
+          <WearableItem
+            wearable={wearables.body[0]}
+            selectedWearable={selectedWearable}
+            selectWearable={selectWearable}
+          />
+        </UiEntity>
         <UiEntity
           uiTransform={{
             width: '100%',

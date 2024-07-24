@@ -8,7 +8,7 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
-import { Color4 } from '@dcl/sdk/math'
+// import { Color4 } from '@dcl/sdk/math'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -222,7 +222,6 @@ function SkillsPage({
           flexWrap: 'wrap',
           positionType: 'absolute',
           position: { top: '17.25%', left: '31.5%' }
-          
         }}
       >
         <UiEntity

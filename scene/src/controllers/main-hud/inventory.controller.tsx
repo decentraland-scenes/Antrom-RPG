@@ -12,7 +12,9 @@ import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
 import {
   inventorySprites,
-  skillsPageSprites
+  skillsPageSprites,
+  wearables,
+  type WearableType
 } from '../../ui/inventory/inventoryData'
 import InventoryPage, {
   type InventoryItemSlot
@@ -47,6 +49,9 @@ export class InventoryController {
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
   public selectedSkillType: string = ''
+
+  // Inventory Page
+  public selectedWearable: WearableType = wearables.body[1]
 
   constructor() {
     this.updateTab(0)
@@ -100,6 +105,8 @@ export class InventoryController {
               criticalHitDamage={player.getCritDamage()}
               healthPoints={player.health}
               maxHealthPoints={player.maxHealth}
+              selectWearable={this.selectWearable.bind(this)}
+              selectedWearable={this.selectedWearable}
             />
           )
         }
@@ -140,6 +147,10 @@ export class InventoryController {
         this.professions = () => <ProfessionsPage prop={undefined} />
         break
     }
+  }
+
+  selectWearable(wearable: WearableType): void {
+    this.selectedWearable = wearable
   }
 
   increaseTabIndex(): void {
