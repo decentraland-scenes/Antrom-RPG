@@ -1,5 +1,8 @@
 import { type Sprite } from '../../utils/ui-utils'
 
+
+export const CHARACTER_WEARABLES_TO_SHOW = 5
+
 export const inventorySprites = {
   inventoryButton: {
     atlasSrc: 'assets/images/inventory_spritesheet.png',
@@ -97,7 +100,7 @@ export const inventorySprites = {
     w: 328,
     h: 70
   },
-  downArrowButton: {
+  downArrow: {
     atlasSrc: 'assets/images/inventory_spritesheet.png',
     atlasSize: { x: 1886, y: 1480 },
     x: 1707,
@@ -105,7 +108,7 @@ export const inventorySprites = {
     w: 64,
     h: 64
   },
-  downArrowButtonClicked: {
+  downArrowClicked: {
     atlasSrc: 'assets/images/inventory_spritesheet.png',
     atlasSize: { x: 1886, y: 1480 },
     x: 1771,
@@ -113,7 +116,7 @@ export const inventorySprites = {
     w: 64,
     h: 64
   },
-  downArrowButtonUnavailable: {
+  downArrowUnavailable: {
     atlasSrc: 'assets/images/inventory_spritesheet.png',
     atlasSize: { x: 1886, y: 1480 },
     x: 1707,
@@ -1954,7 +1957,7 @@ export type WearableItem = {
   duplicates?: number
 }
 
-export const mapping: Record<WearableString, WearableItem> = {
+export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
   DoubleHackets: {
     label: 'Double Hatchets',
     urn: 'urn:decentraland:matic:collections-v2:0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0',
@@ -3368,7 +3371,7 @@ export const mapping: Record<WearableString, WearableItem> = {
       defBuff: 0.001
     }
   },
-  //Wasteland Collection
+  // Wasteland Collection
   WastelandArmor: {
     label: 'Wasteland Armor',
     urn: 'urn:decentraland:matic:collections-v2:0xa83c8951dd73843bf5f7e9936e72a345a3e79874:0',
@@ -3572,7 +3575,7 @@ export const mapping: Record<WearableString, WearableItem> = {
     },
     dStats: {
       attackBuff: 32
-      //health: 100,
+      // health: 100,
     }
   },
   WastelandWrathblade: {
@@ -3594,10 +3597,10 @@ export const mapping: Record<WearableString, WearableItem> = {
   },
   WastelandMonarchSet: {
     label: 'Wasteland Monarch Set',
-    urn:
-      'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:0' &&
-      'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:1' &&
-      'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:2',
+    urn: 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:0',
+    // && TODO
+    // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:1' &&
+    // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:2',
     stats: {
       health: 10000,
       attackBuff: 1000,
@@ -3655,7 +3658,7 @@ export const mapping: Record<WearableString, WearableItem> = {
   }
 }
 
-type WearableString =
+export type WearableString =
   | 'DoubleHackets'
   | 'RoyalSword'
   | 'RoyalShield'

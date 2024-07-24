@@ -11,6 +11,7 @@ import {
 import CompanionsPage from '../../ui/inventory/companionsPage'
 import Inventory from '../../ui/inventory/inventoryComponent'
 import {
+  CHARACTER_WEARABLES_TO_SHOW,
   inventorySprites,
   skillsPageSprites,
   wearables,
@@ -51,7 +52,11 @@ export class InventoryController {
   public selectedSkillType: string = ''
 
   // Inventory Page
-  public selectedWearable: WearableType = wearables.body[1]
+  public selectedWearable: WearableType | undefined
+  public characterWearables: WearableType[] = [wearables.body[0],wearables.head[1], wearables.legs[0], wearables.crown[0], wearables.body[0],wearables.head[1], wearables.legs[0], wearables.crown[0]]
+  public wearableIndex: number = 0
+  public increaseWearableIndexSprite: Sprite = inventorySprites.upArrow
+  public decreaseWearableIndexSprite: Sprite = inventorySprites.downArrow
 
   constructor() {
     this.updateTab(0)
@@ -69,6 +74,7 @@ export class InventoryController {
         leftSprite={this.leftSprite}
         rightSprite={this.rightSprite}
         updateTab={this.updateTab.bind(this)}
+        
       />
     )
   }
@@ -107,6 +113,13 @@ export class InventoryController {
               maxHealthPoints={player.maxHealth}
               selectWearable={this.selectWearable.bind(this)}
               selectedWearable={this.selectedWearable}
+              processStatName={this.processStatName.bind(this)}
+              characterWearables={this.characterWearables}
+              wearablesIndex={this.wearableIndex}
+              scrollUpWearables={this.decreaseWearableIndex.bind(this)}
+              scrollUpWearablesSprite={this.decreaseWearableIndexSprite}
+              scrollDownWearables={this.increaseWearableIndex.bind(this)}
+              scrollDownWearablesSprite={this.increaseWearableIndexSprite}
             />
           )
         }
@@ -150,7 +163,27 @@ export class InventoryController {
   }
 
   selectWearable(wearable: WearableType): void {
-    this.selectedWearable = wearable
+    if (this.selectedWearable !== wearable) {
+      this.selectedWearable = wearable
+    } else { this.selectedWearable = undefined}
+  }
+
+  increaseWearableIndex(): void {
+    if (this.wearableIndex < Math.floor(this.characterWearables.length/CHARACTER_WEARABLES_TO_SHOW)) {
+      this.increaseWearableIndexSprite = inventorySprites.downArrowClicked
+      this.wearableIndex++
+      this.updateSpritesButtons(150)
+
+    }
+  }
+
+  decreaseWearableIndex(): void {
+    if (this.wearableIndex > 0) {
+      this.decreaseWearableIndexSprite = inventorySprites.upArrowClicked
+      this.wearableIndex--
+      this.updateSpritesButtons(150)
+
+    }
   }
 
   increaseTabIndex(): void {
@@ -250,6 +283,16 @@ export class InventoryController {
       } else {
         this.leftClassSprite = inventorySprites.leftArrowButton
       }
+      if (this.wearableIndex === 0) {
+        this.decreaseWearableIndexSprite = inventorySprites.upArrowUnavailable
+      } else {
+        this.decreaseWearableIndexSprite = inventorySprites.upArrow
+      }
+      if (this.wearableIndex === Math.floor(this.characterWearables.length/CHARACTER_WEARABLES_TO_SHOW)) {
+        this.increaseWearableIndexSprite = inventorySprites.downArrowUnavailable
+      } else {
+        this.increaseWearableIndexSprite = inventorySprites.downArrow
+      }
     }, milisecs)
   }
 
@@ -307,5 +350,36 @@ export class InventoryController {
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }
+  }
+
+  processStatName(key: string): string {
+    let title: string = ''
+    switch (key) {
+      case 'luckBuff':
+        title = 'Luck Modifier'
+        break
+      case 'attackBuff':
+        title = 'Attack Modifier'
+        break
+      case 'defBuff':
+        title = 'Defense Modifier'
+        break
+      case 'health':
+        title = 'Health Increase'
+        break
+      case 'distance':
+        title = 'Health Increase'
+        break
+      case 'critRate':
+        title = 'Critical Rate Increase'
+        break
+      case 'critDamage':
+        title = 'Critical Damage Increase'
+        break
+      case 'magicBuff':
+        title = 'Magic Modifier'
+        break
+    }
+    return title
   }
 }
