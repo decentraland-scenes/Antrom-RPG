@@ -30,9 +30,9 @@ import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
+import { getPlayer, GetPlayerDataRes } from '@dcl/sdk/src/players'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
-
 
 export class InventoryController {
   // Nav Bar
@@ -405,7 +405,7 @@ export class InventoryController {
     return title
   }
 
-  // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => { 
+  // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => {
   //   for (const key of array) {
   //     const wearableString = key.name as WearableString
   //       if (await this.checkItem(playerData, key.name)) {
@@ -418,11 +418,11 @@ export class InventoryController {
   //             urn
   //         }
   //     }
-        
+
   //   }
   //   return null
   // }
-  
+
   // checkItem = async (playerData: GetPlayerDataRes, key: string): Promise<boolean> => {
   //   if (!(key in WEARABLES_MAPPING)) return false
   //   const { urn } = WearablesConfig.mapping[key]
@@ -439,10 +439,10 @@ export class InventoryController {
   //   }
   //   return result
   // }
-  
+
   // getWearables = async ():Promise<Array<WearableItem|null>> => {
   //   const playerData: GetPlayerDataRes | null = getPlayer()
-    
+
   //   const head: any = WearablesConfig.wearables.head
   //   const body: any = WearablesConfig.wearables.body
   //   const legs: any = WearablesConfig.wearables.legs
@@ -451,9 +451,9 @@ export class InventoryController {
   //   const offhand: any = WearablesConfig.wearables.offhand
   //   const extra: any = WearablesConfig.wearables.extra
   //   const crown: any = WearablesConfig.wearables.crown
-  
+
   //   const wearables: Array<WearableItem | null> = []
-    
+
   //   if (playerData !== null) {
   //     wearables.push(await this.createWearablesIcon(head, playerData))
   //     wearables.push(await this.createWearablesIcon(body, playerData))
@@ -464,13 +464,14 @@ export class InventoryController {
   //     wearables.push(await this.createWearablesIcon(extra, playerData))
   //     wearables.push(await this.createWearablesIcon(crown, playerData))
   //   }
-   
-  
+
   //   return wearables.filter((e) => {
   //       return e != null
   //   })
   // }
+
+  updatePlayerPicture = async (): Promise<void> => {
+    const playerData: GetPlayerDataRes | null = getPlayer()
+    this.characterPicture = playerData.avatar?.bodyShapeUrn
+  }
 }
-
-
-

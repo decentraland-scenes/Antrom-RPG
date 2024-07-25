@@ -1,5 +1,7 @@
 // import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import { companionPageSprite } from './companionsData'
+import { getUvs } from '../../utils/ui-utils'
 
 type CompanionsPageProps = {
   prop: undefined
@@ -17,11 +19,11 @@ function CompanionsPage({ prop }: CompanionsPageProps): ReactEcs.JSX.Element {
         alignItems: 'center',
         flexDirection: 'column'
       }}
-      // uiBackground={{
-      //   textureMode: 'stretch',
-      //   uvs: getUvs(skillsPageSprites.skillsPageFrame),
-      //   texture: { src: skillsPageSprites.skillsPageFrame.atlasSrc }
-      // }}
+      uiBackground={{
+        textureMode: 'stretch',
+        uvs: getUvs(companionPageSprite.companion_frame),
+        texture: { src: companionPageSprite.companion_frame.atlasSrc }
+      }}
       uiText={{ value: 'Companions', fontSize: 50 }}
     ></UiEntity>
   )

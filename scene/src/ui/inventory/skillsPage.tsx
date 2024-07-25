@@ -342,7 +342,6 @@ function SkillsPage({
                 height: '29.5%',
                 margin: { bottom: '1.2%', right: '1.45%' }
               }}
-              
             >
               <SkillButton
                 skill={skill}
