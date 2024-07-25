@@ -480,7 +480,7 @@ export const skillsPageSprites = {
     w: 64,
     h: 64
   },
-  rightArrowBtnUnavail: {
+  rightArrowUnavail: {
     atlasSrc: 'assets/images/skillpage_spritesheet.png',
     atlasSize: { x: 3751, y: 956 },
     x: 3687,
@@ -703,7 +703,7 @@ export const professionsPageSprites = {
     h: 350
   },
 
-  rightArrowUnvailable: {
+  rightArrowUnavailable: {
     atlasSrc: 'assets/images/professions_spritesheet.png',
     atlasSize: { x: 2166, y: 1656 },
     x: 2079,

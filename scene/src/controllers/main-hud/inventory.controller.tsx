@@ -31,7 +31,7 @@ import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 // import { WearablesConfig } from '../../player/wearables-config'
-import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
+// import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
 
 export class InventoryController {
@@ -52,10 +52,10 @@ export class InventoryController {
   public generalSkillsIndex: number = 0
   public generalSkillsArray: SkillDefinition[] = this.loadSkills('general')
   public classSkillsArray: SkillDefinition[] = this.loadSkills('class')
-  public leftGeneralSprite: Sprite = inventorySprites.leftArrowButton
-  public rightGeneralSprite: Sprite = inventorySprites.rightArrowButton
-  public leftClassSprite: Sprite = inventorySprites.leftArrowButton
-  public rightClassSprite: Sprite = inventorySprites.rightArrowButton
+  public leftGeneralSprite: Sprite = skillsPageSprites.leftArrowReg
+  public rightGeneralSprite: Sprite = skillsPageSprites.rightArrowReg
+  public leftClassSprite: Sprite = skillsPageSprites.leftArrowReg
+  public rightClassSprite: Sprite = skillsPageSprites.rightArrowReg
   public selectedSkillType: string = ''
 
   // Inventory Page
@@ -65,10 +65,10 @@ export class InventoryController {
     wearables.head[1],
     wearables.legs[0],
     wearables.crown[0],
-    wearables.body[0],
-    wearables.head[1],
-    wearables.legs[0],
-    wearables.crown[0]
+    wearables.extra[0],
+    wearables.mainhand[1],
+    wearables.offhand[0],
+    wearables.feet[0]
   ]
 
   public wearableIndex: number = 0
@@ -231,7 +231,7 @@ export class InventoryController {
       Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
     ) {
       console.log(this.generalSkillsIndex)
-      this.rightGeneralSprite = inventorySprites.rightArrowButtonClicked
+      this.rightGeneralSprite = inventorySprites.rightArrowClicked
       this.generalSkillsIndex++
       this.updateSpritesButtons(150)
     }
@@ -239,7 +239,7 @@ export class InventoryController {
 
   decreaseGeneralSkillIndex(): void {
     if (this.generalSkillsIndex > 0) {
-      this.leftGeneralSprite = inventorySprites.leftArrowButtonClicked
+      this.leftGeneralSprite = inventorySprites.leftArrowClicked
       this.generalSkillsIndex--
       this.updateSpritesButtons(150)
     }
@@ -248,9 +248,9 @@ export class InventoryController {
   increaseClassSkillIndex(): void {
     if (
       this.classSkillsIndex <
-      Math.floor(this.generalSkillsArray.length / CLASS_SKILLS_TO_SHOW)
+      Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
     ) {
-      this.rightClassSprite = inventorySprites.rightArrowButtonClicked
+      this.rightClassSprite = inventorySprites.rightArrowClicked
       this.classSkillsIndex++
       this.updateSpritesButtons(150)
     }
@@ -258,7 +258,7 @@ export class InventoryController {
 
   decreaseClassSkillIndex(): void {
     if (this.classSkillsIndex > 0) {
-      this.leftClassSprite = inventorySprites.leftArrowButtonClicked
+      this.leftClassSprite = inventorySprites.leftArrowClicked
       this.classSkillsIndex--
       this.updateSpritesButtons(150)
     }
@@ -277,30 +277,30 @@ export class InventoryController {
         this.rightSprite = inventorySprites.rightArrowButton
       }
       if (this.generalSkillsIndex === 0) {
-        this.leftGeneralSprite = inventorySprites.leftArrowButtonUnavailable
+        this.leftGeneralSprite = skillsPageSprites.leftArrowUnavail
       } else {
-        this.leftGeneralSprite = inventorySprites.leftArrowButton
+        this.leftGeneralSprite = skillsPageSprites.leftArrowReg
       }
       if (
         this.generalSkillsIndex ===
         Math.floor(this.generalSkillsArray.length / GENERAL_SKILLS_TO_SHOW)
       ) {
-        this.rightGeneralSprite = inventorySprites.rightArrowButtonUnavailable
+        this.rightGeneralSprite = skillsPageSprites.rightArrowUnavail
       } else {
-        this.rightGeneralSprite = inventorySprites.rightArrowButton
+        this.rightGeneralSprite = skillsPageSprites.rightArrowReg
       }
       if (
         this.classSkillsIndex ===
         Math.floor(this.classSkillsArray.length / CLASS_SKILLS_TO_SHOW)
       ) {
-        this.rightClassSprite = inventorySprites.rightArrowButtonUnavailable
+        this.rightClassSprite = skillsPageSprites.rightArrowUnavail
       } else {
-        this.rightClassSprite = inventorySprites.rightArrowButton
+        this.rightClassSprite = skillsPageSprites.rightArrowReg
       }
       if (this.classSkillsIndex === 0) {
-        this.leftClassSprite = inventorySprites.leftArrowButtonUnavailable
+        this.leftClassSprite = skillsPageSprites.leftArrowUnavail
       } else {
-        this.leftClassSprite = inventorySprites.leftArrowButton
+        this.leftClassSprite = skillsPageSprites.leftArrowReg
       }
       if (this.wearableIndex === 0) {
         this.decreaseWearableIndexSprite = inventorySprites.upArrowUnavailable
