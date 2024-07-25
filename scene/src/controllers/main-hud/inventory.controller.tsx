@@ -1,4 +1,5 @@
 import * as utils from '@dcl-sdk/utils'
+
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { Player } from '../../player/player'
 import { type SkillDefinition } from '../../player/skills'
@@ -14,7 +15,10 @@ import {
   CHARACTER_WEARABLES_TO_SHOW,
   inventorySprites,
   skillsPageSprites,
+  // type WearableItem,
   wearables,
+  // WEARABLES_MAPPING,
+  // type WearableString,
   type WearableType
 } from '../../ui/inventory/inventoryData'
 import InventoryPage, {
@@ -26,6 +30,9 @@ import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
+// import { WearablesConfig } from '../../player/wearables-config'
+import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
+
 
 export class InventoryController {
   // Nav Bar
@@ -397,4 +404,73 @@ export class InventoryController {
     }
     return title
   }
+
+  // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => { 
+  //   for (const key of array) {
+  //     const wearableString = key.name as WearableString
+  //       if (await this.checkItem(playerData, key.name)) {
+  //         const { stats, duplicates, dStats, urn, label } = WEARABLES_MAPPING[wearableString]
+  //         return {
+  //             label,
+  //             stats,
+  //             duplicates,
+  //             dStats,
+  //             urn
+  //         }
+  //     }
+        
+  //   }
+  //   return null
+  // }
+  
+  // checkItem = async (playerData: GetPlayerDataRes, key: string): Promise<boolean> => {
+  //   if (!(key in WEARABLES_MAPPING)) return false
+  //   const { urn } = WearablesConfig.mapping[key]
+  //   let result = false
+  //   if (playerData?.wearables !== undefined)
+  //   for (let wearable of playerData.wearables) {
+  //       // temp fix for DCL urn bug
+  //       const w = wearable.split(':')
+  //       if (w.length > 6)
+  //           wearable = w.slice(0, -1).join(':')
+  //       if (wearable === urn) {
+  //           result = true
+  //       }
+  //   }
+  //   return result
+  // }
+  
+  // getWearables = async ():Promise<Array<WearableItem|null>> => {
+  //   const playerData: GetPlayerDataRes | null = getPlayer()
+    
+  //   const head: any = WearablesConfig.wearables.head
+  //   const body: any = WearablesConfig.wearables.body
+  //   const legs: any = WearablesConfig.wearables.legs
+  //   const feet: any = WearablesConfig.wearables.feet
+  //   const mainhand: any = WearablesConfig.wearables.mainhand
+  //   const offhand: any = WearablesConfig.wearables.offhand
+  //   const extra: any = WearablesConfig.wearables.extra
+  //   const crown: any = WearablesConfig.wearables.crown
+  
+  //   const wearables: Array<WearableItem | null> = []
+    
+  //   if (playerData !== null) {
+  //     wearables.push(await this.createWearablesIcon(head, playerData))
+  //     wearables.push(await this.createWearablesIcon(body, playerData))
+  //     wearables.push(await this.createWearablesIcon(legs, playerData))
+  //     wearables.push(await this.createWearablesIcon(feet, playerData))
+  //     wearables.push(await this.createWearablesIcon(mainhand, playerData))
+  //     wearables.push(await this.createWearablesIcon(offhand, playerData))
+  //     wearables.push(await this.createWearablesIcon(extra, playerData))
+  //     wearables.push(await this.createWearablesIcon(crown, playerData))
+  //   }
+   
+  
+  //   return wearables.filter((e) => {
+  //       return e != null
+  //   })
+  // }
 }
+
+
+
