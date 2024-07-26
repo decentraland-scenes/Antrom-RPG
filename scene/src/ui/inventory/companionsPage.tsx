@@ -13,9 +13,9 @@ type CompanionsPageProps = {
   selectedCompanion: CompanionType | undefined
   equipedCompanion: CompanionType | undefined
   selectCompanion: (companion: CompanionType) => void
-  onClickButton: ()=>void
+  onClickButton: () => void
   buttonSprite: Sprite
-  purchasedCompanions: Array<CompanionType|undefined>
+  purchasedCompanions: Array<CompanionType | undefined>
 }
 
 function CompanionSlot(
@@ -138,8 +138,8 @@ function CompanionsPage({
         )}
 
       {/* Selected Companion Details */}
-      {(selectedCompanion !== undefined &&
-        selectedCompanion.type !== PetTypes.PLACEHOLDER) && (
+      {selectedCompanion !== undefined &&
+        selectedCompanion.type !== PetTypes.PLACEHOLDER && (
           <UiEntity
             uiTransform={{
               width: '15%',
@@ -160,10 +160,10 @@ function CompanionsPage({
             />
             <UiEntity
               uiText={{
-                  value: selectedCompanion.stats,
-                  fontSize: canvasInfo.height * 0.02,
-                  textAlign: 'middle-left'
-                }}
+                value: selectedCompanion.stats,
+                fontSize: canvasInfo.height * 0.02,
+                textAlign: 'middle-left'
+              }}
             />
           </UiEntity>
         )}
@@ -192,17 +192,18 @@ function CompanionsPage({
           )}
         </UiEntity>
 
-        {
-          selectedCompanion !== undefined && selectedCompanion.type !== PetTypes.PLACEHOLDER &&<UiEntity uiTransform={{ width: '70%', height: '8%' }} uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(buttonSprite),
-          texture: { src: buttonSprite.atlasSrc }
-        }}
-        onMouseDown={onClickButton}/>} 
-        
-
-        
-
+        {selectedCompanion !== undefined &&
+          selectedCompanion.type !== PetTypes.PLACEHOLDER && (
+            <UiEntity
+              uiTransform={{ width: '70%', height: '8%' }}
+              uiBackground={{
+                textureMode: 'stretch',
+                uvs: getUvs(buttonSprite),
+                texture: { src: buttonSprite.atlasSrc }
+              }}
+              onMouseDown={onClickButton}
+            />
+          )}
       </UiEntity>
     </UiEntity>
   )

@@ -30,7 +30,12 @@ import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
-import { companionPageSprite, companions, type CompanionType } from '../../ui/inventory/companionsData'
+import {
+  companionPageSprite,
+  companions,
+  PetTypes,
+  type CompanionType
+} from '../../ui/inventory/companionsData'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -79,8 +84,7 @@ export class InventoryController {
   public selectedCompanion: CompanionType | undefined
   public equipedCompanion: CompanionType | undefined = companions[1]
   public componionButtonSprite: Sprite = companionPageSprite.Reg_equip_button
-  public purchasedCompanions: CompanionType[] = [companions[0],companions[1]]
-
+  public purchasedCompanions: CompanionType[] = [companions[0], companions[1]]
 
   constructor() {
     this.updateTab(0)
@@ -110,6 +114,9 @@ export class InventoryController {
   }
 
   updateTab(index: number): void {
+    this.selectedWearable = undefined
+    this.selectedCompanion = this.equipedCompanion
+
     this.hideAllPages()
     this.tabIndex = index
     this.updateSpritesButtons(150)
@@ -333,16 +340,21 @@ export class InventoryController {
         this.increaseWearableIndexSprite = inventorySprites.downArrow
       }
       if (this.selectedCompanion !== undefined) {
-        if (this.purchasedCompanions.find(companion => this.selectedCompanion !== undefined && companion.name === this.selectedCompanion.name) != null) {
+        if (
+          this.purchasedCompanions.find(
+            (companion) =>
+              this.selectedCompanion !== undefined &&
+              companion.name === this.selectedCompanion.name
+          ) != null
+        ) {
           this.componionButtonSprite = companionPageSprite.Reg_equip_button
         } else {
           this.componionButtonSprite = companionPageSprite.Purchase_reg
         }
-        if ( this.selectedCompanion === this.equipedCompanion) {
+        if (this.selectedCompanion === this.equipedCompanion) {
           this.componionButtonSprite = companionPageSprite.Disable_button
         }
       }
-      
     }, milisecs)
   }
 
@@ -434,25 +446,37 @@ export class InventoryController {
   }
 
   selectCompanion(companion: CompanionType): void {
-    this.selectedCompanion = companion
-    this.updateSpritesButtons(150)
-
+    if (companion.type !== PetTypes.PLACEHOLDER) {
+      this.selectedCompanion = companion
+      this.updateSpritesButtons(150)
+    }
   }
 
-  componionOnClickButton(): void{
+  componionOnClickButton(): void {
     if (this.selectedCompanion !== undefined) {
-      if (this.purchasedCompanions.find(companion => this.selectedCompanion !== undefined && companion.name === this.selectedCompanion.name) != null) {
-        this.componionButtonSprite = companionPageSprite.equip_button_when_clicked
+      if (this.selectedCompanion === this.equipedCompanion) {
+        this.componionButtonSprite =
+          companionPageSprite.Disable_button_while_clicked
+        // execute function disable companion
+        console.log('disable')
+        this.equipedCompanion = undefined
+      } else if (
+        this.purchasedCompanions.find(
+          (companion) => companion.name === this.selectedCompanion?.name
+        ) != null
+      ) {
+        this.componionButtonSprite =
+          companionPageSprite.equip_button_when_clicked
         // execute function equip companion
+        console.log('equip')
+        this.equipedCompanion = this.selectedCompanion
       } else {
         this.componionButtonSprite = companionPageSprite.Purchase_while_clicked
         // execute function purchase companion
+        console.log('purchase')
+        this.purchasedCompanions.push(this.selectedCompanion)
+      }
 
-      }
-      if (this.selectedCompanion === this.equipedCompanion) {
-        this.componionButtonSprite = companionPageSprite.Disable_button_while_clicked
-        // execute function disable companion
-      }
       this.updateSpritesButtons(150)
     }
   }

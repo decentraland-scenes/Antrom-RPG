@@ -139,7 +139,6 @@ export class UI {
         )
         break
       case 1:
-        
         break
       case 2:
         this.skills = () => (
