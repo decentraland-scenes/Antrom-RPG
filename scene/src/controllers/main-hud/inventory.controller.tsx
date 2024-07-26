@@ -30,7 +30,7 @@ import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
-import { getPlayer, GetPlayerDataRes } from '@dcl/sdk/src/players'
+import { companionPageSprite, companions, type CompanionType } from '../../ui/inventory/companionsData'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -74,6 +74,13 @@ export class InventoryController {
   public wearableIndex: number = 0
   public increaseWearableIndexSprite: Sprite = inventorySprites.upArrow
   public decreaseWearableIndexSprite: Sprite = inventorySprites.downArrow
+
+  // Companion Page
+  public selectedCompanion: CompanionType | undefined
+  public equipedCompanion: CompanionType | undefined = companions[1]
+  public componionButtonSprite: Sprite = companionPageSprite.Reg_equip_button
+  public purchasedCompanions: CompanionType[] = [companions[0],companions[1]]
+
 
   constructor() {
     this.updateTab(0)
@@ -141,7 +148,17 @@ export class InventoryController {
         }
         break
       case 1:
-        this.companions = () => <CompanionsPage prop={undefined} />
+        this.companions = () => (
+          <CompanionsPage
+            selectedCompanion={this.selectedCompanion}
+            equipedCompanion={this.equipedCompanion}
+            selectCompanion={this.selectCompanion.bind(this)}
+            onClickButton={this.componionOnClickButton.bind(this)}
+            buttonSprite={this.componionButtonSprite}
+            purchasedCompanions={[]}
+          />
+        )
+
         break
       case 2:
         this.skills = () => (
@@ -315,6 +332,17 @@ export class InventoryController {
       } else {
         this.increaseWearableIndexSprite = inventorySprites.downArrow
       }
+      if (this.selectedCompanion !== undefined) {
+        if (this.purchasedCompanions.find(companion => this.selectedCompanion !== undefined && companion.name === this.selectedCompanion.name) != null) {
+          this.componionButtonSprite = companionPageSprite.Reg_equip_button
+        } else {
+          this.componionButtonSprite = companionPageSprite.Purchase_reg
+        }
+        if ( this.selectedCompanion === this.equipedCompanion) {
+          this.componionButtonSprite = companionPageSprite.Disable_button
+        }
+      }
+      
     }, milisecs)
   }
 
@@ -405,6 +433,30 @@ export class InventoryController {
     return title
   }
 
+  selectCompanion(companion: CompanionType): void {
+    this.selectedCompanion = companion
+    this.updateSpritesButtons(150)
+
+  }
+
+  componionOnClickButton(): void{
+    if (this.selectedCompanion !== undefined) {
+      if (this.purchasedCompanions.find(companion => this.selectedCompanion !== undefined && companion.name === this.selectedCompanion.name) != null) {
+        this.componionButtonSprite = companionPageSprite.equip_button_when_clicked
+        // execute function equip companion
+      } else {
+        this.componionButtonSprite = companionPageSprite.Purchase_while_clicked
+        // execute function purchase companion
+
+      }
+      if (this.selectedCompanion === this.equipedCompanion) {
+        this.componionButtonSprite = companionPageSprite.Disable_button_while_clicked
+        // execute function disable companion
+      }
+      this.updateSpritesButtons(150)
+    }
+  }
+
   // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => {
   //   for (const key of array) {
   //     const wearableString = key.name as WearableString
@@ -470,8 +522,8 @@ export class InventoryController {
   //   })
   // }
 
-  updatePlayerPicture = async (): Promise<void> => {
-    const playerData: GetPlayerDataRes | null = getPlayer()
-    this.characterPicture = playerData.avatar?.bodyShapeUrn
-  }
+  // updatePlayerPicture = async (): Promise<void> => {
+  //   const playerData: GetPlayerDataRes | null = getPlayer()
+  //   this.characterPicture = playerData.avatar?.bodyShapeUrn
+  // }
 }

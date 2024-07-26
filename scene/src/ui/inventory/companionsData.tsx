@@ -1,3 +1,5 @@
+import { type Sprite } from '../../utils/ui-utils'
+
 export const companionPageSprite = {
   Disable_button: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
@@ -24,7 +26,7 @@ export const companionPageSprite = {
     w: 351,
     h: 75
   },
-  Dragon: {
+  dragon: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1053,
@@ -32,15 +34,15 @@ export const companionPageSprite = {
     w: 256,
     h: 256
   },
-  Owl: {
+  owl: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
-    x: 1309,
+    x: 1305,
     y: 0,
     w: 256,
     h: 256
   },
-  Phoenix2: {
+  phoenix2: {
     atlasSrc: 'assets/images/companion_spritesheet.png',
     atlasSize: { x: 2142, y: 1792 },
     x: 1565,
@@ -217,3 +219,134 @@ export const companionPageSprite = {
     h: 256
   }
 }
+
+export enum PetTypes {
+  PLACEHOLDER = 'placeholder',
+  OWL = 'owl',
+  PHOENIX = 'phoenix',
+  DRAGON = 'dragon',
+  SOLIDER = 'soldier'
+}
+
+export type CompanionType = {
+  name: string
+  type: PetTypes
+  sprite: Sprite
+  lore: string
+  stats: string
+}
+
+export const companions: CompanionType[] = [
+  {
+    name: 'Owl',
+    type: PetTypes.OWL,
+    sprite: companionPageSprite.owl,
+    lore: 'The owls can be found on icy mountain peaks.\n\nThey are extremely fast, smart and unquestionably loyal animals.\n\nTheir domestication helped greatly in hunting, communication by letters and in battle through their perception. Increasing the odds or analyzing the best path to follow.',
+    stats: '+7% Luck \n\nCOST: 10 MANA'
+  },
+  {
+    name: 'Dragon',
+    type: PetTypes.DRAGON,
+    sprite: companionPageSprite.dragon,
+    lore: 'Majestic creatures that were first discovered in the caves of Antrom.\n\nCreatures that were once gigantic, but due to natural selection, became smaller in order to attack smaller prey as well, without losing their power.',
+    stats: '+7 Physical Atttack for each player level \n\nCOST: 10 MANA'
+  },
+  {
+    name: 'Phoenix',
+    type: PetTypes.PHOENIX,
+    sprite: companionPageSprite.phoenix2,
+    lore: 'Originated from distant and volcanic fields, the Phoenix were created from the ashes of The Original Phoenix.\n\nTheir ashes have healing properties.',
+    stats: 'Health Generation \n\nCOST: 10 MANA'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot4,
+    lore: 'Knight to follow you around',
+    stats: 'Knight to follow you around'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot5,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot6,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot7,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot8,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot9,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot10,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot11,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot12,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot13,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot14,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot15,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  },
+  {
+    name: 'placeholder',
+    type: PetTypes.PLACEHOLDER,
+    sprite: companionPageSprite.slot16,
+    lore: 'placeholder',
+    stats: 'placeholder'
+  }
+]

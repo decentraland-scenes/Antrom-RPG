@@ -17,6 +17,7 @@ import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
 import { Player } from '../../player/player'
+import { type CompanionType } from '../../ui/inventory/companionsData'
 
 export class UI {
   // Nav Bar
@@ -43,6 +44,10 @@ export class UI {
   public leftClassSprite: Sprite = inventorySprites.leftArrowButton
   public rightClassSprite: Sprite = inventorySprites.rightArrowButton
   public playerLevel: number = 0 // TODO get level from player
+
+  // Companion Page
+  public selectedCompanion: CompanionType | undefined
+  public equipedCompanion: CompanionType | undefined
 
   constructor() {
     const uiComponent = (): ReactEcs.JSX.Element[] => [this.inventoryUI()]
@@ -134,7 +139,7 @@ export class UI {
         )
         break
       case 1:
-        this.companions = () => <CompanionsPage prop={undefined} />
+        
         break
       case 2:
         this.skills = () => (
@@ -305,6 +310,18 @@ export class UI {
     } else {
       this.selectedSkillType = 'General' + ' Skill'
     }
+  }
+
+  selectCompanion(companion: CompanionType): void {
+    this.selectedCompanion = companion
+  }
+
+  equipCompanion(companion: CompanionType): void {
+    this.equipedCompanion = companion
+  }
+
+  disableCompanion(): void {
+    this.equipedCompanion = undefined
   }
 }
 
