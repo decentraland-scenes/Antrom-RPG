@@ -36,6 +36,7 @@ import {
   PetTypes,
   type CompanionType
 } from '../../ui/inventory/companionsData'
+import { type ProfessionType } from '../../ui/inventory/professionsData'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -85,6 +86,9 @@ export class InventoryController {
   public equipedCompanion: CompanionType | undefined = companions[1]
   public componionButtonSprite: Sprite = companionPageSprite.Reg_equip_button
   public purchasedCompanions: CompanionType[] = [companions[0], companions[1]]
+
+  // Profession Page
+  public selectedProfession: ProfessionType | undefined
 
   constructor() {
     this.updateTab(0)
@@ -197,7 +201,12 @@ export class InventoryController {
         )
         break
       case 3:
-        this.professions = () => <ProfessionsPage prop={undefined} />
+        this.professions = () => (
+          <ProfessionsPage
+            selectedProfession={this.selectedProfession}
+            selectProfession={this.selectProfession.bind(this)}
+          />
+        )
         break
     }
   }
@@ -208,6 +217,10 @@ export class InventoryController {
     } else {
       this.selectedWearable = undefined
     }
+  }
+
+  selectProfession(profession: ProfessionType): void {
+    this.selectedProfession = profession
   }
 
   increaseWearableIndex(): void {
