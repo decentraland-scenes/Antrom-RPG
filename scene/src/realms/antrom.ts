@@ -1625,8 +1625,10 @@ export class Antrom implements Realm {
     entityController.removeEntity(this.npc_RandomVillager9)
     entityController.removeEntity(this.npc_RandomVillager10)
     entityController.removeEntity(this.npc_RandomVillager11)
-    // entityController.removeEntity(this.butcher.entity)
-    // this.butcher.removeEntity()
+
+    if (this.butcher != null) {
+      this.butcher.removeEntity()
+    }
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()
     })
