@@ -16,6 +16,51 @@ import { setPlayerPosition } from '../utils/engine'
 import { getRandomInt } from '../utils/getRandomInt'
 import { type Realm, type RealmType } from './types'
 import { entityController } from './entityController'
+import ExecutionerCaveDungeon from '../enemies/ExecutionerCaveDungeon'
+
+const caveSoldierPositions = [
+  // room1
+  Vector3.create(61.89, 17.79, 25.92),
+  Vector3.create(62.85, 17.81, 24.6),
+  Vector3.create(61.47, 19.74, -2.11),
+  Vector3.create(55.26, 20.42, -6.11),
+  Vector3.create(13.07, 3.15, 10.38),
+  Vector3.create(19.44, 3.75, 12.24),
+  // room2
+  // 1
+  Vector3.create(40.97, 3.16, 51.58),
+  Vector3.create(41.58, 3.16, 44.85),
+  Vector3.create(44.0, 3.16, 50.73),
+
+  // 2
+  Vector3.create(20.48, 3.16, 45.13),
+  Vector3.create(21.21, 3.16, 47.47),
+  Vector3.create(23.48, 3.16, 43.49),
+
+  // 3
+  Vector3.create(26.41, 3.16, 80.57),
+  Vector3.create(23.69, 3.16, 77.26),
+  Vector3.create(29.63, 3.16, 82.97),
+
+  // 4
+  Vector3.create(24.5, 12.34, 62.51),
+  Vector3.create(24.02, 12.12, 68.02),
+  Vector3.create(19.48, 11.56, 59.89),
+
+  // 5
+  Vector3.create(-2.71, 3.16, 64.76),
+  Vector3.create(-3.89, 3.16, 68.67),
+  Vector3.create(1.29, 3.16, 66.02),
+
+  // room 3
+  Vector3.create(-31.96, 12.11, 57.14),
+  Vector3.create(-34.98, 9.43, 66.18),
+  Vector3.create(-36.55, 9.25, 61.02),
+
+  Vector3.create(-46.08, 13.57, 51.86),
+  Vector3.create(-46.28, 13.35, 53.8),
+  Vector3.create(-43.62, 14.47, 57.88)
+]
 
 export class MinersCave implements Realm {
   private readonly cave = entityController.addEntity()
@@ -26,8 +71,10 @@ export class MinersCave implements Realm {
   gameController: GameController
   constructor(gameController: GameController) {
     this.gameController = gameController
-    GltfContainer.create(this.cave, { src: 'models/cave.glb' })
-    GltfContainer.create(this.ladder, { src: 'models/CaveLadder.glb' })
+    this.createCaveDungeonEnemies(this.gameController)
+    this.buildCave()
+    GltfContainer.create(this.cave, { src: 'assets/models/cave.glb' })
+    GltfContainer.create(this.ladder, { src: 'assets/models/CaveLadder.glb' })
     Transform.createOrReplace(this.cave, {
       position: Vector3.create(16, 0, 16),
       rotation: Quaternion.create(0, 0, 0, 1),
@@ -122,6 +169,22 @@ export class MinersCave implements Realm {
     ]
   }
 
+  createSoldier(position: Vector3, gameController: GameController): void {
+    console.log('rock soldier created')
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars, new-cap
+      const soldier = new ExecutionerCaveDungeon(gameController, position)
+    } catch (error) {
+      console.log('Failed to create soldier:', error)
+    }
+  }
+
+  createCaveDungeonEnemies(gameController: GameController): void {
+    caveSoldierPositions.forEach((position) => {
+      this.createSoldier(position, gameController)
+    })
+  }
+
   buildCave(): void {
     utils.timers.setTimeout(() => {
       // buildCaveBuilderScene()
@@ -129,8 +192,8 @@ export class MinersCave implements Realm {
       utils.timers.setTimeout(() => {
         // createQuestTimerText()
         // quest.turnOnKingQuestTimer()
-        setPlayerPosition(69.38, 17.73, -24.05)
-      }, 15000)
+        setPlayerPosition(69.34, 17.38, -26.64)
+      }, 1000)
     }, 50)
   }
 

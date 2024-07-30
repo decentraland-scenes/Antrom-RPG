@@ -1,11 +1,11 @@
 import { Transform } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterMob from './MonsterMob'
 import { LEVEL_TYPES } from '../player/LevelManager'
 import { Player } from '../player/player'
 import { BannerType } from '../ui/banner/bannerConstants'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { entityController } from '../realms/entityController'
+import MonsterMobAuto from './monsterMobAuto'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -13,7 +13,7 @@ function getRandomIntRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default class Executioner extends MonsterMob {
+export default class Executioner extends MonsterMobAuto {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
   hoverText: string
 

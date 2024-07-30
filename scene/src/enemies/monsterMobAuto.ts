@@ -123,7 +123,7 @@ export class MonsterMobAuto extends GenericMonster {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
+    // this.setupRangedAttackTriggerBox()
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
@@ -256,7 +256,10 @@ export class MonsterMobAuto extends GenericMonster {
     // )
     utils.timers.setTimeout(() => {
       // TODO entity removing triggers error
-      // entityController.removeEntity(this.entity)
+      entityController.removeEntity(this.entity)
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
+      super.cleanup()
       this.isDead = true
     }, 5 * 1000)
   }
@@ -331,7 +334,7 @@ export class MonsterMobAuto extends GenericMonster {
       const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
       let playerAttack = Math.round(reduceHealthBy)
       switch (true) {
-        case random < 200: {
+        case random < 1100: {
           // 30% chance
           // TODO UI
           // bossDefense()

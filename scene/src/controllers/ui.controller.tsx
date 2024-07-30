@@ -17,6 +17,7 @@ import { LoadingUI } from '../ui/loading/loading'
 import { CreationPlayerController } from './creation-player.controller'
 import { type GameController } from './game.controller'
 import { MainHudController } from './main-hud'
+import { type RealmType } from '../realms/types'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -51,6 +52,10 @@ export class UIController {
 
   showMainHud(): void {
     this.mainHud = new MainHudController()
+  }
+
+  loadRealm(realm: RealmType, difficulty: string): void {
+    this.gameController.realmController.switchRealm(realm, difficulty)
   }
 
   displayAnnouncement(

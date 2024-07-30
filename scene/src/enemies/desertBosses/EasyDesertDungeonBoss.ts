@@ -1,11 +1,11 @@
 import { Transform } from '@dcl/sdk/ecs'
-import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { quest } from '../../utils/refresherTimer'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
+import MonsterMob from '../MonsterMob'
 
 // const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
@@ -13,18 +13,16 @@ const DEFAULT_XP = 60
 // const DEFAULT_HP = 200
 // const DEFAULT_DEF = 0.1
 
-export default class EasyDesertDungeonBoss extends MonsterOligar {
+export default class EasyDesertDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
   constructor(difficulty: number) {
     super(20, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 1000)
     this.minLuck = 10
-
     this.initMonster()
-
-    // super.setupEngageTriggerBox(new utils.TriggerSphereShape(0))
-
+    this.loadTransformation()
+    super.setupEngageTriggerBox()
     this.setTopOffset(4)
     // # in %
     this.dropRate = -1

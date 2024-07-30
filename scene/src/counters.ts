@@ -7,5 +7,6 @@ export const jailGuards = new UICounter()
 export const jailOpenOnce = new UICounter()
 export const demonKill = new UICounter()
 export const DungeonStage = new UICounter()
+export const desertDungeonMonsterCount = new UICounter()
 
 demonKill.set(1)

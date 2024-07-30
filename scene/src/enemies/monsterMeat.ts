@@ -122,9 +122,9 @@ export class MonsterMeat extends GenericMonster {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
-    this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
+    // this.setupRangedAttackTriggerBox()
+    // this.setupEngageTriggerBox()
+    // this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,

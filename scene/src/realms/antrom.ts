@@ -762,7 +762,7 @@ export class Antrom implements Realm {
       ) {
         if (trewsKill.read() === 1) {
           if (garrisonCreatedOnce.read() === 0) {
-            this.gameController.realmController.switchRealm('demonKingDungeon')
+            // this.gameController.realmController.switchRealm('demonKingDungeon')
             // spawnBoss3()
             garrisonCreatedOnce.increase(1)
           } else {
@@ -1556,13 +1556,11 @@ export class Antrom implements Realm {
   }
 
   spawnSingleEntity(entityName: string): void {
-    console.log('singleentit', entityName, this.butcher)
     switch (entityName) {
       case 'butcher':
         this.butcher = new BetaBoss1(this.gameController)
         break
       case 'jailGuards':
-        console.log('Guards spawned')
         this.jailGuard1 = new Minion(
           this.gameController,
           Vector3.create(-51.27, 4.15, -53.72)
@@ -1627,7 +1625,8 @@ export class Antrom implements Realm {
     entityController.removeEntity(this.npc_RandomVillager9)
     entityController.removeEntity(this.npc_RandomVillager10)
     entityController.removeEntity(this.npc_RandomVillager11)
-    this.butcher.removeEntity()
+    // entityController.removeEntity(this.butcher.entity)
+    // this.butcher.removeEntity()
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()
     })

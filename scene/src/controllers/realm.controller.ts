@@ -15,7 +15,7 @@ export class RealmController {
     this.gameController = gameController
   }
 
-  switchRealm(realm: RealmType): void {
+  switchRealm(realm: RealmType, difficulty: string): void {
     this.cleanUpScene()
 
     // TODO: utils and npc library should be cleaned as well

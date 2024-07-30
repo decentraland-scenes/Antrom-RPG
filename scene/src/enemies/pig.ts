@@ -92,6 +92,8 @@ export default class Pig extends MonsterMeat {
     })
   }
 
+  create(): void {}
+
   removeEntity(): void {
     super.cleanup()
     entityController.removeEntity(this.rangeAttackTrigger)

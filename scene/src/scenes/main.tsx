@@ -31,7 +31,7 @@ async function init(retry: boolean): Promise<void> {
 
   gameInstance = new GameController()
   gameInstance.uiController.loadingUI.startLoading()
-  gameInstance.realmController.switchRealm('antrom')
+  gameInstance.realmController.switchRealm('antrom', 'easy')
 
   await waitNextTick()
 
