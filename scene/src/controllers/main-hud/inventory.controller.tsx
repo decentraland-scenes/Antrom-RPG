@@ -494,6 +494,9 @@ export class InventoryController {
     }
   }
 
+  // This code is to obtain and display equiped wearables and filter them in inventory. Also take snapshot of character body with wearables.
+  // Is an approach from sdk6 original code but isn't implemented yet
+
   // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => {
   //   for (const key of array) {
   //     const wearableString = key.name as WearableString
