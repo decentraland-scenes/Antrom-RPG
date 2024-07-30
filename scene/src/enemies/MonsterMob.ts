@@ -107,10 +107,6 @@ export class MonsterMob extends GenericMonster {
       ]
     })
 
-    // this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
-    // this.setupAttackTriggerBox()
-
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
       engageDistance: this.engageDistance
