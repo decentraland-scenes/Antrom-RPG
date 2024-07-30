@@ -75,7 +75,7 @@ export default class Chicken extends MonsterMeat {
   async onDropLoot(): Promise<void> {}
 
   setupAttackTriggerBox(): void {
-    super.setupAttackTriggerBox()
+    super.setupEngageTriggerBox()
   }
 
   loadTransformation(): void {

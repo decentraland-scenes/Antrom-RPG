@@ -17,7 +17,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 1
     const stage = DungeonStage.read()
-    super(5 + stage * 7, level + 100, level + 1, 10)
+    super(5 + stage * 7, level + 100, level + 1, 50)
     this.gameController = gameController
     this.minLuck = 20
 
@@ -25,6 +25,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       position: Vector3.create(0, 0, 0)
     })
     this.initMonster()
+    super.setupAttackTriggerBox()
     super.setupEngageTriggerBox()
     this.loadTransformation(initialPos)
     this.setTopOffset(2.25)
