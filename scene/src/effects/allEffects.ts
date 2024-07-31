@@ -269,6 +269,54 @@ export const applyEnemyAOESkillEffectToLocation = (
   }, duration)
 }
 
+export const applyDefSkillEffectToLocation = (
+  position: Vector3,
+  duration?: number
+): void => {
+
+  // Add entity to engine    
+  const area = entityController.addEntity()
+  
+  Transform.create(area, {
+      position,
+      rotation: Quaternion.create(0, 0, 0, 1),
+      scale: Vector3.One()
+  })
+
+  GltfContainer.create(area, {
+      src: 'assets/models/Skill_FX/ShieldSkill.glb',
+    })
+
+    AudioSource.create(area, {
+      audioClipUrl: 'assets/sounds/attack.mp3',
+      loop: false,
+      playing: true,
+      volume:0.5
+  })
+
+  // Add animator component to the entity
+  Animator.create(area, {
+states: [
+  {
+    clip: 'idle',
+    playing: true,
+    loop: true,
+          },
+          {
+              clip: 'action',
+              playing: false,
+              loop: true,
+            }
+],
+})
+
+  if (duration !== undefined) {
+    utils.timers.setTimeout(() => {
+        entityController.removeEntity(area)
+        }, duration)
+  }
+}
+
 export const applyEnemyAttackedMageEffectToLocation = (
   position: Vector3,
   duration: number
