@@ -37,16 +37,9 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
     console.log(xp)
     desertDungeonMonsterCount.increase(1)
 
-    // let damage = player.levels.getLevel(LEVEL_TYPES.PLAYER) * 5
-    // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) >= 60) {
-    //   damage = player.levels.getLevel(LEVEL_TYPES.PLAYER) * 10
-    // }
-
-    // const doorOpeningSource = globalThis.doorOpeningSource
-
     // ui.displayAnnouncement(`${easyDungeonMonsterCount1.read()}`)
 
-    if (desertDungeonMonsterCount.read() === 1) {
+    if (desertDungeonMonsterCount.read() === 10) {
       this.gameController.uiController.displayAnnouncement(
         'room 1 opens',
         Color4.Yellow(),
@@ -63,7 +56,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       // TODO lerp animation
     }
 
-    if (desertDungeonMonsterCount.read() === 2) {
+    if (desertDungeonMonsterCount.read() === 19) {
       this.gameController.uiController.displayAnnouncement(
         'room 2 opens',
         Color4.Yellow(),
@@ -79,7 +72,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       }
     }
 
-    if (desertDungeonMonsterCount.read() === 3) {
+    if (desertDungeonMonsterCount.read() === 32) {
       this.gameController.uiController.displayAnnouncement(
         'room 3 opens',
         Color4.Yellow(),
@@ -95,7 +88,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       }
     }
 
-    if (desertDungeonMonsterCount.read() === 4) {
+    if (desertDungeonMonsterCount.read() === 42) {
       this.gameController.uiController.displayAnnouncement(
         'room 4 opens',
         Color4.Yellow(),
@@ -111,7 +104,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       }
     }
 
-    if (desertDungeonMonsterCount.read() === 5) {
+    if (desertDungeonMonsterCount.read() === 47) {
       this.gameController.uiController.displayAnnouncement(
         'room 6 opens',
         Color4.Yellow(),

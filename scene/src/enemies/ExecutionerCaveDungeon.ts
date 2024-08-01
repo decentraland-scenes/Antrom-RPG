@@ -3,7 +3,7 @@ import { LEVEL_TYPES } from '../player/LevelManager'
 import MonsterMob from './MonsterMob'
 import { Player } from '../player/player'
 import { type GameController } from '../controllers/game.controller'
-import { DungeonStage, desertDungeonMonsterCount } from '../counters'
+import { DungeonStage, caveDungeonMonsterCount } from '../counters'
 import { Transform } from '@dcl/sdk/ecs'
 import { getRandomInt, getRandomIntRange } from '../utils/getRandomInt'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
@@ -34,18 +34,13 @@ export default class ExecutionerCaveDungeon extends MonsterMob {
   onDropXp(): void {
     const xp = getRandomIntRange(this.xp, this.xp + 10)
     console.log(xp)
-    desertDungeonMonsterCount.increase(1)
-
-    // let damage = player.levels.getLevel(LEVEL_TYPES.PLAYER) * 5
-    // if (player.levels.getLevel(LEVEL_TYPES.PLAYER) >= 60) {
-    //   damage = player.levels.getLevel(LEVEL_TYPES.PLAYER) * 10
-    // }
-
-    // const doorOpeningSource = globalThis.doorOpeningSource
-
+    caveDungeonMonsterCount.increase(1)
+    this.gameController.uiController.displayAnnouncement(
+      `${caveDungeonMonsterCount.read()}`
+    )
     // ui.displayAnnouncement(`${easyDungeonMonsterCount1.read()}`)
 
-    if (desertDungeonMonsterCount.read() === 1) {
+    if (caveDungeonMonsterCount.read() === 6) {
       this.gameController.uiController.displayAnnouncement(
         'Cube Removed!',
         Color4.Yellow(),
@@ -55,99 +50,59 @@ export default class ExecutionerCaveDungeon extends MonsterMob {
         this.gameController.realmController.currentRealm?.removeSingleEntity !==
         undefined
       ) {
-        this.gameController.realmController.currentRealm?.removeSingleEntity(
-          'wall6'
-        )
+        // remove cube 1 and 2
       }
-      // TODO lerp animation
-    }
 
-    if (desertDungeonMonsterCount.read() === 2) {
-      this.gameController.uiController.displayAnnouncement(
-        'Cube Removed!',
-        Color4.Yellow(),
-        2000
-      )
-      if (
-        this.gameController.realmController.currentRealm?.removeSingleEntity !==
-        undefined
-      ) {
-        this.gameController.realmController.currentRealm?.removeSingleEntity(
-          'wall5'
+      if (caveDungeonMonsterCount.read() === 21) {
+        this.gameController.uiController.displayAnnouncement(
+          'Cube Removed!',
+          Color4.Yellow(),
+          2000
         )
+        if (
+          this.gameController.realmController.currentRealm
+            ?.removeSingleEntity !== undefined
+        ) {
+          // Remove cube 3
+        }
       }
-    }
 
-    if (desertDungeonMonsterCount.read() === 3) {
-      this.gameController.uiController.displayAnnouncement(
-        'Cube Removed!',
-        Color4.Yellow(),
-        2000
-      )
-      if (
-        this.gameController.realmController.currentRealm?.removeSingleEntity !==
-        undefined
-      ) {
-        this.gameController.realmController.currentRealm?.removeSingleEntity(
-          'wall4'
+      if (caveDungeonMonsterCount.read() === 27) {
+        this.gameController.uiController.displayAnnouncement(
+          'Cube Removed!',
+          Color4.Yellow(),
+          2000
         )
+        if (
+          this.gameController.realmController.currentRealm
+            ?.removeSingleEntity !== undefined
+        ) {
+          // Remove cube 4
+        }
       }
-    }
 
-    if (desertDungeonMonsterCount.read() === 4) {
-      this.gameController.uiController.displayAnnouncement(
-        'Cube Removed!',
-        Color4.Yellow(),
-        2000
-      )
-      if (
-        this.gameController.realmController.currentRealm?.removeSingleEntity !==
-        undefined
-      ) {
-        this.gameController.realmController.currentRealm?.removeSingleEntity(
-          'wall3'
-        )
-      }
+      const exp = [
+        {
+          type: LEVEL_TYPES.ENEMY,
+          value: 1
+        },
+        {
+          type: LEVEL_TYPES.PLAYER,
+          value: xp
+        }
+      ]
+      const loot = [
+        {
+          type: ITEM_TYPES.BONE,
+          value: 1
+        }
+      ]
+      console.log(exp, loot)
+      // UI ? addRewards(exp, loot)
+      // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
+      //   LEVEL_TYPES.ENEMY
+      // )
     }
-
-    if (desertDungeonMonsterCount.read() === 5) {
-      this.gameController.uiController.displayAnnouncement(
-        'Cube Removed!',
-        Color4.Yellow(),
-        2000
-      )
-      if (
-        this.gameController.realmController.currentRealm?.removeSingleEntity !==
-        undefined
-      ) {
-        this.gameController.realmController.currentRealm?.removeSingleEntity(
-          'wall1'
-        )
-      }
-      desertDungeonMonsterCount.decrease(47)
-    }
-
-    const exp = [
-      {
-        type: LEVEL_TYPES.ENEMY,
-        value: 1
-      },
-      {
-        type: LEVEL_TYPES.PLAYER,
-        value: xp
-      }
-    ]
-    const loot = [
-      {
-        type: ITEM_TYPES.BONE,
-        value: 1
-      }
-    ]
-    console.log(exp, loot)
-    // UI ? addRewards(exp, loot)
-    // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
-    //   LEVEL_TYPES.ENEMY
-    // )
   }
 
   onDropLoot(): void {}
