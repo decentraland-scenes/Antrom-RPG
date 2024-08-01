@@ -6,21 +6,18 @@ import {
   applyDefSkillEffectToLocation,
   applyFullWhiteSkillEffectToLocation,
   applyGeneralSkillEffectToLocation,
-  applyHealToLocation
+  applyHealToLocation,
+  applyPlayerSkillBladesEffectToLocation,
+  applyRedSkillEffectToLocation
 } from '../../effects/allEffects'
+import MonsterOligar from '../../enemies/monster'
+import { shootArrow } from '../../enemies/monsterAttackRanged'
 import { monsterModifiers } from '../../enemies/skillEffects'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
+import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 import { setTimeout } from '../../utils/lib'
 import { Player } from '../player'
-import { GenericMonster } from '../../enemies/monsterGeneric'
-import MonsterOligar from '../../enemies/monster'
-import { MonsterAttackRanged } from '../../enemies/monsterAttackRanged'
-import MonsterHealer from '../../enemies/monsterHealer'
-import MonsterMage from '../../enemies/monsterMage'
-import MonsterMeat from '../../enemies/monsterMeat'
-import MonsterMob from '../../enemies/MonsterMob'
-import MonsterMobAuto from '../../enemies/monsterMobAuto'
-import MonsterPoison from '../../enemies/monsterPoison'
 
 export class BerserkerBloodDance extends SkillController {
   constructor() {
@@ -29,8 +26,7 @@ export class BerserkerBloodDance extends SkillController {
 
   effect(): void {
     const player = Player.getInstance()
-    const missingHp =
-      Player.getInstance().maxHealth - Player.getInstance().health
+    const missingHp = player.maxHealth - player.health
     const attackBuff = missingHp * 4 // Increase attack by 400% of missing HP
     if (Player.globalHasSkill) {
       player.updateAtkBuff(attackBuff)
@@ -38,7 +34,7 @@ export class BerserkerBloodDance extends SkillController {
         player.updateAtkBuff(-attackBuff)
       }, 12 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -69,12 +65,12 @@ export class BerserkerBloodFury extends SkillController {
             const replaceHealthAmount = attackAmount * 0.1
             const replaceHealthPercentage =
               replaceHealthAmount / player.maxHealth
-              player.refillHealthBar(replaceHealthPercentage, true)
+            player.refillHealthBar(replaceHealthPercentage, true)
           }
         }
       )
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -204,7 +200,7 @@ export class BerserkerSavagePrecision extends SkillController {
         player.updateCritRate(-CRIT_BUFF_PERCENT)
       }, 9 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -230,7 +226,7 @@ export class ClericGeraldsBlessing extends SkillController {
         player.updateMaxHp(-MAX_HEALTH_BUFF_PERCENT)
       }, 10 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -251,7 +247,7 @@ export class ClericHealingTouch extends SkillController {
     if (Player.globalHasSkill) {
       player.refillHealthBar(1, true)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -276,7 +272,7 @@ export class ClericHolyRetribution extends SkillController {
         player.updateCritRate(-CRITRATE_BUFF)
       }, 15 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -305,7 +301,7 @@ export class ClericProtectorBlessing extends SkillController {
         player.updateAtkBuff(-ATTACK_BUFF)
       }, 15 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -337,7 +333,7 @@ export class ClericSacredBarrier extends SkillController {
         player.updateDefBuff(-DEF_BUFF_PERCENT_BUFF)
       }, 10 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -357,7 +353,7 @@ export class ClericSmiteEvil extends SkillController {
   //   for (const entity of engagedMonsters.entities) {
   //     if (entity instanceof MonsterMob || entity instanceof MonsterMobAuto || entity instanceof MonsterOligar) {
   //       entity.performAttack(
-  //         Player.getInstance().getPlayerAttack(),
+  //         player.getPlayerAttack(),
   //         false
   //       )
   //     }
@@ -382,7 +378,7 @@ export class ClericSmiteEvil extends SkillController {
       )
       applyHealToLocation(Transform.get(engine.CameraEntity).position)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -403,7 +399,7 @@ export class MageArcaneMissile extends SkillController {
     //     for (let entity of engagedMonsters.entities) {
     //         if (entity instanceof MonsterMobAuto) {
     //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
+    //                 player.getMagic(),
     //                 false
     //             )
     //         }
@@ -412,7 +408,7 @@ export class MageArcaneMissile extends SkillController {
     //         for (let entity of engagedMonsters.entities) {
     //             if (entity instanceof MonsterMobAuto) {
     //                 entity.performAttack(
-    //                     Player.getInstance().getMagic(),
+    //                     player.getMagic(),
     //                     false
     //                 )
     //             }
@@ -421,7 +417,7 @@ export class MageArcaneMissile extends SkillController {
     //     for (let entity of engagedMonsters.entities) {
     //         if (entity instanceof MonsterMob) {
     //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
+    //                 player.getMagic(),
     //                 false
     //             )
     //         }
@@ -430,7 +426,7 @@ export class MageArcaneMissile extends SkillController {
     //         for (let entity of engagedMonsters.entities) {
     //             if (entity instanceof MonsterMob) {
     //                 entity.performAttack(
-    //                     Player.getInstance().getMagic(),
+    //                     player.getMagic(),
     //                     false
     //                 )
     //             }
@@ -439,7 +435,7 @@ export class MageArcaneMissile extends SkillController {
     //     for (let entity of engagedMonsters.entities) {
     //         if (entity instanceof MonsterOligar) {
     //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
+    //                 player.getMagic(),
     //                 false
     //             )
     //         }
@@ -448,7 +444,7 @@ export class MageArcaneMissile extends SkillController {
     //         for (let entity of engagedMonsters.entities) {
     //             if (entity instanceof MonsterOligar) {
     //                 entity.performAttack(
-    //                     Player.getInstance().getMagic(),
+    //                     player.getMagic(),
     //                     false
     //                 )
     //             }
@@ -456,7 +452,6 @@ export class MageArcaneMissile extends SkillController {
     //     })
     //     applyFullBlueSkillEffectToLocation(
     //         Transform.get(engine.CameraEntity).position,
-
     //         6000
     //     )
     // } else {
@@ -474,31 +469,31 @@ export class MageArmorSap extends SkillController {
   constructor() {
     super(SKILL_DATA.MAGE_ARMOR_SAP)
   }
-  
+
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-    //   Player.setGlobalHasSkillActive(true)
-    //   activeSkillsCount++
-    //   log("activeSkillsCount ", activeSkillsCount)
+      //   Player.setGlobalHasSkillActive(true)
+      //   activeSkillsCount++
+      //   log("activeSkillsCount ", activeSkillsCount)
       const ATTACK_BUFF = player.getPlayerAttack()
       player.updateAtkBuff(-ATTACK_BUFF)
       player.updateMagic(ATTACK_BUFF)
       setTimeout(() => {
         player.updateAtkBuff(ATTACK_BUFF)
         player.updateMagic(-ATTACK_BUFF)
-         //     activeSkillsCount--
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     if (activeSkillsCount > 0) {
-    //       // At least one skill is active
-    //       Player.setGlobalHasSkillActive(true)
-    //     } else {
-    //       // No skill is active
-    //       Player.setGlobalHasSkillActive(false)
-    //     }
+        //     activeSkillsCount--
+        //     log("activeSkillsCount ", activeSkillsCount)
+        //     if (activeSkillsCount > 0) {
+        //       // At least one skill is active
+        //       Player.setGlobalHasSkillActive(true)
+        //     } else {
+        //       // No skill is active
+        //       Player.setGlobalHasSkillActive(false)
+        //     }
       }, 20 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -516,33 +511,33 @@ export class MageBlink extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     //  Blink: Gain 100% Defense and lose 5% Luck for 2R.
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      //     //  Blink: Gain 100% Defense and lose 5% Luck for 2R.
       const DEF_BUFF_PERCENT = 100
-        player.updateDefBuff(DEF_BUFF_PERCENT)
-        const LUCK_DEBUFF_PERCENT = 100
-        player.updateLuckBuff(-LUCK_DEBUFF_PERCENT)
-        applyDefSkillEffectToLocation(
-          Transform.get(engine.CameraEntity).position,
-          12000
-        )
-        setTimeout(() => {
-          player.updateDefBuff(-DEF_BUFF_PERCENT)
-          player.updateLuckBuff(LUCK_DEBUFF_PERCENT)
-          // activeSkillsCount--
-          //         log("activeSkillsCount ", activeSkillsCount)
-          //         if (activeSkillsCount > 0) {
-          //             // At least one skill is active
-          //             Player.setGlobalHasSkillActive(true)
-          //         } else {
-          //             // No skill is active
-          //             Player.setGlobalHasSkillActive(false)
-          //         }
-        }, 20 * 1000)
+      player.updateDefBuff(DEF_BUFF_PERCENT)
+      const LUCK_DEBUFF_PERCENT = 100
+      player.updateLuckBuff(-LUCK_DEBUFF_PERCENT)
+      applyDefSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+        12000
+      )
+      setTimeout(() => {
+        player.updateDefBuff(-DEF_BUFF_PERCENT)
+        player.updateLuckBuff(LUCK_DEBUFF_PERCENT)
+        // activeSkillsCount--
+        //         log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+      }, 20 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -560,26 +555,26 @@ export class MageFireball extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        monsterModifiers.addActiveSkill(
-            6 * 1000,
-            "fireball",
-            (
-                isCriticalAttack: boolean,
-                isPlayerAttack: boolean,
-                attackAmount: number,
-                // monster: MonsterOligar | MonsterAttackRanged | MonsterHealer | MonsterMage | MonsterMeat | MonsterMob | MonsterMobAuto | MonsterPoison
-            ) => {
-                console.log("fireball", isPlayerAttack, attackAmount)
-              if (!isPlayerAttack) {
-                  console.error('SEE THIS SKILL. Need monster type to perform attack')
-                    // const counterAttackAmount = attackAmount
-                    // monster.performAttack(counterAttackAmount, false)
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      monsterModifiers.addActiveSkill(
+        6 * 1000,
+        'fireball',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number
+          // monster: MonsterOligar | MonsterAttackRanged | MonsterHealer | MonsterMage | MonsterMeat | MonsterMob | MonsterMobAuto | MonsterPoison
+        ) => {
+          console.log('fireball', isPlayerAttack, attackAmount)
+          if (!isPlayerAttack) {
+            console.error('SEE THIS SKILL. Need monster type to perform attack')
+            // const counterAttackAmount = attackAmount
+            // monster.performAttack(counterAttackAmount, false)
+          }
+        }
+      )
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -597,25 +592,24 @@ export class MageRestoration extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        monsterModifiers.addActiveSkill(
-            15 * 1000,
-            "Restoration",
-            (isCriticalAttack:boolean, isPlayerAttack:boolean, attackAmount:number) => {
-                console.log("Restoration", isPlayerAttack, attackAmount)
-                if (isPlayerAttack) {
-                    const replaceHealthAmount =
-                    player.maxHealth * 0.25
-                    const replaceHealthPercentage =
-                        replaceHealthAmount /
-                        player.maxHealth
-                        player.refillHealthBar(
-                        replaceHealthPercentage,
-                        true
-                    )
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      monsterModifiers.addActiveSkill(
+        15 * 1000,
+        'Restoration',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number
+        ) => {
+          console.log('Restoration', isPlayerAttack, attackAmount)
+          if (isPlayerAttack) {
+            const replaceHealthAmount = player.maxHealth * 0.25
+            const replaceHealthPercentage =
+              replaceHealthAmount / player.maxHealth
+            player.refillHealthBar(replaceHealthPercentage, true)
+          }
+        }
+      )
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -636,22 +630,22 @@ export class MageShadowChains extends SkillController {
     const player = Player.getInstance()
 
     if (Player.globalHasSkill) {
-        Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // log("activeSkillsCount ", activeSkillsCount)
-        const amount = 50
-        const ATTACK_DEBUFF_PERCENT = amount / 100
-        console.log(`Enemy attack: SKILL DAMAGE ${amount}`)
-        monsterModifiers.updateAtkDebuff(-ATTACK_DEBUFF_PERCENT)
-        applyGeneralSkillEffectToLocation(
-            Transform.get(engine.CameraEntity).position,
-            2000
-        )
-        MonsterOligar.setGlobalHasSkill(false)
-        setTimeout(() => {
-            monsterModifiers.updateAtkDebuff(ATTACK_DEBUFF_PERCENT)
-            MonsterOligar.setGlobalHasSkill(true)
-        }, 20 * 1000)
+      Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // log("activeSkillsCount ", activeSkillsCount)
+      const amount = 50
+      const ATTACK_DEBUFF_PERCENT = amount / 100
+      console.log(`Enemy attack: SKILL DAMAGE ${amount}`)
+      monsterModifiers.updateAtkDebuff(-ATTACK_DEBUFF_PERCENT)
+      applyGeneralSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+        2000
+      )
+      MonsterOligar.setGlobalHasSkill(false)
+      setTimeout(() => {
+        monsterModifiers.updateAtkDebuff(ATTACK_DEBUFF_PERCENT)
+        MonsterOligar.setGlobalHasSkill(true)
+      }, 20 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -671,16 +665,16 @@ export class Example extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-    // Player.setGlobalHasSkillActive(true)
-    // activeSkillsCount++
-    // console.log("activeSkillsCount ", activeSkillsCount)
-    
-    const ATTACK_BUFF = player.getPlayerAttack()
-    
-    player.updateAtkBuff(-ATTACK_BUFF)
-    player.updateMagic(ATTACK_BUFF)
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
 
-    setTimeout(() => {
+      const ATTACK_BUFF = player.getPlayerAttack()
+
+      player.updateAtkBuff(-ATTACK_BUFF)
+      player.updateMagic(ATTACK_BUFF)
+
+      setTimeout(() => {
         // activeSkillsCount--
         // console.log("activeSkillsCount ", activeSkillsCount)
         // if (activeSkillsCount > 0) {
@@ -692,15 +686,16 @@ export class Example extends SkillController {
         // }
         player.updateAtkBuff(ATTACK_BUFF)
         player.updateMagic(-ATTACK_BUFF)
-    }, 20 * 1000)
-} else {
-  player.gameController.uiController.displayAnnouncement(
-    'Player skills blocked',
-    Color4.Yellow(),
-    1000
-  )
-  console.log('Player has no skills')
-}}
+      }, 20 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
+  }
 }
 
 export class ThiefSwiftFoot extends SkillController {
@@ -711,23 +706,23 @@ export class ThiefSwiftFoot extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // log("activeSkillsCount ", activeSkillsCount)
-        const LUCK_BUFF_PERCENT = 20
-        player.updateLuckBuff(LUCK_BUFF_PERCENT)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateLuckBuff(-LUCK_BUFF_PERCENT)
-        }, 14 * 1000)
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // log("activeSkillsCount ", activeSkillsCount)
+      const LUCK_BUFF_PERCENT = 20
+      player.updateLuckBuff(LUCK_BUFF_PERCENT)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateLuckBuff(-LUCK_BUFF_PERCENT)
+      }, 14 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -746,33 +741,33 @@ export class ThiefShadowStrike extends SkillController {
 
   effect(): void {
     const player = Player.getInstance()
-        if (Player.globalHasSkill) {
-            // Player.setGlobalHasSkillActive(true)
-            // activeSkillsCount++
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // Shadowstrike: Double your critical rate for 4R.
-            const CRITRATE_BUFF = Player.getInstance().getLuckBuffs()
-            player.updateCritRate(CRITRATE_BUFF * 3)
-            setTimeout(() => {
-                // activeSkillsCount--
-                // console.log("activeSkillsCount ", activeSkillsCount)
-                // if (activeSkillsCount > 0) {
-                //     // At least one skill is active
-                //     Player.setGlobalHasSkillActive(true)
-                // } else {
-                //     // No skill is active
-                //     Player.setGlobalHasSkillActive(false)
-                // }
-                player.updateCritRate(-CRITRATE_BUFF * 3)
-            }, 8 * 1000)
-          } else {
-            player.gameController.uiController.displayAnnouncement(
-              'Player skills blocked',
-              Color4.Yellow(),
-              1000
-            )
-            console.log('Player has no skills')
-          }
+    if (Player.globalHasSkill) {
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // Shadowstrike: Double your critical rate for 4R.
+      const CRITRATE_BUFF = player.getLuckBuffs()
+      player.updateCritRate(CRITRATE_BUFF * 3)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateCritRate(-CRITRATE_BUFF * 3)
+      }, 8 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -784,33 +779,33 @@ export class ThiefFortunesFavor extends SkillController {
   effect(): void {
     const player = Player.getInstance()
 
-        if (Player.globalHasSkill) {
-            //Player.setGlobalHasSkillActive(true)
-            // Fortune's Favor: If your next roll is successful, heal the 50% of your max HP.
-            monsterModifiers.addActiveSkill(
-                12 * 1000,
-                "recoil_shot",
-                (
-                    isCriticalAttack:boolean,
-                    isPlayerAttack:boolean,
-                  attackAmount: number,
-                    // TODO: Is monster necessary here?
-                    // monster
-                ) => {
-                    console.log("recoil shot", isPlayerAttack, attackAmount)
-                    if (isPlayerAttack) {
-                        player.refillHealthBar(0.25, true)
-                    }
-                }
-            )
-          } else {
-            player.gameController.uiController.displayAnnouncement(
-              'Player skills blocked',
-              Color4.Yellow(),
-              1000
-            )
-            console.log('Player has no skills')
+    if (Player.globalHasSkill) {
+      // Player.setGlobalHasSkillActive(true)
+      // Fortune's Favor: If your next roll is successful, heal the 50% of your max HP.
+      monsterModifiers.addActiveSkill(
+        12 * 1000,
+        'recoil_shot',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number
+          // TODO: Is monster necessary here?
+          // monster
+        ) => {
+          console.log('recoil shot', isPlayerAttack, attackAmount)
+          if (isPlayerAttack) {
+            player.refillHealthBar(0.25, true)
           }
+        }
+      )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -820,33 +815,32 @@ export class ThiefStoneHeart extends SkillController {
   }
 
   effect(): void {
-     const player = Player.getInstance()
+    const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        // const player = Player.getInstance()
-        const DEF_BUFF_PERCENT =
-            player.getLuckBuffs() / 100
-        //ui.displayAnnouncement(`${DEF_BUFF_PERCENT}`)
-        player.updateDefBuff(DEF_BUFF_PERCENT)
-        applyDefSkillEffectToLocation(
-            Transform.get(engine.CameraEntity).position,
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // const player = Player.getInstance()
+      const DEF_BUFF_PERCENT = player.getLuckBuffs() / 100
+      // ui.displayAnnouncement(`${DEF_BUFF_PERCENT}`)
+      player.updateDefBuff(DEF_BUFF_PERCENT)
+      applyDefSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
 
-            12000
-        )
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateDefBuff(-DEF_BUFF_PERCENT)
-        }, 12 * 1000)
+        12000
+      )
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateDefBuff(-DEF_BUFF_PERCENT)
+      }, 12 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -863,45 +857,44 @@ export class ThiefBleedForMe extends SkillController {
     super(SKILL_DATA.THIEF_BLEED_FOR_ME)
   }
 
-
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        monsterModifiers.addActiveSkill(
-            20 * 1000,
-            "Bleed For Me",
-            (isCriticalAttack:boolean, isPlayerAttack:boolean, attackAmount:number) => {
-                console.log("Bleed For Me", isPlayerAttack, attackAmount)
-                if (isPlayerAttack) {
-                    const LUCK = player.getLuckBuffs()
-                    const ATTACK_BUFF_PERCENT = LUCK * 30
-                    player.updateAtkBuff(
-                        ATTACK_BUFF_PERCENT
-                    )
-                    //createAttackIncreasedLabel()
-                    //ui.displayAnnouncement(`ATTACK INCREASED!`)
-                    setTimeout(() => {
-                        // activeSkillsCount--
-                        // console.log("activeSkillsCount ", activeSkillsCount)
-                        // if (activeSkillsCount > 0) {
-                        //     // At least one skill is active
-                        //     Player.setGlobalHasSkillActive(true)
-                        // } else {
-                        //     // No skill is active
-                        //     Player.setGlobalHasSkillActive(false)
-                        // }
-                        player.updateAtkBuff(
-                            -ATTACK_BUFF_PERCENT
-                        )
-                    },20 * 1000)
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      monsterModifiers.addActiveSkill(
+        20 * 1000,
+        'Bleed For Me',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number
+        ) => {
+          console.log('Bleed For Me', isPlayerAttack, attackAmount)
+          if (isPlayerAttack) {
+            const LUCK = player.getLuckBuffs()
+            const ATTACK_BUFF_PERCENT = LUCK * 30
+            player.updateAtkBuff(ATTACK_BUFF_PERCENT)
+            // createAttackIncreasedLabel()
+            // ui.displayAnnouncement(`ATTACK INCREASED!`)
+            setTimeout(() => {
+              // activeSkillsCount--
+              // console.log("activeSkillsCount ", activeSkillsCount)
+              // if (activeSkillsCount > 0) {
+              //     // At least one skill is active
+              //     Player.setGlobalHasSkillActive(true)
+              // } else {
+              //     // No skill is active
+              //     Player.setGlobalHasSkillActive(false)
+              // }
+              player.updateAtkBuff(-ATTACK_BUFF_PERCENT)
+            }, 20 * 1000)
+          }
+        }
+      )
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -919,35 +912,35 @@ export class ThiefLastBlow extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        // // Last Blow: Gain 100 Attack and 30% Luck for 1R.
-        const ATTACK_BUFF = 1500
-        const LUCK_BUFF_PERCENT = 100
-        player.updateLuckBuff(LUCK_BUFF_PERCENT)
-        player.updateAtkBuff(ATTACK_BUFF)
-        applyGeneralSkillEffectToLocation(
-            Transform.get(engine.CameraEntity).position,
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // // Last Blow: Gain 100 Attack and 30% Luck for 1R.
+      const ATTACK_BUFF = 1500
+      const LUCK_BUFF_PERCENT = 100
+      player.updateLuckBuff(LUCK_BUFF_PERCENT)
+      player.updateAtkBuff(ATTACK_BUFF)
+      applyGeneralSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
 
-            2000
-        )
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateLuckBuff(-LUCK_BUFF_PERCENT)
-            player.updateAtkBuff(-ATTACK_BUFF)
-            player.reduceHealth(player.maxHealth * 0.5)
-        }, 16 * 1000)
+        2000
+      )
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateLuckBuff(-LUCK_BUFF_PERCENT)
+        player.updateAtkBuff(-ATTACK_BUFF)
+        player.reduceHealth(player.maxHealth * 0.5)
+      }, 16 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -966,26 +959,26 @@ export class RangerDeadlyPrecision extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        // Deadly Precision: Gain 30% Critical chance for 5R.
-        const CRIT_BUFF_PERCENT = 30
-        player.updateCritRate(CRIT_BUFF_PERCENT)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateCritRate(-CRIT_BUFF_PERCENT)
-        }, 12 * 1000)
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // Deadly Precision: Gain 30% Critical chance for 5R.
+      const CRIT_BUFF_PERCENT = 30
+      player.updateCritRate(CRIT_BUFF_PERCENT)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateCritRate(-CRIT_BUFF_PERCENT)
+      }, 12 * 1000)
     } else {
-player.gameController.uiController.displayAnnouncement(
+      player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
         Color4.Yellow(),
         1000
@@ -1003,24 +996,24 @@ export class RangerSavageStrike extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // Savage Strike: Gain 200% Damage on your critical attacks for 3R.
+      const CRITDAMAGE_BUFF_PERCENT = 200
+      player.updateCritRate(CRITDAMAGE_BUFF_PERCENT)
+      setTimeout(() => {
+        // activeSkillsCount--
         // console.log("activeSkillsCount ", activeSkillsCount)
-        // Savage Strike: Gain 200% Damage on your critical attacks for 3R.
-        const CRITDAMAGE_BUFF_PERCENT = 200
-        player.updateCritRate(CRITDAMAGE_BUFF_PERCENT)
-        setTimeout( () => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateCritRate(-CRITDAMAGE_BUFF_PERCENT)
-        },12 * 1000)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateCritRate(-CRITDAMAGE_BUFF_PERCENT)
+      }, 12 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1040,24 +1033,24 @@ export class RangerMightyShot extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        // Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
+      // Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // Mighty Shot: Your Attacks deal 45% more damage for 4R.
+      const ATK_BUFF_PERCENT = 3 * player.getPlayerAttack(false)
+      player.updateAtkBuff(ATK_BUFF_PERCENT)
+      setTimeout(() => {
+        // activeSkillsCount--
         // console.log("activeSkillsCount ", activeSkillsCount)
-        // Mighty Shot: Your Attacks deal 45% more damage for 4R.
-        const ATK_BUFF_PERCENT = 3 * player.getPlayerAttack(false)
-        player.updateAtkBuff(ATK_BUFF_PERCENT)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateAtkBuff(-ATK_BUFF_PERCENT)
-        }, 9 * 1000)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateAtkBuff(-ATK_BUFF_PERCENT)
+      }, 9 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1069,6 +1062,7 @@ export class RangerMightyShot extends SkillController {
   }
 }
 
+// TODO
 export class RangerPoisonArrows extends SkillController {
   constructor() {
     super(SKILL_DATA.RANGER_POISON_ARROWS)
@@ -1077,53 +1071,70 @@ export class RangerPoisonArrows extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        //Player.setGlobalHasSkillActive(true)
-        // Poison Arrows: Opponent loses 20 HP each 1 second for 8R. med
-        monsterModifiers.addActiveSkill(
-            20 * 1000,
-            "poison_arrows",
-            (
-                isCriticalAttack:boolean,
-                isPlayerAttack:boolean,
-                attackAmount:number,
-                monster:any // NEED TO TYPE
-            ) => {
-                if (!isPlayerAttack) {
-                    const damageOverTime =
-                        Player.getInstance().getPlayerAttack() // Adjust damage per tick as needed
-                    const tickInterval = 2000 // Adjust interval between ticks as needed
-                    let poisonDamageApplied = false // New variable to track poison damage application
-                    player.gameController.uiController.displayAnnouncement("POISON TAKES EFFECT!")
-                    console.log("before")
-                    //@ts-ignore
-                    const timer = setInterval(() => {
-                        if (Player.globalHasSkill) {
-                            monster.takeDamage(damageOverTime)
-                            if (!poisonDamageApplied) {
-                               player.gameController.uiController.displayAnnouncement("POISON HIT!", Color4.Yellow(), 1)
-                                poisonDamageApplied = true
-                            }
-                            console.log("monster is taking damage")
-                        } else {
-                           player.gameController.uiController.displayAnnouncement("POISON BLOCKED!", Color4.Yellow(), 1)
-                        }
-                    }, tickInterval)
-                    setTimeout(() => {
-                        if (monster.health > 0) {
-                            //@ts-ignore
-                            clearInterval(timer) // Stop the DOT when the poison duration is over
-                           player.gameController.uiController.displayAnnouncement("POISON DONE!", Color4.Yellow(), 1)
-                        }
-                    },20 * 1000)
-                    if (monster.health <= 0) {
-                        //@ts-ignore
-                        clearInterval(timer) // Stop the DOT if the monster is defeated
-                    }
-                } else {
-                   player.gameController.uiController.displayAnnouncement("POISON ARROW MISSED!", Color4.Yellow(), 1)
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      // Poison Arrows: Opponent loses 20 HP each 1 second for 8R. med
+      monsterModifiers.addActiveSkill(
+        20 * 1000,
+        'poison_arrows',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number,
+          monster: any // NEED TO TYPE
+        ) => {
+          // if (!isPlayerAttack) {
+          //   const damageOverTime = player.getPlayerAttack() // Adjust damage per tick as needed
+          //   const tickInterval = 2000 // Adjust interval between ticks as needed
+          //   let poisonDamageApplied = false // New variable to track poison damage application
+          //   player.gameController.uiController.displayAnnouncement(
+          //     'POISON TAKES EFFECT!'
+          //   )
+          //   console.log('before')
+          //   // @ts-expect-error
+          //   const timer = setInterval(() => {
+          //     if (Player.globalHasSkill) {
+          //       monster.takeDamage(damageOverTime)
+          //       if (!poisonDamageApplied) {
+          //         player.gameController.uiController.displayAnnouncement(
+          //           'POISON HIT!',
+          //           Color4.Yellow(),
+          //           1
+          //         )
+          //         poisonDamageApplied = true
+          //       }
+          //       console.log('monster is taking damage')
+          //     } else {
+          //       player.gameController.uiController.displayAnnouncement(
+          //         'POISON BLOCKED!',
+          //         Color4.Yellow(),
+          //         1
+          //       )
+          //     }
+          //   }, tickInterval)
+          //   setTimeout(() => {
+          //     if (monster.health > 0) {
+          //       // @ts-expect-error
+          //       clearInterval(timer) // Stop the DOT when the poison duration is over
+          //       player.gameController.uiController.displayAnnouncement(
+          //         'POISON DONE!',
+          //         Color4.Yellow(),
+          //         1
+          //       )
+          //     }
+          //   }, 20 * 1000)
+          //   if (monster.health <= 0) {
+          //     // @ts-expect-error
+          //     clearInterval(timer) // Stop the DOT if the monster is defeated
+          //   }
+          // } else {
+          //   player.gameController.uiController.displayAnnouncement(
+          //     'POISON ARROW MISSED!',
+          //     Color4.Yellow(),
+          //     1
+          //   )
+          // }
+        }
+      )
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1143,18 +1154,18 @@ export class RangerVitalShot extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        //Player.setGlobalHasSkillActive(true)
-        // Vital Shot: Heal 50% of your max HP when you deal critical damage for 4R. med
-        monsterModifiers.addActiveSkill(
-            20 * 1000,
-            "vital_shot",
-            (isCriticalAttack:boolean) => {
-                console.log("vital shot", isCriticalAttack)
-                if (isCriticalAttack) {
-                    player.refillHealthBar(1, true)
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      // Vital Shot: Heal 50% of your max HP when you deal critical damage for 4R. med
+      monsterModifiers.addActiveSkill(
+        20 * 1000,
+        'vital_shot',
+        (isCriticalAttack: boolean) => {
+          console.log('vital shot', isCriticalAttack)
+          if (isCriticalAttack) {
+            player.refillHealthBar(1, true)
+          }
+        }
+      )
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1174,24 +1185,24 @@ export class RangerRecoilShot extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        //Player.setGlobalHasSkillActive(true)
-        // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
-        monsterModifiers.addActiveSkill(
-            15 * 1000,
-            "recoil_shot",
-            (
-                isCriticalAttack:boolean,
-                isPlayerAttack:boolean,
-                attackAmount:number,
-                monster: any // TODO: SET TYPE
-            ) => {
-                console.log("recoil shot", isPlayerAttack, attackAmount)
-                if (!isPlayerAttack) {
-                    const counterAttackAmount = attackAmount * 1.5
-                    monster.performAttack(counterAttackAmount, false)
-                }
-            }
-        )
+      // Player.setGlobalHasSkillActive(true)
+      // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
+      monsterModifiers.addActiveSkill(
+        15 * 1000,
+        'recoil_shot',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number,
+          monster: any // TODO: SET TYPE
+        ) => {
+          console.log('recoil shot', isPlayerAttack, attackAmount)
+          if (!isPlayerAttack) {
+            const counterAttackAmount = attackAmount * 1.5
+            monster.performAttack(counterAttackAmount, false)
+          }
+        }
+      )
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1203,80 +1214,97 @@ export class RangerRecoilShot extends SkillController {
   }
 }
 
+// TODO
 export class GeneralDisruptiveBlow extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_DISRUPTIVE_BLOW)
   }
 
   async effect(): Promise<void> {
-        // TODO:
-        // const isWearableFound = checkWearableInUserData(
-        //     //HATCHETS
-        //   "0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0"
-        // )
-        const player = Player.getInstance()
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        const damageOverTime = 60 // Adjust bleeding damage per tick as needed
-        const tickInterval = 2000 // Adjust interval between ticks as needed
-        const ATTACK_BUFF = 50
-        player.updateAtkBuff(ATTACK_BUFF)
-        // TODO:
-        // applyRedSwirlToLocation(Transform.get(engine.CameraEntity).position)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateAtkBuff(-ATTACK_BUFF)
-        }, 6 * 1000)
-        if ((await isWearableFound) === true) {
-            monsterModifiers.addActiveSkill(
-                30 * 1000,
-                "disruptive_blow",
-                (
-                    isCriticalAttack:boolean,
-                    isPlayerAttack:boolean,
-                  attackAmount: number,
-                    // NEED TO SET TYPE
-                    monster:any
-                ) => {
-                    if (!isPlayerAttack) {
-                       player.gameController.uiController.displayAnnouncement("BLEEDING STARTS!")
-                        console.log("before")
-                        let bleedingDamageApplied = false // New variable to track bleeding damage application
-                        //@ts-ignore
-                        const timer = setInterval(() => {
-                            monster.takeDamage(damageOverTime)
-                            if (!bleedingDamageApplied) {
-                               player.gameController.uiController.displayAnnouncement(
-                                    "BLEEDING DAMAGE!", Color4.Yellow(),
-                                    1
-                                )
-                                bleedingDamageApplied = true
-                            }
-                            console.log("monster is taking bleeding damage")
-                        }, tickInterval)
-                        setTimeout(() => {
-                            if (monster.health > 0) {
-                                //@ts-ignore
-                                clearInterval(timer) // Stop the bleeding if the monster is still alive
-                               player.gameController.uiController.displayAnnouncement("BLEEDING STOPS!", Color4.Yellow(), 1)
-                            }
-                        }, 30 * 1000) // 60 seconds
-                    } else {
-                       player.gameController.uiController.displayAnnouncement("SKILL MISSED!", Color4.Yellow(), 1)
-                    }
-                }
-            )
-        } else {
-          player.gameController.uiController.displayAnnouncement("Need wearable to activate!", Color4.Yellow(), 1)
-        }
+    // TODO:
+    // const isWearableFound = checkWearableInUserData(
+    //     //HATCHETS
+    //   "0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0"
+    // )
+    const player = Player.getInstance()
+    // activeSkillsCount++
+    // console.log("activeSkillsCount ", activeSkillsCount)
+    // const damageOverTime = 60 // Adjust bleeding damage per tick as needed
+    // const tickInterval = 2000 // Adjust interval between ticks as needed
+    const ATTACK_BUFF = 50
+    player.updateAtkBuff(ATTACK_BUFF)
+    // TODO:
+    // applyRedSwirlToLocation(Transform.get(engine.CameraEntity).position)
+    setTimeout(() => {
+      // activeSkillsCount--
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // if (activeSkillsCount > 0) {
+      //     // At least one skill is active
+      //     Player.setGlobalHasSkillActive(true)
+      // } else {
+      //     // No skill is active
+      //     Player.setGlobalHasSkillActive(false)
+      // }
+      player.updateAtkBuff(-ATTACK_BUFF)
+    }, 6 * 1000)
+    // if ((await isWearableFound) === true) {
+    //   monsterModifiers.addActiveSkill(
+    //     30 * 1000,
+    //     'disruptive_blow',
+    //     (
+    //       isCriticalAttack: boolean,
+    //       isPlayerAttack: boolean,
+    //       attackAmount: number,
+    //       // NEED TO SET TYPE
+    //       monster: any
+    //     ) => {
+    //       if (!isPlayerAttack) {
+    //         player.gameController.uiController.displayAnnouncement(
+    //           'BLEEDING STARTS!'
+    //         )
+    //         console.log('before')
+    //         let bleedingDamageApplied = false // New variable to track bleeding damage application
+    //         // @ts-expect-error
+    //         const timer = setInterval(() => {
+    //           monster.takeDamage(damageOverTime)
+    //           if (!bleedingDamageApplied) {
+    //             player.gameController.uiController.displayAnnouncement(
+    //               'BLEEDING DAMAGE!',
+    //               Color4.Yellow(),
+    //               1
+    //             )
+    //             bleedingDamageApplied = true
+    //           }
+    //           console.log('monster is taking bleeding damage')
+    //         }, tickInterval)
+    //         setTimeout(() => {
+    //           if (monster.health > 0) {
+    //             // @ts-expect-error
+    //             clearInterval(timer) // Stop the bleeding if the monster is still alive
+    //             player.gameController.uiController.displayAnnouncement(
+    //               'BLEEDING STOPS!',
+    //               Color4.Yellow(),
+    //               1
+    //             )
+    //           }
+    //         }, 30 * 1000) // 60 seconds
+    //       } else {
+    //         player.gameController.uiController.displayAnnouncement(
+    //           'SKILL MISSED!',
+    //           Color4.Yellow(),
+    //           1
+    //         )
+    //       }
+    //     }
+    //   )
+    // } else {
+    //   player.gameController.uiController.displayAnnouncement(
+    //     'Need wearable to activate!',
+    //     Color4.Yellow(),
+    //     1
+    //   )
+    // }
+    // }
   }
 }
 
@@ -1288,8 +1316,8 @@ export class GeneralFirstAidKit extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        //Player.setGlobalHasSkillActive(true)
-        Player.getInstance().refillHealthBar(0.25, true)
+      // Player.setGlobalHasSkillActive(true)
+      player.refillHealthBar(0.25, true)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1309,23 +1337,28 @@ export class GeneralFireball extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        //Player.setGlobalHasSkillActive(true)
+      // Player.setGlobalHasSkillActive(true)
       // Splash Attack all engaged enemies
-      
+
       // TODO: Need ENGAGED MONSTERS
-        // for (let entity of engagedMonsters.entities) {
-        //     if (entity instanceof MonsterOligar || entity instanceof MonsterMob || entity instanceof MonsterMobAuto ) {
-        //         entity.performAttack(
-        //             Player.getInstance().getPlayerAttack(),
-        //             false
-        //         )
-        //     }
-        // }
-        player.attackAnimation()
-        applyAttackedEnemyEffectToLocation(Transform.get(engine.CameraEntity).position, 5000)
+      // for (let entity of engagedMonsters.entities) {
+      //     if (entity instanceof MonsterOligar || entity instanceof MonsterMob || entity instanceof MonsterMobAuto ) {
+      //         entity.performAttack(
+      //             player.getPlayerAttack(),
+      //             false
+      //         )
+      //     }
+      // }
+      player.attackAnimation()
+      applyAttackedEnemyEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+        5000
+      )
     } else {
-       player.gameController.uiController.displayAnnouncement("Player skill blocked")
-        console.log("Player has no skills")
+      player.gameController.uiController.displayAnnouncement(
+        'Player skill blocked'
+      )
+      console.log('Player has no skills')
     }
   }
 }
@@ -1338,43 +1371,45 @@ export class GeneralStorm extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
+      //     //Player.setGlobalHasSkillActive(true)
       //     // Splash Attack all engaged enemies
-      
-      // TODO: Need ENGAGED MONSTERS
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMobAuto) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMob) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterOligar) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getMagic(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    player.attackAnimation()
-        applyFullWhiteSkillEffectToLocation(
-            Transform.get(engine.CameraEntity).position,
 
-            5000
-        )
+      // TODO: Need ENGAGED MONSTERS
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMobAuto) {
+      //             entity.performAttack(
+      //                 player.getMagic(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMob) {
+      //             entity.performAttack(
+      //                 player.getMagic(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterOligar) {
+      //             entity.performAttack(
+      //                 player.getMagic(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      player.attackAnimation()
+      applyFullWhiteSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+
+        5000
+      )
     } else {
-       player.gameController.uiController.displayAnnouncement("Player skill blocked")
-        console.log("Player has no skills")
+      player.gameController.uiController.displayAnnouncement(
+        'Player skill blocked'
+      )
+      console.log('Player has no skills')
     }
   }
 }
@@ -1387,25 +1422,25 @@ export class GeneralLuckyCharm extends SkillController {
   effect(): void {
     const player = Player.getInstance()
     if (Player.globalHasSkill) {
-        Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        const LUCK_BUFF_PERCENT = 10
+      Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      const LUCK_BUFF_PERCENT = 10
       player.updateLuckBuff(LUCK_BUFF_PERCENT)
       // TODO NEED THIS EFFECT
-        // applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-            player.updateLuckBuff(-LUCK_BUFF_PERCENT)
-        }, 9 * 1000) // 9 seconds in milliseconds
+      // applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateLuckBuff(-LUCK_BUFF_PERCENT)
+      }, 9 * 1000) // 9 seconds in milliseconds
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1426,27 +1461,27 @@ export class GeneralPrecisionFocus extends SkillController {
     const player = Player.getInstance()
 
     if (Player.globalHasSkill) {
-        Player.setGlobalHasSkillActive(true)
-        // activeSkillsCount++
-        // console.log("activeSkillsCount ", activeSkillsCount)
-        // Precision Focus: Increase critical rate by 30% for 15 s.
-        const CRIT_RATE_BUFF_PERCENT = 30
-        player.updateCritRate(CRIT_RATE_BUFF_PERCENT)
+      Player.setGlobalHasSkillActive(true)
+      // activeSkillsCount++
+      // console.log("activeSkillsCount ", activeSkillsCount)
+      // Precision Focus: Increase critical rate by 30% for 15 s.
+      const CRIT_RATE_BUFF_PERCENT = 30
+      player.updateCritRate(CRIT_RATE_BUFF_PERCENT)
       // ApplyCritToLocation(Camera.instance.position)
       // TODO Need this effect
-        // applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
-        setTimeout(() => {
-            // activeSkillsCount--
-            // console.log("activeSkillsCount ", activeSkillsCount)
-            // if (activeSkillsCount > 0) {
-            //     // At least one skill is active
-            //     Player.setGlobalHasSkillActive(true)
-            // } else {
-            //     // No skill is active
-            //     Player.setGlobalHasSkillActive(false)
-            // }
-           player.updateCritRate(-CRIT_RATE_BUFF_PERCENT)
-        }, 9 * 1000)
+      // applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateCritRate(-CRIT_RATE_BUFF_PERCENT)
+      }, 9 * 1000)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1458,72 +1493,76 @@ export class GeneralPrecisionFocus extends SkillController {
   }
 }
 
-// Support Defense lvl 2 - enemy attack by 50%
 export class GeneralDefensivePosture extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_DEFENSIVE_POSTURE)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
-    //     // Splash Attack all engaged enemies
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMobAuto) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMob) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterOligar) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     Player.getInstance().attackAnimation()
-    //     applyAttackedEnemyEffectToLocation(
-    //         Transform.get(engine.CameraEntity).position,
+    const player = Player.getInstance()
 
-    //         2000
-    //     )
-    // } else {
-    //    player.gameController.uiController.displayAnnouncement("Player skill blocked")
-    //     log("Player has no skills")
-    // }
+    if (Player.globalHasSkill) {
+      // TODO Need ENGAGED MONSTERS
+      //     //Player.setGlobalHasSkillActive(true)
+      //     // Splash Attack all engaged enemies
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMobAuto) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMob) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterOligar) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     player.attackAnimation()
+      //     applyAttackedEnemyEffectToLocation(
+      //         Transform.get(engine.CameraEntity).position,
+      //         2000
+      //     )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skill blocked'
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Support Defense lvl 1 25%
 export class GeneralStrike extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_STRIKE)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
-    //     shootArrow()
-    //     Player.getInstance().attackAnimation()
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      // Player.setGlobalHasSkillActive(true)
+      shootArrow()
+      player.attackAnimation()
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -1533,281 +1572,289 @@ export class GeneralIronDefense extends SkillController {
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // Iron Defense: Increase defense by 50% for 12 s.
-    //     const DEFENSE_BUFF_PERCENT = 0.25
-    //     Player.getInstance().updateDefBuff(DEFENSE_BUFF_PERCENT)
-    //     applyDefSkillEffectToLocation(
-    //         Transform.get(engine.CameraEntity).position,
+    const player = Player.getInstance()
 
-    //         2000
-    //     )
-    //     setTimeout(6 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         Player.getInstance().updateDefBuff(-DEFENSE_BUFF_PERCENT)
-    //     }) // 12 seconds in milliseconds
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+
+      const DEFENSE_BUFF_PERCENT = 0.25
+      player.updateDefBuff(DEFENSE_BUFF_PERCENT)
+      applyDefSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+        2000
+      )
+      setTimeout(() => {
+        // activeSkillsCount--
+        // log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateDefBuff(-DEFENSE_BUFF_PERCENT)
+      }, 6 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
-// Support Heal lvl 2 MAX +50%
 export class GeneralVitalitySurge extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_VITALITY_SURGE)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // Vitality Surge: Increase max health by 25% for 25 s.
-    //     const MAX_HEALTH_BUFF_PERCENT =
-    //         Player.getInstance().maxHealth * 0.1
-    //     Player.getInstance().updateMaxHp(MAX_HEALTH_BUFF_PERCENT)
-    //     setTimeout(15 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         Player.getInstance().updateMaxHp(-MAX_HEALTH_BUFF_PERCENT)
-    //     }) // 25 seconds in milliseconds
-    //     applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const MAX_HEALTH_BUFF_PERCENT = player.maxHealth * 0.1
+      player.updateMaxHp(MAX_HEALTH_BUFF_PERCENT)
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateMaxHp(-MAX_HEALTH_BUFF_PERCENT)
+      }, 15 * 1000)
+      // TODO Need this effect:
+      //     applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Attack buffer lvl 2 25% of MAX HP
 export class GeneralVitalityBoost extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_VITALITY_BOOST)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // PROTECTORSBLESSING: Gain Attack equal to 25% of your MAX HP for 10 secs. 20 sec cooldown
-    //     const ATTACK_BUFF = Player.getInstance().maxHealth * 0.25
-    //     player.updateAtkBuff(ATTACK_BUFF)
-    //     // ApplysphereEnergyToLocation(Camera.instance.position)
-    //     applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    //     setTimeout(15 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateAtkBuff(-ATTACK_BUFF)
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      //     // PROTECTORSBLESSING: Gain Attack equal to 25% of your MAX HP for 10 secs. 20 sec cooldown
+      const ATTACK_BUFF = player.maxHealth * 0.25
+      player.updateAtkBuff(ATTACK_BUFF)
+      // TODO Need this effect
+      // ApplysphereEnergyToLocation(Transform.get(engine.CameraEntity).position)
+      // TODO Need this effect:
+      // applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateAtkBuff(-ATTACK_BUFF)
+      }, 15 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Support Defense lvl 2 50%
 export class GeneralShieldWall extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_SHIELD_WALL)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // Stoneheart: Gain def chance equal to your missing HP for 2R.
-    //     const DEF_BUFF_PERCENT = 0.5
-    //     Player.getInstance().updateDefBuff(DEF_BUFF_PERCENT)
-    //     applyDefSkillEffectToLocation(
-    //         Transform.get(engine.CameraEntity).position,
+    const player = Player.getInstance()
 
-    //         2000
-    //     )
-    //     setTimeout(12 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         Player.getInstance().updateDefBuff(-DEF_BUFF_PERCENT)
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    if (Player.globalHasSkill) {
+      const player = Player.getInstance()
+
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const DEF_BUFF_PERCENT = 0.5
+      player.updateDefBuff(DEF_BUFF_PERCENT)
+      applyDefSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+
+        2000
+      )
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateDefBuff(-DEF_BUFF_PERCENT)
+      }, 12 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// AOE Attack lvl 2 Double player attack
 export class GeneralHammerShot extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_HAMMER_SHOT)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMobAuto) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     setTimeout(3 * 1000, () => {
-    //         for (let entity of engagedMonsters.entities) {
-    //             if (entity instanceof MonsterMobAuto) {
-    //                 entity.performAttack(
-    //                     Player.getInstance().getPlayerAttack(),
-    //                     false
-    //                 )
-    //             }
-    //         }
-    //     })
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterMob) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     setTimeout(3 * 1000, () => {
-    //         for (let entity of engagedMonsters.entities) {
-    //             if (entity instanceof MonsterMob) {
-    //                 entity.performAttack(
-    //                     Player.getInstance().getPlayerAttack(),
-    //                     false
-    //                 )
-    //             }
-    //         }
-    //     })
-    //     for (let entity of engagedMonsters.entities) {
-    //         if (entity instanceof MonsterOligar) {
-    //             entity.performAttack(
-    //                 Player.getInstance().getPlayerAttack(),
-    //                 false
-    //             )
-    //         }
-    //     }
-    //     setTimeout(3 * 1000, () => {
-    //         for (let entity of engagedMonsters.entities) {
-    //             if (entity instanceof MonsterOligar) {
-    //                 entity.performAttack(
-    //                     Player.getInstance().getPlayerAttack(),
-    //                     false
-    //                 )
-    //             }
-    //         }
-    //     })
-    //     Player.getInstance().attackAnimation()
-    //     applyRedSkillEffectToLocation(
-    //         Transform.get(engine.CameraEntity).position,
+    const player = Player.getInstance()
 
-    //         3000
-    //     )
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    if (Player.globalHasSkill) {
+      //     //Player.setGlobalHasSkillActive(true)
+
+      // TODO Need ENGAGED MONSTERS
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMobAuto) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     setTimeout(3 * 1000, () => {
+      //         for (let entity of engagedMonsters.entities) {
+      //             if (entity instanceof MonsterMobAuto) {
+      //                 entity.performAttack(
+      //                     player.getPlayerAttack(),
+      //                     false
+      //                 )
+      //             }
+      //         }
+      //     })
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterMob) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     setTimeout(3 * 1000, () => {
+      //         for (let entity of engagedMonsters.entities) {
+      //             if (entity instanceof MonsterMob) {
+      //                 entity.performAttack(
+      //                     player.getPlayerAttack(),
+      //                     false
+      //                 )
+      //             }
+      //         }
+      //     })
+      //     for (let entity of engagedMonsters.entities) {
+      //         if (entity instanceof MonsterOligar) {
+      //             entity.performAttack(
+      //                 player.getPlayerAttack(),
+      //                 false
+      //             )
+      //         }
+      //     }
+      //     setTimeout(3 * 1000, () => {
+      //         for (let entity of engagedMonsters.entities) {
+      //             if (entity instanceof MonsterOligar) {
+      //                 entity.performAttack(
+      //                     player.getPlayerAttack(),
+      //                     false
+      //                 )
+      //             }
+      //         }
+      //     })
+      player.attackAnimation()
+      applyRedSkillEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+
+        3000
+      )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Support Defense lvl 2 - enemy attack by 50% (DUPE)
 export class GeneralDefensiveAura extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_DEFENSIVE_AURA)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     //  Decrease the attack value of your opponent by 50% for 5R.
-    //     let MAGIC_BUFF = Player.getInstance().getMagic() * 2
-    //     if (player.class === Class.MAGE) {
-    //         MAGIC_BUFF = Player.getInstance().getMagic() * 3
-    //     }
-    //     player.updateMagic(MAGIC_BUFF)
-    //     setTimeout(12 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateMagic(-MAGIC_BUFF)
-    //     })
-    //     applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      //     //  Decrease the attack value of your opponent by 50% for 5R.
+      let MAGIC_BUFF = player.getMagic() * 2
+      if (player.class === CharacterClasses.CC_MAGE) {
+        MAGIC_BUFF = player.getMagic() * 3
+      }
+      player.updateMagic(MAGIC_BUFF)
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateMagic(-MAGIC_BUFF)
+      }, 12 * 1000)
+      // TODO Need this effect
+      // applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -1817,315 +1864,293 @@ export class GeneralSoulRelease extends SkillController {
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // PROTECTORSBLESSING: Gain Attack equal to 25% of your MAX HP for 10 secs. 20 sec cooldown
-    //     const MAGIC_BUFF = Player.getInstance().maxHealth * 0.05
-    //     player.updateMagic(MAGIC_BUFF)
-    //     // ApplysphereEnergyToLocation(Camera.instance.position)
-    //     applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    //     setTimeout(15 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateMagic(-MAGIC_BUFF)
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      //     // PROTECTORSBLESSING: Gain Attack equal to 25% of your MAX HP for 10 secs. 20 sec cooldown
+      const MAGIC_BUFF = player.maxHealth * 0.05
+      player.updateMagic(MAGIC_BUFF)
+
+      // TODO: Need this effect
+      // applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateMagic(-MAGIC_BUFF)
+      }, 15 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Attack buffer lvl 3 30% attack
 export class GeneralMightyAssault extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_MIGHTY_ASSAULT)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     // Mighty Assault: Increase attack damage by 30% for 10 s.
-    //     const ATTACK_DAMAGE_BUFF =
-    //         Player.getInstance().getPlayerAttack() * 0.3
-    //     //ui.displayAnnouncement(`${ATTACK_DAMAGE_BUFF}`)
-    //     player.updateAtkBuff(ATTACK_DAMAGE_BUFF)
-    //     applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    //     setTimeout(8 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateAtkBuff(-ATTACK_DAMAGE_BUFF)
-    //     }) // 10 seconds in milliseconds
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      //     // Mighty Assault: Increase attack damage by 30% for 10 s.
+      const ATTACK_DAMAGE_BUFF = player.getPlayerAttack() * 0.3
+      //     //ui.displayAnnouncement(`${ATTACK_DAMAGE_BUFF}`)
+      player.updateAtkBuff(ATTACK_DAMAGE_BUFF)
+      // TODO Need this effect
+      //     applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        //         activeSkillsCount--
+        //         console.log("activeSkillsCount ", activeSkillsCount)
+        //         if (activeSkillsCount > 0) {
+        //             // At least one skill is active
+        //             Player.setGlobalHasSkillActive(true)
+        //         } else {
+        //             // No skill is active
+        //             Player.setGlobalHasSkillActive(false)
+        //         }
+        player.updateAtkBuff(-ATTACK_DAMAGE_BUFF)
+      }, 8 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Attack buffer lvl 3 20% Missing HP attack
-// GENERAL_RECKLESS_FURY: {
-//     name: "Reckless Fury",
-//     minLevel: 55,
-//     descriptio
-//     onButton: SkillsConfig.generalJson["Skill_483.png"]
-//         if (Player.globalHasSkill) {
-//             Player.setGlobalHasSkillActive(true)
-//             activeSkillsCount++
-//             log("activeSkillsCount ", activeSkillsCount)
-//             //  Increase your attack by 20% of your missing HP for 15 seconds
-
-//             const missingHp =
-//                 Player.getInstance().maxHealth - Player.getInstance().health
-//             const attackBuff = missingHp * 0.2 // Increase attack by 20% of missing HP
-//             player.updateAtkBuff(attackBuff)
-//             //ui.displayAnnouncement(`${attackBuff}`)
-
-//             applyRedSwirlToLocation(Camera.instance.feetPosition)
-
-//             setTimeout(6 * 1000, () => {
-//                 activeSkillsCount--
-//                 log("activeSkillsCount ", activeSkillsCount)
-//                 if (activeSkillsCount > 0) {
-//                     // At least one skill is active
-//                     Player.setGlobalHasSkillActive(true)
-//                 } else {
-//                     // No skill is active
-//                     Player.setGlobalHasSkillActive(false)
-//                 }
-//                 player.updateAtkBuff(-attackBuff)
-//             })
-//         } else {
-//            player.gameController.uiController.displayAnnouncement("Player skills blocked")
-//             log("Player has no skills")
-//         }
-//
-// },
-// Support Defense lvl 3 10% for each unsuccessful roll
 export class GeneralFortressOfResilience extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_FORTRESS_OF_RESILIENCE)
   }
 
   effect(): void {
+    const player = Player.getInstance()
+
     if (Player.globalHasSkill) {
-      //     if (
-      //         Player.getInstance().inventory.getItemCount(
-      //             ITEM_TYPES.POTION
-      //         ) >= 1
-      //     ) {
-      //         Player.getInstance().inventory.reduceItem(
-      //             ITEM_TYPES.POTION,
-      //             1
-      //         )
-      //         Player.getInstance().writeDataToServer()
-      //         Player.getInstance().refillHealthBar(0.25)
-      //        player.gameController.uiController.displayAnnouncement("25% health Restored")
-      //     } else {
-      //        player.gameController.uiController.displayAnnouncement("No more potions")
-      //     }
-      // } else {
-      //    player.gameController.uiController.displayAnnouncement("Player skills blocked")
-      //     log("Player has no skills")
+      if (player.inventory.getItemCount(ITEM_TYPES.POTION) >= 1) {
+        player.inventory.reduceItem(ITEM_TYPES.POTION, 1)
+        // TODO
+        // player.writeDataToServer()
+        player.refillHealthBar(0.25)
+        player.gameController.uiController.displayAnnouncement(
+          '25% health Restored'
+        )
+      } else {
+        player.gameController.uiController.displayAnnouncement(
+          'No more potions'
+        )
+      }
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked'
+      )
+      console.log('Player has no skills')
     }
   }
 }
 
-// Support Special missing hp
 export class GeneralOathToDemonKing extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_OATH_TO_DEMON_KING)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     // Player.setGlobalHasSkillActive(true)
-    //     applyRainbowSwirlToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    //     Player.getInstance().reduceHealth(player.maxHealth * 0.9)
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     // Player.setGlobalHasSkillActive(true)
+      // applyRainbowSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      player.reduceHealth(player.maxHealth * 0.9)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Support Special no luck
 export class GeneralGodricsBlessing extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_GODRICS_BLESSING)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     const LUCK_DEBUFF_PERCENT = 90
-    //     Player.getInstance().updateLuckBuff(-LUCK_DEBUFF_PERCENT)
-    //     applyRainbowSwirlToLocation(Transform.get(engine.CameraEntity).position,
- 1)
-    //     setTimeout(30 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         Player.getInstance().updateLuckBuff(LUCK_DEBUFF_PERCENT)
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const LUCK_DEBUFF_PERCENT = 90
+      player.updateLuckBuff(-LUCK_DEBUFF_PERCENT)
+      // TODO Need this effect
+      //     applyRainbowSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateLuckBuff(LUCK_DEBUFF_PERCENT)
+      }, 30 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Attack lvl 4 counter
 export class GeneralConfusingBlades extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_CONFUSING_BLADES)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
-    //     monsterModifiers.addActiveSkill(
-    //         9 * 1000,
-    //         "confusing_blades",
-    //         (
-    //             isCriticalAttack,
-    //             isPlayerAttack,
-    //             attackAmount,
-    //             monster
-    //         ) => {
-    //             log("confusing_blades", isPlayerAttack, attackAmount)
-    //             if (!isPlayerAttack) {
-    //                 const counterAttackAmount = attackAmount * 0.7
-    //                 monster.performAttack(counterAttackAmount, false)
-    //             }
-    //         }
-    //     )
-    //     applyPlayerSkillBladesEffectToLocation(
-    //         Camera.instance.position,
-    //         Camera.instance.rotation,
-    //         2, // Adjust the distance as needed
-    //         9000 // Duration in milliseconds
-    //     )
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     //Player.setGlobalHasSkillActive(true)
+      monsterModifiers.addActiveSkill(
+        9 * 1000,
+        'confusing_blades',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number,
+          // TODO set TYPE
+          monster: any
+        ) => {
+          console.log('confusing_blades', isPlayerAttack, attackAmount)
+          if (!isPlayerAttack) {
+            const counterAttackAmount = attackAmount * 0.7
+            monster.performAttack(counterAttackAmount, false)
+          }
+        }
+      )
+      applyPlayerSkillBladesEffectToLocation(
+        Transform.get(engine.CameraEntity).position,
+        9000 // Duration in milliseconds
+      )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
-// Attack lvl 3 poison
+// TODO
 export class GeneralVenomousBlade extends SkillController {
   constructor() {
     super(SKILL_DATA.GENERAL_VENOMOUS_BLADE)
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     //Player.setGlobalHasSkillActive(true)
-    //     // Venomous Blade: Inflict damage over time to opponents.
-    //     monsterModifiers.addActiveSkill(
-    //         6 * 1000,
-    //         "venomous_blade",
-    //         (
-    //             isCriticalAttack,
-    //             isPlayerAttack,
-    //             attackAmount,
-    //             monster
-    //         ) => {
-    //             if (!isPlayerAttack) {
-    //                 const damageOverTime = 200 // Adjust damage per tick as needed
-    //                 const tickInterval = 2000 // Adjust interval between ticks as needed
-    //                 let poisonDamageApplied = false // New variable to track poison damage application
-    //                player.gameController.uiController.displayAnnouncement("POISON TAKES EFFECT!")
-    //                 log("before")
-    //                 //@ts-ignore
-    //                 const timer = setInterval(() => {
-    //                     if (Player.globalHasSkill) {
-    //                         monster.takeDamage(damageOverTime)
-    //                         if (!poisonDamageApplied) {
-    //                             applyPurpleSwirlToLocation(
-    //                                 Transform.get(engine.CameraEntity).position,
+    const player = Player.getInstance()
 
-    //                                 5
-    //                             )
-    //                             poisonDamageApplied = true
-    //                         }
-    //                         log("monster is taking damage")
-    //                     }
-    //                 }, tickInterval)
-    //                 setTimeout(6 * 1000, () => {
-    //                     if (monster.health > 0) {
-    //                         //@ts-ignore
-    //                         clearInterval(timer) // Stop the DOT when the poison duration is over
-    //                        player.gameController.uiController.displayAnnouncement("POISON DONE!", Color4.Yellow(), 1)
-    //                     }
-    //                 }) // 10 seconds
-    //                 if (monster.health <= 0) {
-    //                     //@ts-ignore
-    //                     clearInterval(timer) // Stop the DOT if the monster is defeated
-    //                 }
-    //             } else {
-    //                player.gameController.uiController.displayAnnouncement("POISON SKILL MISSED!", Color4.Yellow(), 1)
-    //             }
-    //         }
-    //     )
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    if (Player.globalHasSkill) {
+      //     //Player.setGlobalHasSkillActive(true)
+      //     // Venomous Blade: Inflict damage over time to opponents.
+      monsterModifiers.addActiveSkill(
+        6 * 1000,
+        'venomous_blade',
+        (
+          isCriticalAttack: boolean,
+          isPlayerAttack: boolean,
+          attackAmount: number,
+          // TODO: set TYPE
+          monster: any
+        ) => {
+          // if (!isPlayerAttack) {
+          //   const damageOverTime = 200 // Adjust damage per tick as needed
+          //   const tickInterval = 2000 // Adjust interval between ticks as needed
+          //   let poisonDamageApplied = false // New variable to track poison damage application
+          //   player.gameController.uiController.displayAnnouncement(
+          //     'POISON TAKES EFFECT!'
+          //   )
+          //   console.log('before')
+          //   // TODO: setInterval ??
+          //   // @ts-expect-error
+          //   const timer = setInterval(() => {
+          //     if (Player.globalHasSkill) {
+          //       monster.takeDamage(damageOverTime)
+          //       if (!poisonDamageApplied) {
+          //         // TODO Need this effect
+          //         // applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 5)
+          //         poisonDamageApplied = true
+          //       }
+          //       console.log('monster is taking damage')
+          //     }
+          //   }, tickInterval)
+          //   setTimeout(() => {
+          //     if (monster.health > 0) {
+          //       // @ts-expect-error
+          //       // TODO declare clearInterval
+          //       clearInterval(timer) // Stop the DOT when the poison duration is over
+          //       player.gameController.uiController.displayAnnouncement(
+          //         'POISON DONE!',
+          //         Color4.Yellow(),
+          //         1
+          //       )
+          //     }
+          //   }, 6 * 1000)
+          //   if (monster.health <= 0) {
+          //     // @ts-expect-error
+          //     clearInterval(timer) // Stop the DOT if the monster is defeated
+          //   }
+          // } else {
+          //   player.gameController.uiController.displayAnnouncement(
+          //     'POISON SKILL MISSED!',
+          //     Color4.Yellow(),
+          //     1
+          //   )
+          // }
+        }
+      )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -2135,12 +2160,14 @@ export class GeneralSpellCancel extends SkillController {
   }
 
   effect(): void {
-    // MonsterOligar.setGlobalHasSkill(false)
-    // applyDefSkillEffectToLocation(Transform.get(engine.CameraEntity).position,
- 2000)
-    // setTimeout(15 * 1000, () => {
-    //     MonsterOligar.setGlobalHasSkill(true)
-    // })
+    MonsterOligar.setGlobalHasSkill(false)
+    applyDefSkillEffectToLocation(
+      Transform.get(engine.CameraEntity).position,
+      2000
+    )
+    setTimeout(() => {
+      MonsterOligar.setGlobalHasSkill(true)
+    }, 15 * 1000)
   }
 }
 
@@ -2149,55 +2176,51 @@ export class GeneralVampiricTransfusion extends SkillController {
     super(SKILL_DATA.GENERAL_Vampiric_Transfusion)
   }
 
-  effect(): void {
-    // skillEffect: async () => {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     const ATTACK_BUFF = player.getPlayerAttack() // Get player's attack value
-    //     player.updateAtkBuff(-ATTACK_BUFF) // Remove all ATTACK
-    //     player.updateMagic(ATTACK_BUFF) // Add it to MAGIC
-    //     // Function to absorb damage as health for the duration of the skill
-    //     const absorbDamage = (
-    //         isCriticalAttack,
-    //         isPlayerAttack,
-    //         attackAmount,
-    //         monster
-    //     ) => {
-    //         if (!isPlayerAttack) {
-    //             const absorbedHealth = Player.getInstance().getMagic()
-    //             Player.getInstance().heal(absorbedHealth)
-    //         }
-    //     }
-    //     // Add modifier to absorb damage as health
-    //     monsterModifiers.addActiveSkill(
-    //         15 * 1000,
-    //         "vampiric_transfusion",
-    //         absorbDamage
-    //     )
-    //     // Reset player's stats after the duration of the skill
-    //     setTimeout(30 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateAtkBuff(ATTACK_BUFF) // Restore ATTACK
-    //         player.updateMagic(-ATTACK_BUFF) // Remove MAGIC buff
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+  async effect(): Promise<void> {
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const ATTACK_BUFF = player.getPlayerAttack() // Get player's attack value
+      player.updateAtkBuff(-ATTACK_BUFF) // Remove all ATTACK
+      player.updateMagic(ATTACK_BUFF) // Add it to MAGIC
+      //     // Function to absorb damage as health for the duration of the skill
+      const absorbDamage = (isPlayerAttack: boolean): void => {
+        if (!isPlayerAttack) {
+          const absorbedHealth = player.getMagic()
+          player.heal(absorbedHealth)
+        }
+      }
+      // Add modifier to absorb damage as health
+      monsterModifiers.addActiveSkill(
+        15 * 1000,
+        'vampiric_transfusion',
+        absorbDamage
+      )
+      // Reset player's stats after the duration of the skill
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateAtkBuff(ATTACK_BUFF) // Restore ATTACK
+        player.updateMagic(-ATTACK_BUFF) // Remove MAGIC buff
+      }, 30 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -2207,68 +2230,64 @@ export class GeneralCelestialRetribution extends SkillController {
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     const CRITRATE_BUFF = Player.getInstance().getCritRate() * 0.05
-    //     const CRITDMG_BUFF = Player.getInstance().getCritDamage() * 0.05
-    //     const ATTACK_BUFF =
-    //         Player.getInstance().getPlayerAttack() * 0.05
-    //     const LUCK_BUFF = Player.getInstance().getLuckRange() * 0.05
-    //     const MAGIC_BUFF = Player.getInstance().getMagic() * 0.05
-    //     const DEF_BUFF = Player.getInstance().getDefensePercent() * 0.05
-    //     let count = 0
-    //     // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
-    //     monsterModifiers.addActiveSkill(
-    //         15 * 1000,
-    //         "recoil_shot",
-    //         (
-    //             isCriticalAttack,
-    //             isPlayerAttack,
-    //             attackAmount,
-    //             monster
-    //         ) => {
-    //             log("recoil shot", isPlayerAttack, attackAmount)
-    //             if (!isPlayerAttack) {
-    //                 const counterAttackAmount = attackAmount * 1.5
-    //                 monster.performAttack(counterAttackAmount, false)
-    //                 player.updateAtkBuff(ATTACK_BUFF)
-    //                 player.updateMagic(MAGIC_BUFF)
-    //                 Player.getInstance().updateCritDmg(CRITDMG_BUFF)
-    //                 Player.getInstance().updateCritRate(CRITRATE_BUFF)
-    //                 Player.getInstance().updateLuckBuff(LUCK_BUFF)
-    //                 Player.getInstance().updateDefBuff(DEF_BUFF)
-    //                 count++
-    //             }
-    //         }
-    //     )
-    //     setTimeout(15 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateAtkBuff(-ATTACK_BUFF * count)
-    //         player.updateMagic(-MAGIC_BUFF * count)
-    //         Player.getInstance().updateCritDmg(-CRITDMG_BUFF * count)
-    //         Player.getInstance().updateCritRate(-CRITRATE_BUFF * count)
-    //         Player.getInstance().updateLuckBuff(-LUCK_BUFF * count)
-    //         Player.getInstance().updateDefBuff(-DEF_BUFF * count)
-    //         count = 0
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const CRITRATE_BUFF = player.getCritRate() * 0.05
+      const CRITDMG_BUFF = player.getCritDamage() * 0.05
+      const ATTACK_BUFF = player.getPlayerAttack() * 0.05
+      const LUCK_BUFF = player.getLuckRange() * 0.05
+      const MAGIC_BUFF = player.getMagic() * 0.05
+      const DEF_BUFF = player.getDefensePercent() * 0.05
+      let count = 0
+      // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
+      monsterModifiers.addActiveSkill(
+        15 * 1000,
+        'recoil_shot',
+        (isPlayerAttack: boolean, attackAmount: number, monster: any) => {
+          console.log('recoil shot', isPlayerAttack, attackAmount)
+          if (!isPlayerAttack) {
+            const counterAttackAmount = attackAmount * 1.5
+            monster.performAttack(counterAttackAmount, false)
+            player.updateAtkBuff(ATTACK_BUFF)
+            player.updateMagic(MAGIC_BUFF)
+            player.updateCritRate(CRITDMG_BUFF)
+            player.updateCritRate(CRITRATE_BUFF)
+            player.updateLuckBuff(LUCK_BUFF)
+            player.updateDefBuff(DEF_BUFF)
+            count++
+          }
+        }
+      )
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateAtkBuff(-ATTACK_BUFF * count)
+        player.updateMagic(-MAGIC_BUFF * count)
+        player.updateCritRate(-CRITDMG_BUFF * count)
+        player.updateCritRate(-CRITRATE_BUFF * count)
+        player.updateLuckBuff(-LUCK_BUFF * count)
+        player.updateDefBuff(-DEF_BUFF * count)
+        count = 0
+      }, 15 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
 
@@ -2278,67 +2297,62 @@ export class GeneralFortunesFavor extends SkillController {
   }
 
   effect(): void {
-    // if (Player.globalHasSkill) {
-    //     Player.setGlobalHasSkillActive(true)
-    //     activeSkillsCount++
-    //     log("activeSkillsCount ", activeSkillsCount)
-    //     const CRITRATE_BUFF = Player.getInstance().getCritRate() * 0.05
-    //     const CRITDMG_BUFF = Player.getInstance().getCritDamage() * 0.05
-    //     const ATTACK_BUFF =
-    //         Player.getInstance().getPlayerAttack() * 0.05
-    //     const LUCK_BUFF = Player.getInstance().getLuckRange() * 0.05
-    //     const MAGIC_BUFF = Player.getInstance().getMagic() * 0.05
-    //     const DEF_BUFF = Player.getInstance().getDefensePercent() * 0.05
-    //     let count = 0
-    //     // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
-    //     monsterModifiers.addActiveSkill(
-    //         20 * 1000,
-    //         "recoil_shot",
-    //         (
-    //             isCriticalAttack,
-    //             isPlayerAttack,
-    //             attackAmount,
-    //             monster
-    //         ) => {
-    //             log("recoil shot", isPlayerAttack, attackAmount)
-    //             if (isPlayerAttack) {
-    //                 const counterAttackAmount = attackAmount * 1.5
-    //                 //monster.performAttack(counterAttackAmount, false)
-    //                 player.updateAtkBuff(ATTACK_BUFF)
-    //                 player.updateMagic(MAGIC_BUFF)
-    //                 Player.getInstance().updateCritDmg(CRITDMG_BUFF)
-    //                 Player.getInstance().updateCritRate(CRITRATE_BUFF)
-    //                 Player.getInstance().updateLuckBuff(LUCK_BUFF)
-    //                 Player.getInstance().updateDefBuff(DEF_BUFF)
-    //                 count++
-    //             }
-    //         }
-    //     )
-    //     setTimeout(20 * 1000, () => {
-    //         activeSkillsCount--
-    //         log("activeSkillsCount ", activeSkillsCount)
-    //         if (activeSkillsCount > 0) {
-    //             // At least one skill is active
-    //             Player.setGlobalHasSkillActive(true)
-    //         } else {
-    //             // No skill is active
-    //             Player.setGlobalHasSkillActive(false)
-    //         }
-    //         player.updateAtkBuff(-ATTACK_BUFF * count)
-    //         player.updateMagic(-MAGIC_BUFF * count)
-    //         Player.getInstance().updateCritDmg(-CRITDMG_BUFF * count)
-    //         Player.getInstance().updateCritRate(-CRITRATE_BUFF * count)
-    //         Player.getInstance().updateLuckBuff(-LUCK_BUFF * count)
-    //         Player.getInstance().updateDefBuff(-DEF_BUFF * count)
-    //         count = 0
-    //     })
-    // } else {
-    //   player.gameController.uiController.displayAnnouncement(
-    //     'Player skills blocked',
-    //     Color4.Yellow(),
-    //     1000
-    //   )
-    //   console.log('Player has no skills')
-    // }
+    const player = Player.getInstance()
+
+    if (Player.globalHasSkill) {
+      //     Player.setGlobalHasSkillActive(true)
+      //     activeSkillsCount++
+      //     console.log("activeSkillsCount ", activeSkillsCount)
+      const CRITRATE_BUFF = player.getCritRate() * 0.05
+      const CRITDMG_BUFF = player.getCritDamage() * 0.05
+      const ATTACK_BUFF = player.getPlayerAttack() * 0.05
+      const LUCK_BUFF = player.getLuckRange() * 0.05
+      const MAGIC_BUFF = player.getMagic() * 0.05
+      const DEF_BUFF = player.getDefensePercent() * 0.05
+      let count = 0
+      //     // Recoil Shot: Deal 50% of your inflicted damage back to the enemy for 4R. harder
+      monsterModifiers.addActiveSkill(
+        20 * 1000,
+        'recoil_shot',
+        (isPlayerAttack: boolean, attackAmount: number) => {
+          console.log('recoil shot', isPlayerAttack, attackAmount)
+          if (isPlayerAttack) {
+            // monster.performAttack(counterAttackAmount, false)
+            player.updateAtkBuff(ATTACK_BUFF)
+            player.updateMagic(MAGIC_BUFF)
+            player.updateCritRate(CRITDMG_BUFF)
+            player.updateCritRate(CRITRATE_BUFF)
+            player.updateLuckBuff(LUCK_BUFF)
+            player.updateDefBuff(DEF_BUFF)
+            count++
+          }
+        }
+      )
+      setTimeout(() => {
+        // activeSkillsCount--
+        // console.log("activeSkillsCount ", activeSkillsCount)
+        // if (activeSkillsCount > 0) {
+        //     // At least one skill is active
+        //     Player.setGlobalHasSkillActive(true)
+        // } else {
+        //     // No skill is active
+        //     Player.setGlobalHasSkillActive(false)
+        // }
+        player.updateAtkBuff(-ATTACK_BUFF * count)
+        player.updateMagic(-MAGIC_BUFF * count)
+        player.updateCritRate(-CRITDMG_BUFF * count)
+        player.updateCritRate(-CRITRATE_BUFF * count)
+        player.updateLuckBuff(-LUCK_BUFF * count)
+        player.updateDefBuff(-DEF_BUFF * count)
+        count = 0
+      }, 20 * 1000)
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Player skills blocked',
+        Color4.Yellow(),
+        1000
+      )
+      console.log('Player has no skills')
+    }
   }
 }
