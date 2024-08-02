@@ -5,7 +5,6 @@ import * as utils from '@dcl-sdk/utils'
 import { Player } from '../player/player'
 
 export class Pet extends AnimatedEntity {
-  dt: any
   moveSpeed: number = 1
   constructor(model: string, transform: TransformType) {
     super(model, transform)
@@ -40,7 +39,7 @@ export class Pet extends AnimatedEntity {
         Vector3.Forward(),
         transform.rotation
       )
-      const increment = Vector3.scale(forwardVector, dt * 0.5)
+      const increment = Vector3.scale(forwardVector, dt * 0.25)
       const newPosition = Vector3.add(playerPosition, increment)
       Transform.getMutable(this.entity).position = newPosition
     } else {
