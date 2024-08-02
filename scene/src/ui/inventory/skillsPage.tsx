@@ -8,6 +8,7 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
+// import { Color4 } from '@dcl/sdk/math'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -214,7 +215,7 @@ function SkillsPage({
       {/* General Skills */}
       <UiEntity
         uiTransform={{
-          width: '75%',
+          width: '67%',
           height: '50%',
           flexDirection: 'row',
           alignContent: 'flex-start',
@@ -243,7 +244,7 @@ function SkillsPage({
             width: canvasInfo.width * 0.03,
             height: canvasInfo.width * 0.03,
             positionType: 'absolute',
-            position: { right: '12.5%', top: '-20%' }
+            position: { right: '2.5%', top: '-20%' }
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -264,9 +265,9 @@ function SkillsPage({
             <UiEntity
               key={index}
               uiTransform={{
-                width: '9.5%',
+                width: '11%',
                 height: '29.5%',
-                margin: { bottom: '1.2%', right: '1.65%' }
+                margin: { bottom: '1.2%', right: '1.45%' }
               }}
             >
               <SkillButton
@@ -288,7 +289,7 @@ function SkillsPage({
       {/* Class Skills */}
       <UiEntity
         uiTransform={{
-          width: '75%',
+          width: '67%',
           height: '50%',
           flexDirection: 'row',
           alignContent: 'flex-start',
@@ -317,7 +318,7 @@ function SkillsPage({
             width: canvasInfo.width * 0.03,
             height: canvasInfo.width * 0.03,
             positionType: 'absolute',
-            position: { right: '12.5%', top: '-20%' }
+            position: { right: '2.5%', top: '-20%' }
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -337,9 +338,9 @@ function SkillsPage({
             <UiEntity
               key={index}
               uiTransform={{
-                width: '9.5%',
+                width: '11%',
                 height: '29.5%',
-                margin: { bottom: '1.2%', right: '1.65%' }
+                margin: { bottom: '1.2%', right: '1.45%' }
               }}
             >
               <SkillButton
