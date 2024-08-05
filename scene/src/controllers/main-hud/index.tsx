@@ -23,7 +23,7 @@ export class MainHudController {
           showInfo={this.showInfo.bind(this)}
           openLink={this.openLink.bind(this)}
           showInventory={() => {
-            this.showInventory(this.inventoryController === null)
+            this.showInventory(true)
           }}
           characterRace={player.race}
           characterClass={player.class}
@@ -59,11 +59,10 @@ export class MainHudController {
   }
 
   showInventory(visibility: boolean): void {
-    if (visibility && this.inventoryController === null) {
+    if (this.inventoryController === null) {
       this.inventoryController = new InventoryController()
-    } else if (!visibility && this.inventoryController !== null) {
-      this.inventoryController = null
     }
+      this.inventoryController.showInventory(visibility)
   }
 
   openLink(url: string): void {
