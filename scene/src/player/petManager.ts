@@ -1,35 +1,36 @@
+import { AddPetToPlayer } from '../api/api'
+import { type Pet } from '../pets/pet'
+
 export enum PetTypes {
   PLACEHOLDER = 'placeholder',
-  OWL = 'owl',
-  PHOENIX = 'phoenix',
-  DRAGON = 'dragon',
-  SOLIDER = 'soldier'
+  OWL = 'Owl',
+  PHOENIX = 'Phoenix',
+  DRAGON = 'Dragon',
+  SOLIDER = 'Soldier'
 }
-// TODO AnimatedEntity and Pet classes
 
 export class PetManager {
   pets: string[]
-  // petInstances: { [key: string]: Pet }
+  petInstances: Record<string, Pet>
 
   constructor(pets: string[] = []) {
     this.pets = pets
-    //    this.petInstances = {};
+    this.petInstances = {}
   }
 
-  addPet(name: PetTypes): void {
+  async addPet(name: PetTypes): Promise<void> {
     if (!this.hasPet(name)) {
       this.pets.push(name)
-      // TODO api
-      // executeTask(() => AddPetToPlayer(name))
+      await AddPetToPlayer(name)
     }
   }
 
   addPetInstance(name: string, pet: any): void {
-    // this.petInstances[name] = pet;
+    this.petInstances[name] = pet
   }
 
-  getPetInstance(name: string): void {
-    // return this.petInstances?.[name];
+  getPetInstance(name: string): Pet {
+    return this.petInstances?.[name]
   }
 
   setPets(pets: string[] = []): void {
@@ -37,11 +38,12 @@ export class PetManager {
   }
 
   removeInstance(name: string): void {
-    // const instance = this.getPetInstance(name);
-    // if (instance) {
-    //     instance.remove()
-    //     delete this.petInstances[name];
-    // }
+    const instance = this.getPetInstance(name)
+    if (instance != null) {
+      instance.remove()
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete this.petInstances[name]
+    }
   }
 
   removePet(name: string): void {

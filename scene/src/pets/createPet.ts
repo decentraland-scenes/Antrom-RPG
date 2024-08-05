@@ -1,6 +1,5 @@
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Pet } from './pet'
-// import { Transform, engine } from '@dcl/sdk/ecs'
 import { getRandomInt } from '../utils/getRandomInt'
 
 export function createPet(
