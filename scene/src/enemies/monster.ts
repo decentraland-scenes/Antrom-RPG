@@ -165,7 +165,7 @@ export class MonsterOligar extends GenericMonster {
     throw new Error('onDropXp is required to be implemented for this monster')
   }
 
-  loadTransformation(): void {
+  loadTransformation(pos: Vector3): void {
     // function needs to be implemented per individual monster
     throw new Error(
       'loadTransformation is required to be implemented for this monster'

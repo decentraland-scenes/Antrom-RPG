@@ -76,7 +76,7 @@ export default class Pig extends MonsterMeat {
   async onDropLoot(): Promise<void> {}
 
   setupAttackTriggerBox(): void {
-    super.setupAttackTriggerBox()
+    super.setupEngageTriggerBox()
   }
 
   loadTransformation(): void {
@@ -91,6 +91,8 @@ export default class Pig extends MonsterMeat {
       rotation: initialRotation
     })
   }
+
+  create(): void {}
 
   removeEntity(): void {
     super.cleanup()
