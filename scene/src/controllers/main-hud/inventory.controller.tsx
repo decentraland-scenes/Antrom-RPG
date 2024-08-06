@@ -38,6 +38,7 @@ import {
 } from '../../ui/inventory/companionsData'
 import { type ProfessionType } from '../../ui/inventory/professionsData'
 import { GeneralDisruptiveBlow } from '../../player/skills/definitions'
+import { equipCompanion } from '../../inventory/equipCompanion'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
