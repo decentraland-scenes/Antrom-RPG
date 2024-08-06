@@ -599,6 +599,7 @@ const skillsPlayerSprites = {
     h: 256
   }
 }
+
 const skillsGeneralSprites = {
   '13_summon_raven': {
     atlasSrc: 'assets/images/skills/general_skills/spritesheet.png',
@@ -1167,6 +1168,8 @@ export const SKILL_DATA: Record<SkillKey, SkillDefinition> = {
   },
   THIEF_STONEHEART: {
     name: 'Stoneheart',
+    description: 'Gain DEF% equal to your LUCK% for 12 s',
+
     sprite: skillsPlayerSprites.skill_114,
     cooldown: 12,
     minLevel: 40
