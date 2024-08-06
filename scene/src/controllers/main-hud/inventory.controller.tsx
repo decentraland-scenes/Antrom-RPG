@@ -37,6 +37,7 @@ import {
   type CompanionType
 } from '../../ui/inventory/companionsData'
 import { type ProfessionType } from '../../ui/inventory/professionsData'
+import { equipCompanion } from '../../inventory/equipCompanion'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -481,7 +482,7 @@ export class InventoryController {
         this.componionButtonSprite =
           companionPageSprite.equip_button_when_clicked
         // execute function equip companion
-        console.log('equip')
+        equipCompanion(this.selectedCompanion.name)
         this.equipedCompanion = this.selectedCompanion
       } else {
         this.componionButtonSprite = companionPageSprite.Purchase_while_clicked

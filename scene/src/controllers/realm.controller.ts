@@ -15,7 +15,7 @@ export class RealmController {
     this.gameController = gameController
   }
 
-  switchRealm(realm: RealmType): void {
+  switchRealm(realm: RealmType, difficulty: string): void {
     this.cleanUpScene()
 
     // TODO: utils and npc library should be cleaned as well
@@ -29,13 +29,13 @@ export class RealmController {
         this.currentRealm = new DemonKingDungeon(this.gameController)
         break
       case 'dungeon':
-        this.currentRealm = new Dungeon(this.gameController)
+        this.currentRealm = new Dungeon(this.gameController, difficulty)
         break
       case 'dungeonBase':
         this.currentRealm = new DungeonBase(this.gameController)
         break
       case 'minersCave':
-        this.currentRealm = new MinersCave(this.gameController)
+        this.currentRealm = new MinersCave(this.gameController, difficulty)
         break
     }
   }

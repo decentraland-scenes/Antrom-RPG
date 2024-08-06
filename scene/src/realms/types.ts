@@ -1,5 +1,7 @@
 import { type Vector3 } from '@dcl/sdk/math'
 
+// export type DifficultyType = 'easy' | 'medium' | 'hard' | 'nightmare'
+
 export type RealmType =
   | 'antrom'
   | 'demonKingDungeon'
