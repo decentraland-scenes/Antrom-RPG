@@ -64,19 +64,6 @@ export class MonsterMeat extends GenericMonster {
     this.isDead = false
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
-    // monster sounds
-    // this.dyingSound = enemyDyingAudioSource
-    // this.addComponentOrReplace(this.dyingSound)
-    //
-
-    // this.attackSound = enemyAttackAudioSource
-    // this.addComponentOrReplace(this.attackSound)
-    //
-    // let monDef = enemyDefAudioSource
-    // this.addComponentOrReplace(monDef)
-    //
-    // let monHey = enemyHeyAudioSource
-    // this.addComponentOrReplace(monHey)
     MonsterMeat.setGlobalHasSkill(true)
   }
 
@@ -121,10 +108,6 @@ export class MonsterMeat extends GenericMonster {
         }
       ]
     })
-
-    // this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
-    // this.setupAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,

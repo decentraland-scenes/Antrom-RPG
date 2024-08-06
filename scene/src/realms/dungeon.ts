@@ -31,16 +31,6 @@ import NightmareDesertDungeonBoss from '../enemies/desertBosses/NightmareDesertD
 import HardDesertDungeonBoss from '../enemies/desertBosses/HardDesertDungeonBoss'
 import MedDesertDungeonBoss from '../enemies/desertBosses/MedDesertDungeonBoss'
 
-// type Difficulty = {
-//   EASY: 'easy'
-//   MEDIUM: 'medium'
-//   HARD: 'hard'
-//   NIGHTMARE: 'nightmare'
-// }
-// type Location = {
-//   CAVE: 'cave'
-//   DESERT: 'desert'
-// }
 const desertSoldierPositions = [
   // room1
   Vector3.create(-16.52, 2.39, 60.76),
@@ -103,12 +93,6 @@ const desertSoldierPositions = [
   Vector3.create(49.56, 2.39, 10.25),
   Vector3.create(49.51, 2.39, 17.07)
 ]
-
-// const magePositions = [
-//   Vector3.create(43.61, 3.29, 54.45),
-//   Vector3.create(61.91, 3.29, 56.97)
-// ]
-
 export class Dungeon implements Realm {
   private readonly boardParent = entityController.addEntity()
   private readonly leaderBoard: LeaderBoard
@@ -124,13 +108,21 @@ export class Dungeon implements Realm {
   private readonly sandDungeonSecret = entityController.addEntity()
   private readonly villager1 = entityController.addEntity()
   private readonly doorOpening = entityController.addEntity()
-  private readonly boss: EasyDesertDungeonBoss
+  private readonly difficulty: string
+  private boss:
+    | EasyDesertDungeonBoss
+    | MedDesertDungeonBoss
+    | HardDesertDungeonBoss
+    | NightmareDesertDungeonBoss
+    | null
+
   gameController: GameController
-  constructor(gameController: GameController) {
+  constructor(gameController: GameController, difficulty: string) {
     this.gameController = gameController
     this.buildDungeon('DesertDungeon')
     this.createDesertDungeonEnemies(this.gameController)
-    this.boss = new EasyDesertDungeonBoss(8)
+    this.boss = null
+    this.difficulty = difficulty
     GltfContainer.create(this.wall1, {
       src: 'assets/models/sandDungeonDoor.glb'
     })
@@ -519,25 +511,21 @@ export class Dungeon implements Realm {
       this.createSoldier(position, gameController)
     })
   }
+  // createDeserDungeonBoss needs to be implemented from the Quest
 
   createDesertDungeonBoss(difficulty: string): void {
     switch (difficulty) {
       case 'easy':
-        // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
-        const bossEasy = new EasyDesertDungeonBoss(8)
+        this.boss = new EasyDesertDungeonBoss(8)
         break
       case 'medium':
-        // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
-        const bossMed = new MedDesertDungeonBoss(80)
+        this.boss = new MedDesertDungeonBoss(80)
         break
       case 'hard':
-        // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
-        const bossHard = new HardDesertDungeonBoss(300)
+        this.boss = new HardDesertDungeonBoss(300)
         break
       case 'nightmare':
-        // eslint-disable-next-line no-case-declarations, @typescript-eslint/no-unused-vars
-        const bossNightmare = new NightmareDesertDungeonBoss(800)
-        console.log('')
+        this.boss = new NightmareDesertDungeonBoss(800)
     }
   }
 

@@ -762,8 +762,6 @@ export class Antrom implements Realm {
       ) {
         if (trewsKill.read() === 1) {
           if (garrisonCreatedOnce.read() === 0) {
-            // this.gameController.realmController.switchRealm('demonKingDungeon')
-            // spawnBoss3()
             garrisonCreatedOnce.increase(1)
           } else {
             setPlayerPosition(-9.83, 48.19, -45.24)
@@ -1495,23 +1493,6 @@ export class Antrom implements Realm {
           this.campFire
         )
       ) {
-        //   if (refreshtimer <= 0) {
-        //     setRefreshTimer(5)
-        //     let prompt = new ui.OptionPrompt(
-        //         "Cozy Camp Fire",
-        //         "The cool evening air and flickering flames of the campfire make for the perfect setting to cook up some hearty fare. \nTo recover your full health, simply cook five pieces of meat at this campfire!",
-        //         () => {
-        //             if (
-        //                 player.inventory.getItemCount(
-        //                     ITEM_TYPES.CHICKEN
-        //                 ) >= 5
-        //             ) {
-        //                 player.inventory.reduceItem(
-        //                     ITEM_TYPES.CHICKEN,
-        //                     5
-        //                 )
-        //                 setRefreshTimer(6)
-        //                 player.writeDataToServer()
         this.gameController.uiController.displayAnnouncement(
           'Cooking...',
           Color4.Yellow(),

@@ -68,9 +68,11 @@ export class MinersCave implements Realm {
   private readonly pot_positions: Vector3[]
   private readonly pots_entities: Pot[]
   private readonly gems_entities: Gem[]
+  private readonly difficulty: string
   gameController: GameController
-  constructor(gameController: GameController) {
+  constructor(gameController: GameController, difficulty: string) {
     this.gameController = gameController
+    this.difficulty = difficulty
     this.createCaveDungeonEnemies(this.gameController)
     this.buildCave()
     GltfContainer.create(this.cave, { src: 'assets/models/cave.glb' })

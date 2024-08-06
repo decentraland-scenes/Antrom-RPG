@@ -123,7 +123,6 @@ export class MonsterMobAuto extends GenericMonster {
       ]
     })
 
-    // this.setupRangedAttackTriggerBox()
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
