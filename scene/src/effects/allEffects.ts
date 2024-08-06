@@ -79,7 +79,7 @@ export const applyFullRedSkillEffectToLocation = (
     rotation: Quaternion.create(0, 0, 0, 1),
     scale: Vector3.create(1, 1, 1)
   })
-  GltfContainer.create(area, { src: 'assets/models/Skill_FX/test.glb' })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/redCircle.glb' })
   Animator.createOrReplace(area, {
     states: [
       {
@@ -88,13 +88,13 @@ export const applyFullRedSkillEffectToLocation = (
         loop: true
       },
       {
-        clip: 'action',
+        clip: 'heal',
         playing: false,
         loop: true
       }
     ]
   })
-  Animator.playSingleAnimation(area, 'action')
+  Animator.playSingleAnimation(area, 'heal')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)

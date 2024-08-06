@@ -1,9 +1,10 @@
 import { engine, Transform } from '@dcl/sdk/ecs'
-import { Color4 } from '@dcl/sdk/math'
+import { Color4, Vector3 } from '@dcl/sdk/math'
 import { SkillController } from '.'
 import {
   applyAttackedEnemyEffectToLocation,
   applyDefSkillEffectToLocation,
+  applyFullRedSkillEffectToLocation,
   applyFullWhiteSkillEffectToLocation,
   applyGeneralSkillEffectToLocation,
   applyHealToLocation,
@@ -18,6 +19,8 @@ import { SKILL_DATA } from '../../ui/bottom-bar/skillsData'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 import { setTimeout } from '../../utils/lib'
 import { Player } from '../player'
+
+export let activeSkillsCount = 0
 
 export class BerserkerBloodDance extends SkillController {
   constructor() {
@@ -1221,20 +1224,22 @@ export class GeneralDisruptiveBlow extends SkillController {
   }
 
   async effect(): Promise<void> {
+    console.log('skill running')
     // TODO:
     // const isWearableFound = checkWearableInUserData(
     //     //HATCHETS
     //   "0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0"
     // )
     const player = Player.getInstance()
-    // activeSkillsCount++
-    // console.log("activeSkillsCount ", activeSkillsCount)
+    activeSkillsCount++
+    console.log('activeSkillsCount ', activeSkillsCount)
     // const damageOverTime = 60 // Adjust bleeding damage per tick as needed
     // const tickInterval = 2000 // Adjust interval between ticks as needed
     const ATTACK_BUFF = 50
     player.updateAtkBuff(ATTACK_BUFF)
-    // TODO:
-    // applyRedSwirlToLocation(Transform.get(engine.CameraEntity).position)
+    const playerPos =
+      Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.Zero()
+    applyFullRedSkillEffectToLocation(playerPos, 8000)
     setTimeout(() => {
       // activeSkillsCount--
       // console.log("activeSkillsCount ", activeSkillsCount)
