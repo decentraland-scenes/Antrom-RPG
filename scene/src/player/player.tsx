@@ -553,7 +553,7 @@ export class Player extends Character {
 
     for (const i of exp) {
       this.levels.addXp(i.type, i.value)
-      if (i.type == LEVEL_TYPES.PLAYER && mainHUD) {
+      if (i.type === LEVEL_TYPES.PLAYER && mainHUD) {
         mainHUD.gainedXP = i.value
       }
     }

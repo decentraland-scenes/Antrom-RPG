@@ -252,7 +252,7 @@ export class MonsterHealer extends GenericMonster {
     this.updateHealthBar()
     const mainHUD = Player.getInstance().gameController.uiController.mainHud
 
-    if (mainHUD) {
+    if (mainHUD !== null) {
       mainHUD.lastPlayerAttack = damage
       mainHUD.lastEnemyAttack = 'MISSED'
     }
@@ -290,7 +290,7 @@ export class MonsterHealer extends GenericMonster {
     const roundedMonsterDice = Math.floor(monsterDiceResult)
 
     const mainHUD = player?.gameController.uiController.mainHud
-    if (mainHUD) {
+    if (mainHUD !== null) {
       mainHUD.lastPlayerRoll = roundedPlayerDice
       mainHUD.lastEnemyRoll = roundedMonsterDice
     }
@@ -402,7 +402,7 @@ export class MonsterHealer extends GenericMonster {
 
     player.reduceHealth(enemyAttack)
     const mainHUD = player.gameController.uiController.mainHud
-    if(mainHUD){
+    if (mainHUD !== null) {
       mainHUD.lastEnemyAttack = enemyAttack
     }
 

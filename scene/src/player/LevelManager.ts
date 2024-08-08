@@ -96,10 +96,9 @@ export class LevelManager {
     const newLevel = currentLevel + increaseBy
 
     const mainHUD = Player.getInstance().gameController.uiController.mainHud
-    if (mainHUD && type === LEVEL_TYPES.PLAYER){
+    if (mainHUD !== null && type === LEVEL_TYPES.PLAYER) {
       mainHUD.gainedXP = xp
     }
-
 
     this.updateItem(type, {
       level: newLevel,

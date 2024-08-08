@@ -1,12 +1,12 @@
-import { Quaternion, Vector3 } from '@dcl/sdk/math'
-import MonsterMeat from './monsterMeat'
 import { GltfContainer, Transform } from '@dcl/sdk/ecs'
-import { getRandomInt, getRandomIntRange } from './../utils/getRandomInt'
-import { Player } from '../player/player'
-import { LEVEL_TYPES } from '../player/LevelManager'
-import { BannerType } from '../ui/banner/bannerConstants'
+import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { LEVEL_TYPES } from '../player/LevelManager'
+import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
+import { BannerType } from '../ui/banner/bannerConstants'
+import { getRandomInt, getRandomIntRange } from './../utils/getRandomInt'
+import MonsterMeat from './monsterMeat'
 
 const DEFAULT_ATTACK = 0
 const DEFAULT_XP = 9
