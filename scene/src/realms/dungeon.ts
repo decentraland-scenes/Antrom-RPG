@@ -25,17 +25,12 @@ import { LeaderBoard } from '../leaderboard/leaderboard'
 import { setPlayerPosition } from '../utils/engine'
 import { type RealmType, type Realm } from './types'
 import { entityController } from './entityController'
+import ExecutionerDesertDungeon from '../enemies/ExecutionerDesertDungeon'
+import EasyDesertDungeonBoss from '../enemies/desertBosses/EasyDesertDungeonBoss'
+import NightmareDesertDungeonBoss from '../enemies/desertBosses/NightmareDesertDungeonBoss'
+import HardDesertDungeonBoss from '../enemies/desertBosses/HardDesertDungeonBoss'
+import MedDesertDungeonBoss from '../enemies/desertBosses/MedDesertDungeonBoss'
 
-type Difficulty = {
-  EASY: 'easy'
-  MEDIUM: 'medium'
-  HARD: 'hard'
-  NIGHTMARE: 'nightmare'
-}
-type Location = {
-  CAVE: 'cave'
-  DESERT: 'desert'
-}
 const desertSoldierPositions = [
   // room1
   Vector3.create(-16.52, 2.39, 60.76),
@@ -98,56 +93,6 @@ const desertSoldierPositions = [
   Vector3.create(49.56, 2.39, 10.25),
   Vector3.create(49.51, 2.39, 17.07)
 ]
-
-const caveSoldierPositions = [
-  // room1
-  Vector3.create(61.89, 17.79, 25.92),
-  Vector3.create(62.85, 17.81, 24.6),
-  Vector3.create(61.47, 19.74, -2.11),
-  Vector3.create(55.26, 20.42, -6.11),
-  Vector3.create(13.07, 3.15, 10.38),
-  Vector3.create(19.44, 3.75, 12.24),
-  // room2
-  // 1
-  Vector3.create(40.97, 3.16, 51.58),
-  Vector3.create(41.58, 3.16, 44.85),
-  Vector3.create(44.0, 3.16, 50.73),
-
-  // 2
-  Vector3.create(20.48, 3.16, 45.13),
-  Vector3.create(21.21, 3.16, 47.47),
-  Vector3.create(23.48, 3.16, 43.49),
-
-  // 3
-  Vector3.create(26.41, 3.16, 80.57),
-  Vector3.create(23.69, 3.16, 77.26),
-  Vector3.create(29.63, 3.16, 82.97),
-
-  // 4
-  Vector3.create(24.5, 12.34, 62.51),
-  Vector3.create(24.02, 12.12, 68.02),
-  Vector3.create(19.48, 11.56, 59.89),
-
-  // 5
-  Vector3.create(-2.71, 3.16, 64.76),
-  Vector3.create(-3.89, 3.16, 68.67),
-  Vector3.create(1.29, 3.16, 66.02),
-
-  // room 3
-  Vector3.create(-31.96, 12.11, 57.14),
-  Vector3.create(-34.98, 9.43, 66.18),
-  Vector3.create(-36.55, 9.25, 61.02),
-
-  Vector3.create(-46.08, 13.57, 51.86),
-  Vector3.create(-46.28, 13.35, 53.8),
-  Vector3.create(-43.62, 14.47, 57.88)
-]
-
-// const magePositions = [
-//   Vector3.create(43.61, 3.29, 54.45),
-//   Vector3.create(61.91, 3.29, 56.97)
-// ]
-
 export class Dungeon implements Realm {
   private readonly boardParent = entityController.addEntity()
   private readonly leaderBoard: LeaderBoard
@@ -163,9 +108,21 @@ export class Dungeon implements Realm {
   private readonly sandDungeonSecret = entityController.addEntity()
   private readonly villager1 = entityController.addEntity()
   private readonly doorOpening = entityController.addEntity()
+  private readonly difficulty: string
+  private boss:
+    | EasyDesertDungeonBoss
+    | MedDesertDungeonBoss
+    | HardDesertDungeonBoss
+    | NightmareDesertDungeonBoss
+    | null
+
   gameController: GameController
-  constructor(gameController: GameController) {
+  constructor(gameController: GameController, difficulty: string) {
     this.gameController = gameController
+    this.buildDungeon('DesertDungeon')
+    this.createDesertDungeonEnemies(this.gameController)
+    this.boss = null
+    this.difficulty = difficulty
     GltfContainer.create(this.wall1, {
       src: 'assets/models/sandDungeonDoor.glb'
     })
@@ -405,7 +362,7 @@ export class Dungeon implements Realm {
       utils.timers.setTimeout(() => {
         // quest.turnOnKingQuestTimer()
         setPlayerPosition(23.01, 1.72, 91.7)
-      }, 5000)
+      }, 1000)
     }
     if (scene === 'LegacyDungeon') {
       // buildLegacyDungeonScene()
@@ -483,47 +440,6 @@ export class Dungeon implements Realm {
   }
 
   resetCaveDungeonScene(): void {}
-  createNightmareDungeonLegacy(): void {
-    // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricNightmare())
-    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
-    // const trews = Array.from({ length: 1 }, () => new TrewsNightmare())
-    // trews.forEach((trews) => entityController.addEntity(trews))
-    // const berserker = Array.from({ length: 1 }, () => new BerserkerNightmare())
-    // berserker.forEach((berserker) => entityController.addEntity(berserker))
-    // const undeadKing = Array.from({ length: 1 }, () => new UndeadKingNightmare())
-    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
-    // const dragonMothere = Array.from({ length: 1 }, () => new DragonMotherNightmare())
-    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
-    // console.log('create easy enemies')
-  }
-
-  createHardDungeonLegacy(): void {
-    // const evilGodric = Array.from({ length: 1 }, () => new EvilGodric())
-    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
-    // const trews = Array.from({ length: 1 }, () => new Trews())
-    // trews.forEach((trews) => entityController.addEntity(trews))
-    // const berserker = Array.from({ length: 1 }, () => new Berserker())
-    // berserker.forEach((berserker) => entityController.addEntity(berserker))
-    // const undeadKing = Array.from({ length: 1 }, () => new UndeadKing())
-    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
-    // const dragonMothere = Array.from({ length: 1 }, () => new DragonMother())
-    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
-    // console.log("create easy enemies")
-  }
-
-  createEasyDungeonLegacy(): void {
-    // const evilGodric = Array.from({ length: 1 }, () => new EvilGodricE())
-    // evilGodric.forEach((evilGodric) => entityController.addEntity(evilGodric))
-    // const trews = Array.from({ length: 1 }, () => new TrewsE())
-    // trews.forEach((trews) => entityController.addEntity(trews))
-    // const berserker = Array.from({ length: 1 }, () => new BerserkerE())
-    // berserker.forEach((berserker) => entityController.addEntity(berserker))
-    // const undeadKing = Array.from({ length: 1 }, () => new UndeadKingE())
-    // undeadKing.forEach((undeadKing) => entityController.addEntity(undeadKing))
-    // const dragonMothere = Array.from({ length: 1 }, () => new DragonMotherE())
-    // dragonMothere.forEach((dragonMothere) => entityController.addEntity(dragonMothere))
-    // console.log("create easy enemies")
-  }
 
   moveWalls(wall: number): void {
     // Move the wall after kill the enemies
@@ -581,150 +497,76 @@ export class Dungeon implements Realm {
     }
   }
 
-  createSoldier(
-    position: Vector3,
-    type: any,
-    attack: number,
-    hp: number
-  ): void {
+  createSoldier(position: Vector3, gameController: GameController): void {
     try {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars, new-cap
-      const soldier = new type(position, attack, hp)
+      const soldier = new ExecutionerDesertDungeon(gameController, position)
     } catch (error) {
       console.log('Failed to create soldier:', error)
     }
   }
 
-  createDungeon(difficulty: Difficulty, location: Location): void {
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (location.CAVE) {
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      if (difficulty.EASY) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const easyEnemyAttack = 20
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const easyEnemyHP = 400
-        // createCaveDungeonEnemies(easyEnemyAttack, easyEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new EasyCaveDungeonBoss(easyEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.MEDIUM) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const mediumEnemyAttack = 180
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const mediumEnemyHP = 3600
-        // createCaveDungeonEnemies(mediumEnemyAttack, mediumEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new MedCaveDungeonBoss(mediumEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.HARD) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const hardEnemyAttack = 900
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const hardEnemyHP = 9000
-        // createCaveDungeonEnemies(hardEnemyAttack, hardEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new HardCaveDungeonBoss(hardEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.NIGHTMARE) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const nightmareEnemyAttack = 2000
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const nightmareEnemyHP = 222500
-        // createCaveDungeonEnemies(nightmareEnemyAttack, nightmareEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new NightmareCaveDungeonBoss(nightmareEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-      } else {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-        console.log(`Invalid difficulty level: ${difficulty}`)
-      }
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    } else if (location.DESERT) {
-      // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      if (difficulty.EASY) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const easyEnemyAttack = 8
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const easyEnemyHP = 200
-        // createDesertDungeonEnemies(easyEnemyAttack, easyEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new EasyDesertDungeonBoss(easyEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.MEDIUM) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const mediumEnemyAttack = 80
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const mediumEnemyHP = 1200
-        // createDesertDungeonEnemies(mediumEnemyAttack, mediumEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new MedDesertDungeonBoss(mediumEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.HARD) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const hardEnemyAttack = 900
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const hardEnemyHP = 9000
-        // createCaveDungeonEnemies(hardEnemyAttack, hardEnemyHP)
-        // const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new HardCaveDungeonBoss(hardEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-        // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-      } else if (difficulty.NIGHTMARE) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const nightmareEnemyAttack = 2000
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const nightmareEnemyHP = 222500
-        //   createCaveDungeonEnemies(nightmareEnemyAttack, nightmareEnemyHP)
-        //   const wastelandApex = Array.from(
-        //     { length: 1 },
-        //     () => new NightmareCaveDungeonBoss(nightmareEnemyAttack)
-        // )
-        // wastelandApex.forEach((wastelandApex) => entityController.addEntity(wastelandApex))
-      } else {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions, @typescript-eslint/no-base-to-string
-        console.log(`Invalid difficulty level: ${difficulty}`)
-      }
-    } else {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      console.log(`Invalid location: ${location}`)
-    }
-  }
-
-  createDesertDungeonEnemies(attack: number, hp: number): void {
+  createDesertDungeonEnemies(gameController: GameController): void {
     desertSoldierPositions.forEach((position) => {
-      // this.createSoldier(position, attack, hp)
+      this.createSoldier(position, gameController)
     })
   }
+  // createDeserDungeonBoss needs to be implemented from the Quest
 
-  createCaveDungeonEnemies(attack: number, hp: number): void {
-    caveSoldierPositions.forEach((position) => {
-      // this.createSoldier(position, attack, hp)
-    })
+  createDesertDungeonBoss(difficulty: string): void {
+    switch (difficulty) {
+      case 'easy':
+        this.boss = new EasyDesertDungeonBoss(8)
+        break
+      case 'medium':
+        this.boss = new MedDesertDungeonBoss(80)
+        break
+      case 'hard':
+        this.boss = new HardDesertDungeonBoss(300)
+        break
+      case 'nightmare':
+        this.boss = new NightmareDesertDungeonBoss(800)
+    }
   }
 
   spawnSingleEntity(entityName: string): void {
     switch (entityName) {
       case '':
+    }
+  }
+
+  removeSingleEntity(entityName: string): void {
+    switch (entityName) {
+      case 'wall6':
+        if (this.wall6 != null) {
+          entityController.removeEntity(this.wall6)
+          console.log('wall6 removed')
+        }
+        break
+      case 'wall5':
+        if (this.wall5 != null) {
+          entityController.removeEntity(this.wall5)
+          console.log('wall5 removed')
+        }
+        break
+      case 'wall4':
+        if (this.wall4 != null) {
+          entityController.removeEntity(this.wall4)
+          console.log('wall4 removed')
+        }
+        break
+      case 'wall3':
+        if (this.wall3 != null) {
+          entityController.removeEntity(this.wall3)
+          console.log('wall3 removed')
+        }
+        break
+      case 'wall1':
+        if (this.wall1 != null) {
+          entityController.removeEntity(this.wall1)
+          console.log('wall1 removed')
+        }
+        break
     }
   }
 

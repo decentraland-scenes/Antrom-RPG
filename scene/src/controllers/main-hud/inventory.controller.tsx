@@ -28,7 +28,7 @@ import ProfessionsPage from '../../ui/inventory/professionsPage'
 import SkillsPage from '../../ui/inventory/skillsPage'
 import { type Sprite } from '../../utils/ui-utils'
 import { LEVEL_TYPES } from '../../player/LevelManager'
-import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
+// import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
 import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 import {
   companionPageSprite,
@@ -37,6 +37,8 @@ import {
   type CompanionType
 } from '../../ui/inventory/companionsData'
 import { type ProfessionType } from '../../ui/inventory/professionsData'
+import { GeneralDisruptiveBlow } from '../../player/skills/definitions'
+import { equipCompanion } from '../../inventory/equipCompanion'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -377,7 +379,7 @@ export class InventoryController {
       console.log('Equiped skill')
       Player.getInstance().setSkill(
         this.getLowerSkillIndex(),
-        new ThiefMainSkill()
+        new GeneralDisruptiveBlow()
       )
     } else {
       console.error('You should choise a skill to equip')
@@ -481,7 +483,7 @@ export class InventoryController {
         this.componionButtonSprite =
           companionPageSprite.equip_button_when_clicked
         // execute function equip companion
-        console.log('equip')
+        equipCompanion(this.selectedCompanion.name)
         this.equipedCompanion = this.selectedCompanion
       } else {
         this.componionButtonSprite = companionPageSprite.Purchase_while_clicked

@@ -101,6 +101,11 @@ export class PlayDungeonUI {
     this.timer = 2
     engine.addSystem(this.loadingDungeonSystem.bind(this))
     this.isLoading = true
+    if (this.dungeon === 'dungeon2') {
+      this.uiController.loadRealm('minersCave', this.difficulty)
+    } else {
+      this.uiController.loadRealm('dungeon', this.difficulty)
+    }
   }
 
   loadingDungeonSystem(dt: number): void {
