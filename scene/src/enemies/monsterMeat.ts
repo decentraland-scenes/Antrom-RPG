@@ -274,9 +274,9 @@ export class MonsterMeat extends GenericMonster {
 
     const mainHUD = Player.getInstance().gameController.uiController.mainHud
     if (mainHUD !== null) {
-     mainHUD.lastPlayerAttack = damage
-     mainHUD.lastEnemyAttack = 'MISSED'
-   }
+      mainHUD.lastPlayerAttack = damage
+      mainHUD.lastEnemyAttack = 'MISSED'
+    }
 
     if (isCriticalAttack) {
       // UI from ui.ts

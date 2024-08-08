@@ -235,12 +235,12 @@ export class MonsterPoison extends GenericMonster {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
     this.updateHealthBar()
-    
+
     const mainHUD = Player.getInstance().gameController.uiController.mainHud
     if (mainHUD !== null) {
-     mainHUD.lastPlayerAttack = damage
-     mainHUD.lastEnemyAttack = 'MISSED'
-   }
+      mainHUD.lastPlayerAttack = damage
+      mainHUD.lastEnemyAttack = 'MISSED'
+    }
 
     if (isCriticalAttack) {
       // UI from ui.ts
