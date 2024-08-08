@@ -7,7 +7,9 @@ import {
   PointerEvents,
   PointerEventType,
   InputAction,
-  inputSystem
+  inputSystem,
+  pointerEventsSystem,
+  type Entity
 } from '@dcl/sdk/ecs'
 import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
@@ -267,7 +269,7 @@ export class BerryTree {
 }
 
 export class Pot {
-  public pot = entityController.addEntity()
+  public pot: Entity = entityController.addEntity()
   gameController: GameController
   constructor(
     gameController: GameController,
@@ -299,29 +301,31 @@ export class Pot {
           playing: true
         },
         {
-          clip: 'mine',
-          playing: false,
+          clip: 'action',
+          playing: true,
           loop: false
         }
       ]
     })
+    pointerEventsSystem.onPointerDown(
+      {
+        entity: this.pot,
+        opts: {
+          button: InputAction.IA_POINTER,
+          hoverText: 'Mine pot!',
+          maxDistance: 7
+        }
+      },
+      () => {
+        Animator.playSingleAnimation(this.pot, 'action', false)
+        console.log('mined')
+      }
+    )
+
     this.battle()
   }
 
   battle(): void {
-    PointerEvents.createOrReplace(this.pot, {
-      pointerEvents: [
-        {
-          eventType: PointerEventType.PET_DOWN,
-          eventInfo: {
-            button: InputAction.IA_POINTER,
-            showFeedback: true,
-            hoverText: 'Mine pot!',
-            maxDistance: 7
-          }
-        }
-      ]
-    })
     engine.addSystem(() => {
       if (
         inputSystem.isTriggered(

@@ -30,7 +30,7 @@ export class GenericMonster extends Character {
     this.setTopOffset(topOffSet)
   }
 
-  setupAttackTriggerBox(scale: Vector3 = Vector3.create(4, 2, 4)): void {
+  setupAttackTriggerBox(scale: Vector3 = Vector3.create(8, 2, 8)): void {
     this.cleanup()
 
     this.attackTrigger = entityController.addEntity()

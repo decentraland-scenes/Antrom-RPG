@@ -762,8 +762,6 @@ export class Antrom implements Realm {
       ) {
         if (trewsKill.read() === 1) {
           if (garrisonCreatedOnce.read() === 0) {
-            this.gameController.realmController.switchRealm('demonKingDungeon')
-            // spawnBoss3()
             garrisonCreatedOnce.increase(1)
           } else {
             setPlayerPosition(-9.83, 48.19, -45.24)
@@ -1495,23 +1493,6 @@ export class Antrom implements Realm {
           this.campFire
         )
       ) {
-        //   if (refreshtimer <= 0) {
-        //     setRefreshTimer(5)
-        //     let prompt = new ui.OptionPrompt(
-        //         "Cozy Camp Fire",
-        //         "The cool evening air and flickering flames of the campfire make for the perfect setting to cook up some hearty fare. \nTo recover your full health, simply cook five pieces of meat at this campfire!",
-        //         () => {
-        //             if (
-        //                 player.inventory.getItemCount(
-        //                     ITEM_TYPES.CHICKEN
-        //                 ) >= 5
-        //             ) {
-        //                 player.inventory.reduceItem(
-        //                     ITEM_TYPES.CHICKEN,
-        //                     5
-        //                 )
-        //                 setRefreshTimer(6)
-        //                 player.writeDataToServer()
         this.gameController.uiController.displayAnnouncement(
           'Cooking...',
           Color4.Yellow(),
@@ -1556,13 +1537,11 @@ export class Antrom implements Realm {
   }
 
   spawnSingleEntity(entityName: string): void {
-    console.log('singleentit', entityName, this.butcher)
     switch (entityName) {
       case 'butcher':
         this.butcher = new BetaBoss1(this.gameController)
         break
       case 'jailGuards':
-        console.log('Guards spawned')
         this.jailGuard1 = new Minion(
           this.gameController,
           Vector3.create(-51.27, 4.15, -53.72)
@@ -1627,7 +1606,10 @@ export class Antrom implements Realm {
     entityController.removeEntity(this.npc_RandomVillager9)
     entityController.removeEntity(this.npc_RandomVillager10)
     entityController.removeEntity(this.npc_RandomVillager11)
-    this.butcher.removeEntity()
+
+    if (this.butcher != null) {
+      this.butcher.removeEntity()
+    }
     this.executioners.forEach((executioner) => {
       executioner.removeEntity()
     })

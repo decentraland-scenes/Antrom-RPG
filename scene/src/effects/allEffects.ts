@@ -79,7 +79,7 @@ export const applyFullRedSkillEffectToLocation = (
     rotation: Quaternion.create(0, 0, 0, 1),
     scale: Vector3.create(1, 1, 1)
   })
-  GltfContainer.create(area, { src: 'assets/models/Skill_FX/test.glb' })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/redCircle.glb' })
   Animator.createOrReplace(area, {
     states: [
       {
@@ -88,13 +88,13 @@ export const applyFullRedSkillEffectToLocation = (
         loop: true
       },
       {
-        clip: 'action',
+        clip: 'heal',
         playing: false,
         loop: true
       }
     ]
   })
-  Animator.playSingleAnimation(area, 'action')
+  Animator.playSingleAnimation(area, 'heal')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)
@@ -267,6 +267,53 @@ export const applyEnemyAOESkillEffectToLocation = (
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)
   }, duration)
+}
+
+export const applyDefSkillEffectToLocation = (
+  position: Vector3,
+  duration?: number
+): void => {
+  // Add entity to engine
+  const area = entityController.addEntity()
+
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.One()
+  })
+
+  GltfContainer.create(area, {
+    src: 'assets/models/Skill_FX/ShieldSkill.glb'
+  })
+
+  AudioSource.create(area, {
+    audioClipUrl: 'assets/sounds/attack.mp3',
+    loop: false,
+    playing: true,
+    volume: 0.5
+  })
+
+  // Add animator component to the entity
+  Animator.create(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'action',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+
+  if (duration !== undefined) {
+    utils.timers.setTimeout(() => {
+      entityController.removeEntity(area)
+    }, duration)
+  }
 }
 
 export const applyEnemyAttackedMageEffectToLocation = (

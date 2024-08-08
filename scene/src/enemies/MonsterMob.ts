@@ -107,10 +107,6 @@ export class MonsterMob extends GenericMonster {
       ]
     })
 
-    this.setupRangedAttackTriggerBox()
-    // this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
-
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
       engageDistance: this.engageDistance
@@ -149,7 +145,7 @@ export class MonsterMob extends GenericMonster {
     throw new Error('onDropXp is required to be implemented for this monster')
   }
 
-  loadTransformation(): void {
+  loadTransformation(pos: Vector3): void {
     // function needs to be implemented per individual monster
     throw new Error(
       'loadTransformation is required to be implemented for this monster'
@@ -195,6 +191,7 @@ export class MonsterMob extends GenericMonster {
       [{ type: 'box', scale: Vector3.create(16, 2, 15) }],
       () => {
         engine.addSystem(this.attackSystem.attackSystem)
+        Animator.playSingleAnimation(this.entity, this.attackClip, false)
       },
       () => {
         console.log('im out')
@@ -309,7 +306,6 @@ export class MonsterMob extends GenericMonster {
     }
 
     if (isCriticalAttack) {
-      // UI from ui.ts
       // showCriticalIcon()
     }
 
