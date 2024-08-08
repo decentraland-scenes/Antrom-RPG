@@ -239,12 +239,12 @@ export class MonsterMage extends GenericMonster {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
     this.updateHealthBar()
-    const mainHUD = Player.getInstance().gameController.uiController.mainHud
 
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
     if (mainHUD !== null) {
-      mainHUD.lastPlayerAttack = damage
-      mainHUD.lastEnemyAttack = 'MISSED'
-    }
+     mainHUD.lastPlayerAttack = damage
+     mainHUD.lastEnemyAttack = 'MISSED'
+   }
 
     if (isCriticalAttack) {
       // UI from ui.ts
@@ -393,6 +393,7 @@ export class MonsterMage extends GenericMonster {
     const mainHUD = player.gameController.uiController.mainHud
     if (mainHUD !== null) {
       mainHUD.lastEnemyAttack = enemyAttack
+      mainHUD.lastPlayerAttack = 'MISSED'
     }
 
     this.playAttack()
