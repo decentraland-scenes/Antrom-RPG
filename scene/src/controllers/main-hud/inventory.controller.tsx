@@ -113,7 +113,7 @@ export class InventoryController {
     )
   }
 
-  showInventory(visibility:boolean): void {
+  showInventory(visibility: boolean): void {
     this.inventoryVisibility = visibility
   }
 

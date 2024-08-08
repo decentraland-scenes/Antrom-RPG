@@ -291,6 +291,11 @@ export class MonsterOligar extends GenericMonster {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
     this.updateHealthBar()
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
+    if (mainHUD) {
+      mainHUD.lastPlayerAttack = damage
+      mainHUD.lastEnemyAttack = 'MISSED'
+    }
 
     if (isCriticalAttack) {
       // UI from ui.ts
@@ -304,7 +309,7 @@ export class MonsterOligar extends GenericMonster {
   }
 
   handleAttack(): void {
-    const player = Player.getInstanceOrNull()
+    const player = Player.getInstance()
     if (player === null) return
 
     if (this.health <= 0) {
@@ -324,8 +329,18 @@ export class MonsterOligar extends GenericMonster {
     const roundedPlayerDice = Math.floor(playerDiceResult)
     const roundedMonsterDice = Math.floor(monsterDiceResult)
 
+    const mainHUD = player?.gameController.uiController.mainHud
+    if (mainHUD) {
+      mainHUD.lastPlayerRoll = roundedPlayerDice
+      mainHUD.lastEnemyRoll = roundedMonsterDice
+    }
+
     if (roundedMonsterDice <= roundedPlayerDice) {
       // Player attacks
+      if (mainHUD) {
+        mainHUD.lastEnemyAttack = 'MISSED'
+      }
+
       let defPercent = this.getDefensePercent()
 
       if (monsterModifiers.getDefBuff() !== 0) {
@@ -431,6 +446,10 @@ export class MonsterOligar extends GenericMonster {
     if (player === null) return
 
     player.reduceHealth(enemyAttack)
+    const mainHUD = player.gameController.uiController.mainHud
+    if(mainHUD){
+      mainHUD.lastEnemyAttack = enemyAttack
+    }
 
     this.playAttack()
 

@@ -8,6 +8,11 @@ export class MainHudController {
   public isVisible: boolean = true
   public isPlayerRollOpen: boolean = false
   public isInfoOpen: boolean = false
+  public lastPlayerAttack: number | 'MISSED' = 0
+  public lastEnemyAttack: number | 'MISSED' = 0
+  public lastPlayerRoll: number = 0
+  public lastEnemyRoll: number = 0
+  public gainedXP: number = 0
 
   private inventoryController: InventoryController | null = null
 
@@ -30,11 +35,11 @@ export class MainHudController {
           characterAlliance={player.alliance}
           // TODO: add player roll
           lastRoll={{
-            gainedExperience: 25,
-            playerRoll: 12,
-            enemyRoll: 4,
-            playerAttack: 50,
-            EnemyAttack: 'MISSED'
+            gainedExperience: this.gainedXP,
+            playerRoll: this.lastPlayerRoll,
+            enemyRoll: this.lastEnemyRoll,
+            playerAttack: this.lastPlayerAttack,
+            EnemyAttack: this.lastEnemyAttack
           }}
           // TODO: Add player professions
           playerProfessions={{
@@ -62,7 +67,7 @@ export class MainHudController {
     if (this.inventoryController === null) {
       this.inventoryController = new InventoryController()
     }
-      this.inventoryController.showInventory(visibility)
+    this.inventoryController.showInventory(visibility)
   }
 
   openLink(url: string): void {

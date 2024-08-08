@@ -301,6 +301,12 @@ export class MonsterMob extends GenericMonster {
     console.log('damaging monster: ' + damage)
     this.reduceHealth(damage)
     this.updateHealthBar()
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
+
+    if (mainHUD) {
+      mainHUD.lastPlayerAttack = damage
+      mainHUD.lastEnemyAttack = 'MISSED'
+    }
 
     if (isCriticalAttack) {
       // UI from ui.ts
@@ -376,7 +382,11 @@ export class MonsterMob extends GenericMonster {
 
         const roundedPlayerDice = Math.floor(playerDiceResult)
         const roundedMonsterDice = Math.floor(monsterDiceResult)
-
+        const mainHUD = player?.gameController.uiController.mainHud
+        if (mainHUD) {
+          mainHUD.lastPlayerRoll = roundedPlayerDice
+          mainHUD.lastEnemyRoll = roundedMonsterDice
+        }
         if (roundedMonsterDice <= roundedPlayerDice) {
           // Player attacks
           let defPercent = this.getDefensePercent()
@@ -403,7 +413,12 @@ export class MonsterMob extends GenericMonster {
             skill(isCriticalAttack, true, reduceHealthBy)
           )
         } else {
-          Player.getInstance().gameController.uiController.displayAnnouncement(
+          const player = Player.getInstance()
+          const mainHUD = player.gameController.uiController.mainHud
+          if(mainHUD){
+            mainHUD.lastPlayerAttack = 'MISSED'
+          }
+          player.gameController.uiController.displayAnnouncement(
             'Attack missed!\nIncrease your luck!',
             Color4.Yellow(),
             1000
@@ -430,7 +445,10 @@ export class MonsterMob extends GenericMonster {
     if (player === null) return
 
     player.reduceHealth(enemyAttack)
-
+    const mainHUD = player.gameController.uiController.mainHud
+    if(mainHUD){
+      mainHUD.lastEnemyAttack = enemyAttack
+    }
     this.playAttack()
 
     player.impactAnimation?.()

@@ -36,10 +36,9 @@ function Inventory({
   if (canvasInfo === null) return null
   if (!visibility) return null
 
-
   return (
     <Canvas>
-       <UiEntity
+      <UiEntity
         uiTransform={{
           width: '100%',
           height: '100%',
@@ -170,7 +169,7 @@ function Inventory({
               texture: { src: inventorySprites.topNavBarFrame.atlasSrc }
             }}
           />
-        <UiEntity
+          <UiEntity
             uiTransform={{
               width: canvasInfo.height * 0.05,
               height: canvasInfo.height * 0.05,

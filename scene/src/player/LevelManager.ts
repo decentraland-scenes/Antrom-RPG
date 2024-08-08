@@ -1,4 +1,5 @@
 import { WriteXpToServer } from '../api/api'
+import { Player } from './player'
 
 export enum LEVEL_TYPES {
   PLAYER = 'player',
@@ -93,6 +94,12 @@ export class LevelManager {
     const shouldLevelUp = LevelManager.shouldLevelUp(currentLevel, newXp)
     const increaseBy = shouldLevelUp ? 1 : 0
     const newLevel = currentLevel + increaseBy
+
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
+    if (mainHUD && type === LEVEL_TYPES.PLAYER){
+      mainHUD.gainedXP = xp
+    }
+
 
     this.updateItem(type, {
       level: newLevel,
