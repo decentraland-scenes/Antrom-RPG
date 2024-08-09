@@ -549,10 +549,13 @@ export class Player extends Character {
     exp: Array<{ type: LEVEL_TYPES; value: number }>,
     loot: Array<{ type: ITEM_TYPES; value: number }>
   ): void {
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
+
     for (const i of exp) {
       this.levels.addXp(i.type, i.value)
-      // if (exp[i].type == LEVEL_TYPES.PLAYER)
-      //     MainHUD.getInstance().updateXpGained(exp[i].value)
+      if (i.type === LEVEL_TYPES.PLAYER && mainHUD) {
+        mainHUD.gainedXP = i.value
+      }
     }
     for (const i of loot) {
       this.inventory.incrementItem(i.type, i.value)

@@ -287,6 +287,12 @@ export class MonsterMobAuto extends GenericMonster {
     this.reduceHealth(damage)
     this.updateHealthBar()
 
+    const mainHUD = Player.getInstance().gameController.uiController.mainHud
+    if (mainHUD !== null) {
+      mainHUD.lastPlayerAttack = damage
+      mainHUD.lastEnemyAttack = 'MISSED'
+    }
+
     if (isCriticalAttack) {
       // UI from ui.ts
       // showCriticalIcon()
@@ -318,7 +324,11 @@ export class MonsterMobAuto extends GenericMonster {
     const random = Math.random() * 1000
     const roundedPlayerDice = Math.floor(playerDiceResult)
     const roundedMonsterDice = Math.floor(monsterDiceResult)
-
+    const mainHUD = player?.gameController.uiController.mainHud
+    if (mainHUD !== null) {
+      mainHUD.lastPlayerRoll = roundedPlayerDice
+      mainHUD.lastEnemyRoll = roundedMonsterDice
+    }
     if (roundedMonsterDice <= roundedPlayerDice) {
       // Player attacks
       let defPercent = this.getDefensePercent()
@@ -426,6 +436,11 @@ export class MonsterMobAuto extends GenericMonster {
     if (player === null) return
 
     player.reduceHealth(enemyAttack)
+    const mainHUD = player.gameController.uiController.mainHud
+    if (mainHUD !== null) {
+      mainHUD.lastEnemyAttack = enemyAttack
+      mainHUD.lastPlayerAttack = 'MISSED'
+    }
 
     this.playAttack()
 

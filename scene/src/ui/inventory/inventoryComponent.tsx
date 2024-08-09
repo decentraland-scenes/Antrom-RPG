@@ -3,6 +3,7 @@ import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import Canvas from '../canvas/Canvas'
 import { inventorySprites } from './inventoryData'
+import { mainHudSprites } from '../main-hud/mainHudData'
 
 type InventoryProps = {
   inventory: (() => ReactEcs.JSX.Element) | undefined
@@ -14,6 +15,8 @@ type InventoryProps = {
   leftSprite: Sprite
   rightSprite: Sprite
   updateTab: (arg: number) => void
+  showInventory: (arg: boolean) => void
+  visibility: boolean
 }
 
 function Inventory({
@@ -25,10 +28,13 @@ function Inventory({
   scrollLeft,
   leftSprite,
   rightSprite,
-  updateTab
+  updateTab,
+  showInventory,
+  visibility
 }: InventoryProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
+  if (!visibility) return null
 
   return (
     <Canvas>
@@ -161,6 +167,24 @@ function Inventory({
               textureMode: 'stretch',
               uvs: getUvs(inventorySprites.topNavBarFrame),
               texture: { src: inventorySprites.topNavBarFrame.atlasSrc }
+            }}
+          />
+          <UiEntity
+            uiTransform={{
+              width: canvasInfo.height * 0.05,
+              height: canvasInfo.height * 0.05,
+              positionType: 'absolute',
+              position: { top: '40%', right: '-13%' }
+            }}
+            uiBackground={{
+              textureMode: 'stretch',
+              uvs: getUvs(mainHudSprites.exitButton),
+              texture: {
+                src: mainHudSprites.exitButton.atlasSrc
+              }
+            }}
+            onMouseDown={() => {
+              showInventory(false)
             }}
           />
         </UiEntity>

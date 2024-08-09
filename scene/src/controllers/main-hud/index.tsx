@@ -8,6 +8,11 @@ export class MainHudController {
   public isVisible: boolean = true
   public isPlayerRollOpen: boolean = false
   public isInfoOpen: boolean = false
+  public lastPlayerAttack: number | 'MISSED' = 0
+  public lastEnemyAttack: number | 'MISSED' = 0
+  public lastPlayerRoll: number = 0
+  public lastEnemyRoll: number = 0
+  public gainedXP: number = 0
 
   private inventoryController: InventoryController | null = null
 
@@ -23,18 +28,18 @@ export class MainHudController {
           showInfo={this.showInfo.bind(this)}
           openLink={this.openLink.bind(this)}
           showInventory={() => {
-            this.showInventory(this.inventoryController === null)
+            this.showInventory(true)
           }}
           characterRace={player.race}
           characterClass={player.class}
           characterAlliance={player.alliance}
           // TODO: add player roll
           lastRoll={{
-            gainedExperience: 25,
-            playerRoll: 12,
-            enemyRoll: 4,
-            playerAttack: 50,
-            EnemyAttack: 'MISSED'
+            gainedExperience: this.gainedXP,
+            playerRoll: this.lastPlayerRoll,
+            enemyRoll: this.lastEnemyRoll,
+            playerAttack: this.lastPlayerAttack,
+            EnemyAttack: this.lastEnemyAttack
           }}
           // TODO: Add player professions
           playerProfessions={{
@@ -59,11 +64,10 @@ export class MainHudController {
   }
 
   showInventory(visibility: boolean): void {
-    if (visibility && this.inventoryController === null) {
+    if (this.inventoryController === null) {
       this.inventoryController = new InventoryController()
-    } else if (!visibility && this.inventoryController !== null) {
-      this.inventoryController = null
     }
+    this.inventoryController.showInventory(visibility)
   }
 
   openLink(url: string): void {
