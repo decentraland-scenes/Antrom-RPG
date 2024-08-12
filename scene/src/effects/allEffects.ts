@@ -105,13 +105,14 @@ export const applyFullWhiteSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
+  console.log('effeeeeect')
   const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
     scale: Vector3.create(1, 1, 1)
   })
-  GltfContainer.create(area, { src: 'assets/models/Skill_FX/white_circle.glb' })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/White_Circle.glb' })
   Animator.createOrReplace(area, {
     states: [
       {
@@ -450,6 +451,7 @@ export const applyGeneralSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
+  console.log('effeeeeect')
   const area = entityController.addEntity()
   Transform.create(area, {
     position,
@@ -467,13 +469,13 @@ export const applyGeneralSkillEffectToLocation = (
         loop: true
       },
       {
-        clip: 'action',
-        playing: false,
+        clip: 'PlaneAction.003',
+        playing: true,
         loop: true
       }
     ]
   })
-  Animator.playSingleAnimation(area, 'action')
+  Animator.playSingleAnimation(area, 'PlaneAction.003')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)
@@ -704,6 +706,199 @@ export const applyDefSkillEffectToEnemyLocation = (
   Animator.playSingleAnimation(area, 'action')
 
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+export const applyRedSwirlToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/redCircle.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'heal',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'heal')
+  AudioSource.playSound(area, 'assets/sounds/attack.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+
+export const applyWhiteSwirlToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/whiteSwirl.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'heal',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'heal')
+  AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+
+export const applyPurpleSwirlToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/purpleSwirl.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'heal',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'heal')
+  AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+
+export const applySphereEnergyToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/Summon_ball.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'SphereAction.001',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'SphereAction.001')
+  AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+
+export const applyFlameAuraToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, {
+    src: 'assets/models/Skill_FX/flameAuraSwirl.glb'
+  })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'heal',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'heal')
+  AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(area)
+  }, duration)
+}
+
+export const applyRainbowSwirlToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  const area = entityController.addEntity()
+  Transform.create(area, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/Summon_ball.glb' })
+  Animator.createOrReplace(area, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'SphereAction.001',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(area, 'SphereAction.001')
+  AudioSource.playSound(area, 'assets/sounds/Heal.mp3')
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)
   }, duration)

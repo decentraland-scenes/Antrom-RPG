@@ -2,7 +2,7 @@ import * as utils from '@dcl-sdk/utils'
 
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { Player } from '../../player/player'
-import { type SkillDefinition } from '../../player/skills'
+import { type MaybeSkill, type SkillDefinition } from '../../player/skills'
 import {
   CLASS_SKILLS_TO_SHOW,
   GENERAL_SKILLS_TO_SHOW,
@@ -37,8 +37,67 @@ import {
   type CompanionType
 } from '../../ui/inventory/companionsData'
 import { type ProfessionType } from '../../ui/inventory/professionsData'
-import { GeneralDisruptiveBlow } from '../../player/skills/definitions'
-import { equipCompanion } from '../../inventory/equipCompanion'
+import {
+  BerserkerBloodDance,
+  BerserkerBloodFury,
+  BerserkerDeathStrike,
+  BerserkerFuryMomentum,
+  BerserkerRampage,
+  BerserkerSavagePrecision,
+  ClericGeraldsBlessing,
+  ClericHealingTouch,
+  ClericHolyRetribution,
+  ClericProtectorBlessing,
+  ClericSacredBarrier,
+  ClericSmiteEvil,
+  GeneralCelestialRetribution,
+  GeneralConfusingBlades,
+  GeneralDefensiveAura,
+  GeneralDefensivePosture,
+  GeneralDisruptiveBlow,
+  GeneralFireball,
+  GeneralFirstAidKit,
+  GeneralFortressOfResilience,
+  GeneralFortunesFavor,
+  GeneralGodricsBlessing,
+  GeneralHammerShot,
+  GeneralIronDefense,
+  GeneralLuckyCharm,
+  GeneralMightyAssault,
+  GeneralOathToDemonKing,
+  GeneralPrecisionFocus,
+  GeneralShieldWall,
+  GeneralSoulRelease,
+  GeneralSpellCancel,
+  GeneralStorm,
+  GeneralStrike,
+  GeneralVampiricTransfusion,
+  GeneralVenomousBlade,
+  GeneralVitalityBoost,
+  GeneralVitalitySurge,
+  MageArcaneMissile,
+  MageArmorSap,
+  MageBlink,
+  MageFireball,
+  MageRestoration,
+  MageShadowChains,
+  RangerDeadlyPrecision,
+  RangerMightyShot,
+  RangerPoisonArrows,
+  RangerRecoilShot,
+  RangerSavageStrike,
+  RangerVitalShot,
+  ThiefBleedForMe,
+  ThiefFortunesFavor,
+  ThiefLastBlow,
+  ThiefShadowStrike,
+  ThiefStoneHeart,
+  ThiefSwiftFoot
+} from '../../player/skills/definitions'
+import {
+  equipCompanion,
+  unequipCompanion
+} from '../../inventory/equipCompanion'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -381,29 +440,164 @@ export class InventoryController {
   }
 
   equipSkill(): void {
-    // TODO Equip this.selectedSkill if it isn't equiped.
+    const player = Player.getInstance()
+    const playerSkills = player.getSkills()
+    const skillAlreadyEquipped = playerSkills.some(
+      (skill) => skill?.definition.name === this.selectedSkill?.name
+    )
+
+    if (skillAlreadyEquipped) {
+      console.error('This skill is already equipped.')
+      return
+    }
     if (this.selectedSkill !== undefined) {
-      console.log('Equiped skill')
-      Player.getInstance().setSkill(
-        this.getLowerSkillIndex(),
-        new GeneralDisruptiveBlow()
-      )
+      const firstFreePosition = this.getLowerSkillIndex()
+      if (firstFreePosition !== -1) {
+        console.log(this.selectedSkill)
+        const skill = this.getSelectedSkill(this.selectedSkill.name)
+        if (skill != null) {
+          Player.getInstance().setSkill(firstFreePosition, skill)
+        } else {
+          console.error('Skill not found')
+        }
+      } else {
+        console.error('You already equipped 6 ksill')
+      }
     } else {
       console.error('You should choise a skill to equip')
     }
   }
 
   getLowerSkillIndex(): number {
-    // TODO Obtain the skills array
-    // const firstFreePosition = array.findIndex(element => element === undefined);
-    // return firstFreePosition
-    return 0
+    const player = Player.getInstance()
+    const firstFreePosition = player.skills.findIndex(
+      (skill) => skill === undefined
+    )
+    return firstFreePosition
+  }
+
+  getSelectedSkill(skillName: string): MaybeSkill {
+    switch (skillName) {
+      case "Gerald's Blessing":
+        return new ClericGeraldsBlessing()
+      case "Protector's Blessing":
+        return new ClericProtectorBlessing()
+      case 'Healing Touch':
+        return new ClericHealingTouch()
+      case 'Sacred Barrier':
+        return new ClericSacredBarrier()
+      case 'Holy Retribution':
+        return new ClericHolyRetribution()
+      case 'Smite Evil':
+        return new ClericSmiteEvil()
+      case 'Arcane Missile':
+        return new MageArcaneMissile()
+      case 'Shadow Chains':
+        return new MageShadowChains()
+      case 'Armor Sap':
+        return new MageArmorSap()
+      case 'Ether Protection':
+        return new MageBlink()
+      case 'Restoration':
+        return new MageRestoration()
+      case 'Fireball Aura':
+        return new MageFireball()
+      case 'Swiftfoot':
+        return new ThiefSwiftFoot()
+      case 'Shadowstrike':
+        return new ThiefShadowStrike()
+      case 'Fortunes Favor':
+        return new ThiefFortunesFavor()
+      case 'Stoneheart':
+        return new ThiefStoneHeart()
+      case 'Bleed For Me':
+        return new ThiefBleedForMe()
+      case 'Last Blow':
+        return new ThiefLastBlow()
+      case 'Deadly Precision':
+        return new RangerDeadlyPrecision()
+      case 'Savage Strike':
+        return new RangerSavageStrike()
+      case 'Mighty Shot':
+        return new RangerMightyShot()
+      case 'Poison Arrows':
+        return new RangerPoisonArrows()
+      case 'Vital Shot':
+        return new RangerVitalShot()
+      case 'Recoil Shot':
+        return new RangerRecoilShot()
+      case 'Blood Fury':
+        return new BerserkerBloodFury()
+      case 'Death Strike':
+        return new BerserkerDeathStrike()
+      case 'Savage Precision':
+        return new BerserkerSavagePrecision()
+      case 'Rampage':
+        return new BerserkerRampage()
+      case 'Blood Dance':
+        return new BerserkerBloodDance()
+      case "Fury's Momentum":
+        return new BerserkerFuryMomentum()
+      case 'Disruptive Blow':
+        return new GeneralDisruptiveBlow()
+      case 'First Aid Kit':
+        return new GeneralFirstAidKit()
+      case 'Fireball':
+        return new GeneralFireball()
+      case 'Sanctified Storm':
+        return new GeneralStorm()
+      case 'Lucky Charm':
+        return new GeneralLuckyCharm()
+      case 'Precision Focus':
+        return new GeneralPrecisionFocus()
+      case 'Quake!':
+        return new GeneralDefensivePosture()
+      case 'Thunder Strike':
+        return new GeneralStrike()
+      case 'Iron Defense':
+        return new GeneralIronDefense()
+      case 'Vitality Surge':
+        return new GeneralVitalitySurge()
+      case 'Vitality Boost':
+        return new GeneralVitalityBoost()
+      case 'Shield Wall':
+        return new GeneralShieldWall()
+      case 'Double Hammer Shot':
+        return new GeneralHammerShot()
+      case 'Magic Aura':
+        return new GeneralDefensiveAura()
+      case 'Soul Release':
+        return new GeneralSoulRelease()
+      case 'Mighty Assault':
+        return new GeneralMightyAssault()
+      case 'Big Red Resilience':
+        return new GeneralFortressOfResilience()
+      case 'Oath to the King':
+        return new GeneralOathToDemonKing()
+      case "Godric's Blessing":
+        return new GeneralGodricsBlessing()
+      case 'Confusing Blades':
+        return new GeneralConfusingBlades()
+      case 'Venomous Blade':
+        return new GeneralVenomousBlade()
+      case 'Intimidation':
+        return new GeneralSpellCancel()
+      case 'Vampiric Transfusion':
+        return new GeneralVampiricTransfusion()
+      case 'Celestial Retribution':
+        return new GeneralCelestialRetribution()
+      case 'Fortunes Benediction':
+        return new GeneralFortunesFavor()
+    }
   }
 
   disableSkill(): void {
     // TODO Disable this.selectedSkill if it is equiped.
+    console.log('selected skill undefined')
     if (this.selectedSkill !== undefined) {
       console.log('Disabled skill')
+      const player = Player.getInstance()
+      player.removeSkill(this.selectedSkill.name)
     } else {
       console.error('You should choise a skill to disable')
     }
@@ -481,6 +675,7 @@ export class InventoryController {
           companionPageSprite.Disable_button_while_clicked
         // execute function disable companion
         console.log('disable')
+        unequipCompanion(this.selectedCompanion.name)
         this.equipedCompanion = undefined
       } else if (
         this.purchasedCompanions.find(

@@ -15,6 +15,10 @@ export function equipCompanion(companionName: string): void {
       switch (companionName) {
         case 'Owl':
           createOwl()
+          // setTimeout(() => {
+          //   console.log('Unnequipped pet')
+          //   unequipCompanion(companionName)
+          // }, 8000)
           break
         case 'Phoenix':
           createPhoenix()
@@ -23,5 +27,17 @@ export function equipCompanion(companionName: string): void {
           createDragon()
       }
     }
+  }
+}
+export function unequipCompanion(companionName: string): void {
+  const player = Player.getInstance()
+  const petManager = player.petManager
+  const petInstance = petManager.getPetInstance(companionName)
+
+  if (petInstance != null) {
+    petManager.removeInstance(companionName)
+    console.log(`${companionName} has been unequipped.`)
+  } else {
+    console.log(`${companionName} is not equipped.`)
   }
 }

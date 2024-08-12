@@ -494,6 +494,20 @@ export class Player extends Character {
     this.skills[index] = skill
   }
 
+  getSkills(): MaybeSkill[] {
+    return this.skills
+  }
+
+  removeSkill(skillName: string): void {
+    const skillIndex = this.skills.findIndex(
+      (skill) => skill?.definition.name === skillName
+    )
+
+    if (skillIndex !== -1) {
+      this.skills[skillIndex] = undefined
+    }
+  }
+
   process(dt: number): void {
     this.skills.forEach((skill, index) => {
       if (skill) {

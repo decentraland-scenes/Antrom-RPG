@@ -9,9 +9,10 @@ import {
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { entityController } from '../realms/entityController'
+import { currentlyAttackingMontserList } from './splashAttack'
 import { Character } from './character'
 
-export class GenericMonster extends Character {
+export abstract class GenericMonster extends Character {
   public attackTrigger!: Entity
   public healthBar!: Entity
   public label!: Entity
@@ -35,8 +36,6 @@ export class GenericMonster extends Character {
     this.attackTrigger = entityController.addEntity()
 
     Transform.create(this.attackTrigger, { parent: this.entity })
-    // MeshRenderer.setBox(this.attackTrigger)
-    // VisibilityComponent.create(this.attackTrigger, { visible: true })
 
     utils.triggers.addTrigger(
       this.attackTrigger,
@@ -44,15 +43,18 @@ export class GenericMonster extends Character {
       1,
       [{ type: 'box', scale }],
       () => {
-        // TODO
-        // if (this.isDeadAnimation) return
         this.createHealthBar()
         this.handleAttack()
+        currentlyAttackingMontserList.push(this)
       },
       () => {
         if (this.healthBar != null)
           entityController.removeEntity(this.healthBar)
         if (this.label != null) entityController.removeEntity(this.label)
+        const index = currentlyAttackingMontserList.indexOf(this)
+        if (index > -1) {
+          currentlyAttackingMontserList.splice(index, 1)
+        }
       }
     )
   }
@@ -102,6 +104,7 @@ export class GenericMonster extends Character {
   }
 
   handleAttack(): void {}
+  abstract performAttack(damage: number, isCriticalAttack: boolean): void
 
   cleanup(): void {
     if (this.attackTrigger !== undefined) {
