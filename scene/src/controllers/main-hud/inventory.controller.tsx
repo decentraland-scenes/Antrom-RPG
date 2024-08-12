@@ -94,7 +94,10 @@ import {
   ThiefStoneHeart,
   ThiefSwiftFoot
 } from '../../player/skills/definitions'
-import { equipCompanion } from '../../inventory/equipCompanion'
+import {
+  equipCompanion,
+  unequipCompanion
+} from '../../inventory/equipCompanion'
 // import { WearablesConfig } from '../../player/wearables-config'
 // import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
 
@@ -665,6 +668,7 @@ export class InventoryController {
           companionPageSprite.Disable_button_while_clicked
         // execute function disable companion
         console.log('disable')
+        unequipCompanion(this.selectedCompanion.name)
         this.equipedCompanion = undefined
       } else if (
         this.purchasedCompanions.find(

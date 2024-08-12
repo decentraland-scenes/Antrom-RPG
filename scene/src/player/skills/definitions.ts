@@ -883,7 +883,7 @@ export class ThiefLastBlow extends SkillController {
       applyGeneralSkillEffectToLocation(
         Transform.get(engine.CameraEntity).position,
 
-        2000
+        4000
       )
       setTimeout(() => {
         activeSkillsCount--

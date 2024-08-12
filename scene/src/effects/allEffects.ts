@@ -105,13 +105,14 @@ export const applyFullWhiteSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
+  console.log('effeeeeect')
   const area = entityController.addEntity()
   Transform.create(area, {
     position,
     rotation: Quaternion.create(0, 0, 0, 1),
     scale: Vector3.create(1, 1, 1)
   })
-  GltfContainer.create(area, { src: 'assets/models/Skill_FX/white_circle.glb' })
+  GltfContainer.create(area, { src: 'assets/models/Skill_FX/White_Circle.glb' })
   Animator.createOrReplace(area, {
     states: [
       {
@@ -450,6 +451,7 @@ export const applyGeneralSkillEffectToLocation = (
   position: Vector3,
   duration: number
 ): void => {
+  console.log('effeeeeect')
   const area = entityController.addEntity()
   Transform.create(area, {
     position,
@@ -467,13 +469,13 @@ export const applyGeneralSkillEffectToLocation = (
         loop: true
       },
       {
-        clip: 'action',
-        playing: false,
+        clip: 'PlaneAction.003',
+        playing: true,
         loop: true
       }
     ]
   })
-  Animator.playSingleAnimation(area, 'action')
+  Animator.playSingleAnimation(area, 'PlaneAction.003')
   AudioSource.playSound(area, 'assets/sounds/attack.mp3')
   utils.timers.setTimeout(() => {
     entityController.removeEntity(area)
