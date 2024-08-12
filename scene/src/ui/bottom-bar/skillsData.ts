@@ -1050,6 +1050,8 @@ const skillsGeneralSprites = {
 export const CLASS_SKILL_DATA = {
   HEALING_TOUCH: {
     name: 'Healing Touch',
+    description: 'Increase HP by 100% instantly.',
+
     sprite: skillsPlayerSprites.clericSkill,
     cooldown: 8
   },
@@ -1078,90 +1080,125 @@ export const CLASS_SKILL_DATA = {
 export const SKILL_DATA: Record<SkillKey, SkillDefinition> = {
   CLERIC_GERALDS_BLESSING: {
     name: `Gerald's Blessing`,
+    description: 'Your increase MAX HP by 5% for 10 seconds.',
+
     sprite: skillsPlayerSprites.Priestskill_49,
     cooldown: 10,
     minLevel: 10
   },
   CLERIC_PROTECTORSBLESSING: {
     name: `Protector's Blessing`,
+    description: 'Gain Attack equal to 10% of your MAX HP for 10 seconds.',
+
     sprite: skillsPlayerSprites.skill_189,
     cooldown: 10,
     minLevel: 20
   },
   CLERIC_HEALING_TOUCH: {
     name: 'Healing Touch',
+    description: 'Increase HP by 100% instantly.',
+
     sprite: skillsPlayerSprites.Paladinskill_15,
     cooldown: 4,
     minLevel: 30
   },
   CLERIC_SACREDBARRIER: {
     name: 'Sacred Barrier',
+    description: 'Gain Defense based on MAX HP for 10 seconds.',
+
     sprite: skillsPlayerSprites.shield,
     cooldown: 10,
     minLevel: 40
   },
   CLERIC_HOLYRETRIBUTION: {
     name: 'Holy Retribution',
+    description: 'Crit Rate increased by 1% of MAX HP for 15 seconds.',
+
     sprite: skillsPlayerSprites.Shamanskill_21,
     cooldown: 15,
     minLevel: 50
   },
   CLERIC_SMITE_EVIL: {
     name: 'Smite Evil',
+    description: 'Deal ATTACK damage to all enemies 4 times for 8 seconds.',
+
     sprite: skillsPlayerSprites.Mageskill_23,
     cooldown: 8,
     minLevel: 60
   },
   MAGE_ARCANE_MISSILE: {
     name: 'Arcane Missile',
+    description: 'Deal MAGIC damage to all enemies twice.',
+
     sprite: skillsPlayerSprites.Engineerskill_27,
     cooldown: 6,
     minLevel: 10
   },
   MAGE_SHADOW_CHAINS: {
     name: 'Shadow Chains',
+    description:
+      'Blocks all skills from enemies. Decrease the attack value of your opponent by 50% for 20 seconds.',
+
     sprite: skillsPlayerSprites.skill_27,
     cooldown: 20,
     minLevel: 20
   },
   MAGE_ARMOR_SAP: {
     name: 'Armor Sap',
+    description:
+      'Remove all ATTACK and add it to your MAGIC for 20 seconds. \n\nCooldown: 30 s',
+
     sprite: skillsPlayerSprites.skill_8,
     cooldown: 30,
     minLevel: 30
   },
   MAGE_BLINK: {
     name: 'Ether Protection',
+    description: 'Gain 100% Defense and lose 100% Luck for 20 seconds.',
+
     sprite: skillsPlayerSprites.skill_322,
     cooldown: 20,
     minLevel: 40
   },
   MAGE_RESTORATION: {
     name: 'Restoration',
+    description:
+      'Heal 25% of your max HP for every successful roll for 15 seconds.',
+
     sprite: skillsPlayerSprites.priestSkill_24,
     cooldown: 15,
     minLevel: 50
   },
   MAGE_FIREBALL: {
     name: 'Fireball Aura',
+    description:
+      'Deal 100% of your inflicted damage back to the enemy for 10 seconds.',
+
     sprite: skillsPlayerSprites.Mageskill_19,
     cooldown: 10,
     minLevel: 60
   },
   THIEF_SWIFTFOOT: {
     name: 'Swiftfoot',
+    description: 'Gain 20% LUCK for 14 secs',
+
     sprite: skillsPlayerSprites.skill_128,
     cooldown: 14,
     minLevel: 10
   },
   THIEF_SHADOWSTRIKE: {
     name: 'Shadowstrike',
+    description: 'Increase Critical Hit Rate by 3 times your LUCK for 8 sec s',
+
     sprite: skillsPlayerSprites.skill_188,
     cooldown: 8,
     minLevel: 20
   },
   THIEF_FORTUNES_FAVOR: {
     name: 'Fortunes Favor',
+    description:
+      'If your next roll is successful, heal the 25% of your max HP for 12 s',
+
     sprite: skillsPlayerSprites.skill_44,
     cooldown: 12,
     minLevel: 30
