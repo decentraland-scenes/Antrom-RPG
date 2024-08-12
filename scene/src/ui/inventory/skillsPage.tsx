@@ -8,7 +8,6 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
-// import { Color4 } from '@dcl/sdk/math'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -106,25 +105,25 @@ function SkillsPage({
           },
           flexDirection: 'column',
           alignItems: 'flex-start',
-          justifyContent: 'center'
+          justifyContent: 'flex-start'
         }}
       >
+        {/* Selected Skill Type */}
+        <UiEntity
+          uiTransform={{ width: '100%', height: canvasInfo.width * 0.012 }}
+          uiText={{
+            value: selectedSkillType,
+            fontSize: canvasInfo.width * 0.012,
+            textAlign: 'top-left'
+          }}
+        />
         {/* Selected Skill Name */}
         <UiEntity
-          uiTransform={{ width: '100%' }}
+          uiTransform={{ width: '100%', height: canvasInfo.width * 0.015 }}
           uiText={{
             value: selectedSkill !== undefined ? selectedSkill.name : '',
             fontSize: canvasInfo.width * 0.015,
             textAlign: 'top-left'
-          }}
-        />
-        {/* Selected Skill Type */}
-        <UiEntity
-          uiTransform={{ width: '100%' }}
-          uiText={{
-            value: selectedSkillType,
-            fontSize: canvasInfo.width * 0.012,
-            textAlign: 'bottom-left'
           }}
         />
       </UiEntity>
@@ -146,26 +145,27 @@ function SkillsPage({
         <UiEntity
           uiTransform={{
             width: '100%',
+            height: '50%',
             flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'space-between'
           }}
         >
           <UiEntity
-            uiTransform={{ width: '100%' }}
+            uiTransform={{
+              width: '100%'
+            }}
             uiText={{
               value:
                 selectedSkill?.description !== undefined
                   ? selectedSkill.description
                   : '',
               fontSize: canvasInfo.width * 0.012,
-              textAlign: 'middle-left'
+              textAlign: 'top-left'
             }}
           />
           <UiEntity
             uiTransform={{
-              width: '100%',
-              margin: { top: canvasInfo.width * 0.03 }
+              width: '100%'
             }}
             uiText={{
               value:
@@ -173,7 +173,7 @@ function SkillsPage({
                   ? 'Required Level: ' + selectedSkill.minLevel.toString()
                   : '',
               fontSize: canvasInfo.width * 0.012,
-              textAlign: 'middle-left'
+              textAlign: 'top-left'
             }}
           />
         </UiEntity>
