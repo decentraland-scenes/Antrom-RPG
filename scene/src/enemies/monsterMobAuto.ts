@@ -367,9 +367,9 @@ export class MonsterMobAuto extends GenericMonster {
       //     `MISSED`
       // )
 
-      monsterModifiers.activeSkills.forEach((skill) =>
-        skill(isCriticalAttack, true, reduceHealthBy)
-      )
+      monsterModifiers.activeSkills.forEach((skill) => {
+        skill(isCriticalAttack, true, reduceHealthBy, this)
+      })
     } else {
       // Monster attacks
       const defPercent = player.getDefensePercent()
@@ -397,9 +397,9 @@ export class MonsterMobAuto extends GenericMonster {
       //     `${roundedAttack}`
       // )
 
-      monsterModifiers.activeSkills.forEach((skill) =>
+      monsterModifiers.activeSkills.forEach((skill) => {
         skill(false, false, enemyAttack, this)
-      )
+      })
     }
   }
 

@@ -281,9 +281,9 @@ export class MonsterPoison extends GenericMonster {
     }
     const roundedAttack = Math.floor(enemyAttack)
     this.attackPlayer(roundedAttack)
-    monsterModifiers.activeSkills.forEach((skill) =>
+    monsterModifiers.activeSkills.forEach((skill) => {
       skill(false, false, enemyAttack, this)
-    )
+    })
   }
 
   setupAttackHandler(): void {
@@ -341,9 +341,9 @@ export class MonsterPoison extends GenericMonster {
           //     `MISSED`
           // )
 
-          monsterModifiers.activeSkills.forEach((skill) =>
-            skill(isCriticalAttack, true, reduceHealthBy)
-          )
+          monsterModifiers.activeSkills.forEach((skill) => {
+            skill(isCriticalAttack, true, reduceHealthBy, this)
+          })
         }
       }
     )

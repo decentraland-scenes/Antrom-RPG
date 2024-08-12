@@ -200,29 +200,6 @@ export class MonsterMob extends GenericMonster {
     )
   }
 
-  setupAttackTriggerBox(): void {
-    this.attackTrigger = entityController.addEntity()
-    Transform.create(this.attackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.attackTrigger)
-    VisibilityComponent.create(this.attackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.attackTrigger,
-      1,
-      1,
-      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
-      () => {
-        this.createHealthBar()
-        this.handleAttack()
-      },
-      () => {
-        console.log('im out')
-        if (this.healthBar != null)
-          entityController.removeEntity(this.healthBar)
-        if (this.label != null) entityController.removeEntity(this.label)
-      }
-    )
-  }
-
   setDistance(distance: number): void {
     pointerEventsSystem.onPointerDown(
       {
@@ -343,9 +320,9 @@ export class MonsterMob extends GenericMonster {
     }
     const roundedAttack = Math.floor(enemyAttack)
     this.attackPlayer(roundedAttack)
-    monsterModifiers.activeSkills.forEach((skill) =>
+    monsterModifiers.activeSkills.forEach((skill) => {
       skill(false, false, enemyAttack, this)
-    )
+    })
   }
 
   setupAttackHandler(): void {
@@ -405,9 +382,9 @@ export class MonsterMob extends GenericMonster {
           //     `MISSED`
           // )
 
-          monsterModifiers.activeSkills.forEach((skill) =>
-            skill(isCriticalAttack, true, reduceHealthBy)
-          )
+          monsterModifiers.activeSkills.forEach((skill) => {
+            skill(isCriticalAttack, true, reduceHealthBy, this)
+          })
         } else {
           const player = Player.getInstance()
           const mainHUD = player.gameController.uiController.mainHud

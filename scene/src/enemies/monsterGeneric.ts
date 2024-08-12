@@ -13,10 +13,10 @@ import { currentlyAttackingMontserList } from './splashAttack'
 import { Character } from './character'
 
 export abstract class GenericMonster extends Character {
-  public attackTrigger!: Entity
-  public healthBar!: Entity
-  public label!: Entity
-  public topOffSet?: number
+  private attackTrigger: Entity | null = null
+  private healthBar: Entity | null = null
+  private label: Entity | null = null
+  private topOffSet?: number
 
   constructor(
     attack: number,
@@ -60,11 +60,11 @@ export abstract class GenericMonster extends Character {
   }
 
   updateHealthBar(): void {
-    if (this.healthBar !== undefined) {
+    if (this.healthBar !== null) {
       Transform.getMutable(this.healthBar).scale.x = 1 * this.getHealthScaled()
     }
 
-    if (this.label !== undefined) {
+    if (this.label !== null) {
       TextShape.getMutable(this.label).text = `${this.health}`
     }
   }
@@ -107,15 +107,18 @@ export abstract class GenericMonster extends Character {
   abstract performAttack(damage: number, isCriticalAttack: boolean): void
 
   cleanup(): void {
-    if (this.attackTrigger !== undefined) {
+    if (this.attackTrigger !== null) {
       entityController.removeEntity(this.attackTrigger)
     }
-    if (this.healthBar !== undefined) {
+    if (this.healthBar !== null) {
       entityController.removeEntity(this.healthBar)
     }
-    if (this.label !== undefined) {
+    if (this.label !== null) {
       entityController.removeEntity(this.label)
     }
+    this.attackTrigger = null
+    this.healthBar = null
+    this.label = null
   }
 
   setTopOffset(offset: number): void {

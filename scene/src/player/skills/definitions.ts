@@ -65,11 +65,7 @@ export class BerserkerBloodFury extends SkillController {
       monsterModifiers.addActiveSkill(
         9 * 1000,
         'blood_fury',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-        ) => {
+        (_, isPlayerAttack, attackAmount) => {
           console.log('blood fury', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             const replaceHealthAmount = attackAmount * 0.1
@@ -127,11 +123,7 @@ export class BerserkerFuryMomentum extends SkillController {
       monsterModifiers.addActiveSkill(
         15 * 1000,
         'Fury_Momentum',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-        ) => {
+        (_, isPlayerAttack, attackAmount) => {
           console.log('blood fury', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             const LUCK_BUFF_PERCENT = 7
@@ -165,11 +157,7 @@ export class BerserkerRampage extends SkillController {
       monsterModifiers.addActiveSkill(
         15 * 1000,
         'Rampage',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-        ) => {
+        (_, isPlayerAttack, attackAmount) => {
           console.log('Rampage', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             const ATTACK_BUFF = 100
@@ -304,7 +292,10 @@ export class ClericProtectorBlessing extends SkillController {
     if (Player.globalHasSkill) {
       player.updateAtkBuff(ATTACK_BUFF)
       applyGeneralSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         2000
       )
       setTimeout(() => {
@@ -336,7 +327,10 @@ export class ClericSacredBarrier extends SkillController {
     if (Player.globalHasSkill) {
       player.updateDefBuff(DEF_BUFF_PERCENT_BUFF)
       applyDefSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         10000
       )
       setTimeout(() => {
@@ -383,10 +377,18 @@ export class ClericSmiteEvil extends SkillController {
       console.error('TODO: SPLASH ATTACK LOGIC')
       player.attackAnimation()
       applyFullWhiteSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         8000
       )
-      applyHealToLocation(Transform.get(engine.CameraEntity).position)
+      applyHealToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        )
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -410,7 +412,10 @@ export class MageArcaneMissile extends SkillController {
         entity.performAttack(Player.getInstance().getMagic(), false)
       }
       applyFullBlueSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         6000
       )
     } else {
@@ -477,7 +482,10 @@ export class MageBlink extends SkillController {
       const LUCK_DEBUFF_PERCENT = 100
       player.updateLuckBuff(-LUCK_DEBUFF_PERCENT)
       applyDefSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         12000
       )
       setTimeout(() => {
@@ -515,17 +523,12 @@ export class MageFireball extends SkillController {
       monsterModifiers.addActiveSkill(
         6 * 1000,
         'fireball',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-          // monster: MonsterGeneric | MonsterAttackRanged | MonsterHealer | MonsterMage | MonsterMeat | MonsterMob | MonsterMobAuto | MonsterPoison
-        ) => {
+        (_, isPlayerAttack, attackAmount, monster) => {
           console.log('fireball', isPlayerAttack, attackAmount)
           if (!isPlayerAttack) {
             console.error('SEE THIS SKILL. Need monster type to perform attack')
-            // const counterAttackAmount = attackAmount
-            // monster.performAttack(counterAttackAmount, false)
+            const counterAttackAmount = attackAmount
+            monster.performAttack(counterAttackAmount, false)
           }
         }
       )
@@ -552,11 +555,7 @@ export class MageRestoration extends SkillController {
       monsterModifiers.addActiveSkill(
         15 * 1000,
         'Restoration',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-        ) => {
+        (_, isPlayerAttack, attackAmount) => {
           console.log('Restoration', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             const replaceHealthAmount = player.maxHealth * 0.25
@@ -594,7 +593,10 @@ export class MageShadowChains extends SkillController {
       console.log(`Enemy attack: SKILL DAMAGE ${amount}`)
       monsterModifiers.updateAtkDebuff(-ATTACK_DEBUFF_PERCENT)
       applyGeneralSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         2000
       )
       MonsterOligar.setGlobalHasSkill(false)
@@ -742,9 +744,9 @@ export class ThiefFortunesFavor extends SkillController {
         12 * 1000,
         'recoil_shot',
         (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
+          _,
+          isPlayerAttack,
+          attackAmount
           // TODO: Is monster necessary here?
           // monster
         ) => {
@@ -781,7 +783,10 @@ export class ThiefStoneHeart extends SkillController {
       // ui.displayAnnouncement(`${DEF_BUFF_PERCENT}`)
       player.updateDefBuff(DEF_BUFF_PERCENT)
       applyDefSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
 
         12000
       )
@@ -822,11 +827,7 @@ export class ThiefBleedForMe extends SkillController {
       monsterModifiers.addActiveSkill(
         20 * 1000,
         'Bleed For Me',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number
-        ) => {
+        (_, isPlayerAttack, attackAmount: number) => {
           console.log('Bleed For Me', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             const LUCK = player.getLuckBuffs()
@@ -881,7 +882,10 @@ export class ThiefLastBlow extends SkillController {
       player.updateLuckBuff(LUCK_BUFF_PERCENT)
       player.updateAtkBuff(ATTACK_BUFF)
       applyGeneralSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
 
         4000
       )
@@ -1036,10 +1040,10 @@ export class RangerPoisonArrows extends SkillController {
         20 * 1000,
         'poison_arrows',
         (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number,
-          monster: any // NEED TO TYPE
+          _,
+          isPlayerAttack,
+          attackAmount: number
+          // monster: any // NEED TO TYPE
         ) => {
           // if (!isPlayerAttack) {
           //   const damageOverTime = player.getPlayerAttack() // Adjust damage per tick as needed
@@ -1149,12 +1153,7 @@ export class RangerRecoilShot extends SkillController {
       monsterModifiers.addActiveSkill(
         15 * 1000,
         'recoil_shot',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number,
-          monster: any // TODO: SET TYPE
-        ) => {
+        (_, isPlayerAttack, attackAmount, monster) => {
           console.log('recoil shot', isPlayerAttack, attackAmount)
           if (!isPlayerAttack) {
             const counterAttackAmount = attackAmount * 1.5
@@ -1302,7 +1301,10 @@ export class GeneralFireball extends SkillController {
       }
       player.attackAnimation()
       applyAttackedEnemyEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         5000
       )
     } else {
@@ -1332,7 +1334,10 @@ export class GeneralStorm extends SkillController {
       }
       player.attackAnimation()
       applyFullWhiteSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
 
         5000
       )
@@ -1358,7 +1363,13 @@ export class GeneralLuckyCharm extends SkillController {
       const LUCK_BUFF_PERCENT = 10
       player.updateLuckBuff(LUCK_BUFF_PERCENT)
       // TODO NEED THIS EFFECT
-      applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyWhiteSwirlToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
       setTimeout(() => {
         activeSkillsCount--
         if (activeSkillsCount > 0) {
@@ -1395,7 +1406,13 @@ export class GeneralPrecisionFocus extends SkillController {
       const CRIT_RATE_BUFF_PERCENT = 30
       player.updateCritRate(CRIT_RATE_BUFF_PERCENT)
       // TODO Need this effect
-      applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyPurpleSwirlToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
       setTimeout(() => {
         activeSkillsCount--
         if (activeSkillsCount > 0) {
@@ -1478,7 +1495,10 @@ export class GeneralIronDefense extends SkillController {
       const DEFENSE_BUFF_PERCENT = 0.25
       player.updateDefBuff(DEFENSE_BUFF_PERCENT)
       applyDefSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         2000
       )
       setTimeout(() => {
@@ -1529,7 +1549,13 @@ export class GeneralVitalitySurge extends SkillController {
         player.updateMaxHp(-MAX_HEALTH_BUFF_PERCENT)
       }, 15 * 1000)
 
-      applyWhiteSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyWhiteSwirlToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1557,10 +1583,19 @@ export class GeneralVitalityBoost extends SkillController {
       const ATTACK_BUFF = player.maxHealth * 0.25
       player.updateAtkBuff(ATTACK_BUFF)
       applySphereEnergyToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         1
       )
-      applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyFlameAuraToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
       setTimeout(() => {
         activeSkillsCount--
         console.log('activeSkillsCount ', activeSkillsCount)
@@ -1601,7 +1636,10 @@ export class GeneralShieldWall extends SkillController {
       const DEF_BUFF_PERCENT = 0.5
       player.updateDefBuff(DEF_BUFF_PERCENT)
       applyDefSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
 
         2000
       )
@@ -1643,7 +1681,10 @@ export class GeneralHammerShot extends SkillController {
       }
       player.attackAnimation()
       applyRedSkillEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
 
         3000
       )
@@ -1688,7 +1729,13 @@ export class GeneralDefensiveAura extends SkillController {
         }
         player.updateMagic(-MAGIC_BUFF)
       }, 12 * 1000)
-      applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyPurpleSwirlToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',
@@ -1715,7 +1762,13 @@ export class GeneralSoulRelease extends SkillController {
       //     // PROTECTORSBLESSING: Gain Attack equal to 25% of your MAX HP for 10 secs. 20 sec cooldown
       const MAGIC_BUFF = player.maxHealth * 0.05
       player.updateMagic(MAGIC_BUFF)
-      applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyFlameAuraToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
       setTimeout(() => {
         activeSkillsCount--
         console.log('activeSkillsCount ', activeSkillsCount)
@@ -1754,7 +1807,13 @@ export class GeneralMightyAssault extends SkillController {
       //     // Mighty Assault: Increase attack damage by 30% for 10 s.
       const ATTACK_DAMAGE_BUFF = player.getPlayerAttack() * 0.3
       player.updateAtkBuff(ATTACK_DAMAGE_BUFF)
-      applyFlameAuraToLocation(Transform.get(engine.CameraEntity).position, 1)
+      applyFlameAuraToLocation(
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ),
+        1
+      ) // add 0.5 height because in sdk6 it used to be with a y-offset
       setTimeout(() => {
         activeSkillsCount--
         console.log('activeSkillsCount ', activeSkillsCount)
@@ -1820,7 +1879,10 @@ export class GeneralOathToDemonKing extends SkillController {
     if (Player.globalHasSkill) {
       Player.setGlobalHasSkillActive(true)
       applyRainbowSwirlToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         1
       )
       player.reduceHealth(player.maxHealth * 0.9)
@@ -1850,7 +1912,10 @@ export class GeneralGodricsBlessing extends SkillController {
       const LUCK_DEBUFF_PERCENT = 90
       player.updateLuckBuff(-LUCK_DEBUFF_PERCENT)
       applyRainbowSwirlToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         1
       )
       setTimeout(() => {
@@ -1889,13 +1954,7 @@ export class GeneralConfusingBlades extends SkillController {
       monsterModifiers.addActiveSkill(
         9 * 1000,
         'confusing_blades',
-        (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number,
-          // TODO set TYPE
-          monster: any
-        ) => {
+        (_, isPlayerAttack, attackAmount, monster) => {
           console.log('confusing_blades', isPlayerAttack, attackAmount)
           if (!isPlayerAttack) {
             const counterAttackAmount = attackAmount * 0.7
@@ -1904,7 +1963,10 @@ export class GeneralConfusingBlades extends SkillController {
         }
       )
       applyPlayerSkillBladesEffectToLocation(
-        Transform.get(engine.CameraEntity).position,
+        Vector3.add(
+          Vector3.create(0, 0.5, 0),
+          Transform.get(engine.PlayerEntity).position
+        ), // add 0.5 height because in sdk6 it used to be with a y-offset
         9000 // Duration in milliseconds
       )
     } else {
@@ -1934,11 +1996,11 @@ export class GeneralVenomousBlade extends SkillController {
         6 * 1000,
         'venomous_blade',
         (
-          isCriticalAttack: boolean,
-          isPlayerAttack: boolean,
-          attackAmount: number,
+          _,
+          isPlayerAttack,
+          attackAmount: number
           // TODO: set TYPE
-          monster: any
+          // monster: any
         ) => {
           // if (!isPlayerAttack) {
           //   const damageOverTime = 200 // Adjust damage per tick as needed
@@ -1955,7 +2017,7 @@ export class GeneralVenomousBlade extends SkillController {
           //       monster.takeDamage(damageOverTime)
           //       if (!poisonDamageApplied) {
           //         // TODO Need this effect
-          //         // applyPurpleSwirlToLocation(Transform.get(engine.CameraEntity).position, 5)
+          //         // applyPurpleSwirlToLocation(Vector3.add(Vector3.create(0,0.5,0),Transform.get(engine.PlayerEntity).position, 5)) // add 0.5 height because in sdk6 it used to be with a y-offset
           //         poisonDamageApplied = true
           //       }
           //       console.log('monster is taking damage')
@@ -2005,7 +2067,10 @@ export class GeneralSpellCancel extends SkillController {
   effect(): void {
     MonsterOligar.setGlobalHasSkill(false)
     applyDefSkillEffectToLocation(
-      Transform.get(engine.CameraEntity).position,
+      Vector3.add(
+        Vector3.create(0, 0.5, 0),
+        Transform.get(engine.PlayerEntity).position
+      ), // add 0.5 height because in sdk6 it used to be with a y-offset
       2000
     )
     setTimeout(() => {
@@ -2090,11 +2155,12 @@ export class GeneralCelestialRetribution extends SkillController {
       monsterModifiers.addActiveSkill(
         15 * 1000,
         'recoil_shot',
-        (isPlayerAttack: boolean, attackAmount: number, monster: any) => {
+        (isPlayerAttack, _, attackAmount) => {
           console.log('recoil shot', isPlayerAttack, attackAmount)
           if (!isPlayerAttack) {
-            const counterAttackAmount = attackAmount * 1.5
-            monster.performAttack(counterAttackAmount, false)
+            // const counterAttackAmount = attackAmount * 1.5
+            // TODO: monster
+            // monster.performAttack(counterAttackAmount, false)
             player.updateAtkBuff(ATTACK_BUFF)
             player.updateMagic(MAGIC_BUFF)
             player.updateCritRate(CRITDMG_BUFF)
@@ -2157,7 +2223,7 @@ export class GeneralFortunesFavor extends SkillController {
       monsterModifiers.addActiveSkill(
         20 * 1000,
         'recoil_shot',
-        (isPlayerAttack: boolean, attackAmount: number) => {
+        (isPlayerAttack, attackAmount, _) => {
           console.log('recoil shot', isPlayerAttack, attackAmount)
           if (isPlayerAttack) {
             // monster.performAttack(counterAttackAmount, false)

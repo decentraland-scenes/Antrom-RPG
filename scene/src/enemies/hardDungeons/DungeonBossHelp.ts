@@ -26,7 +26,7 @@ export default class Minion extends MonsterMob {
     })
     this.initMonster()
     this.loadTransformation()
-    this.topOffSet = 2.25
+    this.setTopOffset(2.25)
     this.dropRate = -1
   }
 
@@ -59,11 +59,9 @@ export default class Minion extends MonsterMob {
   create(): void {}
 
   removeEntity(): void {
+    super.cleanup()
     entityController.removeEntity(this.rangeAttackTrigger)
     entityController.removeEntity(this.engageAttackTrigger)
-    entityController.removeEntity(this.attackTrigger)
-    entityController.removeEntity(this.healthBar)
-    entityController.removeEntity(this.label)
     entityController.removeEntity(this.entity)
   }
 }
