@@ -8,9 +8,9 @@ import {
   type Entity
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
-import { Character } from './character'
 import { entityController } from '../realms/entityController'
 import { currentlyAttackingMontserList } from './splashAttack'
+import { Character } from './character'
 
 export abstract class GenericMonster extends Character {
   public attackTrigger!: Entity

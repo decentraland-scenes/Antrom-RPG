@@ -2,8 +2,8 @@
 
 import { type Entity } from '@dcl/sdk/ecs'
 import { Scalar } from '@dcl/sdk/math'
-import { getRandomInt } from './../utils/getRandomInt'
 import { entityController } from '../realms/entityController'
+import { getRandomInt } from './../utils/getRandomInt'
 
 export class Character {
   _entity = entityController.addEntity()

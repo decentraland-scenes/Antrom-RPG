@@ -110,6 +110,7 @@ export class InventoryController {
   public tabIndex: number = 0
   public leftSprite: Sprite = inventorySprites.leftArrowButton
   public rightSprite: Sprite = inventorySprites.rightArrowButton
+  public inventoryVisibility: boolean = true
 
   // Skills Page
   public selectedSkill: SkillDefinition | undefined
@@ -167,8 +168,14 @@ export class InventoryController {
         leftSprite={this.leftSprite}
         rightSprite={this.rightSprite}
         updateTab={this.updateTab.bind(this)}
+        showInventory={this.showInventory.bind(this)}
+        visibility={this.inventoryVisibility}
       />
     )
+  }
+
+  showInventory(visibility: boolean): void {
+    this.inventoryVisibility = visibility
   }
 
   hideAllPages(): void {
