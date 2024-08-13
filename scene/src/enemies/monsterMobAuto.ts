@@ -2,6 +2,7 @@
 import * as utils from '@dcl-sdk/utils'
 import {
   Animator,
+  AudioSource,
   GltfContainer,
   InputAction,
   MeshRenderer,
@@ -65,19 +66,6 @@ export class MonsterMobAuto extends GenericMonster {
     this.isDead = false
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
-    // monster sounds
-    // this.dyingSound = enemyDyingAudioSource
-    // this.addComponentOrReplace(this.dyingSound)
-    //
-
-    // this.attackSound = enemyAttackAudioSource
-    // this.addComponentOrReplace(this.attackSound)
-    //
-    // let monDef = enemyDefAudioSource
-    // this.addComponentOrReplace(monDef)
-    //
-    // let monHey = enemyHeyAudioSource
-    // this.addComponentOrReplace(monHey)
     MonsterMobAuto.setGlobalHasSkill(true)
   }
 
@@ -87,6 +75,10 @@ export class MonsterMobAuto extends GenericMonster {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
+    AudioSource.create(this.entity, {
+      audioClipUrl: 'assets/sounds/attack.mp3',
+      loop: false
+    })
     if (this.audioFile) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
@@ -447,11 +439,7 @@ export class MonsterMobAuto extends GenericMonster {
     player.impactAnimation?.()
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
 
-    // this.attackSound.playOnce()
-
-    // setTimeout(1 * 1000, () => {
-    //     checkHealth()
-    // })
+    AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
     utils.timers.setTimeout(() => {
       // TODO from counters
       // checkHealth()

@@ -1,6 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import {
   Animator,
+  AudioSource,
   GltfContainer,
   InputAction,
   MeshRenderer,
@@ -74,6 +75,10 @@ export class MonsterMage extends GenericMonster {
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
+    AudioSource.create(this.entity, {
+      audioClipUrl: 'assets/sounds/attack.mp3',
+      loop: false
+    })
     Animator.createOrReplace(this.entity, {
       states: [
         {
@@ -401,10 +406,8 @@ export class MonsterMage extends GenericMonster {
     player.impactAnimation?.()
     // TODO effects
     // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
+    AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
 
-    // setTimeout(1 * 1000, () => {
-    //     checkHealth()
-    // })
     utils.timers.setTimeout(() => {
       // TODO from counters
       // checkHealth()
