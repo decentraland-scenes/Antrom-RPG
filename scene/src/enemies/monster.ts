@@ -1,6 +1,7 @@
 import * as utils from '@dcl-sdk/utils'
 import {
   Animator,
+  AudioSource,
   GltfContainer,
   InputAction,
   MeshRenderer,
@@ -87,6 +88,10 @@ export class MonsterOligar extends GenericMonster {
       this.shape = this.shapeFile
       GltfContainer.createOrReplace(this.entity, { src: this.shape })
     }
+    AudioSource.create(this.entity, {
+      audioClipUrl: 'assets/sounds/attack.mp3',
+      loop: false
+    })
     if (this.audioFile !== undefined) {
       // const clip = new AudioClip(this.audioFile)
       // this.sound = new AudioSource(clip)
@@ -453,12 +458,7 @@ export class MonsterOligar extends GenericMonster {
     this.playAttack()
 
     player.impactAnimation?.()
-    // TODO effects
-    // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
-    // setTimeout(1 * 1000, () => {
-    //     checkHealth()
-    // })
+    AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
     utils.timers.setTimeout(() => {
       // TODO from counters
       // checkHealth()
