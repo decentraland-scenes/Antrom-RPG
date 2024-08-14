@@ -123,6 +123,7 @@ export class MonsterMob extends GenericMonster {
     })
 
     this.setupAttackHandler()
+    this.setupRangedAttackTriggerBox()
   }
 
   refillHealthBar(percentage = 1): void {
@@ -170,14 +171,18 @@ export class MonsterMob extends GenericMonster {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
-        engine.addSystem(this.attackSystemRanged.attackSystem)
+        engine.addSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
         Animator.stopAllAnimations(this.entity)
         Animator.playSingleAnimation(this.entity, this.walkClip, false)
       },
       () => {
         console.log('im out')
         if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
+        engine.removeSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
         Animator.stopAllAnimations(this.entity)
         Animator.playSingleAnimation(this.entity, this.idleClip)
       }
@@ -201,29 +206,6 @@ export class MonsterMob extends GenericMonster {
       () => {
         console.log('im out')
         engine.removeSystem(this.attackSystem.attackSystem)
-      }
-    )
-  }
-
-  setupAttackTriggerBox(): void {
-    this.attackTrigger = entityController.addEntity()
-    Transform.create(this.attackTrigger, { parent: this.entity })
-    MeshRenderer.setBox(this.attackTrigger)
-    VisibilityComponent.create(this.attackTrigger, { visible: false })
-    utils.triggers.addTrigger(
-      this.attackTrigger,
-      1,
-      1,
-      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
-      () => {
-        this.createHealthBar()
-        this.handleAttack()
-      },
-      () => {
-        console.log('im out')
-        if (this.healthBar != null)
-          entityController.removeEntity(this.healthBar)
-        if (this.label != null) entityController.removeEntity(this.label)
       }
     )
   }
@@ -348,9 +330,9 @@ export class MonsterMob extends GenericMonster {
     }
     const roundedAttack = Math.floor(enemyAttack)
     this.attackPlayer(roundedAttack)
-    monsterModifiers.activeSkills.forEach((skill) =>
+    monsterModifiers.activeSkills.forEach((skill) => {
       skill(false, false, enemyAttack, this)
-    )
+    })
   }
 
   setupAttackHandler(): void {
@@ -410,9 +392,9 @@ export class MonsterMob extends GenericMonster {
           //     `MISSED`
           // )
 
-          monsterModifiers.activeSkills.forEach((skill) =>
-            skill(isCriticalAttack, true, reduceHealthBy)
-          )
+          monsterModifiers.activeSkills.forEach((skill) => {
+            skill(isCriticalAttack, true, reduceHealthBy, this)
+          })
         } else {
           const player = Player.getInstance()
           const mainHUD = player.gameController.uiController.mainHud

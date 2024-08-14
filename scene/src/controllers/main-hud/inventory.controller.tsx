@@ -1,42 +1,15 @@
 import * as utils from '@dcl-sdk/utils'
 
+import { AvatarEquippedData, engine, executeTask } from '@dcl/sdk/ecs'
 import ReactEcs from '@dcl/sdk/react-ecs'
+import { getUserData } from '~system/UserIdentity'
+import {
+  equipCompanion,
+  unequipCompanion
+} from '../../inventory/equipCompanion'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { Player } from '../../player/player'
 import { type MaybeSkill, type SkillDefinition } from '../../player/skills'
-import {
-  CLASS_SKILLS_TO_SHOW,
-  GENERAL_SKILLS_TO_SHOW,
-  SKILL_DATA,
-  type SkillKey
-} from '../../ui/bottom-bar/skillsData'
-import CompanionsPage from '../../ui/inventory/companionsPage'
-import Inventory from '../../ui/inventory/inventoryComponent'
-import {
-  CHARACTER_WEARABLES_TO_SHOW,
-  inventorySprites,
-  skillsPageSprites,
-  // type WearableItem,
-  wearables,
-  // WEARABLES_MAPPING,
-  // type WearableString,
-  type WearableType
-} from '../../ui/inventory/inventoryData'
-import InventoryPage, {
-  type InventoryItemSlot
-} from '../../ui/inventory/inventoryPage'
-import ProfessionsPage from '../../ui/inventory/professionsPage'
-import SkillsPage from '../../ui/inventory/skillsPage'
-import { type Sprite } from '../../utils/ui-utils'
-import { LEVEL_TYPES } from '../../player/LevelManager'
-// import { ThiefMainSkill } from '../../player/skills/classes-main-skill'
-import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
-import {
-  companionPageSprite,
-  companions,
-  PetTypes,
-  type CompanionType
-} from '../../ui/inventory/companionsData'
-import { type ProfessionType } from '../../ui/inventory/professionsData'
 import {
   BerserkerBloodDance,
   BerserkerBloodFury,
@@ -95,11 +68,41 @@ import {
   ThiefSwiftFoot
 } from '../../player/skills/definitions'
 import {
-  equipCompanion,
-  unequipCompanion
-} from '../../inventory/equipCompanion'
-// import { WearablesConfig } from '../../player/wearables-config'
-// import {type GetPlayerDataRes, getPlayer }  from '@dcl/sdk/src/players'
+  applyWearableStatsEffect,
+  getWearables,
+  getWearablesEffects
+} from '../../player/wearables'
+import {
+  CLASS_SKILLS_TO_SHOW,
+  GENERAL_SKILLS_TO_SHOW,
+  SKILL_DATA,
+  type SkillKey
+} from '../../ui/bottom-bar/skillsData'
+import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
+import {
+  companionPageSprite,
+  companions,
+  PetTypes,
+  type CompanionType
+} from '../../ui/inventory/companionsData'
+import CompanionsPage from '../../ui/inventory/companionsPage'
+import Inventory from '../../ui/inventory/inventoryComponent'
+import {
+  CHARACTER_WEARABLES_TO_SHOW,
+  inventorySprites,
+  skillsPageSprites,
+  type WearableItem,
+  // wearables,
+  type WearableType
+} from '../../ui/inventory/inventoryData'
+import InventoryPage, {
+  type InventoryItemSlot
+} from '../../ui/inventory/inventoryPage'
+import { type ProfessionType } from '../../ui/inventory/professionsData'
+import ProfessionsPage from '../../ui/inventory/professionsPage'
+import SkillsPage from '../../ui/inventory/skillsPage'
+import { type Sprite } from '../../utils/ui-utils'
+// import { getWearables } from '../../player/wearables'
 
 export class InventoryController {
   // Nav Bar
@@ -127,17 +130,8 @@ export class InventoryController {
   public selectedSkillType: string = ''
 
   // Inventory Page
-  public selectedWearable: WearableType | undefined
-  public characterWearables: WearableType[] = [
-    wearables.body[0],
-    wearables.head[1],
-    wearables.legs[0],
-    wearables.crown[0],
-    wearables.extra[0],
-    wearables.mainhand[1],
-    wearables.offhand[0],
-    wearables.feet[0]
-  ]
+  private selectedWearable: WearableType | undefined
+  private characterWearables: Array<[WearableItem, WearableType]> = []
 
   public wearableIndex: number = 0
   public increaseWearableIndexSprite: Sprite = inventorySprites.upArrow
@@ -145,15 +139,45 @@ export class InventoryController {
 
   // Companion Page
   public selectedCompanion: CompanionType | undefined
-  public equipedCompanion: CompanionType | undefined = companions[1]
-  public componionButtonSprite: Sprite = companionPageSprite.Reg_equip_button
+  public equipedCompanion: CompanionType[] = []
+  public companionButtonSprite: Sprite = companionPageSprite.Reg_equip_button
   public purchasedCompanions: CompanionType[] = [companions[0], companions[1]]
 
   // Profession Page
   public selectedProfession: ProfessionType | undefined
 
+  private bodyHashUrl: string | null = null
+
   constructor() {
     this.updateTab(0)
+
+    executeTask(async () => {
+      const data = await getUserData({})
+      const bodyHashUrl = data.data?.avatar?.snapshots?.body ?? ''
+      if (bodyHashUrl !== undefined && bodyHashUrl !== '') {
+        this.bodyHashUrl = bodyHashUrl
+      }
+
+      this.characterWearables = getWearables()
+      applyWearableStatsEffect(
+        getWearablesEffects([]),
+        getWearablesEffects(this.characterWearables)
+      )
+      Player.getInstance().refillHealthBar()
+    })
+
+    AvatarEquippedData.onChange(engine.PlayerEntity, (value) => {
+      if (value === undefined) {
+        return
+      }
+
+      const newWearables = getWearables()
+      applyWearableStatsEffect(
+        getWearablesEffects(this.characterWearables),
+        getWearablesEffects(newWearables)
+      )
+      this.characterWearables = newWearables
+    })
   }
 
   render(): ReactEcs.JSX.Element {
@@ -187,7 +211,10 @@ export class InventoryController {
 
   updateTab(index: number): void {
     this.selectedWearable = undefined
-    this.selectedCompanion = this.equipedCompanion
+    this.selectedCompanion =
+      this.equipedCompanion.length > 0
+        ? this.equipedCompanion[0]
+        : companions[0]
 
     this.hideAllPages()
     this.tabIndex = index
@@ -216,12 +243,15 @@ export class InventoryController {
               selectWearable={this.selectWearable.bind(this)}
               selectedWearable={this.selectedWearable}
               processStatName={this.processStatName.bind(this)}
-              characterWearables={this.characterWearables}
+              characterWearables={this.characterWearables.map(
+                (item) => item[1]
+              )}
               wearablesIndex={this.wearableIndex}
               scrollUpWearables={this.decreaseWearableIndex.bind(this)}
               scrollUpWearablesSprite={this.decreaseWearableIndexSprite}
               scrollDownWearables={this.increaseWearableIndex.bind(this)}
               scrollDownWearablesSprite={this.increaseWearableIndexSprite}
+              bodyImageUrl={this.bodyHashUrl}
             />
           )
         }
@@ -230,11 +260,9 @@ export class InventoryController {
         this.companions = () => (
           <CompanionsPage
             selectedCompanion={this.selectedCompanion}
-            equipedCompanion={this.equipedCompanion}
             selectCompanion={this.selectCompanion.bind(this)}
             onClickButton={this.componionOnClickButton.bind(this)}
-            buttonSprite={this.componionButtonSprite}
-            purchasedCompanions={[]}
+            buttonSprite={this.companionButtonSprite}
           />
         )
 
@@ -428,12 +456,12 @@ export class InventoryController {
               companion.name === this.selectedCompanion.name
           ) != null
         ) {
-          this.componionButtonSprite = companionPageSprite.Reg_equip_button
+          this.companionButtonSprite = companionPageSprite.Reg_equip_button
         } else {
-          this.componionButtonSprite = companionPageSprite.Purchase_reg
+          this.companionButtonSprite = companionPageSprite.Purchase_reg
         }
-        if (this.selectedCompanion === this.equipedCompanion) {
-          this.componionButtonSprite = companionPageSprite.Disable_button
+        if (this.equipedCompanion.includes(this.selectedCompanion)) {
+          this.companionButtonSprite = companionPageSprite.Disable_button
         }
       }
     }, milisecs)
@@ -670,25 +698,27 @@ export class InventoryController {
 
   componionOnClickButton(): void {
     if (this.selectedCompanion !== undefined) {
-      if (this.selectedCompanion === this.equipedCompanion) {
-        this.componionButtonSprite =
+      if (this.equipedCompanion.includes(this.selectedCompanion)) {
+        this.companionButtonSprite =
           companionPageSprite.Disable_button_while_clicked
         // execute function disable companion
         console.log('disable')
         unequipCompanion(this.selectedCompanion.name)
-        this.equipedCompanion = undefined
+        this.equipedCompanion = this.equipedCompanion.filter(
+          (item) => item.name !== this.selectedCompanion?.name
+        )
       } else if (
         this.purchasedCompanions.find(
           (companion) => companion.name === this.selectedCompanion?.name
         ) != null
       ) {
-        this.componionButtonSprite =
+        this.companionButtonSprite =
           companionPageSprite.equip_button_when_clicked
         // execute function equip companion
         equipCompanion(this.selectedCompanion.name)
-        this.equipedCompanion = this.selectedCompanion
+        this.equipedCompanion.push(this.selectedCompanion)
       } else {
-        this.componionButtonSprite = companionPageSprite.Purchase_while_clicked
+        this.companionButtonSprite = companionPageSprite.Purchase_while_clicked
         // execute function purchase companion
         console.log('purchase')
         this.purchasedCompanions.push(this.selectedCompanion)
@@ -697,77 +727,4 @@ export class InventoryController {
       this.updateSpritesButtons(150)
     }
   }
-
-  // This code is to obtain and display equiped wearables and filter them in inventory. Also take snapshot of character body with wearables.
-  // Is an approach from sdk6 original code but isn't implemented yet
-
-  // createWearablesIcon = async (array: WearableType[], playerData: GetPlayerDataRes): Promise<WearableItem | null> => {
-  //   for (const key of array) {
-  //     const wearableString = key.name as WearableString
-  //       if (await this.checkItem(playerData, key.name)) {
-  //         const { stats, duplicates, dStats, urn, label } = WEARABLES_MAPPING[wearableString]
-  //         return {
-  //             label,
-  //             stats,
-  //             duplicates,
-  //             dStats,
-  //             urn
-  //         }
-  //     }
-
-  //   }
-  //   return null
-  // }
-
-  // checkItem = async (playerData: GetPlayerDataRes, key: string): Promise<boolean> => {
-  //   if (!(key in WEARABLES_MAPPING)) return false
-  //   const { urn } = WearablesConfig.mapping[key]
-  //   let result = false
-  //   if (playerData?.wearables !== undefined)
-  //   for (let wearable of playerData.wearables) {
-  //       // temp fix for DCL urn bug
-  //       const w = wearable.split(':')
-  //       if (w.length > 6)
-  //           wearable = w.slice(0, -1).join(':')
-  //       if (wearable === urn) {
-  //           result = true
-  //       }
-  //   }
-  //   return result
-  // }
-
-  // getWearables = async ():Promise<Array<WearableItem|null>> => {
-  //   const playerData: GetPlayerDataRes | null = getPlayer()
-
-  //   const head: any = WearablesConfig.wearables.head
-  //   const body: any = WearablesConfig.wearables.body
-  //   const legs: any = WearablesConfig.wearables.legs
-  //   const feet: any = WearablesConfig.wearables.feet
-  //   const mainhand: any = WearablesConfig.wearables.mainhand
-  //   const offhand: any = WearablesConfig.wearables.offhand
-  //   const extra: any = WearablesConfig.wearables.extra
-  //   const crown: any = WearablesConfig.wearables.crown
-
-  //   const wearables: Array<WearableItem | null> = []
-
-  //   if (playerData !== null) {
-  //     wearables.push(await this.createWearablesIcon(head, playerData))
-  //     wearables.push(await this.createWearablesIcon(body, playerData))
-  //     wearables.push(await this.createWearablesIcon(legs, playerData))
-  //     wearables.push(await this.createWearablesIcon(feet, playerData))
-  //     wearables.push(await this.createWearablesIcon(mainhand, playerData))
-  //     wearables.push(await this.createWearablesIcon(offhand, playerData))
-  //     wearables.push(await this.createWearablesIcon(extra, playerData))
-  //     wearables.push(await this.createWearablesIcon(crown, playerData))
-  //   }
-
-  //   return wearables.filter((e) => {
-  //       return e != null
-  //   })
-  // }
-
-  // updatePlayerPicture = async (): Promise<void> => {
-  //   const playerData: GetPlayerDataRes | null = getPlayer()
-  //   this.characterPicture = playerData.avatar?.bodyShapeUrn
-  // }
 }

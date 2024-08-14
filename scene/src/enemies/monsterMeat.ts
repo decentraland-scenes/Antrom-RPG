@@ -120,6 +120,7 @@ export class MonsterMeat extends GenericMonster {
     })
 
     this.setupAttackHandler()
+    this.setupRangedAttackTriggerBox()
   }
 
   refillHealthBar(percentage = 1): void {
@@ -168,12 +169,16 @@ export class MonsterMeat extends GenericMonster {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
         // const CameraPos = Transform.get(engine.CameraEntity).position
-        engine.addSystem(this.attackSystemRanged.attackSystem)
+        engine.addSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
       },
       () => {
         console.log('im out')
         if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
+        engine.removeSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
         Animator.stopAllAnimations(this.entity)
         Animator.playSingleAnimation(this.entity, this.idleClip)
       }
@@ -337,9 +342,9 @@ export class MonsterMeat extends GenericMonster {
       //     `MISSED`
       // )
 
-      monsterModifiers.activeSkills.forEach((skill) =>
-        skill(isCriticalAttack, true, reduceHealthBy)
-      )
+      monsterModifiers.activeSkills.forEach((skill) => {
+        skill(isCriticalAttack, true, reduceHealthBy, this)
+      })
     } else {
       // Monster attacks
       const defPercent = player.getDefensePercent()
@@ -367,9 +372,9 @@ export class MonsterMeat extends GenericMonster {
       //     `${roundedAttack}`
       // )
 
-      monsterModifiers.activeSkills.forEach((skill) =>
+      monsterModifiers.activeSkills.forEach((skill) => {
         skill(false, false, enemyAttack, this)
-      )
+      })
     }
   }
 

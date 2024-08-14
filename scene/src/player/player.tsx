@@ -462,6 +462,14 @@ export class Player extends Character {
         currentXp={this.levels.getXpThisLevel(LEVEL_TYPES.PLAYER)}
         level={this.level}
         slotsData={this.skills}
+        hasPotion={this.inventory.getItemCount(ITEM_TYPES.POTION) > 0}
+        onTryPotion={() => {
+          if (this.inventory.getItemCount(ITEM_TYPES.POTION) <= 0) return
+          if (this.health === this.maxHealth) return
+
+          this.inventory.reduceItem(ITEM_TYPES.POTION, 1)
+          this.refillHealthBar(0.5)
+        }}
       />
     )
   }
@@ -472,6 +480,9 @@ export class Player extends Character {
 
   updateMaxHp(value: number): void {
     this.maxHealth += value
+    if (this.health > this.maxHealth) {
+      this.health = this.maxHealth
+    }
   }
 
   updateDefBuff(value: number): void {

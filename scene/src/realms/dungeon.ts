@@ -212,6 +212,7 @@ export class Dungeon implements Realm {
       rotation: Quaternion.create(0, 0, 0, 1),
       scale: Vector3.create(1, 1, 1)
     })
+
     AudioSource.createOrReplace(this.doorOpening, {
       audioClipUrl: 'assets/sounds/stone_door_fast.mp3',
       loop: false,

@@ -1,6 +1,4 @@
-import { type Sprite } from '../../utils/ui-utils'
-
-export const bottomBarSprites: Record<string, Sprite> = {
+export const bottomBarSprites = {
   background: {
     atlasSrc: 'assets/images/skillbar_spritesheet.png',
     atlasSize: { x: 645, y: 462 },
@@ -41,13 +39,21 @@ export const bottomBarSprites: Record<string, Sprite> = {
     w: 625,
     h: 13
   },
-  exampleSkill: {
-    atlasSrc: 'assets/images/skills/player_skills/spritesheet.png',
-    atlasSize: { x: 2048, y: 2048 },
-    x: 0,
+  potionEnabled: {
+    atlasSrc: 'assets/images/skillbar_spritesheet.png',
+    atlasSize: { x: 645, y: 462 },
+    x: 355,
     y: 0,
-    w: 256,
-    h: 256
+    w: 40,
+    h: 40
+  },
+  potionDisabled: {
+    atlasSrc: 'assets/images/skillbar_spritesheet.png',
+    atlasSize: { x: 645, y: 462 },
+    x: 395,
+    y: 0,
+    w: 40,
+    h: 40
   }
 }
 

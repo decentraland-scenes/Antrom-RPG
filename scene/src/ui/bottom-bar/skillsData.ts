@@ -14,6 +14,8 @@ export type BottomBarProps = {
   levelXp: number
   currentHpPercent: number
   level: number
+  hasPotion: boolean
+  onTryPotion: () => void
 }
 
 export type SkillSlotProps = {

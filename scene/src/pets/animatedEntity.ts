@@ -1,11 +1,25 @@
 import {
+  Animator,
   GltfContainer,
+  type PBAnimator,
   Transform,
-  type TransformType,
   type Entity,
-  Animator
+  type TransformType,
+  type DeepReadonly
 } from '@dcl/sdk/ecs'
 import { entityController } from '../realms/entityController'
+
+function needSetPlaying(
+  animator: DeepReadonly<PBAnimator>,
+  clip: string
+): boolean {
+  for (const state of animator.states) {
+    if (state.playing !== (state.clip === clip)) {
+      return true
+    }
+  }
+  return false
+}
 
 export class AnimatedEntity {
   removed: boolean = false
@@ -51,23 +65,28 @@ export class AnimatedEntity {
   }
 
   attack(): void {
+    if (!needSetPlaying(Animator.get(this.entity), 'attack')) return
     Animator.playSingleAnimation(this.entity, 'attack')
   }
 
   fly(): void {
+    if (!needSetPlaying(Animator.get(this.entity), 'fly')) return
     Animator.playSingleAnimation(this.entity, 'fly')
   }
 
   idle(): void {
+    if (!needSetPlaying(Animator.get(this.entity), 'idle')) return
     Animator.playSingleAnimation(this.entity, 'idle')
   }
 
   // Play walking animation
   walk(): void {
+    if (!needSetPlaying(Animator.get(this.entity), 'walk')) return
     Animator.playSingleAnimation(this.entity, 'walk')
   }
 
   run(): void {
+    if (!needSetPlaying(Animator.get(this.entity), 'run')) return
     Animator.playSingleAnimation(this.entity, 'run')
   }
 

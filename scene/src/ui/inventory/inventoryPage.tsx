@@ -36,6 +36,7 @@ type InventoryPageProps = {
   scrollDownWearables: () => void
   scrollUpWearablesSprite: Sprite
   scrollDownWearablesSprite: Sprite
+  bodyImageUrl: string | null
 }
 
 const IMMUTABLE_INV_SLOT_ARRAY = Array.from({ length: 28 })
@@ -157,7 +158,8 @@ function InventoryPage({
   scrollUpWearables,
   scrollDownWearables,
   scrollUpWearablesSprite,
-  scrollDownWearablesSprite
+  scrollDownWearablesSprite,
+  bodyImageUrl
 }: InventoryPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   const fontSizeDetails = canvasInfo.height * 0.02
@@ -179,12 +181,25 @@ function InventoryPage({
       <UiEntity
         uiTransform={{
           width: '23%',
-          height: '100%'
+          height: '100%',
+          justifyContent: 'center',
+          alignItems: 'center'
         }}
-        uiBackground={{
-          color: { r: 0, g: 1, b: 0, a: 0.02 }
-        }}
-      ></UiEntity>
+      >
+        {bodyImageUrl !== null && (
+          <UiEntity
+            uiBackground={{
+              textureMode: 'stretch',
+              texture: { src: bodyImageUrl }
+            }}
+            uiTransform={{
+              margin: { left: '20%' },
+              width: '80%',
+              height: '80%'
+            }}
+          />
+        )}
+      </UiEntity>
       {/* Wearables */}
       <UiEntity
         uiTransform={{
@@ -219,7 +234,7 @@ function InventoryPage({
         >
           {characterWearables
             .slice(
-              wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1),
+              wearablesIndex * CHARACTER_WEARABLES_TO_SHOW,
               wearablesIndex * (CHARACTER_WEARABLES_TO_SHOW - 1) +
                 CHARACTER_WEARABLES_TO_SHOW
             )

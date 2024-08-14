@@ -1,4 +1,13 @@
 import * as utils from '@dcl-sdk/utils'
+import { type GenericMonster } from './monsterGeneric'
+
+type MonsterSkillFunction = (
+  isCriticalAttack: boolean,
+  isPlayerAttack: boolean,
+  attackAmount: number,
+  monster: GenericMonster
+) => void
+
 class MonsterModifiers {
   public attackBuff: number = 0
   public luckBuff: number = 0
@@ -7,8 +16,7 @@ class MonsterModifiers {
   public critDamageBuff: number = 0
   public canActivateSkill!: boolean
 
-  // eslint-disable-next-line @typescript-eslint/consistent-generic-constructors, @typescript-eslint/ban-types
-  public activeSkills: Map<string, Function> = new Map()
+  public activeSkills = new Map<string, MonsterSkillFunction>()
 
   getAtkBuff(): number {
     return this.attackBuff
@@ -50,8 +58,11 @@ class MonsterModifiers {
     this.critRateBuff += value
   }
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  addActiveSkill(activeTime: number, skillName: string, skill: Function): void {
+  addActiveSkill(
+    activeTime: number,
+    skillName: string,
+    skill: MonsterSkillFunction
+  ): void {
     this.activeSkills.set(skillName, skill)
 
     utils.timers.setTimeout(() => {
