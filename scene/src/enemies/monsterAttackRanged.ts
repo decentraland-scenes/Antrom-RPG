@@ -1,29 +1,79 @@
-import { type Entity, GltfContainer, Transform, engine } from '@dcl/sdk/ecs'
+import {
+  Animator,
+  type Entity,
+  GltfContainer,
+  Transform,
+  engine
+} from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
-import { getRandomInt } from '../utils/getRandomInt'
 import { type MonsterOligar } from './monster'
 
-let arrow: Entity | null = null
-let arrowStartPosition: Vector3
+type ArrowType = {
+  entity: Entity
+  startPosition: Vector3
+  forward: Vector3
+  distance: number
+}
+let arrows: ArrowType[] = []
 
-export function shootArrow(): void {
-  if (arrow == null) {
-    arrow = entityController.addEntity()
-    Transform.create(arrow, {})
-    GltfContainer.create(arrow, { src: 'assets/models/GreenOrb.glb' })
-  }
-
+export function shootArrow(distance: number = MAX_DISTANCE): void {
+  const arrowEntity = entityController.addEntity()
   const playerPosition = Transform.get(engine.PlayerEntity).position
   const playerRotation = Transform.get(engine.PlayerEntity).rotation
-  Transform.getMutable(arrow).position = playerPosition
-  Transform.getMutable(arrow).rotation = playerRotation
+
+  GltfContainer.create(arrowEntity, {
+    src: 'assets/models/GreenOrb.glb',
+    invisibleMeshesCollisionMask: 0,
+    visibleMeshesCollisionMask: 0
+  })
+
+  Transform.create(arrowEntity, {
+    position: playerPosition,
+    rotation: playerRotation
+  })
 
   // Calculate the forward direction and set the initial position
   const forward = Vector3.rotate(Vector3.Forward(), playerRotation)
-  arrowStartPosition = Vector3.add(Vector3.scale(forward, 0.5), playerPosition)
+  const arrowStartPosition = Vector3.add(
+    Vector3.scale(forward, 0.5),
+    playerPosition
+  )
+
+  const newArrow: ArrowType = {
+    entity: arrowEntity,
+    startPosition: arrowStartPosition,
+    forward,
+    distance: 0
+  }
+  arrows.push(newArrow)
 }
+
+function arrowSystem(dt: number): void {
+  const arrowToRemove: Entity[] = []
+  for (const arrow of arrows) {
+    const transform = Transform.getMutable(arrow.entity)
+    const arrowMove = Vector3.add(
+      transform.position,
+      Vector3.scale(arrow.forward, 5 * dt)
+    )
+    transform.position = arrowMove
+
+    const distance = Vector3.distance(arrow.startPosition, arrowMove)
+    if (distance > MAX_DISTANCE) {
+      arrowToRemove.push(arrow.entity)
+    }
+  }
+
+  arrows = arrows.filter((arrow) => !arrowToRemove.includes(arrow.entity))
+  for (const arrow of arrowToRemove) {
+    entityController.removeEntity(arrow)
+  }
+}
+
+engine.addSystem(arrowSystem)
+
 // Configuration constants
 const MOVE_SPEED = 1
 const ROT_SPEED = 1
@@ -67,56 +117,57 @@ export class MonsterAttackRanged {
   attackSystem = (dt: number): void => {
     const playerPos =
       Transform.getOrNull(engine.PlayerEntity)?.position ?? Vector3.Zero()
-    const monsterPos = Transform.getMutable(this.monster.entity).position
+    const monsterTransform = Transform.getMutableOrNull(this.monster.entity)
+
+    if (monsterTransform == null || this.monster.isDeadAnimation) {
+      return
+    }
+
+    const monsterPos = monsterTransform.position
     const distanceToPlayer = Vector3.distance(playerPos, monsterPos)
     const moveMonsterTowardsPlayer = (
       playerPos: Vector3,
       monsterPos: Vector3,
-      dt: any
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    ) => {
+      dt: number
+    ): void => {
       const directionToPlayer = Vector3.normalize(
-        Vector3.subtract(playerPos, monsterPos) as Vector3
+        Vector3.subtract(playerPos, monsterPos)
       )
       const newPosition = Vector3.add(
         monsterPos,
-        Vector3.scale(directionToPlayer, this.moveSpeed * 2 * dt) as Vector3
+        Vector3.scale(directionToPlayer, this.moveSpeed * dt)
       )
-      Transform.getMutable(this.monster.entity).position = newPosition
-      Transform.getMutable(this.monster.entity).rotation =
-        Quaternion.fromLookAt(newPosition, playerPos)
+
+      monsterTransform.position = newPosition
+      monsterTransform.rotation = Quaternion.fromLookAt(newPosition, playerPos)
     }
-    if (this.hasBeenHit && distanceToPlayer > this.stopDistance) {
+    if (
+      this.hasBeenHit &&
+      distanceToPlayer > this.stopDistance &&
+      distanceToPlayer < MAX_DISTANCE
+    ) {
       moveMonsterTowardsPlayer(playerPos, monsterPos, dt)
-      // Animator.playSingleAnimation(
-      //   this.monster.entity,
-      //   this.monster.walkClip,
-      //   false
-      // )
-    }
-    if (arrow != null) {
-      arrowMove(arrow, dt)
-      // Calculate distance for collision detection
-      const arrowPos = Transform.getMutable(arrow).position
-      const targetPos = Transform.getMutable(this.monster.entity).position
-      const distance = Vector3.distance(arrowPos, targetPos)
-      // Check if the arrow has traveled beyond the maximum distance
-      const traveledDistance = Vector3.distanceSquared(
-        arrowStartPosition,
-        Transform.getMutable(this.monster.entity).position
+      Animator.playSingleAnimation(
+        this.monster.entity,
+        this.monster.walkClip,
+        false
       )
-      if (traveledDistance > MAX_DISTANCE * MAX_DISTANCE) {
-        entityController.removeEntity(arrow)
-        arrow = null
-        return
-      }
+    } else {
+      Animator.playSingleAnimation(
+        this.monster.entity,
+        this.monster.idleClip,
+        false
+      )
+    }
+
+    for (const arrow of arrows) {
+      // Calculate distance for collision detection
+      const arrowPos = Transform.get(arrow.entity).position
+      const targetPos = monsterTransform.position
+      const distance = Vector3.distance(arrowPos, targetPos)
+
       if (distance < 1.5) {
         this.hasBeenHit = true
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const distanceToMonster = Vector3.distance(
-          Transform.get(engine.PlayerEntity).position,
-          Transform.getMutable(this.monster.entity).position
-        )
         if (this.monster.health <= 0) {
           this.monster.onDead()
           this.hasBeenHit = false
@@ -129,27 +180,18 @@ export class MonsterAttackRanged {
         }
 
         this.monster.performAttack(player.getMagic() / 3, false)
-        // const monsterDiceResult = this.monster.rollDice()
-        // const playerDiceResult = player.rollDice()
+        const monsterDiceResult = this.monster.rollDice()
+        const playerDiceResult = player.rollDice()
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const playerAttack = Math.round(
-          player.getPlayerAttack(getRandomInt(100) <= player.getCritRate())
-        )
+        const roundedPlayerDice = Math.floor(playerDiceResult)
+        const roundedMonsterDice = Math.floor(monsterDiceResult)
 
-        // MainHUD.getInstance().updateStats(
-        //     `${Math.floor(playerDiceResult)}`,
-        //     `${Math.floor(monsterDiceResult)}`,
-        //     `${playerAttack}`,
-        //     `MISSED`
-        // )
+        const mainHUD = player?.gameController.uiController.mainHud
+        if (mainHUD !== null) {
+          mainHUD.lastPlayerRoll = roundedPlayerDice
+          mainHUD.lastEnemyRoll = roundedMonsterDice
+        }
       }
-    }
-    function arrowMove(arrow: Entity, dt: number): void {
-      const transform = Transform.getMutable(arrow)
-      const forward = Vector3.rotate(Vector3.Forward(), transform.rotation)
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const arrowMove = Vector3.lerp(transform.position, forward, dt * 0.2)
     }
   }
 }

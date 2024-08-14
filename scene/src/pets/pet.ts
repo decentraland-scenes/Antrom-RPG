@@ -6,16 +6,20 @@ import { Player } from '../player/player'
 
 export class Pet extends AnimatedEntity {
   moveSpeed: number = 1
-  constructor(model: string, transform: TransformType) {
+  constructor(model: string, transform: TransformType, moveSpeed: number = 1) {
     super(model, transform)
     console.log('Pet Created')
-    engine.addSystem(this.followPlayerSystem)
-    this.onRemove = this.handleOnRemove
+    engine.addSystem(this.followPlayerSystem.bind(this))
+    this.moveSpeed = moveSpeed
   }
 
   followPlayerSystem = (dt: number): void => {
     const playerPosition = Transform.get(engine.PlayerEntity).position
-    const transform = Transform.getMutable(this.entity)
+    const transform = Transform.getMutableOrNull(this.entity)
+    if (transform === null) {
+      return
+    }
+
     // Face player
     const lookAtTarget = Vector3.create(
       playerPosition.x,
@@ -28,7 +32,8 @@ export class Pet extends AnimatedEntity {
       Quaternion.lookRotation(direction),
       dt
     )
-    Transform.getMutable(this.entity).rotation = newRotation
+    const petMutableTransform = Transform.getMutable(this.entity)
+    petMutableTransform.rotation = newRotation
 
     // Move towards player
     const distance = Vector3.distanceSquared(transform.position, playerPosition)
@@ -39,9 +44,9 @@ export class Pet extends AnimatedEntity {
         Vector3.Forward(),
         transform.rotation
       )
-      const increment = Vector3.scale(forwardVector, dt * 0.25)
-      const newPosition = Vector3.add(playerPosition, increment)
-      Transform.getMutable(this.entity).position = newPosition
+      const increment = Vector3.scale(forwardVector, dt * this.moveSpeed)
+      const newPosition = Vector3.add(petMutableTransform.position, increment)
+      petMutableTransform.position = newPosition
     } else {
       // console.log(distance, ' is the distance to the player')
       utils.timers.setTimeout(() => {
@@ -54,6 +59,6 @@ export class Pet extends AnimatedEntity {
 
   handleOnRemove = (): void => {
     console.log('Pet Removed')
-    engine.removeSystem(this.followPlayerSystem)
+    engine.removeSystem(this.followPlayerSystem.bind(this))
   }
 }

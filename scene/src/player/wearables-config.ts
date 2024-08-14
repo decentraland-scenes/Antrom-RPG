@@ -1,3 +1,9 @@
+import {
+  type BodyPart,
+  wearablesSprite,
+  type WearableType,
+  type WearableString
+} from '../ui/inventory/inventoryData'
 import { wearablesJson } from './wearables-data'
 
 export type Stats = {
@@ -19,16 +25,16 @@ type WearableMappingItem = {
   duplicates?: number
 }
 
-type WearableItemImage = {
-  name: string
+export type WearableItemImage = {
+  name: WearableString
   image: string
 }
 
 type WearableConfigType = {
   spritesheet: string
   json: any
-  wearables: Record<string, WearableItemImage[]>
   mapping: Record<string, WearableMappingItem>
+  wearables: Record<BodyPart, WearableType[]>
 }
 
 export const WearablesConfig: WearableConfigType = {
@@ -40,450 +46,450 @@ export const WearablesConfig: WearableConfigType = {
     head: [
       {
         name: 'BerserkerHelmet',
-        image: 'ABHelm_128x128.png'
+        sprite: wearablesSprite.ABHelm_128x128
       },
       {
         name: 'BerserkerHelmet_level_1',
-        image: 'ABHelm_128x128.png'
+        sprite: wearablesSprite.ABHelm_128x128
       },
       {
         name: 'BerserkerHelmet_level_2',
-        image: 'ABHelm_128x128.png'
+        sprite: wearablesSprite.ABHelm_128x128
       },
       {
         name: 'BerserkerHelmet_level_3',
-        image: 'ABHelm_128x128.png'
+        sprite: wearablesSprite.ABHelm_128x128
       },
       {
         name: 'MontraHelm',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'RoyalHelm',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'FrostMonarchHead',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'ErosHead',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'WastelandHelm',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandMageHelm',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandApexHelm',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandMonarchHelm',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       }
     ],
     body: [
       {
         name: 'WastelandArmor',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandMageArmor',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandApexArmor',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'RoyalMageRobe',
-        image: 'critd.png'
+        sprite: wearablesSprite.critd
       },
       {
         name: 'MageRobe',
-        image: 'AMMage_128x128.png'
+        sprite: wearablesSprite.AMMage_128x128
       },
       {
         name: 'BerserkerSuit',
-        image: 'ABSuit_128x128.png'
+        sprite: wearablesSprite.ABSuit_128x128
       },
       {
         name: 'RangerSuit',
-        image: 'ARSuit_128x128.png'
+        sprite: wearablesSprite.ARSuit_128x128
       },
       {
         name: 'MageRobe_level_1',
-        image: 'AMMage_128x128.png'
+        sprite: wearablesSprite.AMMage_128x128
       },
       {
         name: 'BerserkerSuit_level_1',
-        image: 'ABSuit_128x128.png'
+        sprite: wearablesSprite.ABSuit_128x128
       },
       {
         name: 'RangerSuit_level_1',
-        image: 'ARSuit_128x128.png'
+        sprite: wearablesSprite.ARSuit_128x128
       },
       {
         name: 'MageRobe_level_2',
-        image: 'AMMage_128x128.png'
+        sprite: wearablesSprite.AMMage_128x128
       },
       {
         name: 'BerserkerSuit_level_2',
-        image: 'ABSuit_128x128.png'
+        sprite: wearablesSprite.ABSuit_128x128
       },
       {
         name: 'RangerSuit_level_2',
-        image: 'ARSuit_128x128.png'
+        sprite: wearablesSprite.ARSuit_128x128
       },
       {
         name: 'MageRobe_level_3',
-        image: 'AMMage_128x128.png'
+        sprite: wearablesSprite.AMMage_128x128
       },
       {
         name: 'BerserkerSuit_level_3',
-        image: 'ABSuit_128x128.png'
+        sprite: wearablesSprite.ABSuit_128x128
       },
       {
         name: 'RangerSuit_level_3',
-        image: 'ARSuit_128x128.png'
+        sprite: wearablesSprite.ARSuit_128x128
       },
       {
         name: 'MontraArmor',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'RoyalArmor',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'FrostMonarchBody',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'LumberJack',
-        image: 'LumberJack.png'
+        sprite: wearablesSprite.LumberJack
       },
       {
         name: 'Butcher',
-        image: 'butcher.png'
+        sprite: wearablesSprite.butcher
       },
       {
         name: 'Miner',
-        image: 'miner.png'
+        sprite: wearablesSprite.miner
       },
       {
         name: 'ErosBody',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'WastelandMonarchUpper',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       }
     ],
     legs: [
       {
         name: 'MontraTrousers',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'RoyalTrousers',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'WastelandPants',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandMagePants',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandApexPants',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'WastelandMonarchLower',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       }
     ],
     feet: [
       {
         name: 'LeatherBoots',
-        image: 'critd.png'
+        sprite: wearablesSprite.critd
       },
       {
         name: 'RoyalMageBoots',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'BugHunters',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       }
     ],
     mainhand: [
       {
         name: 'RoyalMageStaff',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'IceSword',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       },
       {
         name: 'Lute',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'NightmareBow',
-        image: 'critd.png'
+        sprite: wearablesSprite.critd
       },
       {
         name: 'DeathwhisperDagger',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'EnigmaStaff',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'CarnageBlade',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       },
       {
         name: 'YuleTideSlayer',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'MageSceptre',
-        image: 'AMStaff_128x128.png'
+        sprite: wearablesSprite.AMStaff_128x128
       },
       {
         name: 'BerserkerAxe',
-        image: 'ABSword_128x128.png'
+        sprite: wearablesSprite.ABSword_128x128
       },
       {
         name: 'RangerBow',
-        image: 'ARBow_128x128.png'
+        sprite: wearablesSprite.ARBow_128x128
       },
       {
         name: 'MageSceptre_level_1',
-        image: 'AMStaff_128x128.png'
+        sprite: wearablesSprite.AMStaff_128x128
       },
       {
         name: 'BerserkerAxe_level_1',
-        image: 'ABSword_128x128.png'
+        sprite: wearablesSprite.ABSword_128x128
       },
       {
         name: 'RangerBow_level_1',
-        image: 'ARBow_128x128.png'
+        sprite: wearablesSprite.ARBow_128x128
       },
       {
         name: 'MageSceptre_level_2',
-        image: 'AMStaff_128x128.png'
+        sprite: wearablesSprite.AMStaff_128x128
       },
       {
         name: 'BerserkerAxe_level_2',
-        image: 'ABSword_128x128.png'
+        sprite: wearablesSprite.ABSword_128x128
       },
       {
         name: 'RangerBow_level_2',
-        image: 'ARBow_128x128.png'
+        sprite: wearablesSprite.ARBow_128x128
       },
       {
         name: 'MageSceptre_level_3',
-        image: 'AMStaff_128x128.png'
+        sprite: wearablesSprite.AMStaff_128x128
       },
       {
         name: 'BerserkerAxe_level_3',
-        image: 'ABSword_128x128.png'
+        sprite: wearablesSprite.ABSword_128x128
       },
       {
         name: 'RangerBow_level_3',
-        image: 'ARBow_128x128.png'
+        sprite: wearablesSprite.ARBow_128x128
       },
       {
         name: 'MagicBow',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'MagicSword',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'MagicAxe',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       },
       {
         name: 'FireBow',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'FireSword',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'FireAxe',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       },
       {
         name: 'RoyalSword',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'DoubleHackets',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'WastelandWrathblade',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'PromoWoodenSword',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'ICEScepter',
-        image: 'ICEScepter.png'
+        sprite: wearablesSprite.ICEScepter
       },
       {
         name: 'MontraAxe',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'ErosBow',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'OligarHalberd',
-        image: 'critd.png'
+        sprite: wearablesSprite.critd
       },
       {
         name: 'Legionnaire',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       }
     ],
     offhand: [
       {
         name: 'RoyalShield',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'CandyCaneCover',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'FrostMonarchShield',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'WastelandCape',
-        image: 'def.png'
+        sprite: wearablesSprite.def
       },
       {
         name: 'MontraShield',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       }
     ],
     extra: [
       {
         name: 'RoyalMageCloak',
-        image: 'critd.png'
+        sprite: wearablesSprite.critd
       },
       {
         name: 'GodricsRevenge',
-        image: 'critr.png'
+        sprite: wearablesSprite.critr
       },
       {
         name: 'MontraDeathGlare',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'RudolphRampage',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'FlightByKnight',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'ScalyGloves',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'LavaGloves',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'RoyalGauntlets',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'ButchersMask',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'CitadelGauntlets',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       }
     ],
     crown: [
       // confirm placement
       {
         name: 'ICECrown',
-        image: 'ICECrown.png'
+        sprite: wearablesSprite.ICECrown
       },
       {
         name: 'BronzeCrown',
-        image: 'attack.png'
+        sprite: wearablesSprite.attack
       },
       {
         name: 'CrystalCrown',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       },
       {
         name: 'CallanCrown',
-        image: 'luck.png'
+        sprite: wearablesSprite.luck
       },
       {
         name: 'MageHat',
-        image: 'AMHat_128x128.png'
+        sprite: wearablesSprite.AMHat_128x128
       },
       {
         name: 'RangerHood',
-        image: 'ARHood_128x128.png'
+        sprite: wearablesSprite.ARHood_128x128
       },
       {
         name: 'MageHat_level_1',
-        image: 'AMHat_128x128.png'
+        sprite: wearablesSprite.AMHat_128x128
       },
       {
         name: 'RangerHood_level_1',
-        image: 'ARHood_128x128.png'
+        sprite: wearablesSprite.ARHood_128x128
       },
       {
         name: 'MageHat_level_2',
-        image: 'AMHat_128x128.png'
+        sprite: wearablesSprite.AMHat_128x128
       },
       {
         name: 'RangerHood_level_2',
-        image: 'ARHood_128x128.png'
+        sprite: wearablesSprite.ARHood_128x128
       },
       {
         name: 'MageHat_level_3',
-        image: 'AMHat_128x128.png'
+        sprite: wearablesSprite.AMHat_128x128
       },
       {
         name: 'RangerHood_level_3',
-        image: 'ARHood_128x128.png'
+        sprite: wearablesSprite.ARHood_128x128
       },
       {
         name: 'WastelandMonarchSet',
-        image: 'health.png'
+        sprite: wearablesSprite.health
       }
     ]
   },

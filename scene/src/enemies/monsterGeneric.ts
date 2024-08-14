@@ -32,11 +32,8 @@ export abstract class GenericMonster extends Character {
 
   setupAttackTriggerBox(scale: Vector3 = Vector3.create(8, 2, 8)): void {
     this.cleanup()
-
     this.attackTrigger = entityController.addEntity()
-
     Transform.create(this.attackTrigger, { parent: this.entity })
-
     utils.triggers.addTrigger(
       this.attackTrigger,
       1,
@@ -48,9 +45,14 @@ export abstract class GenericMonster extends Character {
         currentlyAttackingMontserList.push(this)
       },
       () => {
-        if (this.healthBar != null)
+        if (this.healthBar != null) {
           entityController.removeEntity(this.healthBar)
-        if (this.label != null) entityController.removeEntity(this.label)
+          this.healthBar = null
+        }
+        if (this.label != null) {
+          entityController.removeEntity(this.label)
+          this.label = null
+        }
         const index = currentlyAttackingMontserList.indexOf(this)
         if (index > -1) {
           currentlyAttackingMontserList.splice(index, 1)
@@ -109,16 +111,16 @@ export abstract class GenericMonster extends Character {
   cleanup(): void {
     if (this.attackTrigger !== null) {
       entityController.removeEntity(this.attackTrigger)
+      this.attackTrigger = null
     }
     if (this.healthBar !== null) {
       entityController.removeEntity(this.healthBar)
+      this.healthBar = null
     }
     if (this.label !== null) {
       entityController.removeEntity(this.label)
+      this.label = null
     }
-    this.attackTrigger = null
-    this.healthBar = null
-    this.label = null
   }
 
   setTopOffset(offset: number): void {

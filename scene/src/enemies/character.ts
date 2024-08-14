@@ -70,6 +70,8 @@ export class Character {
   }
 
   set health(value: number) {
+    console.log({ value })
+    // debugger
     this._health = value
   }
 

@@ -19,7 +19,9 @@ function BottomBar({
   levelXp,
   currentHpPercent,
   level,
-  slotsData
+  slotsData,
+  hasPotion,
+  onTryPotion
 }: BottomBarProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -289,6 +291,33 @@ function BottomBar({
             value: level.toString(),
             fontSize: canvasInfo.width * HEIGTH_FACTOR * 0.1,
             textAlign: 'middle-center'
+          }}
+        />
+        <UiEntity
+          uiTransform={{
+            width: canvasInfo.width * WIDTH_FACTOR * 0.06,
+            height: canvasInfo.width * WIDTH_FACTOR * 0.06,
+            positionType: 'absolute',
+            position: {
+              bottom: canvasInfo.width * HEIGTH_FACTOR * 0.1,
+              left: canvasInfo.width * WIDTH_FACTOR * 0.54
+            }
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            texture: {
+              src: hasPotion
+                ? bottomBarSprites.potionEnabled.atlasSrc
+                : bottomBarSprites.potionDisabled.atlasSrc
+            },
+            uvs: getUvs(
+              hasPotion
+                ? bottomBarSprites.potionEnabled
+                : bottomBarSprites.potionDisabled
+            )
+          }}
+          onMouseDown={() => {
+            onTryPotion()
           }}
         />
       </UiEntity>

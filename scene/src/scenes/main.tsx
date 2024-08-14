@@ -1,7 +1,9 @@
 import { Color4 } from '@dcl/sdk/math'
 import { GetPlayerInfo, GetPlayerInventory, GetPlayerLevels } from '../api/api'
 import { GameController } from '../controllers/game.controller'
+import { LEVEL_TYPES } from '../player/LevelManager'
 import { Player } from '../player/player'
+import { CLASS_MAIN_SKILL } from '../player/skills/classes-main-skill'
 import {
   type CharacterClasses,
   type CharacterRaces,
@@ -13,8 +15,6 @@ import {
   setPlayerPosition,
   waitNextTick
 } from '../utils/engine'
-import { LEVEL_TYPES } from '../player/LevelManager'
-import { CLASS_MAIN_SKILL } from '../player/skills/classes-main-skill'
 
 let gameInstance: GameController
 

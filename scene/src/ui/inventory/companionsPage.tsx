@@ -11,11 +11,9 @@ import { engine, UiCanvasInformation } from '@dcl/sdk/ecs'
 
 type CompanionsPageProps = {
   selectedCompanion: CompanionType | undefined
-  equipedCompanion: CompanionType | undefined
   selectCompanion: (companion: CompanionType) => void
   onClickButton: () => void
   buttonSprite: Sprite
-  purchasedCompanions: Array<CompanionType | undefined>
 }
 
 function CompanionSlot(
@@ -74,11 +72,9 @@ function CompanionSlot(
 
 function CompanionsPage({
   selectedCompanion,
-  equipedCompanion,
   selectCompanion,
   buttonSprite,
-  onClickButton,
-  purchasedCompanions
+  onClickButton
 }: CompanionsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
 

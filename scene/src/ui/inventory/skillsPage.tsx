@@ -257,7 +257,7 @@ function SkillsPage({
 
         {generalSkills
           .slice(
-            generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1),
+            generalSkillsIndex * GENERAL_SKILLS_TO_SHOW,
             generalSkillsIndex * (GENERAL_SKILLS_TO_SHOW - 1) +
               GENERAL_SKILLS_TO_SHOW
           )

@@ -117,6 +117,7 @@ export class MonsterMobAuto extends GenericMonster {
 
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
+    this.setupRangedAttackTriggerBox()
 
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
@@ -176,12 +177,16 @@ export class MonsterMobAuto extends GenericMonster {
       () => {
         console.log('trigger Ranged attack')
         if (this.isDeadAnimation) return
-        engine.addSystem(this.attackSystemRanged.attackSystem)
+        engine.addSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
       },
       () => {
         console.log('im out')
         if (this.isDeadAnimation) return
-        engine.removeSystem(this.attackSystemRanged.attackSystem)
+        engine.removeSystem(
+          this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+        )
         Animator.stopAllAnimations(this.entity)
         Animator.playSingleAnimation(this.entity, this.idleClip)
       }
