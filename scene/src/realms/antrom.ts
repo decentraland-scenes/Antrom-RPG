@@ -38,6 +38,8 @@ import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
 import { entityController } from './entityController'
 import Minion from '../enemies/hardDungeons/DungeonBossHelp'
+import { getRandomIntRange } from '../utils/getRandomInt'
+import EntityManager from '../entity-manager/EntityManager'
 
 export class Antrom implements Realm {
   // BuildBuilderSceneAntrom
@@ -288,9 +290,49 @@ export class Antrom implements Realm {
       new BerryTree(this.gameController, Items.berryTree),
       new BerryTree(this.gameController, Items.berryTree)
     ]
-    for (let i = 0; i < 6; i++) {
-      this.executioners.push(new Executioner())
-    }
+
+    let nextEntityEnumId = getRandomIntRange(1, 80000)
+
+    utils.timers.setTimeout(() => {
+      const entityManager = EntityManager.getInstance()
+      const maxEntities = EntityManager.getMaxEntities()
+
+      if (entityManager.getEntities().size < maxEntities) {
+        const executioners = Executioner.createExecutioners(maxEntities)
+        executioners.forEach((executioner) => {
+          // Additional logic if needed
+        })
+      } else {
+        console.log(
+          `Maximum number of entities (${maxEntities}) already created.`
+        )
+      }
+
+      // for (let i = 0; i < 6; i++) {
+      //   let newNum = nextEntityEnumId++
+      //   const executioner = new Executioner(newNum)
+      //   this.executioners.push(executioner)
+      // }
+    }, 5 * 1000)
+
+    // let nextEntityEnumId = 1 // Start with a base ID or any other strategy
+
+    // utils.timers.setTimeout(() => {
+    //   const entityManager = EntityManager.getInstance()
+    //   const maxEntities = EntityManager.getMaxEntities()
+
+    //   // Ensure only a fixed number of entities exist
+    //   if (entityManager.getEntities().size < maxEntities) {
+    //     const executioners = Executioner.createExecutioners(maxEntities)
+    //     executioners.forEach((executioner) => {
+    //       // Additional logic if needed
+    //     })
+    //   } else {
+    //     console.log(
+    //       `Maximum number of entities (${maxEntities}) already created.`
+    //     )
+    //   }
+    // }, 5 * 1000)
 
     for (let i = 0; i < 4; i++) {
       this.pigs.push(new Pig(this.gameController))

@@ -9,6 +9,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
 import { type MonsterOligar } from './monster'
+import { syncEntity } from '@dcl/sdk/network'
 
 type ArrowType = {
   entity: Entity
@@ -33,6 +34,9 @@ export function shootArrow(distance: number = MAX_DISTANCE): void {
     position: playerPosition,
     rotation: playerRotation
   })
+
+  // Sync the arrow entity to ensure all players see it the same way
+  syncEntity(arrowEntity, [Transform.componentId])
 
   // Calculate the forward direction and set the initial position
   const forward = Vector3.rotate(Vector3.Forward(), playerRotation)
@@ -59,6 +63,9 @@ function arrowSystem(dt: number): void {
       Vector3.scale(arrow.forward, 5 * dt)
     )
     transform.position = arrowMove
+
+    // Sync the updated transform of the arrow entity
+    syncEntity(arrow.entity, [Transform.componentId])
 
     const distance = Vector3.distance(arrow.startPosition, arrowMove)
     if (distance > MAX_DISTANCE) {

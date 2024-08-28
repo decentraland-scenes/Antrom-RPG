@@ -22,6 +22,7 @@ import { MonsterAttackRanged } from './monsterAttackRanged'
 import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
+import { triggerSceneEmote } from '~system/RestrictedActions'
 
 export class MonsterMobAuto extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -310,11 +311,18 @@ export class MonsterMobAuto extends GenericMonster {
       return
     }
 
+    if (this.dieClip) {
+      Animator.playSingleAnimation(this.entity, this.dieClip)
+    }
+
     // const random = Math.random() * 1000
     if (refreshtimer > 0) {
       return
     }
     setRefreshTimer(1)
+
+    triggerSceneEmote({ src: 'assets/models/Axe_Combo.glb' })
+    //triggerSceneEmote({ src: 'assets/models/Bow_new.glb' })
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()
