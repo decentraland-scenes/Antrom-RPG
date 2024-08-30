@@ -255,6 +255,7 @@ export class MonsterPoison extends GenericMonster {
     Animator.playSingleAnimation(this.entity, this.impactClip)
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
     }
   }
 
@@ -264,6 +265,7 @@ export class MonsterPoison extends GenericMonster {
 
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
       return
     }
 
@@ -307,6 +309,7 @@ export class MonsterPoison extends GenericMonster {
 
         if (this.health <= 0) {
           this.onDead()
+          pointerEventsSystem.removeOnPointerDown(this.entity)
           return
         }
 

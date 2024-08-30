@@ -259,6 +259,7 @@ export class MonsterMage extends GenericMonster {
     Animator.playSingleAnimation(this.entity, this.impactClip)
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
     }
   }
 
@@ -268,6 +269,7 @@ export class MonsterMage extends GenericMonster {
 
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
       return
     }
 
