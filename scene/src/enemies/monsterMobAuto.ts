@@ -321,8 +321,8 @@ export class MonsterMobAuto extends GenericMonster {
     }
     setRefreshTimer(1)
 
-    triggerSceneEmote({ src: 'assets/models/Axe_Combo.glb' })
-    //triggerSceneEmote({ src: 'assets/models/Bow_new.glb' })
+    //triggerSceneEmote({ src: 'assets/models/Axe_Combo.glb' })
+    triggerSceneEmote({ src: 'assets/models/Bow_Updated.glb' })
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()
