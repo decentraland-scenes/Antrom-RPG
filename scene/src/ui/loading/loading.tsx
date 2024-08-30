@@ -1,6 +1,14 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type UIController } from '../../controllers/ui.controller'
 import Canvas from '../canvas/Canvas'
+import { setupWebSocket } from '../../wssServer/websocketService'
+import { LEVEL_TYPES } from '../../player/LevelManager'
+import { Player } from '../../player/player'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
+import { getPlayer } from '@dcl/sdk/src/players'
+import { getRealm } from '~system/Runtime'
+
+const ws = setupWebSocket()
 
 export class LoadingUI {
   private isLoading: boolean
@@ -76,9 +84,60 @@ export class LoadingUI {
               alignItems: 'flex-end'
             }}
             uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
-            onMouseDown={() => {
+            onMouseDown={async () => {
               this.isVisible = false
               console.log('clicked')
+
+              const playerData = await getPlayer()
+              const { realmInfo } = await getRealm({})
+              const player = Player.getInstance()
+              let playerEther = player.inventory.getItemCount(ITEM_TYPES.GEM4)
+              let playerHp = player.health
+              let playerLevel = Player.getInstance().levels.getLevel(
+                LEVEL_TYPES.PLAYER
+
+              )
+
+              let currentClass: any
+
+              const playerClasses = {
+                  cleric: "CLERIC",
+                  mage: "MAGE",
+                  thief: "THIEF",
+                  ranger: "RANGER",
+                  berserker: "BERSERKER",
+                  default: "CLASS",
+              }
+
+              if (player.class === 0) {
+                currentClass = playerClasses.cleric
+            } else if (player.class === 1) {
+                currentClass = playerClasses.mage
+            } else if (player.class === 2) {
+                currentClass = playerClasses.thief
+            } else if (player.class === 3) {
+                currentClass = playerClasses.ranger
+            } else if (player.class === 4) {
+                currentClass = playerClasses.berserker
+            } else {
+                //log("Player class not Found using default")
+                currentClass = playerClasses.default
+            }
+    
+
+  
+              ws.send(
+                  JSON.stringify({
+                      type: "initRoom",
+                      userId: playerData?.userId,
+                      playerName: playerData?.name,
+                      realm: realmInfo?.realmName,
+                      playerClass: currentClass,
+                      playerLevel: playerLevel,
+                      playerHp: playerHp,
+                      playerEther: playerEther,
+                  })
+              )
             }}
           />
         </UiEntity>

@@ -26,8 +26,33 @@ import { CharacterClasses } from '../../ui/creation-player/creationPlayerData'
 import { setTimeout } from '../../utils/lib'
 import { Player } from '../player'
 import { currentlyAttackingMontserList } from '../../enemies/splashAttack'
+import { setupWebSocket } from '../../wssServer/websocketService'
+import { getPlayer } from '@dcl/sdk/src/players'
 
 export let activeSkillsCount = 0
+
+const ws = setupWebSocket()
+
+export function refillHealth(amount: any) {
+  async function sendWSS() {
+    const playerData = await getPlayer()
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          type: 'refillHealth',
+          userId: playerData?.userId,
+          amount: amount
+        })
+      )
+    }
+  }
+  sendWSS()
+  // log(
+  //   `Refilling health for all players
+
+  //     })`
+  // )
+}
 
 export class BerserkerBloodDance extends SkillController {
   constructor() {
@@ -244,6 +269,7 @@ export class ClericHealingTouch extends SkillController {
 
     if (Player.globalHasSkill) {
       player.refillHealthBar(1, true)
+      refillHealth(1)
     } else {
       player.gameController.uiController.displayAnnouncement(
         'Player skills blocked',

@@ -23,6 +23,15 @@ import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
 import { triggerSceneEmote } from '~system/RestrictedActions'
+//
+import { setupWebSocket } from '../wssServer/websocketService'
+import { GameController } from '../controllers/game.controller'
+import { currentlyAttackingMontserList } from './splashAttack'
+import { getUserData } from '~system/UserIdentity'
+import { getPlayer } from '@dcl/sdk/src/players'
+import { displayAnnouncement } from '@dcl/ui-scene-utils'
+
+const ws = setupWebSocket()
 
 export class MonsterMobAuto extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -68,6 +77,550 @@ export class MonsterMobAuto extends GenericMonster {
     this.isDeadAnimation = false
     this.engageDistance = engageDistance
     MonsterMobAuto.setGlobalHasSkill(true)
+
+    ws.onmessage = (event: any) => {
+      const data = JSON.parse(event.data)
+      console.log('Server Data Recieved')
+      switch (data.type) {
+        case 'playerCreateRoom':
+          {
+            console.log('playerCreateRoom')
+            async function createRoom() {
+              // const playerRealm = await getCurrentRealm()
+              console.log('player joined function entered')
+              //UI.userText.visible = true
+              //UI.userText.value = `${data.playerName} joined ${data.roomId}`
+              // setTimeout(2000, () => {
+              //     UI.userText.visible = false
+              // })
+
+              //engine.addEntity(this)
+            }
+            createRoom()
+            // const playerTag = PlayerBoard.usersInRooms.filter((element) =>
+            //     element.value.includes(data.playerName)
+            // );
+
+            // playerTag.forEach(tag => {
+            //     let index = PlayerBoard.usersInRooms.findIndex(
+            //         (element) => element.value === tag.value
+            //     );
+            //     if (index !== -1) {
+            //         PlayerBoard.usersInRooms[index].visible = false;
+            //         PlayerBoard.usersInRooms.splice(index, 1);
+            //         console.log(`Removed UI element for player: ${data.playerName}`);
+            //     } else {
+            //       console.log(`Player UI element not found: ${data.playerName}`);
+            //     }
+            // });
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(
+                JSON.stringify({
+                  type: 'getPlayersForRoom',
+                  userId: data.userId,
+                  realm: data.realm,
+                  playerName: data.playerName,
+                  playerHp: data.playerHp,
+                  playerEther: data.playerEther
+                })
+              )
+              console.log(
+                `getPlayersForRoom: ${data.playerName}, HP: ${data.playerHp}, Realm: ${data.realm}, Room: ${data.roomId}, UserID: ${data.userId}`
+              )
+            }
+
+            //this.initGetPlayersForRoom()
+            // player.createPlayerLabel()
+          }
+          break
+        case 'playerJoinedRoom':
+          {
+            console.log('playerJoinedRoom')
+            async function joinRoom() {
+              // const playerRealm = await getCurrentRealm()
+              console.log('player joined function entered')
+              // UI.userText.visible = true
+              // UI.userText.value = `${data.playerName} joined ${data.roomId}`
+              // setTimeout(2000, () => {
+              //   UI.userText.visible = false
+              // })
+
+              //engine.addEntity(this)
+            }
+            joinRoom()
+
+            // const playerTag = PlayerBoard.usersInRooms.filter((element) =>
+            //   element.value.includes(data.playerName)
+            // )
+
+            // playerTag.forEach((tag) => {
+            //   let index = PlayerBoard.usersInRooms.findIndex(
+            //     (element) => element.value === tag.value
+            //   )
+            //   if (index !== -1) {
+            //     PlayerBoard.usersInRooms[index].visible = false
+            //     PlayerBoard.usersInRooms.splice(index, 1)
+            //     console.log(`Removed UI element for player: ${data.playerName}`)
+            //   } else {
+            //     console.log(`Player UI element not found: ${data.playerName}`)
+            //   }
+            // })
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(
+                JSON.stringify({
+                  type: 'getPlayersForRoom',
+                  userId: data.userId,
+                  realm: data.realm,
+                  playerName: data.playerName,
+                  playerHp: data.playerHp,
+                  playerEther: data.playerEther
+                })
+              )
+
+              console.log(
+                `getPlayersForRoom: ${data.playerName}, HP: ${data.playerHp}, Realm: ${data.realm}, Room: ${data.roomId}, UserID: ${data.userId}`
+              )
+            }
+          }
+          break
+
+        case 'playerLeftToClient':
+          {
+            console.log('playerLeftToClient')
+            async function playerLeft() {
+              console.log('inside player left client side')
+              // UI.userText.visible = true
+              // UI.userText.value = `${data.playerName} left ${data.roomId}`
+              // setTimeout(2000, () => {
+              //   UI.userText.visible = false
+              // })
+              console.log(`user Id data: ${data.userId}`)
+
+              // const playerTag = PlayerBoard.usersInRooms.filter((element) =>
+              //   element.value.includes(data.playerName)
+              // )
+
+              // playerTag.forEach((tag) => {
+              //   let index = PlayerBoard.usersInRooms.findIndex(
+              //     (element) => element.value === tag.value
+              //   )
+              //   if (index !== -1) {
+              //     PlayerBoard.usersInRooms[index].visible = false
+              //     PlayerBoard.usersInRooms.splice(index, 1)
+              //     console.log(
+              //       `Removed UI element for player: ${data.playerName}`
+              //     )
+              //   } else {
+              //     console.log(`Player UI element not found: ${data.playerName}`)
+              //   }
+              // })
+            }
+            playerLeft()
+          }
+          break
+        case 'returnPlayersInRoom':
+          console.log('enter returnPlayersInRoom')
+          if (data.players) {
+            //PlayerBoard.usersInRoom(data.players)
+            console.log('list of players', data.players)
+          } else {
+            console.log('No players data received')
+          }
+          break
+
+        case 'returnRoomsInRealm':
+          console.log('enter returnRoomsInRealm')
+          if (data.rooms) {
+            //PlayerBoard.roomsInRealm(data.rooms)
+            console.log('List of Rooms', data.rooms)
+          } else {
+            console.log('No rooms data received')
+          }
+          break
+
+        case 'returnRoomName':
+          {
+            if (data.roomId) {
+              //PlayerBoard.returnRoomId(data.roomId)
+              console.log(`Entered returnRoomName: ${data.roomId}`)
+            } else {
+              console.log(`Room ${data.roomId} does not exist`)
+            }
+          }
+          break
+
+        case 'roomFullOnJoin':
+          {
+            console.log('room full on join')
+            //PlayerBoard.roomFullOnJoin(data.message)
+          }
+          break
+        case 'changePlayerStatReceive':
+          {
+            console.log(`In player change PLayer Stats`)
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              ws.send(
+                JSON.stringify({
+                  type: 'getPlayersForRoom',
+                  userId: data.userId,
+                  realm: data.realm,
+                  playerName: data.playerName,
+                  playerHp: data.playerHp,
+                  playerEther: data.playerEther
+                })
+              )
+              console.log(`ran playerETHER ${data.playerEther}`)
+            } else {
+              console.log(`ws connection failed`)
+            }
+          }
+          break
+
+        case 'engageEnemyRecieve':
+          {
+            //this.AttackOnCameraEnter()
+            async function EnteredMonsterBox() {
+              console.log('inside enteredMonsterBox')
+              // UI.userText.visible = true
+              // UI.userText.value = `${data.userId} engaged Enemy`
+              // setTimeout(2000, () => {
+              //   UI.userText.visible = false
+              // })
+            }
+            EnteredMonsterBox()
+          }
+          break
+        case 'refillHealth': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+
+          Player.getInstance().refillHealthBar(amount, true)
+
+          //applyWhiteSwirlToLocation(Camera.instance.feetPosition)
+
+          displayAnnouncement(`HP increased by ${amount}`, 4, 2000)
+
+          break
+        }
+
+        case 'decreaseHealth': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+
+          const playerInstance = Player.getInstance()
+          playerInstance.reduceHealth(
+            amount //playerInstance.maxHealth * 0.05
+          )
+          //checkHealth()
+
+          //applyWhiteSwirlToLocation(Camera.instance.feetPosition)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `HP decreased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+
+          break
+        }
+
+        case 'shadowchainPlayerSkill': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+
+          //  Decrease the attack value of your opponent by 20% for 5R.
+          const ATTACK_DEBUFF_PERCENT = amount / 100
+          console.log(`Enemy attack: SKILL DAMAGE ${amount}`)
+          monsterModifiers.updateAtkDebuff(-ATTACK_DEBUFF_PERCENT)
+
+          // const DEF_DEBUFF_PERCENT = amount
+          // monsterModifiers.updateDefBuff(-DEF_DEBUFF_PERCENT)
+
+          //applyGeneralSkillEffectToLocation(Camera.instance.feetPosition, 2000)
+
+          //Monster.setGlobalHasSkill(false)
+
+          utils.timers.setTimeout(() => {
+            monsterModifiers.updateAtkDebuff(ATTACK_DEBUFF_PERCENT)
+            //monsterModifiers.updateDefBuff(DEF_DEBUFF_PERCENT)
+            //Monster.setGlobalHasSkill(true)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `monster skills blocked and attack and def dropped`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+
+          break
+        }
+
+        case 'blockSkills': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+
+          //applyGeneralSkillEffectToLocation(Camera.instance.feetPosition, 2000)
+
+          Player.setGlobalHasSkill(false)
+
+          utils.timers.setTimeout(() => {
+            Player.setGlobalHasSkill(true)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `Player skills blocked!`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+
+          break
+        }
+
+        case 'increaseAttack': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const ATTACK_BUFF = amount
+          Player.getInstance().updateAtkBuff(ATTACK_BUFF)
+          //applyRedSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateAtkBuff(-amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `Attack increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'decreaseAttack': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const ATTACK_BUFF = amount
+          Player.getInstance().updateAtkBuff(-ATTACK_BUFF)
+          //applyRedSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateAtkBuff(amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `Attack decreased by -${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'increaseMagic': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const MAGIC_BUFF = amount
+          Player.getInstance().updateMagic(MAGIC_BUFF)
+          //applyPurpleSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateMagic(-amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `MAGIC increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'increaseCritDamage': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const CRIT_DAMAGE_BUFF = amount
+          //Player.getInstance().updateCritDamage(CRIT_DAMAGE_BUFF)
+          //applyYellowSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            // Player.getInstance().updateCritDamage(-amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `Crit Damage increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+
+          break
+        }
+
+        case 'increaseCritRate': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const CRIT_RATE_BUFF = amount
+          Player.getInstance().updateCritRate(CRIT_RATE_BUFF)
+          // applyCritRateEffectToLocation(Camera.instance.feetPosition)
+          //applyYellowSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateCritRate(-amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `Crit rate increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'increaseLuck': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const LUCK_BUFF_PERCENT = amount
+
+          Player.getInstance().updateLuckBuff(LUCK_BUFF_PERCENT)
+          //applyRainbowSwirlToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateLuckBuff(-LUCK_BUFF_PERCENT)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `LUCK increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'increaseDef': {
+          const amount = data.amount
+          const isCritical = data.isCritical
+          const DEF_BUFF = amount
+          Player.getInstance().updateDefBuff(DEF_BUFF)
+          //applyDefSkillEffectToLocation(Camera.instance.feetPosition)
+
+          utils.timers.setTimeout(() => {
+            Player.getInstance().updateDefBuff(-amount)
+          }, isCritical * 1000)
+
+          // this.gameController.uiController.displayAnnouncement(
+          //   `DEF increased by ${amount}`,
+          //   Color4.Yellow(),
+          //   2000
+          // )
+          break
+        }
+
+        case 'leaveEnemyRecieve':
+          //this.StopAttackOnCameraLeave()
+          break
+        case 'receiveGlobalSkillPlayerAttack':
+          {
+            switch (true) {
+              case data.random < 300: {
+                // 30% chance
+                //bossDefense()
+                //ui.displayAnnouncement("Oligar Used Divine Shield!")
+                // applyDefSkillEffectToEnemyLocation(
+                //   this.getComponent(Transform).position,
+                //   4000
+                // )
+                //this.playerAttack = this.playerAttack / 2
+
+                break
+              }
+              default: {
+              }
+            }
+          }
+          break
+        case 'receiveMonsterAttackGlobalSkill': {
+          switch (true) {
+            case data.random < 60: {
+              // 6% Chance
+
+              //bossFireball()
+
+              // const ATTACK_BONUS = 75
+              //ui.displayAnnouncement("Oligar Used Fireball!")
+              // applyEnemyAOESkillEffectToLocation(
+              //     this.getComponent(Transform).position,
+              //     6000
+              // )
+              // applyEnemySkillFireBallEffectToLocation(
+              //   Camera.instance.feetPosition,
+              //   6000
+              // )
+              // this.enemyAttack += ATTACK_BONUS
+              // setTimeout(6 * 1000, () => {
+              //    this.enemyAttack -= ATTACK_BONUS
+              // })
+
+              break
+            }
+
+            case data.random < 80: {
+              // 8% Chance
+              // playerIsPoisoned()
+
+              // const damageOverTime = 50 // Adjust damage per tick as needed
+              // const tickInterval = 2000 // Adjust interval between ticks as needed
+              // //ui.displayAnnouncement("POISON TAKES EFFECT!")
+              // console.log('before')
+              // //@ts-ignore
+              // const timer = setInterval(() => {
+              //   this.attackPlayer(damageOverTime)
+              //   //ui.displayAnnouncement("POISON HIT HERO!", 1)
+              // }, tickInterval)
+
+              // setTimeout(10 * 1000, () => {
+              //   //ui.displayAnnouncement("POISON DONE HERO!", 1)
+              //   //@ts-ignore
+              //   clearInterval(timer) // Stop the DOT when the poison duration is over
+              // }) // 15 seconds
+
+              // if (player.health <= 0) {
+              //   //@ts-ignore
+              //   clearInterval(timer) // Stop the DOT if the monster is defeated
+              // }
+
+              break
+            }
+
+            case data.random < 150: {
+              // 15% chance
+              // bossHeal()
+
+              // //refill wss call
+              // this.refillHealthBar(0.025)
+              // //ui.displayAnnouncement("Oligar Healed Itself By 25%!")
+              // applyEnemyHealedEffectToLocation(
+              //   this.getComponent(Transform).position
+              // )
+
+              break
+            }
+            default: {
+            }
+          }
+        }
+        case 'recievePlayerAttack':
+          {
+            this.performAttack(data.playerAttack, data.isCriticalAttack)
+            monsterModifiers.activeSkills.forEach((skill) => {
+              skill(data.isCriticalAttack, true, data.reduceHealthBy, this)
+            })
+
+            console.log('player attack: ', data.playerAttack)
+          }
+          break
+
+        case 'receivePlayerHitMonster':
+          this.handleAttack()
+          break
+      }
+    }
   }
 
   initMonster(): void {
@@ -363,7 +916,19 @@ export class MonsterMobAuto extends GenericMonster {
           break
         }
       }
-      this.performAttack(playerAttack, isCriticalAttack)
+      //this.performAttack(playerAttack, isCriticalAttack)
+      const playerData = getPlayer()
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(
+          JSON.stringify({
+            type: 'sendPlayerAttack',
+            playerAttack: playerAttack,
+            userId: playerData?.userId,
+            isCriticalAttack: isCriticalAttack,
+            reduceHealthBy: reduceHealthBy
+          })
+        )
+      }
 
       // MainHUD.getInstance().updateStats(
       //     `${roundedPlayerDice}`,
@@ -418,8 +983,19 @@ export class MonsterMobAuto extends GenericMonster {
           maxDistance: 7
         }
       },
-      () => {
-        this.handleAttack()
+      async () => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          const playerData = await getPlayer()
+          ws.send(
+            JSON.stringify({
+              type: 'sendPlayerHitMonster',
+              userId: playerData?.userId
+            })
+          )
+          //log("Player Hit Monster WSS")
+        } else {
+          this.handleAttack()
+        }
       }
     )
   }

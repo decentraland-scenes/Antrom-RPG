@@ -22,6 +22,10 @@ import { PetManager } from './petManager'
 import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { setupWebSocket } from '../wssServer/websocketService'
+import { getRealm } from '~system/Runtime'
+
+const ws = setupWebSocket()
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -396,7 +400,7 @@ export class Player extends Character {
     return this.level
   }
 
-  updateHealthBar(): void {
+  async updateHealthBar(): Promise<void> {
     if (this.health > this.maxHealth) this.health = this.maxHealth
     this.checkHealth()
     // this.hpEvent(this.health, this.maxHealth)
@@ -405,6 +409,25 @@ export class Player extends Character {
     //     this.health,
     //     this.maxHealth
     // )
+    const playerData = await getPlayer()
+
+    const { realmInfo } = await getRealm({})
+    let playerEther = this.inventory.getItemCount(ITEM_TYPES.GEM4)
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(
+            JSON.stringify({
+                type: "changePlayerStats",
+                userId: playerData?.userId,
+                realm: realmInfo?.realmName,
+                playerName: playerData?.name,
+                playerHp: this.health,
+                playerEther: playerEther
+            }),
+            //log(`changePlayerStats: ${this.health}`)
+        )
+        //log(`sent player health to room ${this.health}`)
+    }
   }
 
   updateXpBar(): void {}

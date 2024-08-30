@@ -8,6 +8,11 @@ import { entityController } from '../realms/entityController'
 import MonsterMobAuto from './monsterMobAuto'
 import { syncEntity } from '@dcl/sdk/network'
 import EntityManager from '../entity-manager/EntityManager'
+import { getPlayer } from '@dcl/sdk/src/players'
+import { getRealm } from '~system/Runtime'
+import { setupWebSocket } from '../wssServer/websocketService'
+
+const ws = setupWebSocket()
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -68,7 +73,7 @@ export default class Executioner extends MonsterMobAuto {
     )
   }
 
-  onDropXp(): void {
+  async onDropXp(): Promise<void> {
     const player = Player.getInstance()
     const xp = getRandomIntRange(this.xp, this.xp + 10)
     const randomNumber = Math.random()
@@ -105,6 +110,30 @@ export default class Executioner extends MonsterMobAuto {
     if (this.entity) {
       EntityManager.getInstance().removeEntity(this.entity)
     }
+
+    const playerData = getPlayer()
+
+    const { realmInfo } = await getRealm({})
+    let playerEther = player.inventory.getItemCount(ITEM_TYPES.GEM4)
+
+    const playerInstance = Player.getInstance()
+    let playerHp = playerInstance.health
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(
+        JSON.stringify({
+          type: 'changePlayerStats',
+          userId: playerData?.userId,
+          realm: realmInfo?.realmName,
+          playerName: playerData?.name,
+          playerHp: playerHp,
+          playerEther: playerEther
+        })
+        //log(`changePlayerStats: ${this.health}`)
+      )
+      //log(`sent player health to room ${this.health}`)
+    }
+    //}
   }
 
   setupAttackTriggerBox(): void {
