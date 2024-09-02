@@ -295,6 +295,8 @@ export class InventoryController {
             equipSkill={this.equipSkill.bind(this)}
             disableSkill={this.disableSkill.bind(this)}
             selectSkillType={this.selectSkillType.bind(this)}
+            showEquip={this.showEquipButton}
+            showUnequip={this.showUnequipButton}
           />
         )
         break

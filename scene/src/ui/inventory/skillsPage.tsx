@@ -31,6 +31,8 @@ type SkillsPageProps = {
   classSkillsRightSprite: Sprite
   classSkillsIndex: number
   playerLevel: number
+  showEquip: boolean
+  showUnequip: boolean
 }
 
 function SkillsPage({
@@ -54,7 +56,9 @@ function SkillsPage({
   scrollLeftGeneralSkills,
   scrollRightGeneralSkills,
   equipSkill,
-  disableSkill
+  disableSkill,
+  showEquip,
+  showUnequip
 }: SkillsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
 
@@ -180,15 +184,15 @@ function SkillsPage({
         <UiEntity
           uiTransform={{
             width: '100%',
-            height: '30%',
+            height: '12%',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'space-between'
           }}
         >
           {/* Equip Skill Button */}
-          <UiEntity
-            uiTransform={{ width: '70%', height: '45%' }}
+          {showEquip && <UiEntity
+            uiTransform={{ width: '70%', height: '100%' }}
             uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(equipButtonSprite),
@@ -197,10 +201,10 @@ function SkillsPage({
               }
             }}
             onMouseDown={equipSkill}
-          />
+          />}
           {/* Unequip Skill Button */}
-          <UiEntity
-            uiTransform={{ width: '70%', height: '45%' }}
+          {showUnequip && <UiEntity
+            uiTransform={{ width: '70%', height: '100%' }}
             uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(unequipButtonSprite),
@@ -209,7 +213,7 @@ function SkillsPage({
               }
             }}
             onMouseDown={disableSkill}
-          />
+          />}
         </UiEntity>
       </UiEntity>
       {/* General Skills */}
