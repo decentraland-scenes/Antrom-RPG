@@ -182,10 +182,10 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.height * 0.05,
-              height: canvasInfo.height * 0.05,
+              width: pageWidth * 0.04,
+              height: pageWidth * 0.04,
               positionType: 'absolute',
-              position: { top: '40%', right: '-13%' }
+              position: { top: '0%', right: '-15%' }
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -198,6 +198,7 @@ function Inventory({
               showInventory(false)
             }}
           />
+          
         </UiEntity>
 
         {inventory !== undefined && (
@@ -240,6 +241,7 @@ function Inventory({
             {professions()}
           </UiEntity>
         )}
+        
       </UiEntity>
     </Canvas>
   )
