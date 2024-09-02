@@ -61,15 +61,23 @@ function SkillsPage({
   showUnequip
 }: SkillsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
+
 
   return (
     <UiEntity
       uiTransform={{
         width: '100%',
         height: '100%',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
-        flexDirection: 'column'
+        flexDirection: 'row'
       }}
       uiBackground={{
         textureMode: 'stretch',
@@ -80,12 +88,21 @@ function SkillsPage({
       {/* Selected Skill Sprite */}
       <UiEntity
         uiTransform={{
-          width: canvasInfo.width * 0.06,
-          height: canvasInfo.width * 0.06,
+          width: '27.5%',
+          height: '80%',
+          margin:{left:'1.5%'},
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}
+ >
+      <UiEntity
+        uiTransform={{
+          width: pageWidth * 0.06,
+          height: pageWidth * 0.06,
           positionType: 'absolute',
           position: {
-            top: canvasInfo.width * 0.045,
-            left: canvasInfo.width * 0.03
+            top: '3%',
+            left: '10%'
           }
         }}
         uiBackground={{
@@ -97,15 +114,15 @@ function SkillsPage({
           }
         }}
       />
-      {/* Selected Skill Name & Type */}
+      {/* Selected Skill Name  */}
       <UiEntity
         uiTransform={{
-          width: canvasInfo.width * 0.12,
-          height: canvasInfo.width * 0.06,
+          width: pageWidth * 0.16,
+          height: pageWidth * 0.06,
           positionType: 'absolute',
           position: {
-            top: canvasInfo.width * 0.045,
-            left: canvasInfo.width * 0.1
+            top: '3%',
+            left: pageWidth * 0.1
           },
           flexDirection: 'column',
           alignItems: 'flex-start',
@@ -114,31 +131,30 @@ function SkillsPage({
       >
         {/* Selected Skill Type */}
         <UiEntity
-          uiTransform={{ width: '100%', height: canvasInfo.width * 0.012 }}
+          uiTransform={{ width: '100%', height: pageWidth * 0.012 }}
           uiText={{
             value: selectedSkillType,
-            fontSize: canvasInfo.width * 0.012,
+            fontSize: pageWidth * 0.015,
             textAlign: 'top-left'
           }}
         />
         {/* Selected Skill Name */}
         <UiEntity
-          uiTransform={{ width: '100%', height: canvasInfo.width * 0.015 }}
+          uiTransform={{ width: '100%', height: pageWidth * 0.015, margin:{top:'2%'} }}
           uiText={{
             value: selectedSkill !== undefined ? selectedSkill.name : '',
-            fontSize: canvasInfo.width * 0.015,
+            fontSize: pageWidth * 0.018,
             textAlign: 'top-left'
           }}
         />
       </UiEntity>
       <UiEntity
         uiTransform={{
-          width: canvasInfo.width * 0.2,
-          height: canvasInfo.width * 0.23,
+          width: pageWidth * 0.2,
+          height: '75%',
           positionType: 'absolute',
           position: {
-            top: canvasInfo.width * 0.13,
-            left: canvasInfo.width * 0.02
+            top: '25%'
           },
           flexDirection: 'column',
           alignItems: 'flex-start',
@@ -149,7 +165,7 @@ function SkillsPage({
         <UiEntity
           uiTransform={{
             width: '100%',
-            height: '50%',
+            height: '80%',
             flexDirection: 'column',
             justifyContent: 'space-between'
           }}
@@ -163,36 +179,36 @@ function SkillsPage({
                 selectedSkill?.description !== undefined
                   ? selectedSkill.description
                   : '',
-              fontSize: canvasInfo.width * 0.012,
+              fontSize: pageWidth * 0.012,
               textAlign: 'top-left'
             }}
           />
           <UiEntity
             uiTransform={{
-              width: '100%'
+                width: '100%',
+              height:'10%'
             }}
             uiText={{
               value:
                 selectedSkill?.minLevel !== undefined
                   ? 'Required Level: ' + selectedSkill.minLevel.toString()
                   : '',
-              fontSize: canvasInfo.width * 0.012,
+              fontSize: pageWidth * 0.012,
               textAlign: 'top-left'
             }}
           />
-        </UiEntity>
-        <UiEntity
-          uiTransform={{
-            width: '100%',
-            height: '12%',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-          }}
-        >
-          {/* Equip Skill Button */}
+          </UiEntity>
+          <UiEntity
+        uiTransform={{
+          width: '100%',
+          height: '12%',
+          alignItems: 'center',
+          flexDirection: 'column'
+        }}
+ >
+        {/* Equip Skill Button */}
           {showEquip && <UiEntity
-            uiTransform={{ width: '70%', height: '100%' }}
+            uiTransform={{ width: '70%', height:'100%' }}
             uiBackground={{
               textureMode: 'stretch',
               uvs: getUvs(equipButtonSprite),
@@ -213,8 +229,9 @@ function SkillsPage({
               }
             }}
             onMouseDown={disableSkill}
-          />}
-        </UiEntity>
+            />}
+            </UiEntity>
+          </UiEntity>
       </UiEntity>
       {/* General Skills */}
       <UiEntity
@@ -230,8 +247,8 @@ function SkillsPage({
       >
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * 0.03,
-            height: canvasInfo.width * 0.03,
+            width: pageWidth * 0.03,
+            height: pageWidth * 0.03,
             positionType: 'absolute',
             position: { left: 0, top: '-20%' }
           }}
@@ -245,8 +262,8 @@ function SkillsPage({
         />
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * 0.03,
-            height: canvasInfo.width * 0.03,
+            width: pageWidth * 0.03,
+            height: pageWidth * 0.03,
             positionType: 'absolute',
             position: { right: '2.5%', top: '-20%' }
           }}
@@ -304,8 +321,8 @@ function SkillsPage({
       >
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * 0.03,
-            height: canvasInfo.width * 0.03,
+            width: pageWidth * 0.03,
+            height: pageWidth * 0.03,
             positionType: 'absolute',
             position: { left: 0, top: '-20%' }
           }}
@@ -319,8 +336,8 @@ function SkillsPage({
         />
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * 0.03,
-            height: canvasInfo.width * 0.03,
+            width: pageWidth * 0.03,
+            height: pageWidth * 0.03,
             positionType: 'absolute',
             position: { right: '2.5%', top: '-20%' }
           }}

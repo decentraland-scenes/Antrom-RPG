@@ -497,8 +497,8 @@ export class InventoryController {
       return
     }
     if (this.selectedSkill !== undefined) {
-      this.selectSkill(this.selectedSkill)
       const firstFreePosition = this.getLowerSkillIndex()
+
       if (firstFreePosition !== -1) {
         console.log(this.selectedSkill)
         const skill = this.getSelectedSkill(this.selectedSkill.name)
@@ -510,9 +510,12 @@ export class InventoryController {
       } else {
         console.error('You already equipped 6 ksill')
       }
+      this.selectSkill(this.selectedSkill)
+
     } else {
       console.error('You should choise a skill to equip')
     }
+
   }
 
   getLowerSkillIndex(): number {

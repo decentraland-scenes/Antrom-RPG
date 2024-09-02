@@ -36,6 +36,16 @@ function Inventory({
   if (canvasInfo === null) return null
   if (!visibility) return null
 
+
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
+
+
   return (
     <Canvas>
       <UiEntity
@@ -44,20 +54,21 @@ function Inventory({
           height: '100%',
           justifyContent: 'center',
           alignItems: 'center',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          margin:{top:-pageHeight*0.10}
         }}
       >
         <UiEntity
           uiTransform={{
             flexDirection: 'row',
-            height: canvasInfo.width * 0.035,
+            height: pageWidth * 0.045,
             alignItems: 'center'
           }}
         >
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -69,8 +80,8 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03 * 4.71,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04 * 4.71,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -88,8 +99,8 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03 * 4.71,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04 * 4.71,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -107,8 +118,8 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03 * 4.71,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04 * 4.71,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -126,8 +137,8 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03 * 4.71,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04 * 4.71,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -146,8 +157,8 @@ function Inventory({
 
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.03,
-              height: canvasInfo.width * 0.03
+              width: pageWidth * 0.04,
+              height: pageWidth * 0.04
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -158,8 +169,8 @@ function Inventory({
           />
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.035 * 17,
-              height: canvasInfo.width * 0.035,
+              width: pageWidth * 0.79,
+              height: pageWidth * 0.045,
               positionType: 'absolute',
               position: { left: '2.4%' }
             }}
@@ -192,8 +203,8 @@ function Inventory({
         {inventory !== undefined && (
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.8,
-              height: canvasInfo.width * 0.8 * 0.51
+              width: pageWidth,
+              height: pageHeight
             }}
           >
             {inventory()}
@@ -202,8 +213,8 @@ function Inventory({
         {companions !== undefined && (
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.8,
-              height: canvasInfo.width * 0.8 * 0.51
+              width: pageWidth,
+              height: pageHeight
             }}
           >
             {companions()}
@@ -212,8 +223,8 @@ function Inventory({
         {skills !== undefined && (
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.8,
-              height: canvasInfo.width * 0.8 * 0.51
+              width: pageWidth,
+              height: pageHeight
             }}
           >
             {skills()}
@@ -222,8 +233,8 @@ function Inventory({
         {professions !== undefined && (
           <UiEntity
             uiTransform={{
-              width: canvasInfo.width * 0.8,
-              height: canvasInfo.width * 0.8 * 0.51
+              width: pageWidth,
+              height: pageHeight
             }}
           >
             {professions()}
