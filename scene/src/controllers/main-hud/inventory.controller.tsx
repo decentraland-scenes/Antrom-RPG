@@ -128,6 +128,8 @@ export class InventoryController {
   public leftClassSprite: Sprite = skillsPageSprites.leftArrowReg
   public rightClassSprite: Sprite = skillsPageSprites.rightArrowReg
   public selectedSkillType: string = ''
+  public showEquipButton: boolean = false
+  public showUnequipButton: boolean = false
 
   // Inventory Page
   private selectedWearable: WearableType | undefined
@@ -293,6 +295,9 @@ export class InventoryController {
             equipSkill={this.equipSkill.bind(this)}
             disableSkill={this.disableSkill.bind(this)}
             selectSkillType={this.selectSkillType.bind(this)}
+            showEquip={this.showEquipButton}
+            showUnequip={this.showUnequipButton}
+            // getKey={this.getKey.bind(this)}
           />
         )
         break
@@ -356,6 +361,19 @@ export class InventoryController {
 
   selectSkill(skill: SkillDefinition): void {
     this.selectedSkill = skill
+    const player = Player.getInstance()
+    const playerSkills = player.getSkills()
+    const skillAlreadyEquipped = playerSkills.some(
+      (skill) => skill?.definition.name === this.selectedSkill?.name
+    )
+
+    if (skillAlreadyEquipped) {
+      this.showEquipButton = false
+      this.showUnequipButton = true
+    } else {
+      this.showEquipButton = true
+      this.showUnequipButton = false
+    }
   }
 
   increaseGeneralSkillIndex(): void {
@@ -494,6 +512,9 @@ export class InventoryController {
     } else {
       console.error('You should choise a skill to equip')
     }
+    if (this.selectedSkill !== undefined) {
+      this.selectSkill(this.selectedSkill)
+    }
   }
 
   getLowerSkillIndex(): number {
@@ -629,6 +650,9 @@ export class InventoryController {
     } else {
       console.error('You should choise a skill to disable')
     }
+    if (this.selectedSkill !== undefined) {
+      this.selectSkill(this.selectedSkill)
+    }
   }
 
   loadSkills(type: 'class' | 'general'): SkillDefinition[] {
@@ -657,6 +681,37 @@ export class InventoryController {
       this.selectedSkillType = 'General' + ' Skill'
     }
   }
+
+  // getKey(skill: SkillDefinition): string {
+  //   const player = Player.getInstance()
+  //   const playerSkills = player.getSkills()
+  //   const index: number = playerSkills.findIndex(obj => obj?.definition.name === skill.name)
+  //   let key:string = ''
+  //   switch (index) {
+  //     case -1:
+  //       key = ''
+  //       break
+  //     case 0:
+  //       key = '1'
+  //       break
+  //     case 1:
+  //       key = 'E'
+  //       break
+  //     case 2:
+  //       key = 'F'
+  //       break
+  //     case 3:
+  //       key = '2'
+  //       break
+  //     case 4:
+  //       key = '3'
+  //       break
+  //     case 5:
+  //       key = '4'
+  //       break
+  //   }
+  //   return key
+  // }
 
   processStatName(key: string): string {
     let title: string = ''

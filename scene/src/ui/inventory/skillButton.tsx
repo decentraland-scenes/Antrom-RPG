@@ -9,13 +9,15 @@ type SkillButtonType = {
   selectedSkill: SkillDefinition | undefined
   isAvailable: boolean
   selectSkill: (arg: SkillDefinition) => void
+  key: string
 }
 
 export function SkillButton({
   skill,
   selectedSkill,
   isAvailable,
-  selectSkill
+  selectSkill,
+  key
 }: SkillButtonType): ReactEcs.JSX.Element {
   return (
     <UiEntity
@@ -61,6 +63,16 @@ export function SkillButton({
             src: resourcesMarketSprites.selected_frame.atlasSrc
           }
         }}
+      />
+       <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          width: '20%',
+          height: '20%',
+          position: { left: '5%', top: '5%' },
+          display: selectedSkill?.name === skill.name ? 'flex' : 'none'
+        }}
+        uiText={{value:key}}
       />
     </UiEntity>
   )
