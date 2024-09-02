@@ -370,7 +370,14 @@ export class InventoryController {
       this.showEquipButton = false
       this.showUnequipButton = true
     } else {
-      this.showEquipButton = true
+      if (skill.minLevel !== undefined) {
+       if( player.getLevel() >= skill.minLevel) {
+         this.showEquipButton = true
+       } else {
+        this.showEquipButton = false
+        }
+        
+      }else{ this.showEquipButton = true }
       this.showUnequipButton = false
     }
   }
