@@ -27,7 +27,7 @@ function ProfessionsPage({
     pageHeight = canvasInfo.height * 0.7
     pageWidth = 2 * pageHeight
   }
-  
+
   const ITEM_SIZE = pageHeight * 0.35
   const ITEM_MARGIN_Y = pageHeight * 0.025
   const FONT_SIZE = pageHeight * 0.03

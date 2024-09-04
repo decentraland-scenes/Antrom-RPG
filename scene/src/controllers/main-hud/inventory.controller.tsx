@@ -371,13 +371,14 @@ export class InventoryController {
       this.showUnequipButton = true
     } else {
       if (skill.minLevel !== undefined) {
-       if( player.getLevel() >= skill.minLevel) {
-         this.showEquipButton = true
-       } else {
-        this.showEquipButton = false
+        if (player.getLevel() >= skill.minLevel) {
+          this.showEquipButton = true
+        } else {
+          this.showEquipButton = false
         }
-        
-      }else{ this.showEquipButton = true }
+      } else {
+        this.showEquipButton = true
+      }
       this.showUnequipButton = false
     }
   }
@@ -497,7 +498,6 @@ export class InventoryController {
     const skillAlreadyEquipped = playerSkills.some(
       (skill) => skill?.definition.name === this.selectedSkill?.name
     )
-    
 
     if (skillAlreadyEquipped) {
       console.error('This skill is already equipped.')
@@ -518,11 +518,9 @@ export class InventoryController {
         console.error('You already equipped 6 ksill')
       }
       this.selectSkill(this.selectedSkill)
-
     } else {
       console.error('You should choise a skill to equip')
     }
-
   }
 
   getLowerSkillIndex(): number {

@@ -24,20 +24,19 @@ export function SkillButton({
         height: '100%',
         display: skill !== undefined ? 'flex' : 'none',
         justifyContent: 'center',
-        alignItems:'center'
+        alignItems: 'center'
       }}
       onMouseDown={() => {
         selectSkill(skill)
       }}
       // uiBackground={{color:Color4.Blue()}}
     >
-      
       <UiEntity
         uiTransform={{
           positionType: 'absolute',
           position: { left: '5%', top: '5%' },
           width: '90%',
-          height: '90%',
+          height: '90%'
         }}
         uiBackground={{
           textureMode: 'stretch',

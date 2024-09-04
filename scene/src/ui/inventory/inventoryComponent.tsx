@@ -36,7 +36,6 @@ function Inventory({
   if (canvasInfo === null) return null
   if (!visibility) return null
 
-
   let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
   let pageHeight = pageWidth * 0.5
 
@@ -44,7 +43,6 @@ function Inventory({
     pageHeight = canvasInfo.height * 0.7
     pageWidth = 2 * pageHeight
   }
-
 
   return (
     <Canvas>
@@ -55,7 +53,7 @@ function Inventory({
           justifyContent: 'center',
           alignItems: 'center',
           flexDirection: 'column',
-          margin:{top:-pageHeight*0.10}
+          margin: { top: -pageHeight * 0.1 }
         }}
       >
         <UiEntity
@@ -198,7 +196,6 @@ function Inventory({
               showInventory(false)
             }}
           />
-          
         </UiEntity>
 
         {inventory !== undefined && (
@@ -241,7 +238,6 @@ function Inventory({
             {professions()}
           </UiEntity>
         )}
-        
       </UiEntity>
     </Canvas>
   )

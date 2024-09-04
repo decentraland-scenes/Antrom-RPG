@@ -8,7 +8,6 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
-import { Color4 } from '@dcl/ecs-math/dist/Color4'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -64,7 +63,6 @@ function SkillsPage({
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
   let pageHeight = pageWidth * 0.5
-  
 
   if (pageHeight > canvasInfo.height * 0.7) {
     pageHeight = canvasInfo.height * 0.7
@@ -72,7 +70,6 @@ function SkillsPage({
   }
 
   const SKILL_BUTTON_SIZE = pageHeight * 0.1675
-
 
   return (
     <UiEntity
@@ -94,148 +91,156 @@ function SkillsPage({
         uiTransform={{
           width: '27.5%',
           height: '80%',
-          margin:{left:'1.5%'},
+          margin: { left: '1.5%' },
           alignItems: 'center',
           flexDirection: 'column'
         }}
- >
-      <UiEntity
-        uiTransform={{
-          width: pageWidth * 0.06,
-          height: pageWidth * 0.06,
-          positionType: 'absolute',
-          position: {
-            top: '3%',
-            left: '10%'
-          }
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          uvs: getUvs(selectedSkill?.sprite),
-          texture: {
-            src:
-              selectedSkill !== undefined ? selectedSkill.sprite.atlasSrc : ''
-          }
-        }}
-      />
-      {/* Selected Skill Name  */}
-      <UiEntity
-        uiTransform={{
-          width: pageWidth * 0.16,
-          height: pageWidth * 0.06,
-          positionType: 'absolute',
-          position: {
-            top: '3%',
-            left: pageWidth * 0.1
-          },
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'flex-start'
-        }}
       >
-        {/* Selected Skill Type */}
-        <UiEntity
-          uiTransform={{ width: '100%', height: pageWidth * 0.012 }}
-          uiText={{
-            value: selectedSkillType,
-            fontSize: pageWidth * 0.015,
-            textAlign: 'top-left'
-          }}
-        />
-        {/* Selected Skill Name */}
-        <UiEntity
-          uiTransform={{ width: '100%', height: pageWidth * 0.015, margin:{top:'2%'} }}
-          uiText={{
-            value: selectedSkill !== undefined ? selectedSkill.name : '',
-            fontSize: pageWidth * 0.018,
-            textAlign: 'top-left'
-          }}
-        />
-      </UiEntity>
-      <UiEntity
-        uiTransform={{
-          width: pageWidth * 0.2,
-          height: '75%',
-          positionType: 'absolute',
-          position: {
-            top: '25%'
-          },
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'space-between'
-        }}
-      >
-        {/* Selected Skill Description */}
         <UiEntity
           uiTransform={{
-            width: '100%',
-            height: '80%',
+            width: pageWidth * 0.06,
+            height: pageWidth * 0.06,
+            positionType: 'absolute',
+            position: {
+              top: '3%',
+              left: '10%'
+            }
+          }}
+          uiBackground={{
+            textureMode: 'stretch',
+            uvs: getUvs(selectedSkill?.sprite),
+            texture: {
+              src:
+                selectedSkill !== undefined ? selectedSkill.sprite.atlasSrc : ''
+            }
+          }}
+        />
+        {/* Selected Skill Name  */}
+        <UiEntity
+          uiTransform={{
+            width: pageWidth * 0.16,
+            height: pageWidth * 0.06,
+            positionType: 'absolute',
+            position: {
+              top: '3%',
+              left: pageWidth * 0.1
+            },
             flexDirection: 'column',
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start'
+          }}
+        >
+          {/* Selected Skill Type */}
+          <UiEntity
+            uiTransform={{ width: '100%', height: pageWidth * 0.012 }}
+            uiText={{
+              value: selectedSkillType,
+              fontSize: pageWidth * 0.015,
+              textAlign: 'top-left'
+            }}
+          />
+          {/* Selected Skill Name */}
+          <UiEntity
+            uiTransform={{
+              width: '100%',
+              height: pageWidth * 0.015,
+              margin: { top: '2%' }
+            }}
+            uiText={{
+              value: selectedSkill !== undefined ? selectedSkill.name : '',
+              fontSize: pageWidth * 0.018,
+              textAlign: 'top-left'
+            }}
+          />
+        </UiEntity>
+        <UiEntity
+          uiTransform={{
+            width: pageWidth * 0.2,
+            height: '75%',
+            positionType: 'absolute',
+            position: {
+              top: '25%'
+            },
+            flexDirection: 'column',
+            alignItems: 'flex-start',
             justifyContent: 'space-between'
           }}
         >
+          {/* Selected Skill Description */}
           <UiEntity
             uiTransform={{
-              width: '100%'
+              width: '100%',
+              height: '80%',
+              flexDirection: 'column',
+              justifyContent: 'space-between'
             }}
-            uiText={{
-              value:
-                selectedSkill?.description !== undefined
-                  ? selectedSkill.description
-                  : '',
-              fontSize: pageWidth * 0.012,
-              textAlign: 'top-left'
-            }}
-          />
-          <UiEntity
-            uiTransform={{
+          >
+            <UiEntity
+              uiTransform={{
+                width: '100%'
+              }}
+              uiText={{
+                value:
+                  selectedSkill?.description !== undefined
+                    ? selectedSkill.description
+                    : '',
+                fontSize: pageWidth * 0.012,
+                textAlign: 'top-left'
+              }}
+            />
+            <UiEntity
+              uiTransform={{
                 width: '100%',
-              height:'10%'
-            }}
-            uiText={{
-              value:
-                selectedSkill?.minLevel !== undefined
-                  ? 'Required Level: ' + selectedSkill.minLevel.toString()
-                  : '',
-              fontSize: pageWidth * 0.012,
-              textAlign: 'top-left'
-            }}
-          />
+                height: '10%'
+              }}
+              uiText={{
+                value:
+                  selectedSkill?.minLevel !== undefined
+                    ? 'Required Level: ' + selectedSkill.minLevel.toString()
+                    : '',
+                fontSize: pageWidth * 0.012,
+                textAlign: 'top-left'
+              }}
+            />
           </UiEntity>
           <UiEntity
-        uiTransform={{
-          width: '100%',
-          height: '12%',
-          alignItems: 'center',
-          flexDirection: 'column'
-        }}
- >
-        {/* Equip Skill Button */}
-          {showEquip && <UiEntity
-            uiTransform={{ width: '70%', height:'100%' }}
-            uiBackground={{
-              textureMode: 'stretch',
-              uvs: getUvs(equipButtonSprite),
-              texture: {
-                src: equipButtonSprite.atlasSrc
-              }
+            uiTransform={{
+              width: '100%',
+              height: '12%',
+              alignItems: 'center',
+              flexDirection: 'column'
             }}
-            onMouseDown={equipSkill}
-          />}
-          {/* Unequip Skill Button */}
-          {showUnequip && <UiEntity
-            uiTransform={{ width: '70%', height: '100%' }}
-            uiBackground={{
-              textureMode: 'stretch',
-              uvs: getUvs(unequipButtonSprite),
-              texture: {
-                src: unequipButtonSprite.atlasSrc
-              }
-            }}
-            onMouseDown={disableSkill}
-            />}
-            </UiEntity>
+          >
+            {/* Equip Skill Button */}
+            {showEquip && (
+              <UiEntity
+                uiTransform={{ width: '70%', height: '100%' }}
+                uiBackground={{
+                  textureMode: 'stretch',
+                  uvs: getUvs(equipButtonSprite),
+                  texture: {
+                    src: equipButtonSprite.atlasSrc
+                  }
+                }}
+                onMouseDown={equipSkill}
+              />
+            )}
+            {/* Unequip Skill Button */}
+            {showUnequip && (
+              <UiEntity
+                uiTransform={{ width: '70%', height: '100%' }}
+                uiBackground={{
+                  textureMode: 'stretch',
+                  uvs: getUvs(unequipButtonSprite),
+                  texture: {
+                    src: unequipButtonSprite.atlasSrc
+                  }
+                }}
+                onMouseDown={disableSkill}
+              />
+            )}
           </UiEntity>
+        </UiEntity>
       </UiEntity>
       {/* General Skills */}
       <UiEntity
@@ -291,7 +296,7 @@ function SkillsPage({
               key={index}
               uiTransform={{
                 width: SKILL_BUTTON_SIZE,
-                height: SKILL_BUTTON_SIZE,
+                height: SKILL_BUTTON_SIZE
               }}
             >
               <SkillButton
@@ -363,7 +368,7 @@ function SkillsPage({
               key={index}
               uiTransform={{
                 width: SKILL_BUTTON_SIZE,
-                height: SKILL_BUTTON_SIZE,
+                height: SKILL_BUTTON_SIZE
               }}
             >
               <SkillButton
