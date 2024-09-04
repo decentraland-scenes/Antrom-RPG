@@ -20,9 +20,17 @@ function ProfessionsPage({
   selectProfession
 }: ProfessionsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
-  const ITEM_SIZE = canvasInfo.height * 0.25
-  const ITEM_MARGIN_Y = canvasInfo.height * 0.025
-  const FONT_SIZE = canvasInfo.height * 0.025
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
+  
+  const ITEM_SIZE = pageHeight * 0.35
+  const ITEM_MARGIN_Y = pageHeight * 0.025
+  const FONT_SIZE = pageHeight * 0.03
 
   return (
     <UiEntity

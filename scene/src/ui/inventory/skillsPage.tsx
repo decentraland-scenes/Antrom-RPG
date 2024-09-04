@@ -8,6 +8,7 @@ import {
   GENERAL_SKILLS_TO_SHOW
 } from '../bottom-bar/skillsData'
 import { SkillButton } from './skillButton'
+import { Color4 } from '@dcl/ecs-math/dist/Color4'
 
 type SkillsPageProps = {
   selectedSkill: SkillDefinition | undefined
@@ -63,11 +64,14 @@ function SkillsPage({
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
   let pageHeight = pageWidth * 0.5
+  
 
   if (pageHeight > canvasInfo.height * 0.7) {
     pageHeight = canvasInfo.height * 0.7
     pageWidth = 2 * pageHeight
   }
+
+  const SKILL_BUTTON_SIZE = pageHeight * 0.1675
 
 
   return (
@@ -236,13 +240,13 @@ function SkillsPage({
       {/* General Skills */}
       <UiEntity
         uiTransform={{
-          width: '67%',
-          height: '50%',
+          width: pageWidth * 0.68,
+          height: pageHeight * 0.51,
           flexDirection: 'row',
           alignContent: 'flex-start',
           flexWrap: 'wrap',
           positionType: 'absolute',
-          position: { top: '17.25%', left: '31.5%' }
+          position: { top: pageHeight * 0.16, left: pageWidth * 0.31 }
         }}
       >
         <UiEntity
@@ -286,9 +290,8 @@ function SkillsPage({
             <UiEntity
               key={index}
               uiTransform={{
-                width: '11%',
-                height: '29.5%',
-                margin: { bottom: '1.2%', right: '1.45%' }
+                width: SKILL_BUTTON_SIZE,
+                height: SKILL_BUTTON_SIZE,
               }}
             >
               <SkillButton
@@ -310,13 +313,13 @@ function SkillsPage({
       {/* Class Skills */}
       <UiEntity
         uiTransform={{
-          width: '67%',
-          height: '50%',
+          width: pageWidth * 0.68,
+          height: pageHeight * 0.51,
           flexDirection: 'row',
           alignContent: 'flex-start',
           flexWrap: 'wrap',
           positionType: 'absolute',
-          position: { top: '79.5%', left: '31.5%' }
+          position: { top: pageHeight * 0.79, left: pageWidth * 0.31 }
         }}
       >
         <UiEntity
@@ -359,9 +362,8 @@ function SkillsPage({
             <UiEntity
               key={index}
               uiTransform={{
-                width: '11%',
-                height: '29.5%',
-                margin: { bottom: '1.2%', right: '1.45%' }
+                width: SKILL_BUTTON_SIZE,
+                height: SKILL_BUTTON_SIZE,
               }}
             >
               <SkillButton

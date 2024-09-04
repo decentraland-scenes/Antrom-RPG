@@ -31,10 +31,10 @@ export const resourcesMarketSprites: Record<string, Sprite> = {
   selected_frame: {
     atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
     atlasSize: { x: 1403, y: 1194 },
-    x: 558,
-    y: 1032,
-    w: 160,
-    h: 160
+    x: 560,
+    y: 1034,
+    w: 158,
+    h: 158
   },
   max_button: {
     atlasSrc: 'assets/images/resourcemarket_spritesheet.png',
