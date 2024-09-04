@@ -33,6 +33,7 @@ type SkillsPageProps = {
   playerLevel: number
   showEquip: boolean
   showUnequip: boolean
+  getSkillKey: (skill: SkillDefinition) => string
 }
 
 function SkillsPage({
@@ -58,7 +59,8 @@ function SkillsPage({
   equipSkill,
   disableSkill,
   showEquip,
-  showUnequip
+  showUnequip,
+  getSkillKey
 }: SkillsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
   let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
@@ -311,6 +313,7 @@ function SkillsPage({
                   selectSkill(skill)
                   selectSkillType('general')
                 }}
+                getKey={getSkillKey}
               />
             </UiEntity>
           ))}
@@ -383,6 +386,7 @@ function SkillsPage({
                   selectSkill(skill)
                   selectSkillType('class')
                 }}
+                getKey={getSkillKey}
               />
             </UiEntity>
           ))}

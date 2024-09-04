@@ -297,6 +297,7 @@ export class InventoryController {
             selectSkillType={this.selectSkillType.bind(this)}
             showEquip={this.showEquipButton}
             showUnequip={this.showUnequipButton}
+            getSkillKey={this.getSkillKey.bind(this)}
           />
         )
         break
@@ -490,6 +491,40 @@ export class InventoryController {
         }
       }
     }, milisecs)
+  }
+
+  getSkillKey(skill: SkillDefinition): string {
+    const player = Player.getInstance()
+    const playerSkills = player.getSkills()
+    const index: number = playerSkills.findIndex(
+      (obj) => obj?.definition.name === skill.name
+    )
+    let key: string = ''
+
+    switch (index) {
+      case -1:
+        key = ''
+        break
+      case 0:
+        key = '1'
+        break
+      case 1:
+        key = 'E'
+        break
+      case 2:
+        key = 'F'
+        break
+      case 3:
+        key = '2'
+        break
+      case 4:
+        key = '3'
+        break
+      case 5:
+        key = '4'
+        break
+    }
+    return key
   }
 
   equipSkill(): void {
