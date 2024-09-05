@@ -15,6 +15,13 @@ import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
 import { type GameController } from './controllers/game.controller'
 import { entityController } from './realms/entityController'
+import { setRefreshTimer } from './utils/refresherTimer'
+import { Player } from './player/player'
+import { setTimeout } from './utils/lib'
+import { ITEM_TYPES } from './inventory/playerInventoryMap'
+import { LEVEL_TYPES } from './player/LevelManager'
+import { getUserData } from '~system/UserIdentity'
+import { BannerType } from './ui/banner/bannerConstants'
 
 export enum Items {
   tree = 'assets/models/Pine.glb',
@@ -28,6 +35,8 @@ export enum Items {
 export class Rock {
   public rock = entityController.addEntity()
   gameController: GameController
+  private isDead: boolean = false
+
   constructor(
     gameController: GameController,
     rockShape: string,
@@ -82,6 +91,7 @@ export class Rock {
       ]
     })
     engine.addSystem(() => {
+      // const player = Player.getInstance()
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
@@ -92,23 +102,52 @@ export class Rock {
         // if (refreshtimer <= 0 && !player.isMining) {
         //     player.isMining = true
         //     setRefreshTimer(1.5)
-        //     callDyingAnimation()
-        //     setTimeout(9 * 1000, () => {
-        //         isDeadOnce()
+        //     // callDyingAnimation()
+        //     setTimeout(() => {
+        //         this.isDeadOnce()
         //         player.isMining = false
-        //     })
+        //     }, 9 * 1000)
         // }
       }
     })
   }
 
+  isDeadOnce(): void {
+    if (!this.isDead) this.killChar()
+}
+
   removeRock(): void {
     entityController.removeEntity(this.rock)
   }
+
+  killChar(): void {
+    entityController.removeEntity(this.rock)
+    this.rock = entityController.addEntity()
+    Transform.createOrReplace(this.rock, {
+      position: Vector3.create(
+        getRandomInt(12) + 24,
+        3.06,
+        getRandomInt(14) + 38
+      ),
+      rotation: Quaternion.create(
+        0,
+        getRandomInt(10) / 10 + getRandomInt(4),
+        0,
+        1
+      ),
+      scale: Vector3.create(0.04, 0.04, 0.04)
+    })
+    this.isDead = true
+  }
+
 }
+
 export class Tree {
   public tree = entityController.addEntity()
   public gameController: GameController
+  private isDead: boolean = false
+  private isDeadAnimation: boolean = false
+  private readonly haveAnAxe: boolean = false
   constructor(
     gameController: GameController,
     treeShape: string,
@@ -162,6 +201,7 @@ export class Tree {
       ]
     })
     engine.addSystem(() => {
+
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
@@ -169,25 +209,85 @@ export class Tree {
           this.tree
         )
       ) {
+
         // player.isChoppingTree = true
-        // setRefreshTimer(1.5)
-        // callDyingAnimation()
-        // ui.displayAnnouncement(
-        //     `${getPlayerWearables(userData.publicKey)}`
-        // )
-        // //log("MESSAGE", userData.avatar.wearables)
-        // setTimeout(3 * 1000, () => {
-        //     isDeadOnce()
-        //     player.isChoppingTree = false
-        // })
+        setRefreshTimer(1.5)
+        PointerEvents.deleteFrom(this.tree)
+        setTimeout(() => {
+          void this.dyingAnimation()
+          this.isDeadOnce()
+          // player.isChoppingTree = false
+        }, 3 * 1000)
       }
     })
   }
 
-  removeTree(): void {
+  killChar(): void {
     entityController.removeEntity(this.tree)
+    this.tree = entityController.addEntity()
+    Transform.createOrReplace(this.tree, {
+      position: Vector3.create(
+        getRandomInt(12) + 24,
+        3.06,
+        getRandomInt(14) + 38
+      ),
+      rotation: Quaternion.create(
+        0,
+        getRandomInt(10) / 10 + getRandomInt(4),
+        0,
+        1
+      ),
+      scale: Vector3.create(0.04, 0.04, 0.04)
+    })
+    this.isDead = true
   }
-}
+
+  isDeadOnce(): void {
+    if (!this.isDead) this.killChar()
+  }
+
+  // TODO
+  async dyingAnimation(): Promise<void> {
+    const userData = await getUserData({})
+
+    let result = false
+    if (userData.data?.avatar !== undefined) {
+      for (const wearable of userData.data?.avatar?.wearables) {
+        if (
+            wearable ===
+            "urn:decentraland:matic:collections-v2:0x844a933934fba88434dfade0b04b1d211e92d7c4:1"
+        ) {
+            result = true
+        }
+    }
+    }
+
+    const player = Player.getInstance()
+    Animator.playSingleAnimation(this.tree, 'chop')
+    AudioSource.playSound(this.tree, 'assets/sounds/tree.mp3')
+    if (result) {
+      player.inventory.incrementItem(ITEM_TYPES.TREE, 8)
+      this.gameController.uiController.displayBanner(BannerType.B_WOOD_PLUS)
+    } else {
+      player.inventory.incrementItem(ITEM_TYPES.TREE, 5)
+      this.gameController.uiController.displayBanner(BannerType.B_WOOD)
+
+    }
+      player.levels.addXp(LEVEL_TYPES.TREE, 5)
+      this.isDeadAnimation = true
+      // player.writeDataToServer()
+    }
+
+    callDyingAnimation(): void {
+      if(!this.isDeadAnimation) void this.dyingAnimation()
+    }
+
+    removeTree(): void {
+      entityController.removeEntity(this.tree)
+    }
+  }
+
+
 export class BerryTree {
   public berryTree = entityController.addEntity()
   public gameController: GameController
@@ -399,6 +499,7 @@ export class Gem {
       ]
     })
     engine.addSystem(() => {
+      // const player = Player.getInstance()
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
@@ -409,11 +510,11 @@ export class Gem {
         //   if (refreshtimer <= 0 && !player.isMining) {
         //     player.isMining = true
         //     setRefreshTimer(1.5)
-        //     callDyingAnimation()
-        //     setTimeout(6 * 1000, () => {
-        //         isDeadOnce()
+        //     this.callDyingAnimation()
+        //     setTimeout(() => {
+        //         this.isDeadOnce()
         //         player.isMining = false
-        //     })
+        //     }, 6 * 1000)
         // }
       }
     })
