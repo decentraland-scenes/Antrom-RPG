@@ -32,7 +32,7 @@ import Executioner from '../enemies/Executioner'
 import Pig from '../enemies/pig'
 import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
-import { BerryTree, Items, Rock, Tree } from '../mineables'
+import { MineableItem, mineables } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
 import BetaBoss1 from '../enemies/betaBosses/betaBoss1'
 import { type RealmType, type Realm } from './types'
@@ -84,9 +84,9 @@ export class Antrom implements Realm {
   private npc_RandomVillager10 = entityController.addEntity()
   private readonly npc_RandomVillager11 = entityController.addEntity()
   // Mineables
-  private readonly rocks: Rock[]
-  private readonly trees: Tree[]
-  private readonly berryTrees: BerryTree[]
+  private readonly rocks: MineableItem[]
+  private readonly trees: MineableItem[]
+  private readonly berryTrees: MineableItem[]
   // Enemies
   private readonly executioners: Executioner[]
   private readonly pigs: Pig[]
@@ -194,99 +194,225 @@ export class Antrom implements Realm {
     Transform.create(this.skybox, { parent: this.antromForestTest })
 
     this.rocks = [
-      new Rock(this.gameController, Items.rock, 58.79, 1.26, -50.96),
-      new Rock(this.gameController, Items.rock, 50.85, 1.26, -45.08),
-      new Rock(this.gameController, Items.rock, 49.09, 1.26, -54.18),
-      new Rock(this.gameController, Items.rock, 52.56, 1.26, -23.76),
-      new Rock(this.gameController, Items.rock, 83.12, 1.26, -28.51),
-      new Rock(this.gameController, Items.rock, 85.94, 1.26, -15.38),
-      new Rock(this.gameController, Items.rock, 74.72, 1.26, -12.42),
-      new Rock(this.gameController, Items.rock, 55.71, 1.26, -38.81),
-      new Rock(this.gameController, Items.rock, 81.29, 1.26, -54.54),
-      new Rock(this.gameController, Items.rock, 84.09, 1.26, -39.22),
-      new Rock(this.gameController, Items.rock, 90.35, 1.26, -49.22),
-      new Rock(this.gameController, Items.rock, 70.79, 1.26, -61.73),
-      new Rock(this.gameController, Items.rock, 37.59, 4.64, -32.27),
-      new Rock(this.gameController, Items.rock, 28.28, 4.34, -28.64),
-      new Rock(this.gameController, Items.rock, 28.65, 4.49, -19.29),
-      new Rock(this.gameController, Items.rock, 26.89, 5.32, -15.34),
-      new Rock(this.gameController, Items.rock, 44.78, 7.41, 18.91),
-      new Rock(this.gameController, Items.rock, 46.4, 3.76, 52.16),
-      new Rock(this.gameController, Items.rock, 51.94, 4.29, 56.65),
-      new Rock(this.gameController, Items.rock, 50.93, 4.48, 58.95),
-      new Rock(this.gameController, Items.rock, 46.97, 4.25, 57.51),
-      new Rock(this.gameController, Items.rock, 46.97, 4.25, 57.51),
-      new Rock(this.gameController, Items.rock, 65.85, 4.08, 62.56),
-      new Rock(this.gameController, Items.rock, 81.78, 1.26, -13.03),
-      new Rock(this.gameController, Items.rock, 86.76, 1.26, -19.71),
-      new Rock(this.gameController, Items.rock, 58.82, 1.26, -55.88),
-      new Rock(this.gameController, Items.rock, -36.48, 1.43, 40.66),
-      new Rock(this.gameController, Items.rock, -42.15, 0.91, 37.1),
-      new Rock(this.gameController, Items.rock, -49.72, 0.94, 41.47),
-      new Rock(this.gameController, Items.rock, -34.41, 1.72, 41.06)
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        58.79,
+        1.26,
+        -50.96
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        50.85,
+        1.26,
+        -45.08
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        49.09,
+        1.26,
+        -54.18
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        52.56,
+        1.26,
+        -23.76
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        83.12,
+        1.26,
+        -28.51
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        85.94,
+        1.26,
+        -15.38
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        74.72,
+        1.26,
+        -12.42
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        55.71,
+        1.26,
+        -38.81
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        81.29,
+        1.26,
+        -54.54
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        84.09,
+        1.26,
+        -39.22
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        90.35,
+        1.26,
+        -49.22
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        70.79,
+        1.26,
+        -61.73
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        37.59,
+        4.64,
+        -32.27
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        28.28,
+        4.34,
+        -28.64
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        28.65,
+        4.49,
+        -19.29
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        26.89,
+        5.32,
+        -15.34
+      ),
+      new MineableItem(mineables.rock, this.gameController, 44.78, 7.41, 18.91),
+      new MineableItem(mineables.rock, this.gameController, 46.4, 3.76, 52.16),
+      new MineableItem(mineables.rock, this.gameController, 51.94, 4.29, 56.65),
+      new MineableItem(mineables.rock, this.gameController, 50.93, 4.48, 58.95),
+      new MineableItem(mineables.rock, this.gameController, 46.97, 4.25, 57.51),
+      new MineableItem(mineables.rock, this.gameController, 46.97, 4.25, 57.51),
+      new MineableItem(mineables.rock, this.gameController, 65.85, 4.08, 62.56),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        81.78,
+        1.26,
+        -13.03
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        86.76,
+        1.26,
+        -19.71
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        58.82,
+        1.26,
+        -55.88
+      ),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        -36.48,
+        1.43,
+        40.66
+      ),
+      new MineableItem(mineables.rock, this.gameController, -42.15, 0.91, 37.1),
+      new MineableItem(
+        mineables.rock,
+        this.gameController,
+        -49.72,
+        0.94,
+        41.47
+      ),
+      new MineableItem(mineables.rock, this.gameController, -34.41, 1.72, 41.06)
     ]
 
     this.trees = [
-      new Tree(this.gameController, Items.tree, 68.22, 4.23, 37.68),
-      new Tree(this.gameController, Items.tree, 73.37, 4.23, 37.98),
-      new Tree(this.gameController, Items.tree, 80.37, 4.64, 36.38),
-      new Tree(this.gameController, Items.tree, 89.51, 4.77, 35.48),
-      new Tree(this.gameController, Items.tree, 90.65, 5.23, 30.45),
-      new Tree(this.gameController, Items.tree, 90.55, 4.62, 36.34),
-      new Tree(this.gameController, Items.tree, 90.49, 5.25, 30.19),
-      new Tree(this.gameController, Items.tree, 91.11, 5.73, 22.33),
-      new Tree(this.gameController, Items.tree, 89.4, 6.24, 18.29),
-      new Tree(this.gameController, Items.tree, 83.85, 6.3, 14.67),
-      new Tree(this.gameController, Items.tree, 78.96, 6.43, 10.42),
-      new Tree(this.gameController, Items.tree, 73.12, 6.14, 9.67),
-      new Tree(this.gameController, Items.tree, 71.09, 5.95, 14.23),
-      new Tree(this.gameController, Items.tree, 66.51, 5.83, 18.53),
-      new Tree(this.gameController, Items.tree, 65.46, 5.51, 22.22),
-      new Tree(this.gameController, Items.tree, 71.52, 5.42, 21.97),
-      new Tree(this.gameController, Items.tree, 79.16, 5.0, 34.28),
-      new Tree(this.gameController, Items.tree, 68.49, 3.64, 42.92),
-      new Tree(this.gameController, Items.tree, 64.66, 4.09, 41.6),
-      new Tree(this.gameController, Items.tree, 69.33, 4.19, 37.98),
-      new Tree(this.gameController, Items.tree, 32.38, 3.31, 30.82),
-      new Tree(this.gameController, Items.tree, 39.0, 3.73, 34.3),
-      new Tree(this.gameController, Items.tree, 44.22, 4.36, 36.58),
-      new Tree(this.gameController, Items.tree, 50.6, 4.22, 39.34),
-      new Tree(this.gameController, Items.tree, 58.23, 4.3, 41.14),
-      new Tree(this.gameController, Items.tree, 52.7, 4.54, 37.22),
-      new Tree(this.gameController, Items.tree, 47.38, 4.98, 34.14),
-      new Tree(this.gameController, Items.tree, 40.76, 4.4, 31.16),
-      new Tree(this.gameController, Items.tree, 32.67, 4.07, 27.09),
-      new Tree(this.gameController, Items.tree, 26.12, 4.33, 21.41),
-      new Tree(this.gameController, Items.tree, 91.26, 6.91, 12.97),
-      new Tree(this.gameController, Items.tree, 86.65, 6.9, 10.55),
-      new Tree(this.gameController, Items.tree, 81.3, 7.06, 5.46),
-      new Tree(this.gameController, Items.tree, 87.76, 7.7, 5.06),
-      new Tree(this.gameController, Items.tree, 88.3, 5.32, 32.47),
-      new Tree(this.gameController, Items.tree, 55.47, 5.75, 28.67)
+      new MineableItem(mineables.tree, this.gameController, 68.22, 4.23, 37.68),
+      new MineableItem(mineables.tree, this.gameController, 73.37, 4.23, 37.98),
+      new MineableItem(mineables.tree, this.gameController, 80.37, 4.64, 36.38),
+      new MineableItem(mineables.tree, this.gameController, 89.51, 4.77, 35.48),
+      new MineableItem(mineables.tree, this.gameController, 90.65, 5.23, 30.45),
+      new MineableItem(mineables.tree, this.gameController, 90.55, 4.62, 36.34),
+      new MineableItem(mineables.tree, this.gameController, 90.49, 5.25, 30.19),
+      new MineableItem(mineables.tree, this.gameController, 91.11, 5.73, 22.33),
+      new MineableItem(mineables.tree, this.gameController, 89.4, 6.24, 18.29),
+      new MineableItem(mineables.tree, this.gameController, 83.85, 6.3, 14.67),
+      new MineableItem(mineables.tree, this.gameController, 78.96, 6.43, 10.42),
+      new MineableItem(mineables.tree, this.gameController, 73.12, 6.14, 9.67),
+      new MineableItem(mineables.tree, this.gameController, 71.09, 5.95, 14.23),
+      new MineableItem(mineables.tree, this.gameController, 66.51, 5.83, 18.53),
+      new MineableItem(mineables.tree, this.gameController, 65.46, 5.51, 22.22),
+      new MineableItem(mineables.tree, this.gameController, 71.52, 5.42, 21.97),
+      new MineableItem(mineables.tree, this.gameController, 79.16, 5.0, 34.28),
+      new MineableItem(mineables.tree, this.gameController, 68.49, 3.64, 42.92),
+      new MineableItem(mineables.tree, this.gameController, 64.66, 4.09, 41.6),
+      new MineableItem(mineables.tree, this.gameController, 69.33, 4.19, 37.98),
+      new MineableItem(mineables.tree, this.gameController, 32.38, 3.31, 30.82),
+      new MineableItem(mineables.tree, this.gameController, 39.0, 3.73, 34.3),
+      new MineableItem(mineables.tree, this.gameController, 44.22, 4.36, 36.58),
+      new MineableItem(mineables.tree, this.gameController, 50.6, 4.22, 39.34),
+      new MineableItem(mineables.tree, this.gameController, 58.23, 4.3, 41.14),
+      new MineableItem(mineables.tree, this.gameController, 52.7, 4.54, 37.22),
+      new MineableItem(mineables.tree, this.gameController, 47.38, 4.98, 34.14),
+      new MineableItem(mineables.tree, this.gameController, 40.76, 4.4, 31.16),
+      new MineableItem(mineables.tree, this.gameController, 32.67, 4.07, 27.09),
+      new MineableItem(mineables.tree, this.gameController, 26.12, 4.33, 21.41),
+      new MineableItem(mineables.tree, this.gameController, 91.26, 6.91, 12.97),
+      new MineableItem(mineables.tree, this.gameController, 86.65, 6.9, 10.55),
+      new MineableItem(mineables.tree, this.gameController, 81.3, 7.06, 5.46),
+      new MineableItem(mineables.tree, this.gameController, 87.76, 7.7, 5.06),
+      new MineableItem(mineables.tree, this.gameController, 88.3, 5.32, 32.47),
+      new MineableItem(mineables.tree, this.gameController, 55.47, 5.75, 28.67)
     ]
 
     this.berryTrees = [
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree),
-      new BerryTree(this.gameController, Items.berryTree)
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController),
+      new MineableItem(mineables.berryTree, this.gameController)
     ]
     for (let i = 0; i < 6; i++) {
       this.executioners.push(new Executioner())
@@ -1621,13 +1747,13 @@ export class Antrom implements Realm {
     })
 
     this.rocks.forEach((rock) => {
-      rock.removeRock()
+      rock.removeMineable()
     })
     this.trees.forEach((tree) => {
-      tree.removeTree()
+      tree.removeMineable()
     })
     this.berryTrees.forEach((berryTree) => {
-      berryTree.removeBerryTree()
+      berryTree.removeMineable()
     })
   }
 
