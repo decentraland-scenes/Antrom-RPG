@@ -15,13 +15,14 @@ import { Vector3, Quaternion } from '@dcl/sdk/math'
 import { getRandomInt, getRandomIntRange } from './utils/getRandomInt'
 import { type GameController } from './controllers/game.controller'
 import { entityController } from './realms/entityController'
-import { setRefreshTimer } from './utils/refresherTimer'
+import { refreshtimer, setRefreshTimer } from './utils/refresherTimer'
 import { Player } from './player/player'
 import { setTimeout } from './utils/lib'
 import { ITEM_TYPES } from './inventory/playerInventoryMap'
 import { LEVEL_TYPES } from './player/LevelManager'
 import { getUserData } from '~system/UserIdentity'
 import { BannerType } from './ui/banner/bannerConstants'
+import { INVENTORY_ACTION_REASONS } from './inventory/reducer'
 
 export enum Items {
   tree = 'assets/models/Pine.glb',
@@ -36,6 +37,7 @@ export class Rock {
   public rock = entityController.addEntity()
   gameController: GameController
   private isDead: boolean = false
+  private isDeadAnimation: boolean = false
 
   constructor(
     gameController: GameController,
@@ -91,7 +93,6 @@ export class Rock {
       ]
     })
     engine.addSystem(() => {
-      // const player = Player.getInstance()
       if (
         inputSystem.isTriggered(
           InputAction.IA_POINTER,
@@ -99,15 +100,18 @@ export class Rock {
           this.rock
         )
       ) {
-        // if (refreshtimer <= 0 && !player.isMining) {
-        //     player.isMining = true
-        //     setRefreshTimer(1.5)
-        //     // callDyingAnimation()
-        //     setTimeout(() => {
-        //         this.isDeadOnce()
-        //         player.isMining = false
-        //     }, 9 * 1000)
-        // }
+        const player = Player.getInstance()
+        if (refreshtimer <= 0 && !player.isMining) {
+            Animator.playSingleAnimation(this.rock, 'mine')
+            AudioSource.playSound(this.rock, 'assets/sounds/rock.mp3')
+            player.isMining = true
+            setRefreshTimer(1.5)
+          setTimeout(() => {
+                void this.dyingAnimation()
+                this.isDeadOnce()
+                player.isMining = false
+            }, 6.2 * 1000)
+        }
       }
     })
   }
@@ -138,6 +142,78 @@ export class Rock {
       scale: Vector3.create(0.04, 0.04, 0.04)
     })
     this.isDead = true
+  }
+
+  async dyingAnimation(): Promise<void> {
+    const userData = await getUserData({})
+
+    let result1 = false
+    if (userData.data?.avatar !== undefined) {
+      for (const wearable of userData.data?.avatar?.wearables) {
+        if (
+            wearable ===
+            "urn:decentraland:matic:collections-v2:0x874f0520102f4980c23dec3ea7c309a4031a6286:0"
+        ) {
+            result1 = true
+        }
+      }
+    }
+
+    let result2 = false
+    if (userData.data?.avatar !== undefined) {
+      for (const wearable of userData.data?.avatar?.wearables) {
+        if (
+            wearable ===
+          "urn:decentraland:matic:collections-v2:0xb2bebd43a93e4b9cddb2d2e47202f335029d8d32:0"
+        ) {
+            result2 = true
+        }
+      }
+    }
+
+    let result3 = false
+    if (userData.data?.avatar !== undefined) {
+      for (const wearable of userData.data?.avatar?.wearables) {
+        if (
+            wearable ===
+          "urn:decentraland:matic:collections-v2:0xf0b49e0f1b6ac8d06808d9e7c5b5ef91700b1f7d:0"
+        ) {
+            result3 = true
+        }
+      }
+    }
+
+    const player = Player.getInstance()
+    if (result1) {
+      player.inventory.incrementItem(ITEM_TYPES.ROCK, 5 + 1, INVENTORY_ACTION_REASONS.MINED_RESOURCE)
+      this.gameController.uiController.displayBanner(BannerType.B_IRON_PLUS)
+    } else {
+      player.inventory.incrementItem(ITEM_TYPES.ROCK, 5, INVENTORY_ACTION_REASONS.MINED_RESOURCE)
+      this.gameController.uiController.displayBanner(BannerType.B_IRON)
+    }
+    if (result2) {
+      player.inventory.incrementItem(ITEM_TYPES.ROCK, 5 + 1, INVENTORY_ACTION_REASONS.MINED_RESOURCE)
+      this.gameController.uiController.displayBanner(BannerType.B_IRON_PLUS)
+    }
+    if (result3) {
+      player.inventory.incrementItem(ITEM_TYPES.ROCK, 5 + 1, INVENTORY_ACTION_REASONS.MINED_RESOURCE)
+      this.gameController.uiController.displayBanner(BannerType.B_IRON_PLUS)
+    }
+    if (getRandomInt(5) === 1) {
+      player.inventory.incrementItem(
+          ITEM_TYPES.CRYSTAL,
+          1,
+          INVENTORY_ACTION_REASONS.MINED_RESOURCE
+      )
+    }
+
+      player.levels.addXp(LEVEL_TYPES.ROCK, 5)
+      this.isDeadAnimation = true
+      // player.writeDataToServer()
+  }
+
+  callDyingAnimation(): void {
+    if(!this.isDeadAnimation) void this.dyingAnimation()
   }
 
 }
@@ -179,7 +255,7 @@ export class Tree {
         {
           clip: 'chop',
           playing: false,
-          loop: false
+          loop: true
         }
       ]
     })
@@ -209,15 +285,19 @@ export class Tree {
           this.tree
         )
       ) {
-
-        // player.isChoppingTree = true
-        setRefreshTimer(1.5)
-        PointerEvents.deleteFrom(this.tree)
-        setTimeout(() => {
-          void this.dyingAnimation()
-          this.isDeadOnce()
-          // player.isChoppingTree = false
-        }, 3 * 1000)
+        const player = Player.getInstance()
+        if (!player.isChoppingTree && refreshtimer <= 0) {
+          Animator.playSingleAnimation(this.tree, 'chop')
+          AudioSource.playSound(this.tree, 'assets/sounds/tree.mp3')
+          setRefreshTimer(1.5)
+          player.isChoppingTree = true
+          PointerEvents.deleteFrom(this.tree)
+          setTimeout(() => {
+            this.callDyingAnimation()
+            this.isDeadOnce()
+            player.isChoppingTree = false
+          }, 3 * 1000)
+        }
       }
     })
   }
@@ -263,8 +343,6 @@ export class Tree {
     }
 
     const player = Player.getInstance()
-    Animator.playSingleAnimation(this.tree, 'chop')
-    AudioSource.playSound(this.tree, 'assets/sounds/tree.mp3')
     if (result) {
       player.inventory.incrementItem(ITEM_TYPES.TREE, 8)
       this.gameController.uiController.displayBanner(BannerType.B_WOOD_PLUS)
@@ -285,8 +363,7 @@ export class Tree {
     removeTree(): void {
       entityController.removeEntity(this.tree)
     }
-  }
-
+}
 
 export class BerryTree {
   public berryTree = entityController.addEntity()
