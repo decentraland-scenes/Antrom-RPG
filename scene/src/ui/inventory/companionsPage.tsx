@@ -77,6 +77,13 @@ function CompanionsPage({
   onClickButton
 }: CompanionsPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
 
   return (
     <UiEntity
@@ -107,17 +114,17 @@ function CompanionsPage({
             }}
           >
             <UiEntity
-              uiTransform={{ margin: { top: '10%', bottom: '10%' } }}
+              uiTransform={{ height: pageHeight * 0.275 }}
               uiText={{
                 value: selectedCompanion.name,
-                fontSize: canvasInfo.height * 0.03,
+                fontSize: pageHeight * 0.04,
                 textAlign: 'middle-center'
               }}
             />
             <UiEntity
               uiTransform={{
-                width: canvasInfo.height * 0.5,
-                height: canvasInfo.height * 0.5
+                width: pageHeight * 0.5,
+                height: pageHeight * 0.5
               }}
               uiBackground={{
                 textureMode: 'stretch',
@@ -139,7 +146,7 @@ function CompanionsPage({
           <UiEntity
             uiTransform={{
               width: '15%',
-              height: '100%',
+              height: pageHeight,
               position: { left: '52%' },
               positionType: 'absolute',
               alignItems: 'center',
@@ -147,18 +154,23 @@ function CompanionsPage({
             }}
           >
             <UiEntity
-              uiTransform={{ margin: { top: '35%', bottom: '10%' } }}
+              uiTransform={{
+                margin: { top: pageHeight * 0.1 },
+                height: pageHeight * 0.6,
+                width: '90%'
+              }}
               uiText={{
                 value: selectedCompanion.lore,
-                fontSize: canvasInfo.height * 0.02,
-                textAlign: 'middle-left'
+                fontSize: pageHeight * 0.025,
+                textAlign: 'top-left'
               }}
             />
             <UiEntity
+              uiTransform={{ height: pageHeight * 0.2, width: '90%' }}
               uiText={{
                 value: selectedCompanion.stats,
-                fontSize: canvasInfo.height * 0.02,
-                textAlign: 'middle-left'
+                fontSize: pageHeight * 0.025,
+                textAlign: 'bottom-left'
               }}
             />
           </UiEntity>
@@ -167,9 +179,9 @@ function CompanionsPage({
       {/* Companions */}
       <UiEntity
         uiTransform={{
-          width: canvasInfo.width * 0.23,
+          width: pageWidth * 0.3,
           height: '100%',
-          position: { right: '2%' },
+          position: { right: '1%' },
           positionType: 'absolute',
           alignItems: 'center',
           flexDirection: 'column'
@@ -177,8 +189,8 @@ function CompanionsPage({
       >
         <UiEntity
           uiTransform={{
-            width: canvasInfo.width * 0.3 * 0.7,
-            height: canvasInfo.width * 0.3 * 0.7,
+            width: pageWidth * 0.33 * 0.8,
+            height: pageWidth * 0.33 * 0.8,
             margin: { bottom: '15%', top: '35%' },
             flexWrap: 'wrap'
           }}
