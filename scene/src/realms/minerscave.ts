@@ -11,7 +11,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { type GameController } from '../controllers/game.controller'
-import { Gem, Items, Pot } from '../mineables'
+import { MineableItem, mineables } from '../mineables'
 import { setPlayerPosition } from '../utils/engine'
 import { getRandomInt } from '../utils/getRandomInt'
 import { type Realm, type RealmType } from './types'
@@ -66,8 +66,8 @@ export class MinersCave implements Realm {
   private readonly cave = entityController.addEntity()
   private readonly ladder = entityController.addEntity()
   private readonly pot_positions: Vector3[]
-  private readonly pots_entities: Pot[]
-  private readonly gems_entities: Gem[]
+  private readonly pots_entities: MineableItem[]
+  private readonly gems_entities: MineableItem[]
   private readonly difficulty: string
   gameController: GameController
   constructor(gameController: GameController, difficulty: string) {
@@ -153,9 +153,9 @@ export class MinersCave implements Realm {
         this.pot_positions[getRandomInt(this.pot_positions.length)]
       )
       this.pots_entities.push(
-        new Pot(
+        new MineableItem(
+          mineables.pot,
           this.gameController,
-          Items.pot,
           position.x,
           position.y,
           position.z
@@ -163,11 +163,11 @@ export class MinersCave implements Realm {
       )
     })
     this.gems_entities = [
-      new Gem(this.gameController, Items.gem),
-      new Gem(this.gameController, Items.gem),
-      new Gem(this.gameController, Items.gem),
-      new Gem(this.gameController, Items.gem),
-      new Gem(this.gameController, Items.gem)
+      new MineableItem(mineables.gem, this.gameController),
+      new MineableItem(mineables.gem, this.gameController),
+      new MineableItem(mineables.gem, this.gameController),
+      new MineableItem(mineables.gem, this.gameController),
+      new MineableItem(mineables.gem, this.gameController)
     ]
   }
 
@@ -209,10 +209,10 @@ export class MinersCave implements Realm {
     entityController.removeEntity(this.cave)
     entityController.removeEntity(this.ladder)
     this.gems_entities.forEach((gem) => {
-      gem.removeGem()
+      gem.removeMineable()
     })
     this.pots_entities.forEach((pot) => {
-      pot.removepot()
+      pot.removeMineable()
     })
   }
 
