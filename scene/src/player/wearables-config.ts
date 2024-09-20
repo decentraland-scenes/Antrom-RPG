@@ -2136,11 +2136,10 @@ export const WearablesConfig: WearableConfigType = {
     },
     WastelandMonarchSet: {
       label: 'Wasteland Monarch Set',
-      urn:
-        'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:0',
-        // TODO: implement to check multiple urns
-        // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:1' &&
-        // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:2',
+      urn: 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:0',
+      // TODO: implement to check multiple urns
+      // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:1' &&
+      // 'urn:decentraland:matic:collections-v2:0xf8a87150ca602dbeb2e748ad7c9c790d55d10528:2',
       stats: {
         health: 10000,
         attackBuff: 1000,
