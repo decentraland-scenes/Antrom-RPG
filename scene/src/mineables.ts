@@ -237,6 +237,19 @@ export class MineableItem {
         scale: Vector3.create(0.04, 0.04, 0.04)
       })
     }
+    if (this.mineableType === mineables.berryTree) {
+      this.mineable = entityController.addEntity()
+      const randomScale = getRandomIntRange(1, 2)
+
+      Transform.createOrReplace(this.mineable, {
+        position: Vector3.create(
+          getRandomIntRange(-40, 8),
+          2,
+          getRandomIntRange(49, 93)
+        ),
+        scale: Vector3.create(randomScale, randomScale, randomScale)
+      })
+    }
     this.isDead = true
   }
 
@@ -265,7 +278,8 @@ export class MineableItem {
         if (refreshtimer <= 0 && !this.checkIfIsWorking()) {
           if (
             this.mineableType === mineables.rock ||
-            this.mineableType === mineables.tree
+            this.mineableType === mineables.tree ||
+            this.mineableType === mineables.berryTree
           ) {
             Animator.playSingleAnimation(
               this.mineable,
@@ -497,6 +511,15 @@ export class MineableItem {
       }
 
       player.levels.addXp(LEVEL_TYPES.ROCK, 5)
+    }
+
+    if (this.mineableType === mineables.berryTree) {
+      player.inventory.incrementItem(
+        ITEM_TYPES.BERRY,
+        5,
+        INVENTORY_ACTION_REASONS.MINED_RESOURCE
+      )
+      this.gameController.uiController.displayBanner(BannerType.B_BERRIES)
     }
 
     this.isDeadAnimation = true
