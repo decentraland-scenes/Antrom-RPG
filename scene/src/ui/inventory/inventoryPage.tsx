@@ -45,6 +45,14 @@ function InventorySlotItem(
   item: InventoryItemSlot | undefined
 ): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
+
   const config =
     item !== undefined && item.itemId in INVENTORY_CONFIG
       ? (INVENTORY_CONFIG as Record<string, InventoryConfigItem>)[item.itemId]
@@ -162,8 +170,15 @@ function InventoryPage({
   bodyImageUrl
 }: InventoryPageProps): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.get(engine.RootEntity)
-  const fontSizeDetails = canvasInfo.height * 0.02
-  const wearableItemSize = canvasInfo.height * 0.075
+  let pageWidth = canvasInfo.width * 0.8 < 1132 ? canvasInfo.width * 0.8 : 1132
+  let pageHeight = pageWidth * 0.5
+
+  if (pageHeight > canvasInfo.height * 0.7) {
+    pageHeight = canvasInfo.height * 0.7
+    pageWidth = 2 * pageHeight
+  }
+  const fontSizeDetails = pageHeight * 0.0275
+  const wearableItemSize = pageHeight * 0.075
 
   return (
     <UiEntity
@@ -296,7 +311,7 @@ function InventoryPage({
       >
         <UiEntity
           uiTransform={{
-            margin: { top: '10%' },
+            margin: { top: pageHeight * 0.1 },
             height: '66%',
             flexDirection: 'column',
             alignItems: 'center',

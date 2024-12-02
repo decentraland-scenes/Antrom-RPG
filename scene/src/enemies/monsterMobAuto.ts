@@ -299,6 +299,7 @@ export class MonsterMobAuto extends GenericMonster {
     Animator.playSingleAnimation(this.entity, this.impactClip)
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
     }
   }
 
@@ -308,6 +309,7 @@ export class MonsterMobAuto extends GenericMonster {
 
     if (this.health <= 0) {
       this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
       return
     }
 

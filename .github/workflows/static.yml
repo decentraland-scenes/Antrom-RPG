@@ -39,7 +39,7 @@ jobs:
 
       - name: install
         working-directory: ./scene
-        run: npm i
+        run: npm ci
 
       - name: build
         working-directory: ./scene

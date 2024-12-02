@@ -90,12 +90,16 @@ function Dungeon({
           >
             <UiEntity
               uiTransform={{
-                width: canvasInfo.width * 0.1,
-                height: canvasInfo.width * 0.1,
-                display: isOpen ? 'none' : 'flex'
+                width:
+                  canvasInfo.width * 0.1 > 100 ? 100 : canvasInfo.width * 0.1,
+                height:
+                  canvasInfo.width * 0.1 > 100 ? 100 : canvasInfo.width * 0.1,
+                display: isOpen ? 'none' : 'flex',
+                positionType: 'absolute',
+                position: { top: '50%', right: 20 }
               }}
               uiBackground={{
-                textureMode: 'center',
+                textureMode: 'stretch',
                 texture: { src: 'assets/images/dungeon.png' }
               }}
               onMouseDown={openDungeonSelection}
