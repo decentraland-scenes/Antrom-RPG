@@ -19,11 +19,13 @@ import { type GameController } from './game.controller'
 import { MainHudController } from './main-hud'
 import { type RealmType } from '../realms/types'
 import { ConfirmLoot } from '../ui/confirmloot/confirmloot'
+import { ConfirmAndSendLoot } from '../ui/confirmloot/confirmAndSendLoot'
 
 export class UIController {
   loadingUI: LoadingUI
   playDungeonUI: PlayDungeonUI
   confirmLoot: ConfirmLoot
+  confirmAndSendLoot: ConfirmAndSendLoot
   // Banner
   gameController: GameController
 
@@ -49,6 +51,7 @@ export class UIController {
     this.gameController = gameController
     this.loadingUI = new LoadingUI(this)
     this.confirmLoot = new ConfirmLoot(this)
+    this.confirmAndSendLoot = new ConfirmAndSendLoot(this)
     this.playDungeonUI = new PlayDungeonUI(this)
     ReactEcsRenderer.setUiRenderer(this.ui.bind(this))
   }
@@ -158,6 +161,9 @@ export class UIController {
 
         {/* Confirm Loot */}
         {this.confirmLoot.isVisible && this.confirmLoot.mainUi()}
+
+        {/* Confirm & Send Loot */}
+        {this.confirmAndSendLoot.isVisible && this.confirmAndSendLoot.mainUi()}
       </UiEntity>
     )
   }
