@@ -5,7 +5,7 @@ import Canvas from '../canvas/Canvas'
 
 export class ConfirmAndSendLoot {
   uiController: UIController
-  isVisible: boolean = true
+  isVisible: boolean = false
   lootRarity: string = ''
   name: string = ''
   urn: string = ''
