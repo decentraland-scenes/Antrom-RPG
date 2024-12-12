@@ -5,10 +5,11 @@ import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Player } from '../../player/player'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 
-type ConfirmLootType = {
+export type ConfirmLootType = {
   item: string
   amount: number
   currency: 'dungeonToken' | 'mana'
+  onConfirmCallback?: () => void
 }
 export class ConfirmLoot {
   uiController: UIController
@@ -116,7 +117,9 @@ export class ConfirmLoot {
                 textureMode: 'stretch',
                 texture: { src: 'assets/images/confirmLoot/declineLoot.png' }
               }}
-              onMouseDown={() => {}}
+              onMouseDown={() => {
+                this.isVisible = false
+              }}
             />
             {/* Decline Button Unavail */}
             <UiEntity
@@ -156,9 +159,6 @@ export class ConfirmLoot {
 
     this.payClaim_visible = true
     this.declineLoot_visible = true
-
-    // Save the callback for later use
-    // confirmCallback = onConfirmCallback
   }
 
   confirmLoot(confirmLoot: ConfirmLootType): void {
@@ -173,11 +173,6 @@ export class ConfirmLoot {
     if (confirmLoot.currency === 'mana') {
       // Take MANA
     }
-
-    // Call the callback function if it exists
-    // if (confirmCallback) {
-    //   confirmCallback({ item, amount, currency })
-    // }
   }
 
   hideConfirmLootUI(): void {

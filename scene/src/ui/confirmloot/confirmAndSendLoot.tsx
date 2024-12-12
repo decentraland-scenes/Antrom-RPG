@@ -2,6 +2,9 @@ import ReactEcs, { Label, UiEntity } from '@dcl/react-ecs'
 import { type UIController } from '../../controllers/ui.controller'
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import Canvas from '../canvas/Canvas'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
+import { type ConfirmLootType } from './confirmloot'
+import { Player } from '../../player/player'
 
 export class ConfirmAndSendLoot {
   uiController: UIController
@@ -123,7 +126,37 @@ export class ConfirmAndSendLoot {
                 textureMode: 'stretch',
                 texture: { src: this.lootAcceptButton }
               }}
-              onMouseDown={() => {}}
+              onMouseDown={() => {
+                const player = Player.getInstance()
+                if (
+                  player.inventory.getItemCount(ITEM_TYPES.ICEHEART) +
+                    player.inventory.getItemCount(ITEM_TYPES.ICESHARD) >=
+                  this.amount
+                ) {
+                  this.isVisible = false
+                  const confirmLootData: ConfirmLootType = {
+                    item: this.name,
+                    amount: this.amount,
+                    currency: 'dungeonToken',
+                    onConfirmCallback: () => {
+                      // sendWearable(urn, {
+                      //     chicken: 0,
+                      //     wood: 0,
+                      //     iron: 0,
+                      //     bone: 0,
+                      // })
+                    }
+                  }
+                  console.log('Item claimed successfully!')
+                  // hard coded for DT (need to add currency type to main function)
+                  this.uiController.confirmLoot.openConfirmLoot(confirmLootData)
+                } else {
+                  this.isVisible = false
+                  this.uiController.displayAnnouncement(
+                    'Need more dungeon tokens!'
+                  )
+                }
+              }}
             />
             {/* Decline Button */}
             <UiEntity
@@ -137,7 +170,9 @@ export class ConfirmAndSendLoot {
                 textureMode: 'stretch',
                 texture: { src: this.lootDeclineButton }
               }}
-              onMouseDown={() => {}}
+              onMouseDown={() => {
+                this.isVisible = false
+              }}
             />
             {/* Exit Button */}
             <UiEntity
@@ -151,7 +186,9 @@ export class ConfirmAndSendLoot {
                 textureMode: 'stretch',
                 texture: { src: this.lootExitButton }
               }}
-              onMouseDown={() => {}}
+              onMouseDown={() => {
+                this.isVisible = false
+              }}
             />
           </UiEntity>
         </UiEntity>
