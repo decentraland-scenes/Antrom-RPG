@@ -139,12 +139,12 @@ export class ConfirmAndSendLoot {
                     amount: this.amount,
                     currency: 'dungeonToken',
                     onConfirmCallback: () => {
-                      // sendWearable(urn, {
-                      //     chicken: 0,
-                      //     wood: 0,
-                      //     iron: 0,
-                      //     bone: 0,
-                      // })
+                      void this.uiController.gameController.sendWearable.send(this.urn, {
+                          chicken: 0,
+                          wood: 0,
+                          iron: 0,
+                          bone: 0,
+                      }) 
                     }
                   }
                   console.log('Item claimed successfully!')

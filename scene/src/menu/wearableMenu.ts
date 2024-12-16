@@ -24,7 +24,7 @@ export class SendWearable {
     })
     this.instructions.addText({
       value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
-      xPosition: 0,
+      xPosition: -200,
       yPosition: 60,
       color: Color4.White(),
       size: 30
@@ -35,6 +35,7 @@ export class SendWearable {
   async send(urn: any, resources: any): Promise<void> {
     const userData = getPlayer()
     const userId = userData?.userId
+    console.log('dataaaaaaaaaaaaaaaaa ',userId)
     eth.toHex(`urn=${urn}&uuid=${userId}`)
     const { chicken, bone, wood, iron } = resources
     try {
@@ -42,7 +43,7 @@ export class SendWearable {
         urn
       })) as any
       // Stop execution if there's been an error
-      console.log(txn.text)
+      console.log('txn ',txn.text)
 
       this.loading.hide()
 
@@ -50,7 +51,7 @@ export class SendWearable {
       if (json === 'Limit Reached') {
         this.instructions.addText({
           value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
-          xPosition: 0,
+          xPosition: -200,
           yPosition: 60,
           color: Color4.White(),
           size: 30
@@ -61,7 +62,7 @@ export class SendWearable {
       if (json === 'No Remaining Items') {
         this.instructions.addText({
           value: '\n\nThere are no remaining items',
-          xPosition: 0,
+          xPosition: -200,
           yPosition: 60,
           color: Color4.White(),
           size: 30
@@ -83,7 +84,7 @@ export class SendWearable {
       // TODO await player.writeDataToServer()
       this.instructions.addText({
         value: 'You minted a wearable!\n\nCheck it out on-chain.',
-        xPosition: 0,
+        xPosition: -200,
         yPosition: 60,
         color: Color4.White(),
         size: 30

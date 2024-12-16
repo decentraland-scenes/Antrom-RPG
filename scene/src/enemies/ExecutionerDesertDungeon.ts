@@ -33,6 +33,8 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
   }
 
   onDropXp(): void {
+    console.log('killed monster')
+    this.onDropLoot()
     const xp = getRandomIntRange(this.xp, this.xp + 10)
     console.log(xp)
     desertDungeonMonsterCount.increase(1)
@@ -144,7 +146,20 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
     // )
   }
 
-  onDropLoot(): void {}
+  onDropLoot(): void {
+    this.gameController.uiController.confirmAndSendLoot.setLootParameters(
+        "RARE",
+        "MAGIC AXE",
+        "0x574a529da5eb7d5877f54e47a88b9bd55de8881c:2",
+        "magicaxe",
+        0,
+        0,
+        0,
+        0,
+        0
+    )
+    this.gameController.uiController.confirmAndSendLoot.isVisible = true
+  }
 
   setupAttackTriggerBox(): void {
     super.setupAttackTriggerBox()

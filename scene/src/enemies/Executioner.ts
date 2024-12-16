@@ -16,7 +16,6 @@ function getRandomIntRange(min: number, max: number): number {
 export default class Executioner extends MonsterMobAuto {
   shapeFile = 'assets/models/ExecutionerAxe.glb'
   hoverText: string
-
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 2
