@@ -15,6 +15,7 @@ import {
   setPlayerPosition,
   waitNextTick
 } from '../utils/engine'
+import { getPlayer } from '@dcl/sdk/src/players'
 
 let gameInstance: GameController
 
@@ -28,6 +29,10 @@ export function main(): void {
 async function init(retry: boolean): Promise<void> {
   await waitNextTick()
   await waitNextTick()
+
+  // TESTING
+  const t = getPlayer()
+  console.log(t?.userId, 'HERE')
 
   gameInstance = new GameController()
   gameInstance.uiController.loadingUI.startLoading()
