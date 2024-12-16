@@ -20,7 +20,7 @@ export class SendWearable {
     this.gameController = gameController
     this.instructions = ui.createComponent(ui.CustomPrompt, {
       style: ui.PromptStyles.DARK,
-      height: 500
+      height: 500,
     })
     this.instructions.addText({
       value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
@@ -29,8 +29,6 @@ export class SendWearable {
       color: Color4.White(),
       size: 30
     })
-
-    this.instructions.show()
     this.loading = ui.createComponent(ui.LoadingIcon, {})
   }
 

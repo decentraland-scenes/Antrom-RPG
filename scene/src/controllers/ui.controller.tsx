@@ -166,8 +166,8 @@ export class UIController {
         {this.confirmAndSendLoot.isVisible && this.confirmAndSendLoot.mainUi()}
 
         {/* Send Wearable */}
-        {this.gameController.sendWearable.instructions.render()}
-        {this.gameController.sendWearable.loading.render()}
+        <Canvas>{this.gameController.sendWearable.instructions?.render()}</Canvas>
+        <Canvas>{this.gameController.sendWearable.loading?.render()}</Canvas>
       </UiEntity>
     )
   }
