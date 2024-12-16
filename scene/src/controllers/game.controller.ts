@@ -1,6 +1,6 @@
 import { NPCs } from '../NPCs'
 import { Dialogs } from '../dialog'
-import { SendWearable } from '../menu/wearableMenus'
+import { SendWearable } from '../menu/wearableMenu'
 import { RealmController } from './realm.controller'
 import { UIController } from './ui.controller'
 
