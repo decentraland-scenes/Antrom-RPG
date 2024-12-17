@@ -128,6 +128,8 @@ export class ConfirmAndSendLoot {
               }}
               onMouseDown={() => {
                 const player = Player.getInstance()
+
+                console.log(this.amount, 'THIS AMOUNT')
                 if (
                   player.inventory.getItemCount(ITEM_TYPES.ICEHEART) +
                     player.inventory.getItemCount(ITEM_TYPES.ICESHARD) >=
@@ -139,12 +141,15 @@ export class ConfirmAndSendLoot {
                     amount: this.amount,
                     currency: 'dungeonToken',
                     onConfirmCallback: () => {
-                      void this.uiController.gameController.sendWearable.send(this.urn, {
+                      void this.uiController.gameController.sendWearable.send(
+                        this.urn,
+                        {
                           chicken: 0,
                           wood: 0,
                           iron: 0,
-                          bone: 0,
-                      }) 
+                          bone: 0
+                        }
+                      )
                     }
                   }
                   console.log('Item claimed successfully!')

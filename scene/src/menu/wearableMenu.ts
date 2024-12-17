@@ -1,5 +1,4 @@
 import { getPlayer } from '@dcl/sdk/src/players'
-import * as eth from 'eth-connect'
 import { postDataNoBase } from '../api/core'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { Player } from '../player/player'
@@ -20,14 +19,7 @@ export class SendWearable {
     this.gameController = gameController
     this.instructions = ui.createComponent(ui.CustomPrompt, {
       style: ui.PromptStyles.DARK,
-      height: 500,
-    })
-    this.instructions.addText({
-      value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
-      xPosition: -200,
-      yPosition: 60,
-      color: Color4.White(),
-      size: 30
+      height: 500
     })
     this.loading = ui.createComponent(ui.LoadingIcon, {})
   }
@@ -35,19 +27,20 @@ export class SendWearable {
   async send(urn: any, resources: any): Promise<void> {
     const userData = getPlayer()
     const userId = userData?.userId
-    console.log('dataaaaaaaaaaaaaaaaa ',userId)
-    eth.toHex(`urn=${urn}&uuid=${userId}`)
+    console.log('dataaaaaaaaaaaaaaaaa ', userId)
+    // eth.toHex(`urn=${urn}&uuid=${userId}`)
     const { chicken, bone, wood, iron } = resources
     try {
+      console.log('here')
       const txn = (await postDataNoBase(`${this.LAMBDA_URL}/dispense`, {
         urn
       })) as any
       // Stop execution if there's been an error
-      console.log('txn ',txn.text)
 
       this.loading.hide()
 
       const json = await txn.text
+      console.log(json, '---------HERE')
       if (json === 'Limit Reached') {
         this.instructions.addText({
           value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
@@ -81,7 +74,7 @@ export class SendWearable {
       player.inventory.reduceItem(ITEM_TYPES.CHICKEN, chicken)
       player.inventory.reduceItem(ITEM_TYPES.TREE, wood)
       player.inventory.reduceItem(ITEM_TYPES.ROCK, iron)
-      // TODO await player.writeDataToServer()
+      console.log('THIIIIIIIS POINT!')
       this.instructions.addText({
         value: 'You minted a wearable!\n\nCheck it out on-chain.',
         xPosition: -200,
@@ -107,6 +100,7 @@ export class SendWearable {
           this.instructions.hide()
         }
       })
+      this.instructions.show()
 
       return json
     } catch (e) {

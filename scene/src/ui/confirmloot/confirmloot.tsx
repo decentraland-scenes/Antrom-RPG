@@ -20,6 +20,7 @@ export class ConfirmLoot {
   public declineLootUnavail_visible: boolean = false
   private lootItem = ''
   private payAmount = 0
+  private callback(): any {}
   private currencyType: 'dungeonToken' | 'mana' = 'dungeonToken'
   public confirmLootText_value: string = `Are you sure you want to claim the\n${this.lootItem} for ${this.payAmount} ${this.currencyType}?`
   public confirmLootText_visible = true
@@ -152,7 +153,6 @@ export class ConfirmLoot {
     this.lootItem = confirmLoot.item
     this.payAmount = confirmLoot.amount
     this.currencyType = confirmLoot.currency
-
     this.isVisible = true
     this.confirmLootText_value = `Are you sure you want to claim the\n${this.lootItem} for ${this.payAmount} ${this.currencyType}?`
     this.confirmLootText_visible = true
@@ -172,6 +172,19 @@ export class ConfirmLoot {
 
     if (confirmLoot.currency === 'mana') {
       // Take MANA
+    }
+
+    if (confirmLoot !== null) {
+      console.log('YEEEES', this.uiController.confirmAndSendLoot.urn)
+      void this.uiController.gameController.sendWearable.send(
+        this.uiController.confirmAndSendLoot.urn,
+        {
+          chicken: 0,
+          wood: 0,
+          iron: 0,
+          bone: 0
+        }
+      )
     }
   }
 

@@ -148,15 +148,15 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
 
   onDropLoot(): void {
     this.gameController.uiController.confirmAndSendLoot.setLootParameters(
-        "RARE",
-        "MAGIC AXE",
-        "0x574a529da5eb7d5877f54e47a88b9bd55de8881c:2",
-        "magicaxe",
-        0,
-        0,
-        0,
-        0,
-        0
+      'RARE',
+      'MAGIC AXE',
+      '0x574a529da5eb7d5877f54e47a88b9bd55de8881c:2',
+      'a1',
+      0,
+      0,
+      0,
+      0,
+      0
     )
     this.gameController.uiController.confirmAndSendLoot.isVisible = true
   }
