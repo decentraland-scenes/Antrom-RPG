@@ -72,22 +72,22 @@ export class SendWearable {
       console.log('THIIIIIIIS POINT!')
       this.instructions.addText({
         value: 'You minted a wearable!\n\nCheck it out on-chain.',
-        xPosition: -200,
-        yPosition: 60,
+        xPosition: -170,
+        yPosition: 80,
         color: Color4.White(),
         size: 30
       })
       this.instructions.addButton({
-        style: ui.ButtonStyles.ROUNDGOLD,
+        style: ui.ButtonStyles.E,
         text: 'View txn',
-        xPosition: -110,
+        xPosition: -80,
         yPosition: -110,
         onMouseDown: () => {
           void openExternalUrl({ url: `https://polygonscan.com/tx/${json}` })
         }
       })
       this.instructions.addButton({
-        style: ui.ButtonStyles.ROUNDGOLD,
+        style: ui.ButtonStyles.F,
         text: 'Cancel',
         xPosition: 110,
         yPosition: -110,
