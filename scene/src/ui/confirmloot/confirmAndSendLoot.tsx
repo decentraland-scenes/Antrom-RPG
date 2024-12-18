@@ -49,6 +49,9 @@ export class ConfirmAndSendLoot {
     this.iron = iron
     this.bone = bone
     this.amount = amount
+    this.lootUI = `assets/images/wearables/${this.lootImage}.png`
+    this.lootUIText = `You received a \n${this.lootRarity}\nitem from loot!\n\n${this.name}`
+    this.isVisible = true
   }
 
   mainUi(): ReactEcs.JSX.Element {

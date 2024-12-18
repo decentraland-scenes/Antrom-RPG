@@ -158,7 +158,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
       0,
       0
     )
-    this.gameController.uiController.confirmAndSendLoot.isVisible = true
+    
   }
 
   setupAttackTriggerBox(): void {

@@ -20,7 +20,6 @@ export class ConfirmLoot {
   public declineLootUnavail_visible: boolean = false
   private lootItem = ''
   private payAmount = 0
-  private callback(): any {}
   private currencyType: 'dungeonToken' | 'mana' = 'dungeonToken'
   public confirmLootText_value: string = `Are you sure you want to claim the\n${this.lootItem} for ${this.payAmount} ${this.currencyType}?`
   public confirmLootText_visible = true
@@ -175,7 +174,6 @@ export class ConfirmLoot {
     }
 
     if (confirmLoot !== null) {
-      console.log('YEEEES', this.uiController.confirmAndSendLoot.urn)
       void this.uiController.gameController.sendWearable.send(
         this.uiController.confirmAndSendLoot.urn,
         {

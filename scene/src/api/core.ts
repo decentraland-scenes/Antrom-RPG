@@ -68,6 +68,8 @@ export async function postDataNoBase(
   url: string,
   data = {}
 ): Promise<FlatFetchResponse> {
+  console.log('Request Body:', JSON.stringify(data))
+
   return await signedFetch({
     url: `${url}`,
     init: {
@@ -75,8 +77,7 @@ export async function postDataNoBase(
       headers: {
         'Content-Type': 'application/json'
       },
-      // redirect: "follow", // manual, *follow, error
-      body: JSON.stringify(data) // body data type must match "Content-Type" header
+      body: JSON.stringify(data)
     }
   })
 }

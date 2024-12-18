@@ -1,4 +1,3 @@
-import { getPlayer } from '@dcl/sdk/src/players'
 import { postDataNoBase } from '../api/core'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { Player } from '../player/player'
@@ -25,11 +24,8 @@ export class SendWearable {
   }
 
   async send(urn: any, resources: any): Promise<void> {
-    const userData = getPlayer()
-    const userId = userData?.userId
-    console.log('dataaaaaaaaaaaaaaaaa ', userId)
-    // eth.toHex(`urn=${urn}&uuid=${userId}`)
     const { chicken, bone, wood, iron } = resources
+    this.loading.show()
     try {
       console.log('here')
       const txn = (await postDataNoBase(`${this.LAMBDA_URL}/dispense`, {
@@ -38,9 +34,8 @@ export class SendWearable {
       // Stop execution if there's been an error
 
       this.loading.hide()
-
-      const json = await txn.text
-      console.log(json, '---------HERE')
+      const json = txn.body
+      console.log(json, 'txn detail')
       if (json === 'Limit Reached') {
         this.instructions.addText({
           value: '\n\nYou have reached the limit\n\nof 15 NFTs for this set',
