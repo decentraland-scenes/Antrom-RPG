@@ -6,7 +6,7 @@ import { Vector3 } from '@dcl/sdk/math'
 export default class EntityManager {
   private static instance: EntityManager
   private entityMap: Map<number, Entity> = new Map()
-  private maxEntities: number = 6 // Adjust the maximum number as needed
+  private maxEntities: number = 5 // Set to exactly 5 for the desired number of executioners
 
   private constructor() {}
 

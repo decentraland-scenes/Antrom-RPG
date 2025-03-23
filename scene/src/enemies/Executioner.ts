@@ -61,11 +61,16 @@ export default class Executioner extends MonsterMobAuto {
     this.loadTransformation()
     this.dropRate = -1
 
-    syncEntity(
-      this.entity,
-      [Transform.componentId, Animator.componentId],
-      this.entityEnumId
-    )
+    // Only sync after we've set up the entity completely
+    try {
+      syncEntity(
+        this.entity,
+        [Transform.componentId, Animator.componentId],
+        this.entityEnumId
+      )
+    } catch (error) {
+      console.error(`Failed to sync executioner ${entityEnumId}:`, error)
+    }
   }
 
   onDropXp(): void {
@@ -128,12 +133,19 @@ export default class Executioner extends MonsterMobAuto {
         rotation: initialRotation
       })
 
-      // Sync the updated transformation and animations
-      syncEntity(
-        this.entity,
-        [Transform.componentId, Animator.componentId],
-        this.entityEnumId
-      )
+      // Try to sync the updated transformation
+      try {
+        syncEntity(
+          this.entity,
+          [Transform.componentId, Animator.componentId],
+          this.entityEnumId
+        )
+      } catch (error) {
+        console.error(
+          `Failed to sync executioner ${this.entityEnumId} transformation:`,
+          error
+        )
+      }
     }
   }
 
@@ -163,18 +175,19 @@ export default class Executioner extends MonsterMobAuto {
     const entityManager = EntityManager.getInstance()
     const executioners: Executioner[] = []
 
-    for (let i = 0; i < count; i++) {
-      const id = i + 10 // Example ID generation; adjust as necessary
+    // Fixed number of executioners (5) with a high base ID to avoid conflicts
+    const baseId = 1000
+    const numExecutioners = 5 // Fixed number of executioners
 
+    for (let i = 0; i < numExecutioners; i++) {
+      const id = baseId + i
       const executioner = new Executioner(id)
-
       if (executioner.entity) {
         executioners.push(executioner)
       }
     }
 
     entityManager.logEntities()
-
     return executioners
   }
 }
