@@ -2,11 +2,13 @@
 
 import { Animator, engine, Entity, Transform } from '@dcl/sdk/ecs'
 import { Vector3 } from '@dcl/sdk/math'
+import { syncEntity } from '@dcl/sdk/network'
 
 export default class EntityManager {
   private static instance: EntityManager
   private entityMap: Map<number, Entity> = new Map()
   private maxEntities: number = 5 // Set to exactly 5 for the desired number of executioners
+  private initialized: boolean = false
 
   private constructor() {}
 
@@ -22,16 +24,33 @@ export default class EntityManager {
   }
 
   public createOrGetEntity(id: number): Entity | null {
+    // If entity exists, return it
     if (this.entityMap.has(id)) {
       return this.entityMap.get(id) || null
-    } else if (this.entityMap.size < this.maxEntities) {
+    }
+
+    // Create new entity if under limit
+    if (this.entityMap.size < this.maxEntities) {
       const entity = engine.addEntity()
       this.entityMap.set(id, entity)
+
+      // Initialize required components
+      Transform.createOrReplace(entity, {
+        position: Vector3.create(0, 0, 0)
+      })
+
+      // Sync the entity immediately after creation
+      try {
+        syncEntity(entity, [Transform.componentId, Animator.componentId], id)
+      } catch (error) {
+        console.error(`Failed to sync entity ${id}:`, error)
+      }
+
       return entity
-    } else {
-      console.log(`Maximum number of entities (${this.maxEntities}) reached.`)
-      return null
     }
+
+    console.log(`Maximum number of entities (${this.maxEntities}) reached.`)
+    return null
   }
 
   public getEntities(): Map<number, Entity> {
@@ -41,6 +60,11 @@ export default class EntityManager {
   public removeEntity(id: number): void {
     const entity = this.entityMap.get(id)
     if (entity) {
+      // Remove components first
+      Transform.deleteFrom(entity)
+      Animator.deleteFrom(entity)
+
+      // Then remove the entity
       engine.removeEntity(entity)
       this.entityMap.delete(id)
     }
@@ -51,5 +75,22 @@ export default class EntityManager {
     this.entityMap.forEach((entity, id) => {
       console.log(`ID: ${id}, Entity: ${entity}`)
     })
+  }
+
+  public isInitialized(): boolean {
+    return this.initialized
+  }
+
+  public setInitialized(value: boolean): void {
+    this.initialized = value
+  }
+
+  public cleanup(): void {
+    // Clean up all entities
+    this.entityMap.forEach((entity, id) => {
+      this.removeEntity(id)
+    })
+    this.entityMap.clear()
+    this.initialized = false
   }
 }

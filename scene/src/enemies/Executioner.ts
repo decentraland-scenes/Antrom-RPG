@@ -60,17 +60,6 @@ export default class Executioner extends MonsterMobAuto {
     this.initMonster()
     this.loadTransformation()
     this.dropRate = -1
-
-    // Only sync after we've set up the entity completely
-    try {
-      syncEntity(
-        this.entity,
-        [Transform.componentId, Animator.componentId],
-        this.entityEnumId
-      )
-    } catch (error) {
-      console.error(`Failed to sync executioner ${entityEnumId}:`, error)
-    }
   }
 
   onDropXp(): void {
@@ -106,10 +95,8 @@ export default class Executioner extends MonsterMobAuto {
     player.gameController.uiController.displayBanner(BannerType.B_BONES)
     player.addRewards(exp, loot)
 
-    // Ensure removeEntity uses entity object
-    if (this.entity) {
-      EntityManager.getInstance().removeEntity(this.entity)
-    }
+    // Remove the entity through EntityManager
+    this.removeEntity()
   }
 
   setupAttackTriggerBox(): void {
@@ -132,29 +119,31 @@ export default class Executioner extends MonsterMobAuto {
         position: initialPosition,
         rotation: initialRotation
       })
-
-      // Try to sync the updated transformation
-      try {
-        syncEntity(
-          this.entity,
-          [Transform.componentId, Animator.componentId],
-          this.entityEnumId
-        )
-      } catch (error) {
-        console.error(
-          `Failed to sync executioner ${this.entityEnumId} transformation:`,
-          error
-        )
-      }
     }
   }
 
   removeEntity(): void {
-    super.cleanup()
-    if (this.entity) {
+    // Remove trigger entities first
+    if (this.rangeAttackTrigger) {
       entityController.removeEntity(this.rangeAttackTrigger)
+    }
+    if (this.engageAttackTrigger) {
       entityController.removeEntity(this.engageAttackTrigger)
-      entityController.removeEntity(this.entity)
+    }
+
+    // Remove the main entity through EntityManager
+    if (this.entity) {
+      EntityManager.getInstance().removeEntity(this.entityEnumId)
+    }
+
+    // Call parent cleanup last
+    super.cleanup()
+  }
+
+  // Override the parent's health check to ensure proper cleanup
+  protected checkHealth(): void {
+    if (this.health <= 0) {
+      this.removeEntity()
     }
   }
 
@@ -173,6 +162,13 @@ export default class Executioner extends MonsterMobAuto {
 
   static createExecutioners(count: number): Executioner[] {
     const entityManager = EntityManager.getInstance()
+
+    // Only create executioners if they haven't been created yet
+    if (entityManager.isInitialized()) {
+      console.log('Executioners already initialized')
+      return []
+    }
+
     const executioners: Executioner[] = []
 
     // Fixed number of executioners (5) with a high base ID to avoid conflicts
@@ -187,6 +183,7 @@ export default class Executioner extends MonsterMobAuto {
       }
     }
 
+    entityManager.setInitialized(true)
     entityManager.logEntities()
     return executioners
   }
