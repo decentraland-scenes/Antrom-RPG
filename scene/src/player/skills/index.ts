@@ -58,9 +58,8 @@ export class SkillController {
 
     // Display skill name and description when used
     const player = Player.getInstance()
-    player.gameController.uiController.displayAnnouncement(
+    player.gameController.uiController.displaySkillText(
       `${this.definition.name}: ${this.definition.description}`,
-      Color4.Yellow(),
       3000
     )
 

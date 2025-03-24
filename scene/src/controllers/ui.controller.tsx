@@ -6,6 +6,7 @@ import * as ui from 'dcl-ui-toolkit'
 import { Player } from '../player/player'
 import Announcement from '../ui/announcement/announcement'
 import Banner from '../ui/banner/bannerComponent'
+import { SkillText } from '../ui/skill-text/skillText'
 import {
   BANNER_DURATION,
   BannerPosition,
@@ -46,6 +47,10 @@ export class UIController {
 
   creationPlayerUi: CreationPlayerController | null = null
   mainHud: MainHudController | null = null
+
+  isSkillTextVisible: boolean = false
+  skillText: string = ''
+  skillTextTimerId: utils.TimerId | undefined = undefined
 
   constructor(gameController: GameController) {
     this.gameController = gameController
@@ -122,12 +127,28 @@ export class UIController {
     return { created: true, tutorial }
   }
 
+  displaySkillText(text: string, duration: number = 3000): void {
+    if (this.skillTextTimerId !== undefined) {
+      utils.timers.clearInterval(this.skillTextTimerId)
+    }
+
+    this.skillText = text
+    this.isSkillTextVisible = true
+
+    this.skillTextTimerId = utils.timers.setTimeout(() => {
+      this.isSkillTextVisible = false
+    }, duration)
+  }
+
   ui(): ReactEcs.JSX.Element {
     return (
       <UiEntity>
+        {/* Skill Text Overlay */}
+        <SkillText text={this.skillText} isVisible={this.isSkillTextVisible} />
+
         {/* Announcement Overlay */}
         {this.isAnnouncementVisible && (
-          <Announcement
+          <Announcement 
             text={this.announcement}
             color={this.announcement_color}
           />
