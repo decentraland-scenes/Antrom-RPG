@@ -51,7 +51,13 @@ export class MonsterAttack {
       playerPos.y - 1.5,
       playerPos.z
     )
-    const monsterPos = Transform.getMutable(this.monster.entity).position
+
+    const monsterTransform = Transform.getMutableOrNull(this.monster.entity)
+    if (monsterTransform == null || this.monster.isDeadAnimation) {
+      return
+    }
+
+    const monsterPos = monsterTransform.position
     const direction = Vector3.subtract(lookAtTarget, monsterPos)
     if (this.monster.isPrey) {
       direction.x = -direction.x
@@ -62,18 +68,18 @@ export class MonsterAttack {
     const angles = Quaternion.toEulerAngles(rotation)
     angles.z = 0
     angles.x = 0
-    Transform.getMutable(this.monster.entity).rotation =
-      Quaternion.fromEulerDegrees(angles.x, angles.y, angles.z)
+    monsterTransform.rotation = Quaternion.fromEulerDegrees(
+      angles.x,
+      angles.y,
+      angles.z
+    )
 
     const distance = Vector3.distanceSquared(monsterPos, playerPos)
     if (distance >= this.engageDistance) {
       this.isIdle = false
 
       const dirVector = Vector3.Forward()
-      const forwardVector = Vector3.rotate(
-        dirVector,
-        Transform.getMutable(this.monster.entity).rotation
-      )
+      const forwardVector = Vector3.rotate(dirVector, monsterTransform.rotation)
       const increment = Vector3.scale(forwardVector, dt * this.moveSpeed)
       monsterMove(this.monster.entity, increment)
     } else {

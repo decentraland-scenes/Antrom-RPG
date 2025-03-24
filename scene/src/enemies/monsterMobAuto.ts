@@ -205,10 +205,19 @@ export class MonsterMobAuto extends GenericMonster {
       1,
       [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
       () => {
-        console.log('trigger Attack')
+        if (this.isDeadAnimation) return
+        this.createHealthBar()
+        this.handleAttack()
+        engine.addSystem(this.attackSystem.attackSystem.bind(this.attackSystem))
       },
       () => {
-        console.log('im out')
+        if (this.isDeadAnimation) return
+        this.cleanup()
+        engine.removeSystem(
+          this.attackSystem.attackSystem.bind(this.attackSystem)
+        )
+        Animator.stopAllAnimations(this.entity)
+        Animator.playSingleAnimation(this.entity, this.idleClip)
       }
     )
   }
@@ -242,17 +251,13 @@ export class MonsterMobAuto extends GenericMonster {
   }
 
   killChar(): void {
-    // TODO (first check if used )
+    // Remove attack systems first
+    engine.removeSystem(this.attackSystem.attackSystem.bind(this.attackSystem))
+    engine.removeSystem(
+      this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+    )
 
-    // lootEventManager.fireEvent(
-    //     new LootDropEvent(
-    //         this.getComponent(Transform).position,
-    //         () => this.onDropLoot(),
-    //         this.dropRate
-    //     )
-    // )
     utils.timers.setTimeout(() => {
-      // TODO entity removing triggers error
       entityController.removeEntity(this.entity)
       entityController.removeEntity(this.rangeAttackTrigger)
       entityController.removeEntity(this.engageAttackTrigger)
@@ -268,7 +273,12 @@ export class MonsterMobAuto extends GenericMonster {
   onDead(): void {
     this.onDropXp()
     this.callDyingAnimation()
-    engine.removeSystem(this.attackSystemRanged.attackSystem)
+
+    // Remove attack systems first
+    engine.removeSystem(this.attackSystem.attackSystem.bind(this.attackSystem))
+    engine.removeSystem(
+      this.attackSystemRanged.attackSystem.bind(this.attackSystemRanged)
+    )
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
