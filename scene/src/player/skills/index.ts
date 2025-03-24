@@ -1,3 +1,5 @@
+import { Color4 } from '@dcl/sdk/math'
+import { Player } from '../player'
 import { type Sprite } from '../../utils/ui-utils'
 
 // The player can have only SIX skills
@@ -53,6 +55,14 @@ export class SkillController {
     }
     this.state.isCooling = true
     this.state.cooldownRemainingTime = this.definition.cooldown
+
+    // Display skill name and description when used
+    const player = Player.getInstance()
+    player.gameController.uiController.displayAnnouncement(
+      `${this.definition.name}: ${this.definition.description}`,
+      Color4.Yellow(),
+      3000
+    )
 
     this.effect()
   }
