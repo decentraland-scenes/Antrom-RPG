@@ -18,19 +18,20 @@ export class MonsterAttack {
   private readonly moveSpeed: number
   private readonly rotSpeed: number
   private readonly engageDistance: number
+  private readonly battleDistance: number = 5 // Increased battle distance
   private readonly createdAt: Date
   private readonly onAttack?: () => void
   private refreshTimer: number
   private isIdle?: boolean
   private readonly hasBeenHit: boolean = true
-  private readonly stopDistance: number = 5
+  private readonly stopDistance: number = 3
 
   constructor(monster: MonsterOligar, config: MonsterAttackConfig = {}) {
     const {
       moveSpeed = MOVE_SPEED,
       rotSpeed = ROT_SPEED,
       onAttack,
-      engageDistance = 9
+      engageDistance = 5
     } = config
     this.monster = monster
     this.moveSpeed = moveSpeed
@@ -75,22 +76,28 @@ export class MonsterAttack {
     )
 
     const distance = Vector3.distanceSquared(monsterPos, playerPos)
-    if (distance >= this.engageDistance) {
-      this.isIdle = false
 
+    // Always try to attack if within range, regardless of movement
+    if (distance <= this.engageDistance && this.refreshTimer <= 0) {
+      this.monster.handleAttack()
+      this.refreshTimer = 1
+    }
+
+    // Handle movement
+    if (distance >= this.engageDistance) {
+      // Chase player if too far
+      this.isIdle = false
       const dirVector = Vector3.Forward()
       const forwardVector = Vector3.rotate(dirVector, monsterTransform.rotation)
       const increment = Vector3.scale(forwardVector, dt * this.moveSpeed)
       monsterMove(this.monster.entity, increment)
     } else {
-      if (!(this.isIdle ?? false)) {
-        this.monster.playIdle()
-        this.isIdle = true
-      }
-      if (this.refreshTimer <= 0) {
-        this.monster.handleAttack()
-        this.refreshTimer = 2
-      }
+      // Keep moving towards player while in range
+      this.isIdle = false
+      const dirVector = Vector3.Forward()
+      const forwardVector = Vector3.rotate(dirVector, monsterTransform.rotation)
+      const increment = Vector3.scale(forwardVector, dt * this.moveSpeed)
+      monsterMove(this.monster.entity, increment)
     }
 
     // TODO: empty function
