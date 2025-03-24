@@ -416,22 +416,17 @@ export class MineableItem {
         }
       }
 
-      if (result) {
-        player.inventory.incrementItem(
-          ITEM_TYPES.TREE,
-          8,
-          INVENTORY_ACTION_REASONS.MINED_RESOURCE
-        )
-        this.gameController.uiController.displayBanner(BannerType.B_WOOD_PLUS)
-      } else {
-        player.inventory.incrementItem(
-          ITEM_TYPES.TREE,
-          5,
-          INVENTORY_ACTION_REASONS.MINED_RESOURCE
-        )
-        this.gameController.uiController.displayBanner(BannerType.B_WOOD)
-      }
+      const woodAmount = result ? 8 : 5
+      player.inventory.incrementItem(
+        ITEM_TYPES.TREE,
+        woodAmount,
+        INVENTORY_ACTION_REASONS.MINED_RESOURCE
+      )
+      this.gameController.uiController.displayBanner(
+        result ? BannerType.B_WOOD_PLUS : BannerType.B_WOOD
+      )
       player.levels.addXp(LEVEL_TYPES.TREE, 5)
+      return
     }
 
     if (this.mineableType === mineables.rock) {

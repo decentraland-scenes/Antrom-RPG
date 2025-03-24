@@ -1,6 +1,9 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
 import { type UIController } from '../../controllers/ui.controller'
 import Canvas from '../canvas/Canvas'
+import Loading from './loadingComponent'
+import { getWearables, getWearablesEffects, applyWearableStatsEffect } from '../../player/wearables'
+import { Player } from '../../player/player'
 
 export class LoadingUI {
   private isLoading: boolean
@@ -11,17 +14,20 @@ export class LoadingUI {
 
   constructor(uiController: UIController) {
     this.uiController = uiController
-    this.isLoading = false
-    this.isVisible = false
-  }
-
-  startLoading(): void {
     this.isLoading = true
     this.isVisible = true
   }
 
+  startLoading(): void {
+    this.isLoading = true
+  }
+
   finishLoading(): void {
     this.isLoading = false
+  }
+
+  setVisibility(visible: boolean): void {
+    this.isVisible = visible
   }
 
   visible(): boolean {
@@ -31,57 +37,34 @@ export class LoadingUI {
   mainUi(): ReactEcs.JSX.Element {
     return (
       <Canvas>
-        <UiEntity
-          uiTransform={{
-            width: '100%',
-            height: '100%',
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            flexDirection: 'column'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            texture: { src: 'assets/images/nightmare.png' }
-          }}
-        >
-          <UiEntity
-            uiTransform={{
-              width: '800',
-              height: '550',
-              display: 'flex'
-            }}
-            uiBackground={{
-              textureMode: 'stretch',
-              texture: { src: 'assets/images/Hide_seek.png' }
-            }}
-          />
-          <UiEntity
-            uiTransform={{
-              width: '500',
-              height: '250',
-              display: this.isLoading ? 'flex' : 'none'
-            }}
-            uiBackground={{
-              texture: {
-                wrapMode: 'repeat',
-                src: 'assets/images/zombieLoading.png'
+        <Loading
+          isLoading={this.isLoading}
+          isVisible={this.isVisible}
+          changeVisibility={() => {
+            this.isVisible = false
+            // Apply wearable stats when play button is clicked
+            const player = Player.getInstance()
+            if (player) {
+              const wearables = getWearables()
+              const rawStats = getWearablesEffects(wearables)
+              const curatedStats = {
+                luckBuff: rawStats.luckBuff ?? 0,
+                attackBuff: rawStats.attackBuff ?? 0,
+                defBuff: rawStats.defBuff ?? 0,
+                health: rawStats.health ?? 0,
+                distance: rawStats.distance ?? 0,
+                critRate: rawStats.critRate ?? 0,
+                critDamage: rawStats.critDamage ?? 0,
+                magicBuff: rawStats.magicBuff ?? 0
               }
-            }}
-          />
-          <UiEntity
-            uiTransform={{
-              width: '250',
-              height: '250',
-              display: this.isLoading ? 'none' : 'flex',
-              alignItems: 'flex-end'
-            }}
-            uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
-            onMouseDown={() => {
-              this.isVisible = false
-              console.log('clicked')
-            }}
-          />
-        </UiEntity>
+              // Reset health to max before applying new stats
+              player.health = player.maxHealth
+              applyWearableStatsEffect({}, curatedStats)
+              // Update health bar after applying stats
+              player.updateHealthBar()
+            }
+          }}
+        />
       </Canvas>
     )
   }

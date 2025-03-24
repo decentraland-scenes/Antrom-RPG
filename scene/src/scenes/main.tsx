@@ -16,6 +16,7 @@ import {
   waitNextTick
 } from '../utils/engine'
 import { getPlayer } from '@dcl/sdk/src/players'
+import { getWearables, getWearablesEffects, applyWearableStatsEffect } from '../player/wearables'
 
 let gameInstance: GameController
 
@@ -106,6 +107,11 @@ async function init(retry: boolean): Promise<void> {
   Player.createInstance(myPlayer)
   updateClassBuffs(myPlayer, myPlayer.class)
   updateRaceBuffs(myPlayer, myPlayer.race)
+
+  // Apply wearable stats
+  const wearables = getWearables()
+  const wearableStats = getWearablesEffects(wearables)
+  applyWearableStatsEffect({}, wearableStats)
 
   if (myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER) > 1) {
     const multipleValue =

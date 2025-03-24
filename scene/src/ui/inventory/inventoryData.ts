@@ -1037,9 +1037,9 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Double Hatchets',
     urn: 'urn:decentraland:matic:collections-v2:0xa5d8a8c3454aa003ad72c3f814e52ad6bea69e57:0',
     stats: {
-      luckBuff: 3,
-      attackBuff: 1400,
-      critDamage: 30
+      attackBuff: 1600,
+      luckBuff: 4,
+      critDamage: 25
     },
     dStats: {
       // Duplicate stats example, this is multiplied by the number of duplicates
@@ -1050,9 +1050,9 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Royal Sword',
     urn: 'urn:decentraland:matic:collections-v2:0x86bc8866c8902b2f7b88947c1b6e6ee2d6425a48:0',
     stats: {
-      luckBuff: 5,
-      attackBuff: 1500,
-      defBuff: 0.03
+      attackBuff: 1800,
+      luckBuff: 4,
+      defBuff: 0.04
     },
     dStats: {
       // Duplicate stats example, this is multiplied by the number of duplicates
@@ -1311,8 +1311,9 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Wooden Sword',
     urn: 'urn:decentraland:matic:collections-v2:0x6dfc2c7f137edd0218f5d8e5d47322c431a9fc3d:0',
     stats: {
-      attackBuff: 40,
-      critRate: 5
+      attackBuff: 400,
+      critRate: 8,
+      health: 500
     },
     dStats: {
       attackBuff: 1
@@ -2213,19 +2214,17 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
   },
   RoyalMageStaff: {
     label: 'Royal Mage Staff',
-    urn: 'urn:decentraland:matic:collections-v2:0xd48a73c9bb4ccd57b7e31f9695c4237df6e246d5:1',
+    urn: 'urn:decentraland:matic:collections-v2:0x2b5e68e51dd54fe100150a6f52547f4f0b3d32aa:8',
     stats: {
-      luckBuff: 10,
-      magicBuff: 3000,
-      defBuff: 0.08,
-      critDamage: 50
+      magicBuff: 2500,
+      critDamage: 40,
+      luckBuff: 8,
+      defBuff: 0.06
     },
     dStats: {
       // Duplicate stats example, this is multiplied by the number of duplicates
-      luckBuff: 10,
-      magicBuff: 3000,
-      defBuff: 0.08,
-      critDamage: 50
+      magicBuff: 4,
+      health: 4
     }
   },
   LeatherBoots: {
@@ -2309,13 +2308,12 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Callan Crown',
     urn: 'urn:decentraland:matic:collections-v2:0x7d65d7ca3d44814c697aea3a1db45da330546e7b:2',
     stats: {
-      attackBuff: 3000,
-      luckBuff: 21,
-      defBuff: 0.03,
-      health: 30000,
-      critDamage: 21,
-      magicBuff: 3000,
-      critRate: 9
+      attackBuff: 2000,
+      magicBuff: 2000,
+      luckBuff: 15,
+      health: 20000,
+      critDamage: 15,
+      critRate: 7
     }
   },
 
@@ -2340,9 +2338,9 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Godrics Revenge',
     urn: 'urn:decentraland:matic:collections-v2:0x34f266ed68b877dd98ee2697f09bc0481be828bd:0',
     stats: {
-      attackBuff: 1000,
-      health: 12900,
-      critDamage: 15
+      attackBuff: 1200,
+      health: 15000,
+      critDamage: 12
     },
     dStats: {
       // Duplicate stats example, this is multiplied by the number of duplicates
@@ -2367,8 +2365,9 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Ice Sword',
     urn: 'urn:decentraland:matic:collections-v2:0xa3927ce9f272d56c423e15020202f5461dc5f07b:2',
     stats: {
-      attackBuff: 100,
-      critRate: 5
+      attackBuff: 800,
+      critRate: 8,
+      defBuff: 0.03
     },
     dStats: {
       // Duplicate stats example, this is multiplied by the number of duplicates
@@ -2418,20 +2417,12 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     }
   },
   Legionnaire: {
-    label: 'Pinnacle of Echoes',
-    urn: 'urn:decentraland:matic:collections-v2:0x0367d0e78505732d531b5e2755ae751167a05263:0',
+    label: 'Legionnaire (Pinnacle of Echoes)',
+    urn: 'urn:decentraland:matic:collections-v2:0x2b5e68e51dd54fe100150a6f52547f4f0b3d32aa:7',
     stats: {
-      luckBuff: 15,
-      attackBuff: 4000,
-      critRate: 20,
-      health: -4000
-    },
-    dStats: {
-      // Duplicate stats example, this is multiplied by the number of duplicates
-      luckBuff: 15,
-      attackBuff: 4000,
-      critRate: 20,
-      health: -4000
+      attackBuff: 2800,
+      critRate: 15,
+      health: -2000
     }
   },
   Lute: {
@@ -2627,17 +2618,16 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Scaly Gauntlets',
     urn: 'urn:decentraland:matic:collections-v2:0x89dd5ee70e4fa4400b02bac1145f5260bb827a24:0',
     stats: {
-      attackBuff: 3200,
-      critRate: 25,
-      luckBuff: 12,
-      health: 7000
+      attackBuff: 2500,
+      critRate: 20,
+      luckBuff: 10,
+      health: 6000
     },
     dStats: {
-      // Duplicate stats example, this is multiplied by the number of duplicates
-      attackBuff: 6400,
-      critRate: 25,
-      luckBuff: 12,
-      health: 14000
+      attackBuff: 3500,
+      critRate: 20,
+      luckBuff: 10,
+      health: 10000
     }
   },
   LavaGloves: {
@@ -2657,17 +2647,16 @@ export const WEARABLES_MAPPING: Record<WearableString, WearableItem> = {
     label: 'Wasteland Wrathblade',
     urn: 'urn:decentraland:matic:collections-v2:0x0538e98fa989a273ec42ce43d29ae729d0b7c6fc:0',
     stats: {
-      attackBuff: 2000,
-      luckBuff: 6,
-      health: 14000,
-      critDamage: 10
+      attackBuff: 1800,
+      luckBuff: 5,
+      health: 12000,
+      critDamage: 8
     },
     dStats: {
-      // Duplicate stats example, this is multiplied by the number of duplicates
-      attackBuff: 3500,
-      luckBuff: 3,
-      health: 20000,
-      critDamage: 15
+      attackBuff: 2500,
+      luckBuff: 2,
+      health: 15000,
+      critDamage: 12
     }
   },
   WastelandMonarchSet: {
