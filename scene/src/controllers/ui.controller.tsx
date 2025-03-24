@@ -155,7 +155,7 @@ export class UIController {
         )}
 
         {/* Banner Overlay */}
-        {Array.from(this.banners.values()).map((item) => (
+        {Array.from(this.banners.values()).map((item) => (  
           <Banner type={item.bannerType} position={item.bannerPosition} />
         ))}
 

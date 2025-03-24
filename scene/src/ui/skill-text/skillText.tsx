@@ -13,7 +13,7 @@ export function SkillText({ text, isVisible }: SkillTextProps): ReactEcs.JSX.Ele
     <UiEntity
       uiTransform={{
         positionType: 'absolute',
-        position: { top: '20%', left: '50%' },
+        position: { top: '40%', left: '50%' },
         width: 'auto',
         height: 'auto',
         minWidth: 200,
@@ -33,7 +33,7 @@ export function SkillText({ text, isVisible }: SkillTextProps): ReactEcs.JSX.Ele
       }}
       uiText={{
         value: text,
-        fontSize: 24,
+        fontSize: 18,
         color: Color4.Yellow(),
         textAlign: 'middle-center',
         font: 'sans-serif',
