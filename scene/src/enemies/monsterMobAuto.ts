@@ -22,6 +22,7 @@ import { MonsterAttackRanged } from './monsterAttackRanged'
 import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
+import { triggerSceneEmote } from '~system/RestrictedActions'
 
 export class MonsterMobAuto extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -331,6 +332,8 @@ export class MonsterMobAuto extends GenericMonster {
     if (roundedMonsterDice <= roundedPlayerDice) {
       // Player attacks
       let defPercent = this.getDefensePercent()
+
+      triggerSceneEmote({ src: 'assets/models/Axe_Combo.glb' })
 
       if (monsterModifiers.getDefBuff() !== 0) {
         defPercent = defPercent * monsterModifiers.getDefBuff()
