@@ -203,12 +203,14 @@ export class MonsterMobAuto extends GenericMonster {
       this.engageAttackTrigger,
       1,
       1,
-      [{ type: 'box', scale: Vector3.create(8, 2, 8) }],
+      [{ type: 'box', scale: Vector3.create(15, 2, 15) }],
       () => {
         if (this.isDeadAnimation) return
         this.createHealthBar()
-        this.handleAttack()
+        // Start attack system immediately
         engine.addSystem(this.attackSystem.attackSystem.bind(this.attackSystem))
+        // Start first attack
+        this.handleAttack()
       },
       () => {
         if (this.isDeadAnimation) return
@@ -327,7 +329,7 @@ export class MonsterMobAuto extends GenericMonster {
     if (refreshtimer > 0) {
       return
     }
-    setRefreshTimer(1)
+    setRefreshTimer(2)
 
     const monsterDiceResult = this.rollDice()
     const playerDiceResult = player.rollDice()
