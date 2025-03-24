@@ -4,6 +4,12 @@ import Canvas from '../canvas/Canvas'
 import Loading from './loadingComponent'
 import { getWearables, getWearablesEffects, applyWearableStatsEffect } from '../../player/wearables'
 import { Player } from '../../player/player'
+import { GeneralDisruptiveBlow } from '../../player/skills/definitions'
+import { GeneralFirstAidKit } from '../../player/skills/definitions'
+import { GeneralFireball } from '../../player/skills/definitions'
+import { GeneralStorm } from '../../player/skills/definitions'
+import { GeneralLuckyCharm } from '../../player/skills/definitions'
+import { CLASS_MAIN_SKILL } from '../../player/skills/classes-main-skill'
 
 export class LoadingUI {
   private isLoading: boolean
@@ -62,6 +68,14 @@ export class LoadingUI {
               applyWearableStatsEffect({}, curatedStats)
               // Update health bar after applying stats
               player.updateHealthBar()
+
+              // Initialize player skills
+              player.setSkill(0, CLASS_MAIN_SKILL[player.class]())
+              player.setSkill(1, new GeneralDisruptiveBlow())
+              player.setSkill(2, new GeneralFirstAidKit())
+              player.setSkill(3, new GeneralFireball())
+              player.setSkill(4, new GeneralStorm())
+              player.setSkill(5, new GeneralLuckyCharm())
             }
           }}
         />
