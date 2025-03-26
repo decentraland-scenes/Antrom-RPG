@@ -903,3 +903,111 @@ export const applyRainbowSwirlToLocation = (
     entityController.removeEntity(area)
   }, duration)
 }
+
+export const applyBlizzardEffectToLocation = (
+  position: Vector3,
+  duration: number
+): void => {
+  // Main blizzard area
+  const blizzardArea = entityController.addEntity()
+  Transform.create(blizzardArea, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(3, 3, 3) // Larger area for the blizzard
+  })
+
+  // Create multiple layers of effects
+  // 1. Main swirling snow effect
+  const snowSwirl = entityController.addEntity()
+  Transform.create(snowSwirl, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(2, 2, 2)
+  })
+  GltfContainer.create(snowSwirl, {
+    src: 'assets/models/Skill_FX/whiteswirl.glb'
+  })
+  Animator.createOrReplace(snowSwirl, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'action',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(snowSwirl, 'action')
+
+  // 2. Ice crystal particles
+  const iceCrystals = entityController.addEntity()
+  Transform.create(iceCrystals, {
+    position,
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(1, 1, 1)
+  })
+  GltfContainer.create(iceCrystals, {
+    src: 'assets/models/Skill_FX/Blue_circle.glb'
+  })
+  Animator.createOrReplace(iceCrystals, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'action',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(iceCrystals, 'action')
+
+  // 3. Frost ground effect
+  const frostGround = entityController.addEntity()
+  Transform.create(frostGround, {
+    position: Vector3.add(position, Vector3.create(0, 0.1, 0)), // Slightly above ground
+    rotation: Quaternion.create(0, 0, 0, 1),
+    scale: Vector3.create(2, 1, 2)
+  })
+  GltfContainer.create(frostGround, {
+    src: 'assets/models/Skill_FX/redCircle.glb'
+  })
+  Animator.createOrReplace(frostGround, {
+    states: [
+      {
+        clip: 'idle',
+        playing: true,
+        loop: true
+      },
+      {
+        clip: 'heal',
+        playing: false,
+        loop: true
+      }
+    ]
+  })
+  Animator.playSingleAnimation(frostGround, 'heal')
+
+  // Add wind sound effect
+  AudioSource.create(blizzardArea, {
+    audioClipUrl: 'assets/sounds/attack.mp3',
+    loop: true,
+    playing: true,
+    volume: 0.3
+  })
+
+  // Cleanup after duration
+  utils.timers.setTimeout(() => {
+    entityController.removeEntity(blizzardArea)
+    entityController.removeEntity(snowSwirl)
+    entityController.removeEntity(iceCrystals)
+    entityController.removeEntity(frostGround)
+  }, duration)
+}

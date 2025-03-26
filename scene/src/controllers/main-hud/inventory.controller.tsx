@@ -65,7 +65,8 @@ import {
   ThiefLastBlow,
   ThiefShadowStrike,
   ThiefStoneHeart,
-  ThiefSwiftFoot
+  ThiefSwiftFoot,
+  GeneralBlizzard
 } from '../../player/skills/definitions'
 import {
   applyWearableStatsEffect,
@@ -644,6 +645,8 @@ export class InventoryController {
         return new GeneralDefensivePosture()
       case 'Thunder Strike':
         return new GeneralStrike()
+      case 'Blizzard':
+        return new GeneralBlizzard()
       case 'Iron Defense':
         return new GeneralIronDefense()
       case 'Vitality Surge':

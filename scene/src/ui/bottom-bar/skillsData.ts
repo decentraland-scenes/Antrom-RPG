@@ -1399,10 +1399,19 @@ export const SKILL_DATA: Record<SkillKey, SkillDefinition> = {
   },
   GENERAL_IRON_DEFENSE: {
     name: 'Iron Defense',
-    minLevel: 20,
-    description: 'Defense is increased by 25%. \n\ncooldown: 6 s ',
-    sprite: skillsGeneralSprites.skill_133,
-    cooldown: 6 // 30 seconds in milliseconds
+    minLevel: 0,
+    description:
+      'Increase your defense by 25% for 6 seconds! \n\ncooldown: 8 s',
+    sprite: skillsGeneralSprites.skill_72,
+    cooldown: 8
+  },
+  GENERAL_BLIZZARD: {
+    name: 'Blizzard',
+    minLevel: 0,
+    description:
+      'Create a magical storm of ice and snow that deals MAGIC damage to all enemies in the area! \n\ncooldown: 8 s ',
+    sprite: skillsGeneralSprites.skill_72,
+    cooldown: 8
   },
   //  Support Heal lvl 2 MAX +50%
   GENERAL_VITALITY_SURGE: {
@@ -1585,6 +1594,7 @@ export type SkillKey =
   | 'GENERAL_PRECISION_FOCUS'
   | 'GENERAL_DEFENSIVE_POSTURE'
   | 'GENERAL_STRIKE'
+  | 'GENERAL_BLIZZARD'
   | 'GENERAL_IRON_DEFENSE'
   | 'GENERAL_VITALITY_SURGE'
   | 'GENERAL_VITALITY_BOOST'
