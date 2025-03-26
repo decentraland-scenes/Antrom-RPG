@@ -4,6 +4,7 @@ import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import type MonsterOligar from './monster'
 import { type Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { Player } from '../player/player'
+import { Animator } from '@dcl/sdk/ecs'
 
 // Configuration
 const MOVE_SPEED = 1
@@ -36,6 +37,7 @@ export class MonsterAttack {
   attackSystem = (dt: number): void => {
     if (this.refreshTimer > 0) {
       this.refreshTimer -= dt
+      return // Add early return to prevent attack attempts during cooldown
     }
 
     const player = Player.getInstanceOrNull()
@@ -57,12 +59,12 @@ export class MonsterAttack {
     }
 
     // Always try to attack if within range
-    if (distanceToPlayer <= this.engageDistance && this.refreshTimer <= 0) {
-      // Play attack animation
-      this.monster.playAttack()
+    if (distanceToPlayer <= this.engageDistance) {
+      console.log('Monster attempting attack at distance:', distanceToPlayer)
       // Handle the actual attack
       this.monster.handleAttack()
-      this.refreshTimer = 1
+      // Set a longer cooldown to prevent rapid attacks
+      this.refreshTimer = 2 // Increased from 1 to 2 seconds
     }
 
     // Chase player if too far
@@ -120,8 +122,8 @@ export class MonsterAttack {
 
     // TODO: empty function
     function monsterMove(entity: Entity, forward: Vector3): void {
-      // const transform = Transform.getMutable(entity)
-      // const monsterMove = Vector3.lerp(transform.position, forward, 1)
+      const transform = Transform.getMutable(entity)
+      transform.position = Vector3.add(transform.position, forward)
     }
   }
 }

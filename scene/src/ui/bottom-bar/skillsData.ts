@@ -1392,7 +1392,7 @@ export const SKILL_DATA: Record<SkillKey, SkillDefinition> = {
   //  Support Defense lvl 1 25%
   GENERAL_STRIKE: {
     name: 'Thunder Strike',
-    minLevel: 20,
+    minLevel: 0,
     description: 'Deal ranged MAGIC damage to all enemies! \n\ncooldown: 3 s ',
     sprite: skillsGeneralSprites.skill_100,
     cooldown: 3

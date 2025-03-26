@@ -49,6 +49,7 @@ export class MonsterMobAuto extends GenericMonster {
   attackSystem!: MonsterAttack
   isPrey: boolean = false
   dropRate: number = -1
+  private isPlayingAttack: boolean = false
   static setGlobalHasSkill(value: boolean): void {
     // Modify some static property or perform some global logic here.
     MonsterMobAuto.globalHasSkill = value
@@ -86,35 +87,47 @@ export class MonsterMobAuto extends GenericMonster {
       // this.addComponentOrReplace(this.sound)
     }
     GltfContainer.createOrReplace(this.entity, { src: this.shape })
-    Animator.createOrReplace(this.entity, {
+
+    // Create animator with explicit settings
+    const animator = Animator.createOrReplace(this.entity, {
       states: [
         {
           clip: this.idleClip,
           playing: true,
-          loop: true
+          loop: true,
+          speed: 1
         },
         {
           clip: this.attackClip,
           playing: false,
-          loop: false
+          loop: false,
+          speed: 1
         },
         {
           clip: this.walkClip,
           playing: false,
-          loop: true
+          loop: true,
+          speed: 1
         },
         {
           clip: this.impactClip,
           playing: false,
-          loop: false
+          loop: false,
+          speed: 1
         },
         {
           clip: this.dieClip,
           playing: false,
-          loop: false
+          loop: false,
+          speed: 1
         }
       ]
     })
+
+    console.log(
+      'Animator created with states:',
+      animator.states.map((state) => state.clip)
+    )
 
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
@@ -325,7 +338,6 @@ export class MonsterMobAuto extends GenericMonster {
       return
     }
 
-    // const random = Math.random() * 1000
     if (refreshtimer > 0) {
       return
     }
@@ -354,38 +366,26 @@ export class MonsterMobAuto extends GenericMonster {
 
       const isCriticalAttack = getRandomInt(100) <= player.getCritRate()
 
-      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack) // remove monsters defence roll (bugged, monster has very high def) * (1 - defPercent)
+      const reduceHealthBy = player.getPlayerAttack(isCriticalAttack)
       let playerAttack = Math.round(reduceHealthBy)
       switch (true) {
         case random < 1100: {
-          // 30% chance
-          // TODO UI
-          // bossDefense()
-
           applyDefSkillEffectToEnemyLocation(
             Transform.getMutable(this.entity).position,
             4000
           )
-          // reduce incoming attack by 50%
           playerAttack = playerAttack / 2
-
           break
         }
       }
       this.performAttack(playerAttack, isCriticalAttack)
-
-      // MainHUD.getInstance().updateStats(
-      //     `${roundedPlayerDice}`,
-      //     `${roundedMonsterDice}`,
-      //     `${playerAttack}`,
-      //     `MISSED`
-      // )
 
       monsterModifiers.activeSkills.forEach((skill) => {
         skill(isCriticalAttack, true, reduceHealthBy, this)
       })
     } else {
       // Monster attacks
+      console.log('Monster won dice roll, preparing attack')
       const defPercent = player.getDefensePercent()
       let enemyAttack = this.attack * (1 - defPercent)
 
@@ -399,17 +399,30 @@ export class MonsterMobAuto extends GenericMonster {
             enemyAttack
         )
       }
-      // createMissedLabel()
 
       const roundedAttack = Math.floor(enemyAttack)
-      this.attackPlayer(roundedAttack)
+      console.log('Monster attacking with damage:', roundedAttack)
 
-      // MainHUD.getInstance().updateStats(
-      //     `${roundedPlayerDice}`,
-      //     `${roundedMonsterDice}`,
-      //     `MISSED`,
-      //     `${roundedAttack}`
-      // )
+      // Play attack animation first
+      this.playAttack()
+
+      // Then apply damage
+      const currentPlayer = Player.getInstanceOrNull()
+      if (currentPlayer === null) return
+
+      currentPlayer.reduceHealth(roundedAttack)
+      const mainHUD = currentPlayer.gameController.uiController.mainHud
+      if (mainHUD !== null) {
+        mainHUD.lastEnemyAttack = roundedAttack
+        mainHUD.lastPlayerAttack = 'MISSED'
+      }
+
+      currentPlayer.impactAnimation?.()
+      AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
+      utils.timers.setTimeout(() => {
+        // TODO from counters
+        // checkHealth()
+      }, 1000)
 
       monsterModifiers.activeSkills.forEach((skill) => {
         skill(false, false, enemyAttack, this)
@@ -442,13 +455,50 @@ export class MonsterMobAuto extends GenericMonster {
   }
 
   playAttack(): void {
-    Animator.playSingleAnimation(this.entity, this.attackClip)
+    if (this.isDeadAnimation) {
+      console.log('Monster is in death animation, skipping attack animation')
+      return
+    }
+
+    console.log('Playing attack animation')
+
+    // Force stop all animations first
+    Animator.stopAllAnimations(this.entity)
+
+    // Get the current animator state
+    const animator = Animator.getOrNull(this.entity)
+    if (!animator) {
+      console.log('No animator found on entity')
+      return
+    }
+
+    // Log available states
+    console.log(
+      'Available animation states:',
+      animator.states.map((state) => state.clip)
+    )
+
+    // Play the attack animation
+    Animator.playSingleAnimation(this.entity, this.attackClip, false)
+
+    // Return to idle after attack animation
+    utils.timers.setTimeout(() => {
+      if (!this.isDeadAnimation) {
+        console.log('Returning to idle animation')
+        Animator.playSingleAnimation(this.entity, this.idleClip, true)
+      }
+    }, 1000)
   }
 
   attackPlayer(enemyAttack: number): void {
     const player = Player.getInstanceOrNull()
     if (player === null) return
 
+    console.log('Monster attacking player with damage:', enemyAttack)
+    // Play attack animation first
+    this.playAttack()
+
+    // Then apply damage and effects
     player.reduceHealth(enemyAttack)
     const mainHUD = player.gameController.uiController.mainHud
     if (mainHUD !== null) {
@@ -456,11 +506,7 @@ export class MonsterMobAuto extends GenericMonster {
       mainHUD.lastPlayerAttack = 'MISSED'
     }
 
-    this.playAttack()
-
     player.impactAnimation?.()
-    // applyEnemyAttackedEffectToLocation(Camera.instance.feetPosition)
-
     AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
     utils.timers.setTimeout(() => {
       // TODO from counters

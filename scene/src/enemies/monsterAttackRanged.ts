@@ -22,6 +22,10 @@ export function shootArrow(distance: number = MAX_DISTANCE): void {
   const arrowEntity = entityController.addEntity()
   const playerPosition = Transform.get(engine.PlayerEntity).position
   const cameraRotation = Transform.get(engine.CameraEntity).rotation
+  const elevatedPosition = Vector3.add(
+    playerPosition,
+    Vector3.create(0, 1.5, 0)
+  )
 
   GltfContainer.create(arrowEntity, {
     src: 'assets/models/GreenOrb.glb',
@@ -30,7 +34,7 @@ export function shootArrow(distance: number = MAX_DISTANCE): void {
   })
 
   Transform.create(arrowEntity, {
-    position: playerPosition,
+    position: elevatedPosition,
     rotation: cameraRotation
   })
 
@@ -38,7 +42,7 @@ export function shootArrow(distance: number = MAX_DISTANCE): void {
   const forward = Vector3.rotate(Vector3.Forward(), cameraRotation)
   const arrowStartPosition = Vector3.add(
     Vector3.scale(forward, 0.5),
-    playerPosition
+    elevatedPosition
   )
   const newArrow: ArrowType = {
     entity: arrowEntity,
