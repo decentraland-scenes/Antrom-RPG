@@ -272,13 +272,11 @@ export class Player extends Character {
   }
 
   attackAnimation(): void {
-    // console.log("attack animation")
-    // this.playerAvatar?.playAttack()
+    this.avatarSwap.playAttackAnimation()
   }
 
   impactAnimation(): void {
-    // console.log("attack animation")
-    // this.playerAvatar?.playImpact()
+    this.avatarSwap.playImpactAnimation()
   }
 
   addAvatarModel(model: string, weight: number = 0): void {
