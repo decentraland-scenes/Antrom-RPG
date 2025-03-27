@@ -1,4 +1,4 @@
-import { Transform } from '@dcl/sdk/ecs'
+import { Transform, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import { quest } from '../../utils/refresherTimer'
@@ -7,6 +7,7 @@ import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 import MonsterMob from '../MonsterMob'
 import MonsterMobAuto from '../monsterMobAuto'
+import { currentlyAttackingMontserList } from '../splashAttack'
 
 // const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
@@ -223,7 +224,7 @@ export default class EasyDesertDungeonBoss extends MonsterMobAuto {
     //     LEVEL_TYPES.ENEMY
     // )
 
-    void backToAntrom('Easy')
+    //void backToAntrom('Easy')
   }
 
   onDropLoot(): void {}
@@ -241,5 +242,32 @@ export default class EasyDesertDungeonBoss extends MonsterMobAuto {
       position: initialPosition,
       rotation: initialRotation
     })
+  }
+
+  handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
+    if (this.health <= 0) {
+      this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
+      return
+    }
+
+    // Add boss to currentlyAttackingMontserList when engaged in combat
+    if (!currentlyAttackingMontserList.includes(this)) {
+      currentlyAttackingMontserList.push(this)
+    }
+
+    super.handleAttack()
+  }
+
+  onDead(): void {
+    // Remove boss from currentlyAttackingMontserList when dead
+    const index = currentlyAttackingMontserList.indexOf(this)
+    if (index > -1) {
+      currentlyAttackingMontserList.splice(index, 1)
+    }
+    super.onDead()
   }
 }

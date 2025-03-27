@@ -13,6 +13,8 @@ import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Player } from '../../player/player'
 import { entityController } from '../../realms/entityController'
+import { currentlyAttackingMontserList } from '../splashAttack'
+import MonsterMobAuto from '../monsterMobAuto'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -20,7 +22,7 @@ function getRandomIntRange(min: number, max: number): number {
   return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export default class NightmareDesertDungeonBoss extends MonsterOligar {
+export default class NightmareDesertDungeonBoss extends MonsterMobAuto {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack LVL ${DungeonStage.read()} NIGHTMARE Wasteland Apex Ahau!`
 
@@ -207,6 +209,33 @@ export default class NightmareDesertDungeonBoss extends MonsterOligar {
       rotation: initialRotation
     })
   }
+
+  handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
+    if (this.health <= 0) {
+      this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
+      return
+    }
+
+    // Add boss to currentlyAttackingMontserList when engaged in combat
+    if (!currentlyAttackingMontserList.includes(this)) {
+      currentlyAttackingMontserList.push(this)
+    }
+
+    super.handleAttack()
+  }
+
+  onDead(): void {
+    // Remove boss from currentlyAttackingMontserList when dead
+    const index = currentlyAttackingMontserList.indexOf(this)
+    if (index > -1) {
+      currentlyAttackingMontserList.splice(index, 1)
+    }
+    super.onDead()
+  }
 }
 
 export async function backToAntrom(difficulty: string): Promise<void> {
@@ -244,7 +273,7 @@ export async function backToAntrom(difficulty: string): Promise<void> {
       //   `Restart ${difficulty} Dungeon \nTokens Remaining: ${total}`,
 
       if (difficulty === 'Easy') {
-        // resetDesertDungeons('easy')
+        //resetDesertDungeons('easy')
       }
 
       if (difficulty === 'Medium') {

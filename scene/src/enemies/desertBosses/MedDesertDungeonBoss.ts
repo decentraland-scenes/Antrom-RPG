@@ -1,4 +1,4 @@
-import { Transform } from '@dcl/sdk/ecs'
+import { Transform, pointerEventsSystem } from '@dcl/sdk/ecs'
 import MonsterOligar from '../monster'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
@@ -6,10 +6,12 @@ import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
+import { currentlyAttackingMontserList } from '../splashAttack'
+import MonsterMobAuto from '../monsterMobAuto'
 
 const DEFAULT_XP = 60
 
-export default class MedDesertDungeonBoss extends MonsterOligar {
+export default class MedDesertDungeonBoss extends MonsterMobAuto {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 
@@ -31,71 +33,9 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
     const random = Math.random() * 100
 
     switch (true) {
-      case random < 3: {
-        // 3% chance
-        // confirmAndSendLootUI(
-        //     "RARE",
-        //     "FIRE BOW",
-        //     "0x3b8f5b62ddd10c1af0f31665c5ab09b2bf85cacc:2",
-        //     "fb",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 6: {
-        // 3% chance (6% cumulative - 3% previous)
-        // confirmAndSendLootUI(
-        //     "RARE",
-        //     "FIRE SWORD",
-        //     "0x3b8f5b62ddd10c1af0f31665c5ab09b2bf85cacc:0",
-        //     "fs",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-
-        break
-      }
-      case random < 9: {
-        // 3% chance (9% cumulative - 6% previous)
-        // confirmAndSendLootUI(
-        //     "EPIC",
-        //     "Wasteland Mage Armor",
-        //     "0xa83c8951dd73843bf5f7e9936e72a345a3e79874:3",
-        //     "wsa2",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-
-        break
-      }
-      case random < 15: {
-        // 6% chance (15% cumulative - 9% previous)
-        // confirmAndSendLootUI(
-        //     "EPIC",
-        //     "Druid Staff",
-        //     "0x2b5e68e51dd54fe100150a6f52547f4f0b3d32aa:5",
-        //     "ds",
-        //     0,
-        //     0,
-        //     0,
-        //     0,
-        //     3
-        // )
-        break
-      }
-      case random < 25: {
-        // 10% chance (25% cumulative - 15% previous)
-
+      case random < 1: {
+        // 1% chance
+        // TODO UI
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Helmet",
@@ -107,11 +47,29 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-
         break
       }
-      case random < 35: {
-        // 10% chance (35% cumulative - 25% previous)
+
+      case random < 10: {
+        // Additional 0.5% Chance (Cumulative 1% - 0.5% for the previous case)
+        // TODO UI
+        // confirmAndSendLootOnceUI(
+        //     "LEGENDARY",
+        //     "Lava Gauntlets",
+        //     "0x6e78e8aacddbf96296dbcc9a1cb682a4b16b60de:1",
+        //     "lavag",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     6
+        // )
+        break
+      }
+
+      case random < 20: {
+        // 1% chance (2% cumulative - 1% previous)
+        // TODO UI
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Pants",
@@ -123,11 +81,11 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-
         break
       }
-      case random < 45: {
-        // 10% chance (45% cumulative - 35% previous)
+      case random < 30: {
+        // 1% chance (3% cumulative - 2% previous)
+        // TODO UI
         // confirmAndSendLootUI(
         //     "RARE",
         //     "Wasteland Armor",
@@ -139,11 +97,11 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
         //     0,
         //     3
         // )
-
         break
       }
-      case random < 60: {
-        // 15% chance (60% cumulative - 45% previous)
+      case random < 40: {
+        // 7% chance (10% cumulative - 3% previous)
+        // TODO UI
         // confirmAndSendLootUI(
         //     "UNCOMMON",
         //     "Apprentice Mage Sceptre",
@@ -157,8 +115,57 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
         // )
         break
       }
-      case random < 80: {
-        // 20% chance (80% cumulative - 60% previous)
+      case random < 50: {
+        // 10% chance (20% cumulative - 10% previous)
+        // TODO UI
+        // confirmAndSendLootUI(
+        //     "UNCOMMON",
+        //     "Apprentice Ranger Hood",
+        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:1",
+        //     "a2",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+        break
+      }
+      case random < 65: {
+        // 10% chance (30% cumulative - 20% previous)
+        // TODO UI
+        // confirmAndSendLootUI(
+        //     "UNCOMMON",
+        //     "Apprentice Berserker Helm",
+        //     "0xd81dcebc0769f1f055352f4588bbcc55e08d1c60:1",
+        //     "apbh",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+        break
+      }
+      case random < 75: {
+        // 10% chance (40% cumulative - 30% previous)
+        // TODO UI
+        // confirmAndSendLootUI(
+        //     "UNCOMMON",
+        //     "Apprentice Ranger Bow",
+        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:2",
+        //     "a3",
+        //     0,
+        //     0,
+        //     0,
+        //     0,
+        //     3
+        // )
+        break
+      }
+      case random < 85: {
+        // 20% chance (60% cumulative - 40% previous)
+        // TODO UI
         // confirmAndSendLootUI(
         //     "UNCOMMON",
         //     "Apprentice Berserker Axe",
@@ -174,11 +181,12 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
       }
       default: {
         // 20% chance (100% cumulative - 80% previous)
+        // TODO UI
         // confirmAndSendLootUI(
         //     "UNCOMMON",
-        //     "Apprentice Ranger Bow",
-        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:2",
-        //     "a3",
+        //     "Apprentice Ranger Suit",
+        //     "0xc032771f2be2b5f31d62186e720f0f455d3aaa19:0",
+        //     "a1",
         //     0,
         //     0,
         //     0,
@@ -187,7 +195,7 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
         // )
       }
     }
-    void backToAntrom('Medium')
+    // })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const exp = [
@@ -208,10 +216,13 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
       }
     ]
 
+    // TODO UI
     // addRewards(exp, loot)
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
+
+    void backToAntrom('Medium')
   }
 
   onDropLoot(): void {}
@@ -229,5 +240,32 @@ export default class MedDesertDungeonBoss extends MonsterOligar {
       position: initialPosition,
       rotation: initialRotation
     })
+  }
+
+  handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
+    if (this.health <= 0) {
+      this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
+      return
+    }
+
+    // Add boss to currentlyAttackingMontserList when engaged in combat
+    if (!currentlyAttackingMontserList.includes(this)) {
+      currentlyAttackingMontserList.push(this)
+    }
+
+    super.handleAttack()
+  }
+
+  onDead(): void {
+    // Remove boss from currentlyAttackingMontserList when dead
+    const index = currentlyAttackingMontserList.indexOf(this)
+    if (index > -1) {
+      currentlyAttackingMontserList.splice(index, 1)
+    }
+    super.onDead()
   }
 }

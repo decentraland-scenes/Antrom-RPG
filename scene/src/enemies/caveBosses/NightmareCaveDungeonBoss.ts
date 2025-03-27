@@ -13,6 +13,8 @@ import { quest } from '../../utils/refresherTimer'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { Player } from '../../player/player'
 import { entityController } from '../../realms/entityController'
+import MonsterMob from '../MonsterMob'
+import { currentlyAttackingMontserList } from '../splashAttack'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -224,6 +226,33 @@ export default class NightmareCaveDungeonBoss extends MonsterOligar {
       position: initialPosition,
       rotation: initialRotation
     })
+  }
+
+  handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
+    if (this.health <= 0) {
+      this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
+      return
+    }
+
+    // Add boss to currentlyAttackingMontserList when engaged in combat
+    if (!currentlyAttackingMontserList.includes(this)) {
+      currentlyAttackingMontserList.push(this)
+    }
+
+    super.handleAttack()
+  }
+
+  onDead(): void {
+    // Remove boss from currentlyAttackingMontserList when dead
+    const index = currentlyAttackingMontserList.indexOf(this)
+    if (index > -1) {
+      currentlyAttackingMontserList.splice(index, 1)
+    }
+    super.onDead()
   }
 }
 

@@ -1,10 +1,11 @@
-import { Transform } from '@dcl/sdk/ecs'
+import { Transform, pointerEventsSystem } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
 import MonsterMob from '../MonsterMob'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { currentlyAttackingMontserList } from '../splashAttack'
 
 const DEFAULT_XP = 60
 
@@ -233,7 +234,7 @@ export default class HardCaveDungeonBoss extends MonsterMob {
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-    void backToAntromFromCave('Easy')
+    //void backToAntromFromCave('Easy')
 
     // //setTimeout(17 * 1000, () => {
     // cleanupScene()
@@ -262,5 +263,32 @@ export default class HardCaveDungeonBoss extends MonsterMob {
       position: initialPosition,
       rotation: initialRotation
     })
+  }
+
+  handleAttack(): void {
+    const player = Player.getInstanceOrNull()
+    if (player === null) return
+
+    if (this.health <= 0) {
+      this.onDead()
+      pointerEventsSystem.removeOnPointerDown(this.entity)
+      return
+    }
+
+    // Add boss to currentlyAttackingMontserList when engaged in combat
+    if (!currentlyAttackingMontserList.includes(this)) {
+      currentlyAttackingMontserList.push(this)
+    }
+
+    super.handleAttack()
+  }
+
+  onDead(): void {
+    // Remove boss from currentlyAttackingMontserList when dead
+    const index = currentlyAttackingMontserList.indexOf(this)
+    if (index > -1) {
+      currentlyAttackingMontserList.splice(index, 1)
+    }
+    super.onDead()
   }
 }

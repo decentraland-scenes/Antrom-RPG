@@ -39,7 +39,7 @@ export default class ExecutionerDesertDungeon extends MonsterMob {
     console.log(xp)
     desertDungeonMonsterCount.increase(1)
 
-    // ui.displayAnnouncement(`${easyDungeonMonsterCount1.read()}`)
+    // ui.displayAnnouncement(`${easyDungeonMonsterCount1.read()} `)
 
     if (desertDungeonMonsterCount.read() === 10) {
       this.gameController.uiController.displayAnnouncement(
