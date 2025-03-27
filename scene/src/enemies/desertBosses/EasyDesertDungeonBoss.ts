@@ -6,6 +6,7 @@ import { LEVEL_TYPES } from '../../player/LevelManager'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { backToAntrom } from './NightmareDesertDungeonBoss'
 import MonsterMob from '../MonsterMob'
+import MonsterMobAuto from '../monsterMobAuto'
 
 // const DEFAULT_ATTACK = 35
 const DEFAULT_XP = 60
@@ -13,7 +14,7 @@ const DEFAULT_XP = 60
 // const DEFAULT_HP = 200
 // const DEFAULT_DEF = 0.1
 
-export default class EasyDesertDungeonBoss extends MonsterMob {
+export default class EasyDesertDungeonBoss extends MonsterMobAuto {
   shapeFile = 'assets/models/SandBoss.glb'
   hoverText = `Attack Wasteland Apex Ahau!`
 

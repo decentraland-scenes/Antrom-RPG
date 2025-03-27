@@ -123,6 +123,7 @@ export class Dungeon implements Realm {
     this.createDesertDungeonEnemies(this.gameController)
     this.boss = null
     this.difficulty = difficulty
+    this.createDesertDungeonBoss(difficulty)
     GltfContainer.create(this.wall1, {
       src: 'assets/models/sandDungeonDoor.glb'
     })
