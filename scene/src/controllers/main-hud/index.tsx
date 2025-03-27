@@ -48,6 +48,7 @@ export class MainHudController {
             miningLevel: 1,
             assasinLevel: 0
           }}
+          player={player}
         />
 
         {this.inventoryController?.render()}

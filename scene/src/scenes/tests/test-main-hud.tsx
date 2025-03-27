@@ -6,6 +6,7 @@ import {
   CharacterAlliances,
   CharacterRaces
 } from '../../ui/creation-player/creationPlayerData'
+import { Player } from '../../player/player'
 
 export class UI {
   public isVisible: boolean
@@ -21,6 +22,7 @@ export class UI {
   }
 
   mainHudUI(): ReactEcs.JSX.Element {
+    const player = Player.getInstance()
     return (
       <MainHud
         isPlayerRollOpen={this.isPlayerRollOpen}
@@ -46,6 +48,7 @@ export class UI {
           miningLevel: 1,
           assasinLevel: 0
         }}
+        player={player}
       />
     )
   }

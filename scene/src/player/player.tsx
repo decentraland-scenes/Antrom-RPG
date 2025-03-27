@@ -22,6 +22,7 @@ import { PetManager } from './petManager'
 import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { AvatarSwap } from './avatarSwap'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -107,6 +108,8 @@ export class Player extends Character {
   ]
 
   gameController: GameController
+
+  private avatarSwap: AvatarSwap
 
   static getInstance(): Player {
     if (!this.instance) {
@@ -211,6 +214,8 @@ export class Player extends Character {
     // executeTask(async () => {
     //     await WriteUserUsername()
     // })
+
+    this.avatarSwap = AvatarSwap.getInstance(this)
 
     engine.addSystem(this.process.bind(this))
   }
@@ -585,5 +590,17 @@ export class Player extends Character {
     for (const i of loot) {
       this.inventory.incrementItem(i.type, i.value)
     }
+  }
+
+  async swapAvatar(modelPath: string): Promise<void> {
+    await this.avatarSwap.swapAvatar(modelPath)
+  }
+
+  getCurrentAvatar(): string {
+    return this.avatarSwap.getCurrentAvatar()
+  }
+
+  removeAvatar(): void {
+    this.avatarSwap.removeAvatar()
   }
 }

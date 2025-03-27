@@ -1,5 +1,6 @@
-import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
-import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import ReactEcs, { Label, UiEntity } from '@dcl/sdk/react-ecs'
+import { engine, UiCanvasInformation } from '@dcl/sdk/ecs'
+import { Color4 } from '@dcl/sdk/math'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import Canvas from '../canvas/Canvas'
 import {
@@ -9,14 +10,13 @@ import {
   type lastRollType,
   type playersProfessionsType
 } from './mainHudData'
-import {
-  ALLIANCES,
-  CLASSES_STATS,
-  RACES,
-  type CharacterAlliances,
-  type CharacterClasses,
-  type CharacterRaces
-} from '../creation-player/creationPlayerData'
+import { ALLIANCES, CLASSES_STATS, RACES } from '../creation-player/creationPlayerData'
+import { type CharacterAlliances, type CharacterClasses, type CharacterRaces } from '../creation-player/creationPlayerData'
+import { AvatarSwapUI } from '../avatar-swap/avatarSwapUI'
+import { Player } from '../../player/player'
+
+// Simple state management
+let isAvatarSwapOpen = false
 
 type MainHudProps = {
   isPlayerRollOpen: boolean
@@ -30,6 +30,7 @@ type MainHudProps = {
   characterAlliance: CharacterAlliances
   lastRoll: lastRollType
   playerProfessions: playersProfessionsType
+  player: Player
 }
 
 function MainHud({
@@ -43,7 +44,8 @@ function MainHud({
   characterRace,
   characterClass,
   lastRoll,
-  playerProfessions
+  playerProfessions,
+  player
 }: MainHudProps): ReactEcs.JSX.Element | null {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
   if (canvasInfo === null) return null
@@ -62,7 +64,6 @@ function MainHud({
         uiTransform={{
           width: 'auto',
           height: hudHeight,
-
           position: { right: hudHeight * 2, top: hudHeight * 0.25 },
           positionType: 'absolute',
           justifyContent: 'flex-end'
@@ -80,6 +81,9 @@ function MainHud({
             texture: {
               src: mainHudSprites.changeAvatarIcon.atlasSrc
             }
+          }}
+          onMouseDown={() => {
+            isAvatarSwapOpen = true
           }}
         />
         <UiEntity
@@ -416,6 +420,14 @@ function MainHud({
         </UiEntity>
         {/* )} */}
       </UiEntity>
+
+      <AvatarSwapUI
+        isVisible={isAvatarSwapOpen}
+        onClose={() => {
+          isAvatarSwapOpen = false
+        }}
+        player={player}
+      />
     </Canvas>
   )
 }
