@@ -1,4 +1,12 @@
-import { Animator, AudioSource, GltfContainer, Transform } from '@dcl/sdk/ecs'
+import {
+  Animator,
+  AudioSource,
+  Entity,
+  GltfContainer,
+  Transform,
+  Tween,
+  EasingFunction
+} from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import * as utils from '@dcl-sdk/utils'
 import { entityController } from '../realms/entityController'
@@ -904,96 +912,72 @@ export const applyRainbowSwirlToLocation = (
   }, duration)
 }
 
-export const applyBlizzardEffectToLocation = (
+export function applyBlizzardEffectToLocation(
   position: Vector3,
-  duration: number
-): void => {
-  // Main blizzard area
+  duration: number = 6000
+): void {
+  // Create main blizzard area entity
   const blizzardArea = entityController.addEntity()
   Transform.create(blizzardArea, {
-    position,
+    position: position,
     rotation: Quaternion.create(0, 0, 0, 1),
-    scale: Vector3.create(3, 3, 3) // Larger area for the blizzard
+    scale: Vector3.create(0.1, 0.1, 0.1) // Start small
   })
 
-  // Create multiple layers of effects
   // 1. Main swirling snow effect
   const snowSwirl = entityController.addEntity()
   Transform.create(snowSwirl, {
-    position,
+    position: Vector3.add(position, Vector3.create(0, 0.5, 0)),
     rotation: Quaternion.create(0, 0, 0, 1),
-    scale: Vector3.create(2, 2, 2)
+    scale: Vector3.create(0.1, 0.1, 0.1) // Start small
   })
   GltfContainer.create(snowSwirl, {
     src: 'assets/models/Skill_FX/whiteswirl.glb'
   })
-  Animator.createOrReplace(snowSwirl, {
-    states: [
-      {
-        clip: 'idle',
-        playing: true,
-        loop: true
-      },
-      {
-        clip: 'action',
-        playing: false,
-        loop: true
-      }
-    ]
-  })
-  Animator.playSingleAnimation(snowSwirl, 'action')
 
-  // 2. Ice crystal particles
+  // 2. Ice crystal effect
   const iceCrystals = entityController.addEntity()
   Transform.create(iceCrystals, {
-    position,
+    position: Vector3.add(position, Vector3.create(0, 0.5, 0)),
     rotation: Quaternion.create(0, 0, 0, 1),
-    scale: Vector3.create(1, 1, 1)
+    scale: Vector3.create(0.1, 0.1, 0.1) // Start small
   })
   GltfContainer.create(iceCrystals, {
-    src: 'assets/models/Skill_FX/Blue_circle.glb'
+    src: 'assets/models/Skill_FX/ice_crystal.glb'
   })
-  Animator.createOrReplace(iceCrystals, {
-    states: [
-      {
-        clip: 'idle',
-        playing: true,
-        loop: true
-      },
-      {
-        clip: 'action',
-        playing: false,
-        loop: true
-      }
-    ]
-  })
-  Animator.playSingleAnimation(iceCrystals, 'action')
 
   // 3. Frost ground effect
   const frostGround = entityController.addEntity()
   Transform.create(frostGround, {
-    position: Vector3.add(position, Vector3.create(0, 0.1, 0)), // Slightly above ground
+    position: Vector3.add(position, Vector3.create(0, 0, 0)),
     rotation: Quaternion.create(0, 0, 0, 1),
-    scale: Vector3.create(2, 1, 2)
+    scale: Vector3.create(0.1, 0.1, 0.1) // Start small
   })
   GltfContainer.create(frostGround, {
     src: 'assets/models/Skill_FX/redCircle.glb'
   })
-  Animator.createOrReplace(frostGround, {
-    states: [
-      {
-        clip: 'idle',
-        playing: true,
-        loop: true
-      },
-      {
-        clip: 'heal',
-        playing: false,
-        loop: true
-      }
-    ]
-  })
-  Animator.playSingleAnimation(frostGround, 'heal')
+
+  // 4. Glowing blue spheres
+  const numSpheres = 8
+  const spheres: Entity[] = []
+  for (let i = 0; i < numSpheres; i++) {
+    const sphere = entityController.addEntity()
+    const angle = (i / numSpheres) * Math.PI * 2
+    const radius = 1.5
+    const x = Math.cos(angle) * radius
+    const z = Math.sin(angle) * radius
+    const y = 0.5 + Math.random() * 1.5
+
+    Transform.create(sphere, {
+      position: Vector3.add(position, Vector3.create(x, y, z)),
+      rotation: Quaternion.create(0, 0, 0, 1),
+      scale: Vector3.create(0.1, 0.1, 0.1) // Start small
+    })
+    GltfContainer.create(sphere, {
+      src: 'assets/models/Skill_FX/Blue_circle.glb'
+    })
+    spheres.push(sphere)
+  }
 
   // Add wind sound effect
   AudioSource.create(blizzardArea, {
@@ -1003,11 +987,151 @@ export const applyBlizzardEffectToLocation = (
     volume: 0.3
   })
 
-  // Cleanup after duration
+  // Tween animations
+  // 1. Scale up the blizzard area
+  Tween.createOrReplace(blizzardArea, {
+    mode: Tween.Mode.Scale({
+      start: Vector3.create(0.1, 0.1, 0.1),
+      end: Vector3.create(2.1, 2.1, 2.1)
+    }),
+    duration: 0.5,
+    easingFunction: EasingFunction.EF_EASEINSINE
+  })
+
+  // 2. Continuous rotation and movement for snow swirl
+  const createContinuousSnowMotion = () => {
+    // Rotate
+    Tween.createOrReplace(snowSwirl, {
+      mode: Tween.Mode.Rotate({
+        start: Quaternion.create(0, 0, 0, 1),
+        end: Quaternion.create(0, 1, 0, 0) // Rotate 180 degrees around Y axis
+      }),
+      duration: 3,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+
+    // Move up and down
+    Tween.createOrReplace(snowSwirl, {
+      mode: Tween.Mode.Move({
+        start: Vector3.add(position, Vector3.create(0, 0.5, 0)),
+        end: Vector3.add(position, Vector3.create(0, 2, 0))
+      }),
+      duration: 2,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+
+    // Scale pulse
+    Tween.createOrReplace(snowSwirl, {
+      mode: Tween.Mode.Scale({
+        start: Vector3.create(2, 2, 2),
+        end: Vector3.create(2.5, 2.5, 2.5)
+      }),
+      duration: 1,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+  }
+
+  // Start continuous motion
+  createContinuousSnowMotion()
+  // Repeat the motion
+  utils.timers.setInterval(createContinuousSnowMotion, 3000)
+
+  // 3. Continuous pulse for ice crystals
+  const createIceCrystalPulse = () => {
+    Tween.createOrReplace(iceCrystals, {
+      mode: Tween.Mode.Scale({
+        start: Vector3.create(2, 2, 2),
+        end: Vector3.create(2.3, 2.3, 2.3)
+      }),
+      duration: 1,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+  }
+  createIceCrystalPulse()
+  utils.timers.setInterval(createIceCrystalPulse, 2000)
+
+  // 4. Scale up the frost ground
+  Tween.createOrReplace(frostGround, {
+    mode: Tween.Mode.Scale({
+      start: Vector3.create(0.1, 0.1, 0.1),
+      end: Vector3.create(2.1, 2.1, 2.1)
+    }),
+    duration: 0.5,
+    easingFunction: EasingFunction.EF_EASEINSINE
+  })
+
+  // 5. Continuous floating motion for spheres
+  const createSphereMotion = (sphere: Entity) => {
+    const spherePos = Transform.get(sphere).position
+    const randomOffset = Math.random() * 0.5 - 0.25 // Random offset between -0.25 and 0.25
+
+    // Move up and down with random offset
+    Tween.createOrReplace(sphere, {
+      mode: Tween.Mode.Move({
+        start: Vector3.create(
+          spherePos.x,
+          position.y + 0.5 + randomOffset,
+          spherePos.z
+        ),
+        end: Vector3.create(
+          spherePos.x,
+          position.y + 1.5 + randomOffset,
+          spherePos.z
+        )
+      }),
+      duration: 2,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+
+    // Scale pulse
+    Tween.createOrReplace(sphere, {
+      mode: Tween.Mode.Scale({
+        start: Vector3.create(0.5, 0.5, 0.5),
+        end: Vector3.create(0.6, 0.6, 0.6)
+      }),
+      duration: 1,
+      easingFunction: EasingFunction.EF_EASEINSINE
+    })
+  }
+
+  // Start continuous motion for each sphere
+  spheres.forEach((sphere) => {
+    createSphereMotion(sphere)
+    utils.timers.setInterval(() => createSphereMotion(sphere), 2000)
+  })
+
+  // Fade out and cleanup after duration
   utils.timers.setTimeout(() => {
-    entityController.removeEntity(blizzardArea)
-    entityController.removeEntity(snowSwirl)
-    entityController.removeEntity(iceCrystals)
-    entityController.removeEntity(frostGround)
-  }, duration)
+    try {
+      // Fade out all entities
+      const fadeOutDuration = 0.5
+      const entities = [
+        blizzardArea,
+        snowSwirl,
+        iceCrystals,
+        frostGround,
+        ...spheres
+      ]
+
+      entities.forEach((entity) => {
+        Tween.createOrReplace(entity, {
+          mode: Tween.Mode.Scale({
+            start: Vector3.create(2, 2, 2),
+            end: Vector3.create(0, 0, 0)
+          }),
+          duration: fadeOutDuration,
+          easingFunction: EasingFunction.EF_EASEINSINE
+        })
+      })
+
+      // Remove entities after fade out
+      utils.timers.setTimeout(() => {
+        entities.forEach((entity) => {
+          entityController.removeEntity(entity)
+        })
+      }, fadeOutDuration * 1000)
+    } catch (error) {
+      console.log('Error during blizzard effect cleanup:', error)
+    }
+  }, duration - 500) // Start fade out 500ms before cleanup
 }
