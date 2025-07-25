@@ -114,7 +114,8 @@ export class LevelManager {
       levelChange: shouldLevelUp
     })
 
-    WriteXpToServer(type, newLevel, xp, newXp).catch(console.error)
+    // TODO: Database connection required - commenting out for testing
+    // WriteXpToServer(type, newLevel, xp, newXp).catch(console.error)
   }
 
   getXpThisLevel(type: LEVEL_TYPES): number {

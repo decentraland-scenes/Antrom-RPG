@@ -86,19 +86,24 @@ export class CreationPlayerController {
       return
     }
 
+    // TODO: Database connection required - commenting out for testing
     // API
-    CreatePlayer(
-      this.selectedAlliance.id,
-      this.selectedRace.id,
-      this.selectedClass.id
-    )
-      .then(() => {
-        this.finishedFuture.resolve()
-      })
-      .catch((error) => {
-        console.error('Error creating player', error)
-        this.finishedFuture.reject(new Error(`Error creating player ${error}`))
-      })
+    // CreatePlayer(
+    //   this.selectedAlliance.id,
+    //   this.selectedRace.id,
+    //   this.selectedClass.id
+    // )
+    //   .then(() => {
+    //     this.finishedFuture.resolve()
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error creating player', error)
+    //     this.finishedFuture.reject(new Error(`Error creating player ${error}`))
+    //   })
+    
+    // For testing without database, resolve immediately
+    console.log('Mock player creation - skipping database call')
+    this.finishedFuture.resolve()
   }
 
   acceptMouseUp(): void {

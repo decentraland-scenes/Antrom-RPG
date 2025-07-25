@@ -414,17 +414,21 @@ export class Dungeon implements Realm {
   }
 
   async updateBoard(): Promise<void> {
-    const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
-    if (scoreData.dungeon_action_easy !== undefined) {
-      const data = [...scoreData.dungeon_action_easy]
-      data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
-      const topTen = data.slice(0, 10)
-      this.leaderBoard
-        .buildLeaderBoard(topTen, this.boardParent, 10)
-        .catch((error: Error) => {
-          console.log(error)
-        })
-    }
+    // TODO: Database connection required - commenting out for testing
+    // const scoreData: any = await GetPlayerDungeonEasyLeaderBoard()
+    // if (scoreData.dungeon_action_easy !== undefined) {
+    //   const data = [...scoreData.dungeon_action_easy]
+    //   data.sort((a, b) => b.dungeons_completed - a.dungeons_completed)
+    //   const topTen = data.slice(0, 10)
+    //   this.leaderBoard
+    //     .buildLeaderBoard(topTen, this.boardParent, 10)
+    //     .catch((error: Error) => {
+    //       console.log(error)
+    //     })
+    // }
+
+    // For testing without database, show empty leaderboard
+    console.log('Mock leaderboard - skipping database call')
   }
 
   createResourceHub(): void {}

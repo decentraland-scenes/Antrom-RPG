@@ -1,4 +1,4 @@
-import { Transform, pointerEventsSystem } from '@dcl/sdk/ecs'
+import { Transform, pointerEventsSystem, engine } from '@dcl/sdk/ecs'
 import { Quaternion, Vector3 } from '@dcl/sdk/math'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
@@ -6,16 +6,21 @@ import { Player } from '../../player/player'
 import MonsterMob from '../MonsterMob'
 import { backToAntromFromCave } from './NightmareCaveDungeonBoss'
 import { currentlyAttackingMontserList } from '../splashAttack'
+import { UIController } from '../../controllers/ui.controller'
+import * as utils from '@dcl-sdk/utils'
+import { entityController } from '../../realms/entityController'
 
 const DEFAULT_XP = 60
 
 export default class EasyCaveDungeonBoss extends MonsterMob {
   shapeFile = 'assets/models/RockMonsterBoss.glb'
   hoverText = `Attack Metapsammite!`
+  private readonly uiController: UIController
 
-  constructor(difficulty: number) {
+  constructor(difficulty: number, uiController: UIController) {
     super(45, DEFAULT_XP, Player.getInstance().getLevel() * difficulty, 2500)
     this.minLuck = 10
+    this.uiController = uiController
 
     this.initMonster()
 
@@ -231,10 +236,14 @@ export default class EasyCaveDungeonBoss extends MonsterMob {
     // DailyQuestHUD.getInstance().listenAndUpdateForAnyActiveQuest(
     //     LEVEL_TYPES.ENEMY
     // )
-    void backToAntromFromCave('Easy')
+    //void backToAntromFromCave('Easy')
   }
 
-  onDropLoot(): void {}
+  onDropLoot(): void {
+    // utils.timers.setTimeout(() => {
+    //   this.uiController.loadRealm('antrom', 'easy')
+    // }, 1500)
+  }
 
   setupAttackTriggerBox(): void {
     // super.setupAttackTriggerBox(new utils.TriggerSphereShape(4))
@@ -275,6 +284,20 @@ export default class EasyCaveDungeonBoss extends MonsterMob {
     if (index > -1) {
       currentlyAttackingMontserList.splice(index, 1)
     }
+
+    // Clean up trigger systems and entities
+    engine.removeSystem(this.attackSystemRanged.attackSystem)
+    engine.removeSystem(this.attackSystem.attackSystem)
+
+    if (this.rangeAttackTrigger != null) {
+      entityController.removeEntity(this.rangeAttackTrigger)
+      entityController.removeEntity(this.engageAttackTrigger)
+    }
+
     super.onDead()
+
+    utils.timers.setTimeout(() => {
+      this.uiController.loadRealm('antrom', 'easy')
+    }, 1500)
   }
 }

@@ -29,12 +29,13 @@ export const UpdateInventory = (
     count: 0
   }
 
+  // TODO: Database connection required - commenting out for testing
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  LogInventoryToServer(payload.type, payload.itemKey, payload.count).then(
-    () => {
-      console.log('Logged information correctly')
-    }
-  )
+  // LogInventoryToServer(payload.type, payload.itemKey, payload.count).then(
+  //   () => {
+  //     console.log('Logged information correctly')
+  //   }
+  // )
 
   switch (payload.type) {
     case INVENTORY_ACTIONS.INCREASE_ITEM:

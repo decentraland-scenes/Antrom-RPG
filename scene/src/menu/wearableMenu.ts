@@ -28,9 +28,13 @@ export class SendWearable {
     this.loading.show()
     try {
       console.log('here')
-      const txn = (await postDataNoBase(`${this.LAMBDA_URL}/dispense`, {
-        urn
-      })) as any
+      // TODO: Database connection required - commenting out for testing
+      // const txn = (await postDataNoBase(`${this.LAMBDA_URL}/dispense`, {
+      //   urn
+      // })) as any
+
+      // Mock response for testing without database
+      const txn = { body: 'Mock transaction hash for testing' } as any
       // Stop execution if there's been an error
 
       this.loading.hide()

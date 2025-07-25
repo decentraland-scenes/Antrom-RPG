@@ -41,8 +41,11 @@ async function init(retry: boolean): Promise<void> {
 
   await waitNextTick()
 
-  let playerInfoResponse = await GetPlayerInfo()
-  const shouldCreatePlayer = !(playerInfoResponse?.player !== null)
+  // TODO: Database connection required - commenting out for testing
+  // let playerInfoResponse = await GetPlayerInfo()
+  // const shouldCreatePlayer = !(playerInfoResponse?.player !== null)
+  let playerInfoResponse = null
+  const shouldCreatePlayer = true // Force player creation for testing
 
   // Wait until every gltf is loaded
   while (isThereAnyGltfLoading()) {
@@ -55,31 +58,46 @@ async function init(retry: boolean): Promise<void> {
 
   // UI
   gameInstance.uiController.loadingUI.finishLoading()
+  // TODO: Database connection required - commenting out for testing
   if (shouldCreatePlayer) {
-    const result = await gameInstance.uiController.startPlayerCreation()
-    playerInfoResponse = await GetPlayerInfo()
+    // const result = await gameInstance.uiController.startPlayerCreation()
+    // playerInfoResponse = await GetPlayerInfo()
 
-    const failedCreation = !(playerInfoResponse?.player !== null)
-    if (failedCreation) {
-      gameInstance.uiController.displayAnnouncement(
-        'Player creation failed',
-        Color4.Red(),
-        5
-      )
+    // const failedCreation = !(playerInfoResponse?.player !== null)
+    // if (failedCreation) {
+    //   gameInstance.uiController.displayAnnouncement(
+    //     'Player creation failed',
+    //     Color4.Red(),
+    //     5
+    //   )
 
-      if (retry) {
-        throw new Error('Player creation failed after retry')
-      } else {
-        await init(true)
+    //   if (retry) {
+    //     throw new Error('Player creation failed after retry')
+    //   } else {
+    //     await init(true)
+    //   }
+    //   return
+    // }
+
+    // if (result.tutorial) {
+    //   // TODO: assign first quest
+    // }
+    
+    // For testing without database, create a mock player
+    playerInfoResponse = {
+      player: {
+        race: 0, // Default race
+        skill: 0, // Default class
+        alliance: 0, // Default alliance
+        player_id: 'test-player',
+        userInfo: {
+          username: 'TestPlayer'
+        }
       }
-      return
-    }
-
-    if (result.tutorial) {
-      // TODO: assign first quest
     }
   }
 
+  // TODO: Database connection required - commenting out for testing
   if (playerInfoResponse?.player == null) {
     console.error('Player not found')
     if (retry) {
@@ -90,10 +108,19 @@ async function init(retry: boolean): Promise<void> {
     return
   }
 
-  const [inventory, levels] = await Promise.all([
-    GetPlayerInventory(),
-    GetPlayerLevels()
-  ])
+  // TODO: Database connection required - commenting out for testing
+  // const [inventory, levels] = await Promise.all([
+  //   GetPlayerInventory(),
+  //   GetPlayerLevels()
+  // ])
+  
+  // Mock data for testing without database
+  const inventory = { 
+    computed_player_inventory: [] as Array<{ itemId: string; count: number }> 
+  }
+  const levels = { 
+    levels: [] as Array<{ level_type: string; level: number; xp: number }> 
+  }
 
   // Set all the player info
   const myPlayer = new Player(
