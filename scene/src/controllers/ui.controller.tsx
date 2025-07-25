@@ -3,7 +3,6 @@ import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { ReactEcsRenderer, UiEntity } from '@dcl/sdk/react-ecs'
 import { NpcUtilsUi } from 'dcl-npc-toolkit'
 import * as ui from 'dcl-ui-toolkit'
-import { Player } from '../player/player'
 import Announcement from '../ui/announcement/announcement'
 import Banner from '../ui/banner/bannerComponent'
 import { SkillText } from '../ui/skill-text/skillText'
@@ -21,6 +20,7 @@ import { MainHudController } from './main-hud'
 import { type RealmType } from '../realms/types'
 import { ConfirmLoot } from '../ui/confirmloot/confirmloot'
 import { ConfirmAndSendLoot } from '../ui/confirmloot/confirmAndSendLoot'
+import { Player } from '../player/player'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -189,6 +189,51 @@ export class UIController {
         {/* Send Wearable */}
         <Canvas>{this.gameController.sendWearable.instructions?.render()}</Canvas>
         <Canvas>{this.gameController.sendWearable.loading?.render()}</Canvas>
+
+        {/* Test Notification - Always visible */}
+        <UiEntity
+          uiTransform={{
+            width: 200,
+            height: 50,
+            positionType: 'absolute',
+            position: { left: 20, top: 20 }
+          }}
+          uiBackground={{ color: Color4.create(0, 1, 0, 0.8) }}
+        >
+          <UiEntity
+            uiText={{
+              value: 'UI TEST',
+              fontSize: 16,
+              color: Color4.Black(),
+              textAlign: 'middle-left'
+            }}
+          />
+        </UiEntity>
+
+        {/* Damage Flash - Red screen when player is damaged */}
+        {(() => {
+          const player = Player.getInstanceOrNull()
+          const isDamaged = player?.damaged
+          const fadeIntensity = player?.fadeIntensity || 0
+          console.log('UI: Player damaged state:', isDamaged, 'Fade intensity:', fadeIntensity)
+          if (isDamaged || fadeIntensity > 0) {
+            console.log('Rendering damage fade UI')
+            return (
+              <Canvas>
+                <UiEntity
+                  uiTransform={{
+                    width: '100%',
+                    height: '100%',
+                    positionType: 'absolute',
+                    position: { left: 0, top: 0 }
+                  }}
+                  uiBackground={{ color: Color4.create(1, 0, 0, fadeIntensity) }}
+                />
+              </Canvas>
+            )
+          }
+          return null
+        })()}
       </UiEntity>
     )
   }

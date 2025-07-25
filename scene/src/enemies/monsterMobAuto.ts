@@ -23,6 +23,7 @@ import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
 import { triggerSceneEmote } from '~system/RestrictedActions'
+import { ROAMING_CONFIGS, createPatrolRoute } from './monsterRoaming'
 
 export class MonsterMobAuto extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -133,9 +134,11 @@ export class MonsterMobAuto extends GenericMonster {
     this.setupAttackTriggerBox()
     this.setupRangedAttackTriggerBox()
 
+    // Use aggressive roaming configuration for auto monsters
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
-      engageDistance: this.engageDistance
+      engageDistance: this.engageDistance,
+      roaming: ROAMING_CONFIGS.aggressive
     })
 
     this.attackSystemRanged = new MonsterAttackRanged(this, {
@@ -329,6 +332,7 @@ export class MonsterMobAuto extends GenericMonster {
   }
 
   handleAttack(): void {
+    console.log('handleAttack called')
     const player = Player.getInstanceOrNull()
     if (player === null) return
 
@@ -348,6 +352,14 @@ export class MonsterMobAuto extends GenericMonster {
     const random = Math.random() * 1000
     const roundedPlayerDice = Math.floor(playerDiceResult)
     const roundedMonsterDice = Math.floor(monsterDiceResult)
+
+    console.log(
+      'Dice roll - Monster:',
+      roundedMonsterDice,
+      'Player:',
+      roundedPlayerDice
+    )
+
     const mainHUD = player?.gameController.uiController.mainHud
     if (mainHUD !== null) {
       mainHUD.lastPlayerRoll = roundedPlayerDice
@@ -410,7 +422,12 @@ export class MonsterMobAuto extends GenericMonster {
       const currentPlayer = Player.getInstanceOrNull()
       if (currentPlayer === null) return
 
+      console.log(
+        'About to call currentPlayer.reduceHealth with damage:',
+        roundedAttack
+      )
       currentPlayer.reduceHealth(roundedAttack)
+      console.log('Finished calling currentPlayer.reduceHealth')
       const mainHUD = currentPlayer.gameController.uiController.mainHud
       if (mainHUD !== null) {
         mainHUD.lastEnemyAttack = roundedAttack
@@ -499,7 +516,10 @@ export class MonsterMobAuto extends GenericMonster {
     this.playAttack()
 
     // Then apply damage and effects
+    console.log('About to call player.reduceHealth with damage:', enemyAttack)
     player.reduceHealth(enemyAttack)
+    console.log('Finished calling player.reduceHealth')
+
     const mainHUD = player.gameController.uiController.mainHud
     if (mainHUD !== null) {
       mainHUD.lastEnemyAttack = enemyAttack

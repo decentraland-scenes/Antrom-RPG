@@ -35,13 +35,19 @@ export class Character {
   }
 
   reduceHealth(attack: number): void {
-    console.log('reducehealth', attack)
+    console.log('Character.reduceHealth called with attack:', attack)
+    console.log('Current health before damage:', this._health)
     if (this._health - attack >= 0) {
       this._health -= Math.round(attack)
     } else {
       this._health = 0
     }
-    console.log(this._health, this.getHealthScaled())
+    console.log(
+      'Health after damage:',
+      this._health,
+      'scaled:',
+      this.getHealthScaled()
+    )
   }
 
   getHealthScaled(): number {

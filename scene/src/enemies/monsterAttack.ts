@@ -5,6 +5,7 @@ import type MonsterOligar from './monster'
 import { type Entity, Transform, engine } from '@dcl/sdk/ecs'
 import { Player } from '../player/player'
 import { Animator } from '@dcl/sdk/ecs'
+import { MonsterRoaming, type RoamingConfig } from './monsterRoaming'
 
 // Configuration
 const MOVE_SPEED = 1
@@ -13,6 +14,7 @@ const ROT_SPEED = 1
 interface MonsterAttackConfig {
   moveSpeed: number
   engageDistance: number
+  roaming?: RoamingConfig
 }
 
 export class MonsterAttack {
@@ -23,6 +25,8 @@ export class MonsterAttack {
   private readonly createdAt: Date
   private readonly hasBeenHit: boolean = true
   private readonly stopDistance: number = 5
+  private roaming: MonsterRoaming | null = null
+  private isEngaged: boolean = false
 
   constructor(
     monster: MonsterMobAuto | MonsterMob,
@@ -32,6 +36,18 @@ export class MonsterAttack {
     this.moveSpeed = config.moveSpeed
     this.engageDistance = config.engageDistance
     this.createdAt = new Date()
+
+    // Initialize roaming system if config provided
+    if (config.roaming) {
+      const initialPosition = Transform.get(monster.entity).position
+      this.roaming = new MonsterRoaming(
+        monster.entity,
+        initialPosition,
+        config.roaming,
+        monster.walkClip || 'walk',
+        monster.idleClip || 'idle'
+      )
+    }
   }
 
   attackSystem = (dt: number): void => {
@@ -58,8 +74,20 @@ export class MonsterAttack {
       return
     }
 
+    // Check if monster should engage with player
+    const shouldEngage = distanceToPlayer <= this.engageDistance
+
+    // Handle engagement state changes
+    if (shouldEngage && !this.isEngaged) {
+      this.isEngaged = true
+      this.roaming?.onEngage()
+    } else if (!shouldEngage && this.isEngaged) {
+      this.isEngaged = false
+      this.roaming?.onDisengage()
+    }
+
     // Always try to attack if within range
-    if (distanceToPlayer <= this.engageDistance) {
+    if (shouldEngage) {
       console.log('Monster attempting attack at distance:', distanceToPlayer)
       // Handle the actual attack
       this.monster.handleAttack()
@@ -67,9 +95,15 @@ export class MonsterAttack {
       this.refreshTimer = 2 // Increased from 1 to 2 seconds
     }
 
-    // Chase player if too far
-    if (distanceToPlayer >= this.engageDistance) {
-      this.monsterMove(dt)
+    // Handle movement based on engagement state
+    if (this.isEngaged) {
+      // Chase player if engaged but too far
+      if (distanceToPlayer >= this.engageDistance) {
+        this.monsterMove(dt)
+      }
+    } else {
+      // Use roaming behavior when not engaged
+      this.roaming?.update(dt)
     }
   }
 

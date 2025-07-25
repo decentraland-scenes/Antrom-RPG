@@ -21,6 +21,7 @@ import { MonsterAttackRanged } from './monsterAttackRanged'
 import { GenericMonster } from './monsterGeneric'
 import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
+import { ROAMING_CONFIGS } from './monsterRoaming'
 
 export class MonsterOligar extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -132,9 +133,11 @@ export class MonsterOligar extends GenericMonster {
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
 
+    // Use defensive roaming configuration for regular monsters
     this.attackSystem = new MonsterAttack(this, {
       moveSpeed: 2,
-      engageDistance: this.engageDistance
+      engageDistance: this.engageDistance,
+      roaming: ROAMING_CONFIGS.defensive
     })
 
     this.attackSystemRanged = new MonsterAttackRanged(this, {

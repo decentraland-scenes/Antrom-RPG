@@ -4,6 +4,7 @@ import { engine, inputSystem, PointerEventType } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
+import * as utils from '@dcl-sdk/utils'
 import { type GameController } from '../controllers/game.controller'
 import { Character } from '../enemies/character'
 import { PlayerInventory } from '../inventory/playerInventory'
@@ -22,6 +23,7 @@ import { PetManager } from './petManager'
 import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
+import { ScreenFlashManager } from '../ui/screenFlash'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,6 +76,8 @@ export class Player extends Character {
   public isShakingTree!: boolean
   public isFishing!: boolean
   public isMining!: boolean
+  public damaged: boolean = false
+  public fadeIntensity: number = 0
   public levels: LevelManager
   // private swordUI: ui.SmallIcon
   // private shieldUI: ui.SmallIcon
@@ -356,8 +360,33 @@ export class Player extends Character {
   }
 
   reduceHealth(attack: number): void {
+    console.log('Player.reduceHealth called with attack:', attack)
     super.reduceHealth(attack)
     this.updateHealthBar()
+    
+    // Trigger fade effect when taking damage
+    console.log('Player taking damage, triggering fade effect')
+    this.damaged = true
+    this.fadeIntensity = 0.3 // Start fade at 30% opacity
+    
+    // Fade out over 500ms
+    const fadeOutDuration = 500
+    const fadeSteps = 20
+    const fadeStepDuration = fadeOutDuration / fadeSteps
+    const fadeStepAmount = this.fadeIntensity / fadeSteps
+    
+    const fadeOut = () => {
+      this.fadeIntensity -= fadeStepAmount
+      if (this.fadeIntensity > 0) {
+        utils.timers.setTimeout(fadeOut, fadeStepDuration)
+      } else {
+        this.fadeIntensity = 0
+        this.damaged = false
+        console.log('Fade effect complete')
+      }
+    }
+    
+    utils.timers.setTimeout(fadeOut, fadeStepDuration)
   }
 
   refillHealthBar(percentage = 1, playAnimation = true): void {
