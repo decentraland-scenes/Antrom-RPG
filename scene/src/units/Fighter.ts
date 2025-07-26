@@ -20,7 +20,7 @@ export class Fighter {
   public lastAttackTime: number
   public isPlaced: boolean = false
   public attackRange: number = 7 // Increased range for better combat effectiveness
-  public attackDamage: number = 15
+  public attackDamage: number = 1000
   public attackInterval: number = 2000 // 2 seconds between attacks
   public targetExecutioner: Entity | null = null
   public isAttacking: boolean = false
@@ -111,7 +111,12 @@ export class Fighter {
   }
 
   public update(): void {
-    if (!this.isPlaced || this.isDead) return
+    if (!this.isPlaced) return
+
+    // If fighter is dead, don't do normal updates but allow cleanup
+    if (this.isDead) {
+      return
+    }
 
     const currentTime = Date.now()
 
@@ -120,6 +125,10 @@ export class Fighter {
       !this.targetExecutioner ||
       !this.isExecutionerValid(this.targetExecutioner)
     ) {
+      if (this.targetExecutioner) {
+        console.log('Fighter clearing invalid target')
+        this.targetExecutioner = null
+      }
       this.findNearestExecutioner()
     }
 
@@ -166,22 +175,41 @@ export class Fighter {
     if (currentRealm && currentRealm.getId() === 'antrom') {
       const executioners = (currentRealm as any).executioners || []
 
+      console.log(
+        `Fighter searching for executioners. Found ${executioners.length} executioners. Roaming: ${this.isRoaming}`
+      )
+
       for (const executioner of executioners) {
-        if (!executioner || executioner.isDead) continue
+        if (!executioner || executioner.isDead) {
+          console.log('Skipping dead executioner:', executioner?.isDead)
+          continue
+        }
 
         const executionerPos = Transform.get(executioner.entity).position
         const distance = Vector3.distance(this.position, executionerPos)
 
-        // Look for executioners within a larger range when roaming
-        const searchRange = this.isRoaming ? this.roamRadius : this.attackRange
+        // Always use a large search range to find executioners
+        const searchRange = this.roamRadius // Always use roam radius for searching
         if (distance < nearestDistance && distance <= searchRange) {
           nearestDistance = distance
           nearestExecutioner = executioner.entity
+          console.log(
+            `Fighter found executioner at distance: ${distance.toFixed(2)}`
+          )
         }
       }
     }
 
     this.targetExecutioner = nearestExecutioner
+    if (this.targetExecutioner) {
+      console.log(
+        `Fighter targeting executioner at distance: ${nearestDistance.toFixed(
+          2
+        )}`
+      )
+    } else {
+      console.log('Fighter found no executioners in range')
+    }
   }
 
   private roam(): void {
@@ -234,8 +262,27 @@ export class Fighter {
       const transform = Transform.get(executionerEntity)
       if (!transform) return false
 
-      // Check if executioner is still alive (you might need to adjust this based on your executioner implementation)
-      return true
+      // Check if executioner is still alive by finding it in the executioners array
+      const player = Player.getInstanceOrNull()
+      if (!player) return false
+
+      const currentRealm = player.gameController.realmController.currentRealm
+      if (currentRealm && currentRealm.getId() === 'antrom') {
+        const executioners = (currentRealm as any).executioners || []
+
+        for (const executioner of executioners) {
+          if (executioner.entity === executionerEntity) {
+            // Check if executioner is dead
+            if (executioner.isDead || executioner.health <= 0) {
+              console.log('Fighter found dead executioner, clearing target')
+              return false
+            }
+            return true
+          }
+        }
+      }
+
+      return false
     } catch {
       return false
     }
@@ -316,7 +363,15 @@ export class Fighter {
         executionerTransform.position
       )
 
+      console.log(
+        `Fighter attempting attack. Distance: ${distance.toFixed(
+          2
+        )}, Attack Range: ${this.attackRange}`
+      )
+
       if (distance <= this.attackRange) {
+        console.log('Fighter in attack range, attacking executioner')
+
         // Stop walking if we were walking
         if (this.isWalking) {
           this.isWalking = false
@@ -348,6 +403,12 @@ export class Fighter {
         utils.timers.setTimeout(() => {
           Animator.playSingleAnimation(this.entity, 'idle')
         }, 1000)
+      } else {
+        console.log(
+          `Fighter too far to attack. Distance: ${distance.toFixed(
+            2
+          )}, Attack Range: ${this.attackRange}`
+        )
       }
     } catch (error) {
       console.log('Error attacking executioner:', error)
@@ -366,13 +427,29 @@ export class Fighter {
     if (currentRealm && currentRealm.getId() === 'antrom') {
       const executioners = (currentRealm as any).executioners || []
 
+      console.log(
+        `Fighter dealing damage. Looking for executioner entity: ${this.targetExecutioner}`
+      )
+
       for (const executioner of executioners) {
         if (executioner.entity === this.targetExecutioner) {
+          console.log(
+            `Fighter found executioner to damage. Current health: ${executioner.health}, Damage: ${this.attackDamage}`
+          )
+
           // Deal damage to the executioner
+          console.log(
+            'Fighter calling executioner.reduceHealth with damage:',
+            this.attackDamage
+          )
           executioner.reduceHealth(this.attackDamage)
+          console.log('Fighter finished calling executioner.reduceHealth')
+
+          console.log(`Fighter dealt damage. New health: ${executioner.health}`)
 
           // Check if executioner was killed
           if (executioner.health <= 0) {
+            console.log('Fighter killed executioner!')
             this.handleExecutionerKill(player)
           }
           break
@@ -408,7 +485,9 @@ export class Fighter {
   }
 
   public remove(): void {
+    console.log('Fighter.remove() called for entity:', this.entity)
     entityController.removeEntity(this.entity)
+    console.log('Fighter entity removed successfully')
   }
 
   private checkForDamage(): void {
@@ -486,17 +565,9 @@ export class Fighter {
       )
     }
 
-    // Remove fighter from player's fighter list
-    if (player) {
-      const fighterIndex = player.fighters.indexOf(this)
-      if (fighterIndex !== -1) {
-        player.fighters.splice(fighterIndex, 1)
-        console.log('Fighter removed from player list')
-      }
-    }
-
     // Remove entity after death animation
     utils.timers.setTimeout(() => {
+      console.log('Removing fighter entity:', this.entity)
       this.remove()
     }, 3000) // 3 seconds for death animation
   }

@@ -162,6 +162,7 @@ export class MonsterMobAuto extends GenericMonster {
     if (this.health < 0) {
       this.health = 0
     }
+    this.updateHealthBar()
   }
 
   create(): void {

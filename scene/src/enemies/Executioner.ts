@@ -47,6 +47,47 @@ export default class Executioner extends MonsterMobAuto {
     this.dropRate = -1
   }
 
+  reduceHealth(attack: number): void {
+    console.log('Executioner.reduceHealth called with attack:', attack)
+    console.log('Executioner health before damage:', this.health)
+    console.log('Executioner isEngaged:', this.isEngaged)
+    console.log('Executioner isDead:', this.isDead)
+    console.log('Executioner isDeadAnimation:', this.isDeadAnimation)
+
+    // Call the base reduceHealth method
+    super.reduceHealth(attack)
+
+    console.log('Executioner health after damage:', this.health)
+
+    // Update the health bar to show the damage
+    this.updateHealthBar()
+
+    // Check if executioner died and handle death properly
+    if (this.health <= 0 && !this.isDead) {
+      console.log('Executioner died, calling onDead()')
+      this.isDead = true
+
+      // Play death animation first
+      Animator.playSingleAnimation(this.entity, this.dieClip)
+
+      // Remove entity after death animation completes
+      utils.timers.setTimeout(() => {
+        console.log('Removing dead executioner entity after animation')
+        entityController.removeEntity(this.entity)
+        if (this.rangeAttackTrigger) {
+          entityController.removeEntity(this.rangeAttackTrigger)
+        }
+        if (this.engageAttackTrigger) {
+          entityController.removeEntity(this.engageAttackTrigger)
+        }
+      }, 5000) // 5 seconds for death animation
+
+      this.onDead()
+    }
+
+    console.log('Health bar updated')
+  }
+
   onDropXp(): void {
     const player = Player.getInstance()
     const xp = getRandomIntRange(this.xp, this.xp + 10)
@@ -157,6 +198,11 @@ export default class Executioner extends MonsterMobAuto {
       'Animator created with states:',
       animator.states.map((state) => state.clip)
     )
+
+    // Make executioner combat-ready from the start
+    console.log('Creating health bar for executioner')
+    this.createHealthBar()
+    console.log('Health bar created for executioner')
 
     this.setupEngageTriggerBox()
     this.setupAttackTriggerBox()
@@ -289,7 +335,16 @@ export default class Executioner extends MonsterMobAuto {
     if (player && player.gameController.realmController.currentRealm) {
       const currentRealm = player.gameController.realmController.currentRealm
       if (currentRealm.getId() === 'antrom') {
-        ;(currentRealm as any).executioners.push(newChar)
+        // Remove this dead executioner from the array
+        const executioners = (currentRealm as any).executioners || []
+        const deadIndex = executioners.indexOf(this)
+        if (deadIndex !== -1) {
+          executioners.splice(deadIndex, 1)
+          console.log('Dead executioner removed from array')
+        }
+
+        // Add the new executioner to the array
+        executioners.push(newChar)
         console.log('New executioner spawned and added to array')
       }
     }
