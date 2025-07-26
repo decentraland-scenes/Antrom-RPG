@@ -1,6 +1,7 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { Color4 } from '@dcl/sdk/math'
 import ReactEcs, { Button, Label, UiEntity } from '@dcl/sdk/react-ecs'
+import { Player } from '../../player/player'
 import type { Option } from './dungeonsData'
 import {
   DAILY_FREE_TOKENS,
@@ -294,6 +295,7 @@ function Dungeon({
                 ))}
               </UiEntity>
 
+              {/* Play Dungeon Button - commented out
               <Button
                 value=""
                 variant="secondary"
@@ -314,6 +316,7 @@ function Dungeon({
                 }}
                 onMouseDown={playDungeon}
               />
+              */}
               <UiEntity
                 uiTransform={{
                   position: { right: '3%', top: '23%' },

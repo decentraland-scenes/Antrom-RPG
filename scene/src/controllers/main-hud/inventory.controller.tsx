@@ -1,6 +1,6 @@
 import * as utils from '@dcl-sdk/utils'
 
-import { AvatarEquippedData, engine, executeTask } from '@dcl/sdk/ecs'
+import { AvatarEquippedData, engine, executeTask, Transform } from '@dcl/sdk/ecs'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getUserData } from '~system/UserIdentity'
 import {
@@ -793,4 +793,6 @@ export class InventoryController {
       this.updateSpritesButtons(150)
     }
   }
+
+
 }

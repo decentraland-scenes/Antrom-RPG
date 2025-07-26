@@ -1,7 +1,9 @@
 // import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import { engine, UiCanvasInformation } from '@dcl/sdk/ecs'
 import ReactEcs, { Label, UiEntity } from '@dcl/sdk/react-ecs'
+import { Color4 } from '@dcl/sdk/math'
 import { Player } from '../../player/player'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 import { getUvs } from '../../utils/ui-utils'
 import {
   professions,
@@ -177,7 +179,10 @@ function ProfessionsPage({
                 .toString()
             }
             fontSize={FONT_SIZE}
+            uiTransform={{ margin: { bottom: FONT_SIZE * 1 } }}
           />
+          
+
         </UiEntity>
       )}
     </UiEntity>

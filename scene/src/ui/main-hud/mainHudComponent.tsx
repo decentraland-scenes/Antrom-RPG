@@ -1,5 +1,6 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import { Color4 } from '@dcl/sdk/math'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import Canvas from '../canvas/Canvas'
 import {
@@ -24,6 +25,7 @@ type MainHudProps = {
   playerRollOnClick: (arg: boolean) => void
   showInfo: (arg: boolean) => void
   showInventory: () => void
+  showLumberjack: () => void
   openLink: (arg: string) => void
   characterRace: CharacterRaces
   characterClass: CharacterClasses
@@ -38,6 +40,7 @@ function MainHud({
   playerRollOnClick,
   showInfo,
   showInventory,
+  showLumberjack,
   openLink,
   characterAlliance,
   characterRace,
@@ -99,6 +102,7 @@ function MainHud({
             showInventory()
           }}
         />
+
         <UiEntity
           uiTransform={{
             width: hudHeight,
@@ -113,6 +117,8 @@ function MainHud({
             }
           }}
         />
+        
+
         <UiEntity
           uiTransform={{
             width: hudHeight,
@@ -415,6 +421,35 @@ function MainHud({
           />
         </UiEntity>
         {/* )} */}
+      </UiEntity>
+      
+      {/* Lumberjack Button - positioned below the main HUD bar */}
+      <UiEntity
+        uiTransform={{
+          width: hudHeight,
+          height: hudHeight,
+          position: { right: hudHeight * 0.2, top: hudHeight * 1.5 },
+          positionType: 'absolute'
+        }}
+        uiBackground={{
+          color: Color4.create(0.8, 0.6, 0.2, 1) // Brown color for lumberjack
+        }}
+        onMouseDown={() => {
+          showLumberjack()
+        }}
+      >
+        <UiEntity
+          uiTransform={{
+            width: '100%',
+            height: '100%'
+          }}
+          uiText={{
+            value: 'UNITS',
+            fontSize: 10,
+            color: Color4.White(),
+            textAlign: 'middle-center'
+          }}
+        />
       </UiEntity>
     </Canvas>
   )

@@ -58,8 +58,8 @@ async function init(retry: boolean): Promise<void> {
 
   // UI
   gameInstance.uiController.loadingUI.finishLoading()
-  // TODO: Database connection required - commenting out for testing
   if (shouldCreatePlayer) {
+    // TODO: Database connection required - commenting out for testing
     // const result = await gameInstance.uiController.startPlayerCreation()
     // playerInfoResponse = await GetPlayerInfo()
 
@@ -97,7 +97,6 @@ async function init(retry: boolean): Promise<void> {
     }
   }
 
-  // TODO: Database connection required - commenting out for testing
   if (playerInfoResponse?.player == null) {
     console.error('Player not found')
     if (retry) {
@@ -113,14 +112,8 @@ async function init(retry: boolean): Promise<void> {
   //   GetPlayerInventory(),
   //   GetPlayerLevels()
   // ])
-  
-  // Mock data for testing without database
-  const inventory = { 
-    computed_player_inventory: [] as Array<{ itemId: string; count: number }> 
-  }
-  const levels = { 
-    levels: [] as Array<{ level_type: string; level: number; xp: number }> 
-  }
+  const inventory = null
+  const levels = null
 
   // Set all the player info
   const myPlayer = new Player(
@@ -151,35 +144,37 @@ async function init(retry: boolean): Promise<void> {
 
   myPlayer.setSkill(0, CLASS_MAIN_SKILL[myPlayer.class]())
 
-  if (
-    inventory?.computed_player_inventory !== undefined &&
-    Array.isArray(inventory.computed_player_inventory)
-  ) {
-    console.log({ inventory })
+  // TODO: Database connection required - commenting out for testing
+  // if (
+  //   inventory?.computed_player_inventory !== undefined &&
+  //   Array.isArray(inventory.computed_player_inventory)
+  // ) {
+  //   console.log({ inventory })
 
-    for (const item of inventory.computed_player_inventory) {
-      myPlayer.inventory.setItem(item.itemId, item.count)
-    }
-  } else {
-    console.error('Inventory not found')
-  }
+  //   for (const item of inventory.computed_player_inventory) {
+  //     myPlayer.inventory.setItem(item.itemId, item.count)
+  //   }
+  // } else {
+  //   console.error('Inventory not found')
+  // }
 
-  if (levels?.levels !== undefined) {
-    const levelTypes = Array.from(Object.values(LEVEL_TYPES).values())
-    for (const level of levels.levels) {
-      if (levelTypes.includes(level.level_type as LEVEL_TYPES)) {
-        myPlayer.levels.setLevel(
-          level.level_type as LEVEL_TYPES,
-          level.level,
-          level.xp
-        )
-      }
-    }
+  // TODO: Database connection required - commenting out for testing
+  // if (levels?.levels !== undefined) {
+  //   const levelTypes = Array.from(Object.values(LEVEL_TYPES).values())
+  //   for (const level of levels.levels) {
+  //     if (levelTypes.includes(level.level_type as LEVEL_TYPES)) {
+  //       myPlayer.levels.setLevel(
+  //         level.level_type as LEVEL_TYPES,
+  //         level.level,
+  //         level.xp
+  //       )
+  //     }
+  //   }
 
-    console.log({ levels })
-  } else {
-    console.error('Levels not found')
-  }
+  //   console.log({ levels })
+  // } else {
+  //   console.error('Levels not found')
+  // }
 
   myPlayer.maxHealth =
     myPlayer.maxHealth + myPlayer.levels.getLevel(LEVEL_TYPES.PLAYER)

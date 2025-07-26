@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
-import { engine, inputSystem, PointerEventType } from '@dcl/sdk/ecs'
-import { Color4 } from '@dcl/sdk/math'
+import { engine, inputSystem, PointerEventType, type Entity } from '@dcl/sdk/ecs'
+import { Color4, Vector3 } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
 import * as utils from '@dcl-sdk/utils'
@@ -24,6 +24,7 @@ import { type MaybeSkill, type PlayerSkill } from './skills'
 import { WearablesConfig } from './wearables-config'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { ScreenFlashManager } from '../ui/screenFlash'
+import { Lumberjack } from '../units/Lumberjack'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -81,7 +82,7 @@ export class Player extends Character {
   public levels: LevelManager
   // private swordUI: ui.SmallIcon
   // private shieldUI: ui.SmallIcon
-  // private helmetUI: ui.SmallIcon
+  // private helmetUI: ui.UICornerLabel
   // private defenseLabel: ui.CornerLabel
   public onInitDone?: (player: Player) => void
   public hasInit!: boolean
@@ -109,6 +110,14 @@ export class Player extends Character {
     undefined,
     undefined
   ]
+
+  // Lumberjack system
+  public lumberjacks: Lumberjack[] = []
+  public lumberjackCost: number = 50
+  public lumberjackHarvestAmount: number = 3
+  public lumberjackHarvestInterval: number = 3000 // 3 seconds in milliseconds
+  public lumberjackRange: number = 5 // Small range for harvesting
+  public occupiedTrees: Set<string> = new Set() // Track which trees have lumberjacks
 
   gameController: GameController
 
@@ -210,6 +219,9 @@ export class Player extends Character {
     this.lastLogin = 0
     this.consecutiveLoginDays = 0
     this.questTime = 99999
+    
+    // Start with 100 gold for testing
+    this.inventory.setItem(ITEM_TYPES.COIN, 100)
     // this.lvEvent(this.level)
     // StatusHUD.updateLv(this.level)
     // executeTask(async () => {
@@ -357,6 +369,45 @@ export class Player extends Character {
   chopTree(): void {
     const treeCount = this.inventory.getItemCount(ITEM_TYPES.TREE)
     console.log(treeCount)
+  }
+
+  // Lumberjack system methods
+  canPurchaseLumberjack(): boolean {
+    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.lumberjackCost
+  }
+
+  purchaseLumberjack(): boolean {
+    if (!this.canPurchaseLumberjack()) {
+      return false
+    }
+    
+    this.inventory.reduceItem(ITEM_TYPES.COIN, this.lumberjackCost)
+    return true
+  }
+
+  addLumberjack(position: Vector3, treePosition: Vector3): void {
+    const lumberjack = new Lumberjack(position)
+    lumberjack.place(position)
+    this.lumberjacks.push(lumberjack)
+    
+    // Mark this tree as occupied
+    const treeKey = `${treePosition.x.toFixed(1)},${treePosition.y.toFixed(1)},${treePosition.z.toFixed(1)}`
+    this.occupiedTrees.add(treeKey)
+    console.log('Marked tree as occupied:', treeKey)
+  }
+
+  isTreeOccupied(treePosition: Vector3): boolean {
+    const treeKey = `${treePosition.x.toFixed(1)},${treePosition.y.toFixed(1)},${treePosition.z.toFixed(1)}`
+    return this.occupiedTrees.has(treeKey)
+  }
+
+  // Removed removeLumberjack method - lumberjacks cannot be removed
+
+  updateLumberjacks(): void {
+    for (let i = this.lumberjacks.length - 1; i >= 0; i--) {
+      const lumberjack = this.lumberjacks[i]
+      lumberjack.update()
+    }
   }
 
   reduceHealth(attack: number): void {
@@ -563,6 +614,9 @@ export class Player extends Character {
         skill.process(dt)
       }
     })
+
+    // Update lumberjacks
+    this.updateLumberjacks()
   }
 
   checkHealth(): boolean {

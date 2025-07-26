@@ -30,6 +30,9 @@ export class MainHudController {
           showInventory={() => {
             this.showInventory(true)
           }}
+          showLumberjack={() => {
+            this.showLumberjack()
+          }}
           characterRace={player.race}
           characterClass={player.class}
           characterAlliance={player.alliance}
@@ -72,5 +75,16 @@ export class MainHudController {
 
   openLink(url: string): void {
     openExternalUrl({ url }).catch(console.error)
+  }
+
+  showLumberjack(): void {
+    console.log('MainHudController.showLumberjack() called')
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      console.log('MainHudController: Player found, showing purchase menu')
+      player.gameController.uiController.purchaseMenu.show()
+    } else {
+      console.log('MainHudController: No player found')
+    }
   }
 }

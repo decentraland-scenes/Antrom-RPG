@@ -21,12 +21,16 @@ import { type RealmType } from '../realms/types'
 import { ConfirmLoot } from '../ui/confirmloot/confirmloot'
 import { ConfirmAndSendLoot } from '../ui/confirmloot/confirmAndSendLoot'
 import { Player } from '../player/player'
+import { LumberjackUI } from '../ui/lumberjack/LumberjackUI'
+import { PurchaseMenu } from '../ui/purchase/PurchaseMenu'
 
 export class UIController {
   loadingUI: LoadingUI
   playDungeonUI: PlayDungeonUI
   confirmLoot: ConfirmLoot
   confirmAndSendLoot: ConfirmAndSendLoot
+  lumberjackUI: LumberjackUI
+  purchaseMenu: PurchaseMenu
   // Banner
   gameController: GameController
 
@@ -58,6 +62,8 @@ export class UIController {
     this.confirmLoot = new ConfirmLoot(this)
     this.confirmAndSendLoot = new ConfirmAndSendLoot(this)
     this.playDungeonUI = new PlayDungeonUI(this)
+    this.lumberjackUI = new LumberjackUI()
+    this.purchaseMenu = new PurchaseMenu()
     ReactEcsRenderer.setUiRenderer(this.ui.bind(this))
   }
 
@@ -185,6 +191,12 @@ export class UIController {
 
         {/* Confirm & Send Loot */}
         {this.confirmAndSendLoot.isVisible && this.confirmAndSendLoot.mainUi()}
+
+        {/* Lumberjack UI */}
+        {this.lumberjackUI.render()}
+
+        {/* Purchase Menu */}
+        {this.purchaseMenu.render()}
 
         {/* Send Wearable */}
         <Canvas>{this.gameController.sendWearable.instructions?.render()}</Canvas>
