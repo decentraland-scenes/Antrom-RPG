@@ -25,6 +25,7 @@ import { WearablesConfig } from './wearables-config'
 import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { ScreenFlashManager } from '../ui/screenFlash'
 import { Lumberjack } from '../units/Lumberjack'
+import { Fighter } from '../units/Fighter'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -118,6 +119,13 @@ export class Player extends Character {
   public lumberjackHarvestInterval: number = 3000 // 3 seconds in milliseconds
   public lumberjackRange: number = 5 // Small range for harvesting
   public occupiedTrees: Set<string> = new Set() // Track which trees have lumberjacks
+
+  // Fighter system
+  public fighters: Fighter[] = []
+  public fighterCost: number = 100
+  public fighterAttackDamage: number = 15
+  public fighterAttackInterval: number = 2000 // 2 seconds between attacks
+  public fighterAttackRange: number = 10
 
   gameController: GameController
 
@@ -410,6 +418,34 @@ export class Player extends Character {
     }
   }
 
+  // Fighter system methods
+  canPurchaseFighter(): boolean {
+    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.fighterCost
+  }
+
+  purchaseFighter(): boolean {
+    if (!this.canPurchaseFighter()) {
+      return false
+    }
+    
+    this.inventory.reduceItem(ITEM_TYPES.COIN, this.fighterCost)
+    return true
+  }
+
+  addFighter(position: Vector3): void {
+    const fighter = new Fighter(position)
+    fighter.place(position)
+    this.fighters.push(fighter)
+    console.log('Fighter deployed at:', position)
+  }
+
+  updateFighters(): void {
+    for (let i = this.fighters.length - 1; i >= 0; i--) {
+      const fighter = this.fighters[i]
+      fighter.update()
+    }
+  }
+
   reduceHealth(attack: number): void {
     console.log('Player.reduceHealth called with attack:', attack)
     super.reduceHealth(attack)
@@ -617,6 +653,9 @@ export class Player extends Character {
 
     // Update lumberjacks
     this.updateLumberjacks()
+    
+    // Update fighters
+    this.updateFighters()
   }
 
   checkHealth(): boolean {

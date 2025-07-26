@@ -268,8 +268,16 @@ export default class Executioner extends MonsterMobAuto {
   }
 
   create(): void {
-    // TODO: this is not being added to the entities list
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const newChar = new Executioner()
+
+    // Add the new executioner to the antrom realm's executioners array
+    const player = Player.getInstanceOrNull()
+    if (player && player.gameController.realmController.currentRealm) {
+      const currentRealm = player.gameController.realmController.currentRealm
+      if (currentRealm.getId() === 'antrom') {
+        ;(currentRealm as any).executioners.push(newChar)
+        console.log('New executioner spawned and added to array')
+      }
+    }
   }
 }

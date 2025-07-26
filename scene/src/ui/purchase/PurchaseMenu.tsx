@@ -104,7 +104,7 @@ const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     harvestInterval: 0,
     range: 10,
     description: 'Defends your territory from enemies',
-    modelPath: 'assets/models/Fighter.glb'
+    modelPath: 'assets/models/KnightSword.glb'
   }
 }
 
@@ -189,7 +189,7 @@ export class PurchaseMenu {
     const unitDef = UNIT_DEFINITIONS[unitType]
     
     if (player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost) {
-      // For now, only implement lumberjack placement
+      // For now, only implement lumberjack and fighter placement
       if (unitType === 'lumberjack') {
         // Check if we can actually place a lumberjack before deducting gold
         const playerPos = Transform.get(engine.PlayerEntity).position
@@ -220,6 +220,10 @@ export class PurchaseMenu {
         // Only deduct gold if we can actually place the unit
         player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         this.startLumberjackPlacement()
+      } else if (unitType === 'fighter') {
+        // Only deduct gold if we can actually place the unit
+        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        this.startFighterPlacement()
       } else {
         // Play invalid placement sound for unavailable units
         const soundEntity = engine.addEntity()
@@ -325,6 +329,64 @@ export class PurchaseMenu {
     // Show success message
     player.gameController.uiController.displayAnnouncement(
       'Lumberjack deployed!',
+      Color4.Green(),
+      2000
+    )
+  }
+
+  private startFighterPlacement(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    this.isPlacing = true
+    this.isVisible = false
+    
+    // Add a temporary system to handle placement clicks
+    engine.addSystem(() => {
+      if (this.isPlacing && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        // Get player position
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        
+        // Place fighter next to the player
+        const angle = Math.random() * Math.PI * 2
+        const distance = 2 + Math.random() * 2
+        const offsetX = Math.cos(angle) * distance
+        const offsetZ = Math.sin(angle) * distance
+        const placementPos = Vector3.create(
+          playerPos.x + offsetX,
+          playerPos.y - 0.5,
+          playerPos.z + offsetZ
+        )
+        
+        console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos)
+        this.placeFighter(placementPos)
+      }
+    })
+  }
+
+  private placeFighter(position: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    player.addFighter(position)
+    this.hide()
+    
+    // Play fighter deployment sound
+    const soundEntity = engine.addEntity()
+    AudioSource.create(soundEntity, {
+      audioClipUrl: 'assets/sounds/letsgetchoppin.mp3',
+      loop: false,
+      playing: true
+    })
+    
+    // Remove sound entity after playing
+    utils.timers.setTimeout(() => {
+      engine.removeEntity(soundEntity)
+    }, 3000)
+    
+    // Show success message
+    player.gameController.uiController.displayAnnouncement(
+      'Fighter deployed!',
       Color4.Green(),
       2000
     )

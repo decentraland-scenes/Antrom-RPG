@@ -88,7 +88,7 @@ export class Antrom implements Realm {
   private readonly trees: MineableItem[]
   private readonly berryTrees: MineableItem[]
   // Enemies
-  private readonly executioners: Executioner[]
+  public readonly executioners: Executioner[]
   private readonly pigs: Pig[]
   private readonly chickens: Chicken[]
   public butcher!: BetaBoss1
