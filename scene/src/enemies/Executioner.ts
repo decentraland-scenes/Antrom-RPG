@@ -50,6 +50,8 @@ export default class Executioner extends MonsterMobAuto {
   onDropXp(): void {
     const player = Player.getInstance()
     const xp = getRandomIntRange(this.xp, this.xp + 10)
+
+    // 10% chance for potion drop
     const randomNumber = Math.random()
     if (randomNumber <= 0.1) {
       player.gameController.uiController.displayAnnouncement(
@@ -58,6 +60,18 @@ export default class Executioner extends MonsterMobAuto {
         3000
       )
       player.inventory.incrementItem(ITEM_TYPES.POTION, 1)
+    }
+
+    // 50% chance for coin drop (same as fighters)
+    const coinDropChance = Math.random()
+    if (coinDropChance <= 0.5) {
+      const coinAmount = Math.floor(Math.random() * 5) + 1 // 1-5 coins
+      player.inventory.incrementItem(ITEM_TYPES.COIN, coinAmount)
+      player.gameController.uiController.displayAnnouncement(
+        `+${coinAmount} COINS`,
+        Color4.Yellow(),
+        3000
+      )
     }
 
     const exp = [

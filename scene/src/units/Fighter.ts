@@ -11,6 +11,7 @@ import * as utils from '@dcl-sdk/utils'
 import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
 import { LEVEL_TYPES } from '../player/LevelManager'
+import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import Executioner from '../enemies/Executioner'
 
 export class Fighter {
@@ -370,18 +371,39 @@ export class Fighter {
           // Deal damage to the executioner
           executioner.reduceHealth(this.attackDamage)
 
-          // Add XP to player for fighter kills
+          // Check if executioner was killed
           if (executioner.health <= 0) {
-            player.levels.addXp(LEVEL_TYPES.ENEMY, 1)
-            player.gameController.uiController.displayAnnouncement(
-              'Fighter defeated executioner! +1 XP',
-              Color4.Green(),
-              2000
-            )
+            this.handleExecutionerKill(player)
           }
           break
         }
       }
+    }
+  }
+
+  private handleExecutionerKill(player: Player): void {
+    // Add assassin XP (ENEMY level type is actually assassin)
+    player.levels.addXp(LEVEL_TYPES.ENEMY, 1)
+
+    // Add player XP
+    player.levels.addXp(LEVEL_TYPES.PLAYER, 2)
+
+    // 50% chance to drop coins
+    if (Math.random() < 0.5) {
+      const coinAmount = Math.floor(Math.random() * 5) + 1 // 1-5 coins
+      player.inventory.incrementItem(ITEM_TYPES.COIN, coinAmount)
+
+      player.gameController.uiController.displayAnnouncement(
+        `Fighter killed executioner! +1 Assassin XP +2 Player XP +${coinAmount} Coins`,
+        Color4.Green(),
+        3000
+      )
+    } else {
+      player.gameController.uiController.displayAnnouncement(
+        'Fighter killed executioner! +1 Assassin XP +2 Player XP',
+        Color4.Green(),
+        3000
+      )
     }
   }
 
