@@ -228,8 +228,8 @@ export class Player extends Character {
     this.consecutiveLoginDays = 0
     this.questTime = 99999
     
-    // Start with 100 gold for testing
-    this.inventory.setItem(ITEM_TYPES.COIN, 100)
+    // Start with 500 gold for testing
+    this.inventory.setItem(ITEM_TYPES.COIN, 500)
     // this.lvEvent(this.level)
     // StatusHUD.updateLv(this.level)
     // executeTask(async () => {
@@ -443,6 +443,12 @@ export class Player extends Character {
     for (let i = this.fighters.length - 1; i >= 0; i--) {
       const fighter = this.fighters[i]
       fighter.update()
+      
+      // Remove dead fighters from the array
+      if (fighter.isDead) {
+        this.fighters.splice(i, 1)
+        console.log('Dead fighter removed from update loop')
+      }
     }
   }
 

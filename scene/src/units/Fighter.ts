@@ -18,7 +18,7 @@ export class Fighter {
   public position: Vector3
   public lastAttackTime: number
   public isPlaced: boolean = false
-  public attackRange: number = 10
+  public attackRange: number = 7 // Increased range for better combat effectiveness
   public attackDamage: number = 15
   public attackInterval: number = 2000 // 2 seconds between attacks
   public targetExecutioner: Entity | null = null
@@ -28,9 +28,25 @@ export class Fighter {
   public lastWalkTime: number = 0
   public walkInterval: number = 100 // milliseconds between walk updates
 
+  // Roaming system
+  public isRoaming: boolean = false
+  public roamRadius: number = 20 // How far they roam from spawn point
+  public roamSpeed: number = 1.5 // Slower speed when roaming
+  public lastRoamTime: number = 0
+  public roamInterval: number = 2000 // Check for new targets every 2 seconds
+  public spawnPosition: Vector3 // Original spawn position for roaming
+
+  // Fighter health and combat stats
+  public health: number = 200
+  public maxHealth: number = 200
+  public isDead: boolean = false
+  public lastDamagedTime: number = 0
+  public damageCooldown: number = 1000 // 1 second between taking damage
+
   constructor(position: Vector3) {
     this.entity = entityController.addEntity()
     this.position = position
+    this.spawnPosition = position
     this.lastAttackTime = Date.now()
 
     this.setupModel()
@@ -64,6 +80,16 @@ export class Fighter {
           clip: 'walk',
           playing: false,
           loop: true
+        },
+        {
+          clip: 'impact',
+          playing: false,
+          loop: false
+        },
+        {
+          clip: 'die',
+          playing: false,
+          loop: false
         }
       ]
     })
@@ -84,7 +110,7 @@ export class Fighter {
   }
 
   public update(): void {
-    if (!this.isPlaced) return
+    if (!this.isPlaced || this.isDead) return
 
     const currentTime = Date.now()
 
@@ -94,6 +120,15 @@ export class Fighter {
       !this.isExecutionerValid(this.targetExecutioner)
     ) {
       this.findNearestExecutioner()
+    }
+
+    // If no target found, roam around
+    if (
+      !this.targetExecutioner &&
+      currentTime - this.lastRoamTime >= this.roamInterval
+    ) {
+      this.roam()
+      this.lastRoamTime = currentTime
     }
 
     // Walk towards target if we have one and are not in attack range
@@ -113,6 +148,9 @@ export class Fighter {
       this.attackExecutioner()
       this.lastAttackTime = currentTime
     }
+
+    // Check if we should take damage from nearby executioners
+    this.checkForDamage()
   }
 
   private findNearestExecutioner(): void {
@@ -133,7 +171,9 @@ export class Fighter {
         const executionerPos = Transform.get(executioner.entity).position
         const distance = Vector3.distance(this.position, executionerPos)
 
-        if (distance < nearestDistance && distance <= this.attackRange) {
+        // Look for executioners within a larger range when roaming
+        const searchRange = this.isRoaming ? this.roamRadius : this.attackRange
+        if (distance < nearestDistance && distance <= searchRange) {
           nearestDistance = distance
           nearestExecutioner = executioner.entity
         }
@@ -141,6 +181,51 @@ export class Fighter {
     }
 
     this.targetExecutioner = nearestExecutioner
+  }
+
+  private roam(): void {
+    if (this.isWalking) {
+      this.isWalking = false
+      Animator.playSingleAnimation(this.entity, 'idle')
+    }
+
+    // Calculate a random point within roam radius
+    const angle = Math.random() * Math.PI * 2
+    const distance = Math.random() * this.roamRadius
+    const offsetX = Math.cos(angle) * distance
+    const offsetZ = Math.sin(angle) * distance
+
+    const roamTarget = Vector3.create(
+      this.spawnPosition.x + offsetX,
+      this.spawnPosition.y,
+      this.spawnPosition.z + offsetZ
+    )
+
+    // Move towards roam target
+    const direction = Vector3.subtract(roamTarget, this.position)
+    const normalizedDirection = Vector3.normalize(direction)
+    const roamDistance = this.roamSpeed * (this.roamInterval / 1000)
+    const newPosition = Vector3.add(
+      this.position,
+      Vector3.scale(normalizedDirection, roamDistance)
+    )
+
+    // Update fighter position
+    Transform.getMutable(this.entity).position = newPosition
+    this.position = newPosition
+
+    // Face the direction we're roaming
+    Transform.getMutable(this.entity).rotation =
+      Quaternion.lookRotation(direction)
+
+    // Play walk animation while roaming
+    if (!this.isWalking) {
+      this.isWalking = true
+      Animator.playSingleAnimation(this.entity, 'walk')
+    }
+
+    this.isRoaming = true
+    console.log('Fighter roaming to find executioners')
   }
 
   private isExecutionerValid(executionerEntity: Entity): boolean {
@@ -171,6 +256,8 @@ export class Fighter {
           this.isWalking = false
           Animator.playSingleAnimation(this.entity, 'idle')
         }
+        // Reset roaming state when we have a target
+        this.isRoaming = false
         return
       }
 
@@ -201,6 +288,9 @@ export class Fighter {
         this.isWalking = true
         Animator.playSingleAnimation(this.entity, 'walk')
       }
+
+      // Reset roaming state when we have a target
+      this.isRoaming = false
 
       console.log(
         `Fighter walking towards executioner. Distance: ${distance.toFixed(2)}`
@@ -297,5 +387,95 @@ export class Fighter {
 
   public remove(): void {
     entityController.removeEntity(this.entity)
+  }
+
+  private checkForDamage(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    const currentTime = Date.now()
+    if (currentTime - this.lastDamagedTime < this.damageCooldown) return
+
+    // Get all executioners from the current realm
+    const currentRealm = player.gameController.realmController.currentRealm
+    if (currentRealm && currentRealm.getId() === 'antrom') {
+      const executioners = (currentRealm as any).executioners || []
+
+      for (const executioner of executioners) {
+        if (!executioner || executioner.isDead) continue
+
+        const executionerPos = Transform.get(executioner.entity).position
+        const distance = Vector3.distance(this.position, executionerPos)
+
+        // Take damage if executioner is very close (melee range)
+        if (distance <= 2) {
+          this.takeDamage(executioner.attack || 10)
+          this.lastDamagedTime = currentTime
+          break // Only take damage from one executioner at a time
+        }
+      }
+    }
+  }
+
+  private takeDamage(damage: number): void {
+    if (this.isDead) return
+
+    this.health -= damage
+    console.log(
+      `Fighter took ${damage} damage. Health: ${this.health}/${this.maxHealth}`
+    )
+
+    // Check if fighter died first
+    if (this.health <= 0) {
+      this.die()
+      return // Don't play impact animation if dead
+    }
+
+    // Play damage animation only if not dead
+    Animator.playSingleAnimation(this.entity, 'impact')
+
+    // Show damage feedback
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      player.gameController.uiController.displayAnnouncement(
+        `Fighter took ${damage} damage!`,
+        Color4.Red(),
+        1500
+      )
+    }
+  }
+
+  private die(): void {
+    this.isDead = true
+    this.targetExecutioner = null
+    this.isWalking = false
+    this.isAttacking = false
+
+    // Play death animation
+    Animator.playSingleAnimation(this.entity, 'die')
+
+    // Show death feedback
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      player.gameController.uiController.displayAnnouncement(
+        'Fighter has fallen!',
+        Color4.Red(),
+        3000
+      )
+    }
+
+    // Remove fighter from player's fighter list
+    if (player) {
+      const fighterIndex = player.fighters.indexOf(this)
+      if (fighterIndex !== -1) {
+        player.fighters.splice(fighterIndex, 1)
+        console.log('Fighter removed from player list')
+      }
+    }
+
+    // Remove entity after death animation
+    utils.timers.setTimeout(() => {
+      this.remove()
+    }, 3000) // 3 seconds for death animation
   }
 }
