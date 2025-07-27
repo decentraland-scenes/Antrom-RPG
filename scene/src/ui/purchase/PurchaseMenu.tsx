@@ -74,23 +74,72 @@ function findNearestAvailableTree(playerPosition: Vector3): Vector3 | null {
   const player = Player.getInstanceOrNull()
   if (!player) return null
 
-  // Get tree positions from the dungeon realm
-  const TREE_POSITIONS = [
-    Vector3.create(8, 0, 8),
-    Vector3.create(12, 0, 8),
-    Vector3.create(16, 0, 8),
-    Vector3.create(8, 0, 12),
-    Vector3.create(12, 0, 12),
-    Vector3.create(16, 0, 12),
-    Vector3.create(8, 0, 16),
-    Vector3.create(12, 0, 16),
-    Vector3.create(16, 0, 16)
-  ]
+  // Get current realm and its tree positions
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm) return null
+
+  // Get tree positions based on current realm
+  let treePositions: Vector3[] = []
+  
+  if (currentRealm.getId() === 'antrom') {
+    // Antrom realm tree positions
+    treePositions = [
+      Vector3.create(68.22, 4.23, 37.68),
+      Vector3.create(73.37, 4.23, 37.98),
+      Vector3.create(80.37, 4.64, 36.38),
+      Vector3.create(89.51, 4.77, 35.48),
+      Vector3.create(90.65, 5.23, 30.45),
+      Vector3.create(90.55, 4.62, 36.34),
+      Vector3.create(90.49, 5.25, 30.19),
+      Vector3.create(91.11, 5.73, 22.33),
+      Vector3.create(89.4, 6.24, 18.29),
+      Vector3.create(83.85, 6.3, 14.67),
+      Vector3.create(78.96, 6.43, 10.42),
+      Vector3.create(73.12, 6.14, 9.67),
+      Vector3.create(71.09, 5.95, 14.23),
+      Vector3.create(66.51, 5.83, 18.53),
+      Vector3.create(65.46, 5.51, 22.22),
+      Vector3.create(71.52, 5.42, 21.97),
+      Vector3.create(79.16, 5.0, 34.28),
+      Vector3.create(68.49, 3.64, 42.92),
+      Vector3.create(64.66, 4.09, 41.6),
+      Vector3.create(69.33, 4.19, 37.98),
+      Vector3.create(32.38, 3.31, 30.82),
+      Vector3.create(39.0, 3.73, 34.3),
+      Vector3.create(44.22, 4.36, 36.58),
+      Vector3.create(50.6, 4.22, 39.34),
+      Vector3.create(58.23, 4.3, 41.14),
+      Vector3.create(52.7, 4.54, 37.22),
+      Vector3.create(47.38, 4.98, 34.14),
+      Vector3.create(40.76, 4.4, 31.16),
+      Vector3.create(32.67, 4.07, 27.09),
+      Vector3.create(26.12, 4.33, 21.41),
+      Vector3.create(91.26, 6.91, 12.97),
+      Vector3.create(86.65, 6.9, 10.55),
+      Vector3.create(81.3, 7.06, 5.46),
+      Vector3.create(87.76, 7.7, 5.06),
+      Vector3.create(88.3, 5.32, 32.47),
+      Vector3.create(55.47, 5.75, 28.67)
+    ]
+  } else if (currentRealm.getId() === 'dungeon') {
+    // Dungeon realm tree positions
+    treePositions = [
+      Vector3.create(8, 0, 8),
+      Vector3.create(12, 0, 8),
+      Vector3.create(16, 0, 8),
+      Vector3.create(8, 0, 12),
+      Vector3.create(12, 0, 12),
+      Vector3.create(16, 0, 12),
+      Vector3.create(8, 0, 16),
+      Vector3.create(12, 0, 16),
+      Vector3.create(16, 0, 16)
+    ]
+  }
 
   let nearestTree: Vector3 | null = null
   let nearestDistance = Infinity
 
-  for (const treePos of TREE_POSITIONS) {
+  for (const treePos of treePositions) {
     // Check if tree is already occupied
     if (player.isTreeOccupied(treePos)) {
       continue
