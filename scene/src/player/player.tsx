@@ -26,6 +26,7 @@ import { ITEM_TYPES } from '../inventory/playerInventoryMap'
 import { ScreenFlashManager } from '../ui/screenFlash'
 import { Lumberjack } from '../units/Lumberjack'
 import { Fighter } from '../units/Fighter'
+import { Miner } from '../units/Miner'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -128,7 +129,7 @@ export class Player extends Character {
   public fighterAttackRange: number = 10
 
   // Miner management
-  public miners: any[] = [] // Will be replaced with Miner class when created
+  public miners: Miner[] = []
   public minerCost: number = 75
   public minerHarvestAmount: number = 2
   public minerHarvestInterval: number = 4000 // 4 seconds in milliseconds
@@ -488,41 +489,15 @@ export class Player extends Character {
   addMiner(position: Vector3, rockPosition: Vector3): void {
     console.log('Player.addMiner called with position:', position, 'rockPosition:', rockPosition)
     
-    // Create miner entity with model
-    const minerEntity = engine.addEntity()
-    
-    // Add Transform component
-    Transform.create(minerEntity, {
-      position: position,
-      rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),
-      scale: Vector3.create(1, 1, 1)
-    })
-    
-    // Add GltfContainer component with miner model
-    GltfContainer.create(minerEntity, {
-      src: 'assets/models/miner.glb'
-    })
-    
-    // Add AudioSource component for mining sounds
-    AudioSource.create(minerEntity, {
-      audioClipUrl: 'assets/sounds/rock.mp3',
-      loop: false,
-      playing: false,
-      volume: 0.3
-    })
+    // Create new Miner instance
+    const miner = new Miner(position)
+    miner.place(position)
     
     // Add to miners array and track occupied rock
-    const minerId = `miner_${Date.now()}`
-    this.miners.push({ 
-      id: minerId, 
-      position, 
-      rockPosition,
-      entity: minerEntity 
-    })
+    this.miners.push(miner)
     this.occupiedRocks.add(`${rockPosition.x},${rockPosition.y},${rockPosition.z}`)
     
-    console.log('Miner entity created:', minerEntity)
-    console.log('Miner added to player.miners array, total count:', this.miners.length)
+    console.log('Miner created and added to player.miners array, total count:', this.miners.length)
   }
 
   isRockOccupied(rockPosition: Vector3): boolean {
@@ -530,43 +505,9 @@ export class Player extends Character {
   }
 
   updateMiners(): void {
-    const currentTime = Date.now()
-    
+    // Update each miner (they handle their own harvesting logic)
     for (const miner of this.miners) {
-      if (!miner.lastHarvestTime) {
-        miner.lastHarvestTime = currentTime
-        continue
-      }
-      
-      // Check if enough time has passed since last harvest
-      if (currentTime - miner.lastHarvestTime >= this.minerHarvestInterval) {
-        // Add rock to inventory
-        this.inventory.incrementItem(ITEM_TYPES.ROCK, this.minerHarvestAmount)
-        
-        // Add mining profession XP
-        this.levels.addXp(LEVEL_TYPES.ROCK, 1)
-        
-        // Update last harvest time
-        miner.lastHarvestTime = currentTime
-        
-        // Play mining sound from the miner's position only if player is nearby
-        const playerPos = Transform.get(engine.PlayerEntity).position
-        const distance = Vector3.distance(playerPos, miner.position)
-        const soundRadius = 10 // Only hear sound within 10 units
-        
-        if (distance <= soundRadius) {
-          AudioSource.playSound(miner.entity, 'assets/sounds/rock.mp3')
-        }
-        
-        // Show harvest announcement
-        this.gameController.uiController.displayAnnouncement(
-          `+${this.minerHarvestAmount} Rock +1 Mining XP`,
-          Color4.Yellow(),
-          2000
-        )
-        
-        console.log(`Miner harvested ${this.minerHarvestAmount} rock and gained 1 mining XP`)
-      }
+      miner.update()
     }
   }
 
