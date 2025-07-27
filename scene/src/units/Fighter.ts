@@ -162,6 +162,52 @@ export class Fighter {
 
     // Check if we should take damage from nearby executioners
     this.checkForDamage()
+
+    // Safety check: Ensure proper animation states
+    if (!this.isDead) {
+      const idleAnim = Animator.getClip(this.entity, 'idle')
+      const walkAnim = Animator.getClip(this.entity, 'walk')
+      const attackAnim = Animator.getClip(this.entity, 'attack')
+
+      // If we're not walking and not attacking, ensure we're idle
+      if (!this.isWalking && !this.isAttacking) {
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+        }
+        if (attackAnim && attackAnim.playing) {
+          attackAnim.playing = false
+        }
+        if (idleAnim && !idleAnim.playing) {
+          idleAnim.playing = true
+        }
+      }
+
+      // If we're walking, ensure walk animation is playing
+      if (this.isWalking) {
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+        }
+        if (attackAnim && attackAnim.playing) {
+          attackAnim.playing = false
+        }
+        if (walkAnim && !walkAnim.playing) {
+          walkAnim.playing = true
+        }
+      }
+
+      // If we're attacking, ensure attack animation is playing
+      if (this.isAttacking) {
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+        }
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+        }
+        if (attackAnim && !attackAnim.playing) {
+          attackAnim.playing = true
+        }
+      }
+    }
   }
 
   private findNearestExecutioner(): void {
@@ -216,7 +262,16 @@ export class Fighter {
   private roam(): void {
     if (this.isWalking) {
       this.isWalking = false
-      Animator.playSingleAnimation(this.entity, 'idle')
+      // Use smart animation state management
+      const walkAnim = Animator.getClip(this.entity, 'walk')
+      const idleAnim = Animator.getClip(this.entity, 'idle')
+
+      if (walkAnim && walkAnim.playing) {
+        walkAnim.playing = false
+      }
+      if (idleAnim && !idleAnim.playing) {
+        idleAnim.playing = true
+      }
     }
 
     // Calculate a random point within roam radius
@@ -248,10 +303,18 @@ export class Fighter {
     Transform.getMutable(this.entity).rotation =
       Quaternion.lookRotation(direction)
 
-    // Play walk animation while roaming
+    // Play walk animation while roaming - using smart animation state management
     if (!this.isWalking) {
       this.isWalking = true
-      Animator.playSingleAnimation(this.entity, 'walk')
+      const idleAnim = Animator.getClip(this.entity, 'idle')
+      const walkAnim = Animator.getClip(this.entity, 'walk')
+
+      if (idleAnim && idleAnim.playing) {
+        idleAnim.playing = false
+      }
+      if (walkAnim && !walkAnim.playing) {
+        walkAnim.playing = true
+      }
     }
 
     this.isRoaming = true
@@ -303,7 +366,16 @@ export class Fighter {
       if (distance <= this.attackRange) {
         if (this.isWalking) {
           this.isWalking = false
-          Animator.playSingleAnimation(this.entity, 'idle')
+          // Use smart animation state management
+          const walkAnim = Animator.getClip(this.entity, 'walk')
+          const idleAnim = Animator.getClip(this.entity, 'idle')
+
+          if (walkAnim && walkAnim.playing) {
+            walkAnim.playing = false
+          }
+          if (idleAnim && !idleAnim.playing) {
+            idleAnim.playing = true
+          }
         }
         // Reset roaming state when we have a target
         this.isRoaming = false
@@ -332,10 +404,18 @@ export class Fighter {
       Transform.getMutable(this.entity).rotation =
         Quaternion.lookRotation(direction)
 
-      // Play walk animation if not already walking
+      // Play walk animation if not already walking - using smart animation state management
       if (!this.isWalking) {
         this.isWalking = true
-        Animator.playSingleAnimation(this.entity, 'walk')
+        const idleAnim = Animator.getClip(this.entity, 'idle')
+        const walkAnim = Animator.getClip(this.entity, 'walk')
+
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+        }
+        if (walkAnim && !walkAnim.playing) {
+          walkAnim.playing = true
+        }
       }
 
       // Reset roaming state when we have a target
@@ -386,8 +466,34 @@ export class Fighter {
         Transform.getMutable(this.entity).rotation =
           Quaternion.lookRotation(direction)
 
-        // Play attack animation and sound
-        Animator.playSingleAnimation(this.entity, 'attack')
+        // Play attack animation and sound - using smart animation state management
+        const idleAnim = Animator.getClip(this.entity, 'idle')
+        const walkAnim = Animator.getClip(this.entity, 'walk')
+        const attackAnim = Animator.getClip(this.entity, 'attack')
+
+        console.log('Fighter attack animation states:', {
+          idlePlaying: idleAnim?.playing,
+          walkPlaying: walkAnim?.playing,
+          attackPlaying: attackAnim?.playing
+        })
+
+        // Stop other animations and start attack
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+          console.log('Fighter: Stopped idle animation')
+        }
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+          console.log('Fighter: Stopped walk animation')
+        }
+        if (attackAnim && !attackAnim.playing) {
+          attackAnim.playing = true
+          console.log('Fighter: Started attack animation')
+        }
+
+        // Set attacking flag to prevent safety check from interfering
+        this.isAttacking = true
+
         AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
 
         // Deal damage to executioner
@@ -402,7 +508,16 @@ export class Fighter {
 
         // Return to idle after attack
         utils.timers.setTimeout(() => {
-          Animator.playSingleAnimation(this.entity, 'idle')
+          console.log('Fighter: Attack animation timeout, returning to idle')
+          if (attackAnim && attackAnim.playing) {
+            attackAnim.playing = false
+            console.log('Fighter: Stopped attack animation')
+          }
+          if (idleAnim && !idleAnim.playing) {
+            idleAnim.playing = true
+            console.log('Fighter: Started idle animation')
+          }
+          this.isAttacking = false
         }, 1000)
       } else {
         console.log(
