@@ -5,7 +5,8 @@ import {
   Animator,
   engine,
   MeshRenderer,
-  VisibilityComponent
+  VisibilityComponent,
+  type Entity
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { LEVEL_TYPES } from '../player/LevelManager'
@@ -36,6 +37,16 @@ export default class Executioner extends MonsterMobAuto {
   private attackingFighter: any = null // Track which fighter is attacking
   private lastAttackedBy: any = null // Track which fighter last attacked
   private lastAttackTime: number = 0 // Track when last attacked
+  private lastFighterAttackTime: number = 0 // Track when last attacked fighter
+  private fighterAttackInterval: number = 3000 // Attack fighters every 3 seconds (faster since turn-based)
+
+  // Combat initiative system
+  private combatState: 'idle' | 'approaching' | 'engaged' | 'disengaging' =
+    'idle'
+  private combatTarget: Entity | null = null
+  private lastCombatAction: number = 0
+  private combatActionInterval: number = 1500 // 1.5 seconds between combat actions (faster since only one attacks)
+  private hasInitiative: boolean = false // Whether executioner has initiative in current combat
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 2
@@ -142,8 +153,42 @@ export default class Executioner extends MonsterMobAuto {
       // Remove roaming system immediately to prevent errors
       engine.removeSystem(this.roamingUpdateSystem.bind(this))
 
-      // Play death animation first
-      Animator.playSingleAnimation(this.entity, this.dieClip)
+      // Play death animation with smart animation state management
+      const dieAnim = Animator.getClip(this.entity, this.dieClip)
+      const idleAnim = Animator.getClip(this.entity, this.idleClip)
+      const walkAnim = Animator.getClip(this.entity, this.walkClip)
+      const attackAnim = Animator.getClip(this.entity, this.attackClip)
+      const impactAnim = Animator.getClip(this.entity, this.impactClip)
+
+      console.log('Executioner death animation states:', {
+        idlePlaying: idleAnim?.playing,
+        walkPlaying: walkAnim?.playing,
+        attackPlaying: attackAnim?.playing,
+        impactPlaying: impactAnim?.playing,
+        diePlaying: dieAnim?.playing
+      })
+
+      // Stop all other animations and start death - using smart animation state management
+      if (idleAnim && idleAnim.playing) {
+        idleAnim.playing = false
+        console.log('Executioner: Stopped idle animation for death')
+      }
+      if (walkAnim && walkAnim.playing) {
+        walkAnim.playing = false
+        console.log('Executioner: Stopped walk animation for death')
+      }
+      if (attackAnim && attackAnim.playing) {
+        attackAnim.playing = false
+        console.log('Executioner: Stopped attack animation for death')
+      }
+      if (impactAnim && impactAnim.playing) {
+        impactAnim.playing = false
+        console.log('Executioner: Stopped impact animation for death')
+      }
+      if (dieAnim && !dieAnim.playing) {
+        dieAnim.playing = true
+        console.log('Executioner: Started death animation')
+      }
 
       // Remove entity after death animation completes
       utils.timers.setTimeout(() => {
@@ -394,8 +439,85 @@ export default class Executioner extends MonsterMobAuto {
     this.isConfrontedByFighter = nearbyFighter
     this.attackingFighter = closestFighter
 
-    // Face the fighter that last attacked us, or the closest one if none has attacked recently
+    // Handle combat state transitions
     const currentTime = Date.now()
+
+    if (closestFighter) {
+      const executionerTransform = Transform.get(this.entity)
+      const distance = Vector3.distance(
+        executionerTransform.position,
+        closestFighter.position
+      )
+
+      if (distance <= 5) {
+        // In combat range
+        if (this.combatState === 'idle') {
+          // Starting combat - executioner gets initiative if fighter doesn't have it
+          this.combatState = 'engaged'
+          this.combatTarget = closestFighter.entity
+          this.hasInitiative = !closestFighter.hasInitiative // Opposite of fighter's initiative
+          this.lastCombatAction = currentTime
+
+          console.log(
+            `Executioner entering combat with initiative: ${this.hasInitiative}`
+          )
+        }
+
+        // Debug: Log current combat state
+        console.log(
+          `Executioner combat state: ${this.combatState}, hasInitiative: ${
+            this.hasInitiative
+          }, timeSinceLastAction: ${currentTime - this.lastCombatAction}`
+        )
+
+        // Handle combat actions
+        if (
+          this.combatState === 'engaged' &&
+          currentTime - this.lastCombatAction >= this.combatActionInterval
+        ) {
+          if (this.hasInitiative) {
+            // Executioner has initiative - attack fighter
+            console.log('Executioner has initiative - ATTACKING!')
+            this.attackFighter()
+            this.hasInitiative = false // Give initiative to fighter
+            console.log('Executioner attacked, giving initiative to fighter')
+          } else {
+            // Executioner doesn't have initiative - check if fighter has attacked recently
+            // If fighter hasn't attacked in a while, executioner can regain initiative
+            const timeSinceFighterAttack = currentTime - this.lastAttackTime
+            console.log(
+              `Executioner no initiative. Time since fighter attack: ${timeSinceFighterAttack}ms`
+            )
+            if (timeSinceFighterAttack > this.combatActionInterval * 2) {
+              // Fighter hasn't attacked recently, executioner can take initiative
+              this.hasInitiative = true
+              console.log(
+                'Executioner regaining initiative after fighter delay'
+              )
+            } else {
+              console.log('Executioner waiting for fighter to attack first')
+            }
+          }
+          this.lastCombatAction = currentTime
+        }
+      } else {
+        // Out of combat range
+        if (this.combatState !== 'approaching') {
+          this.combatState = 'approaching'
+          console.log('Executioner approaching fighter')
+        }
+      }
+    } else {
+      // No fighters nearby
+      if (this.combatState !== 'idle') {
+        this.combatState = 'idle'
+        this.combatTarget = null
+        this.hasInitiative = false
+        console.log('Executioner returning to idle state')
+      }
+    }
+
+    // Face the fighter that last attacked us, or the closest one if none has attacked recently
     const timeSinceLastAttack = currentTime - this.lastAttackTime
 
     if (
@@ -484,6 +606,88 @@ export default class Executioner extends MonsterMobAuto {
       } catch (error) {
         console.log('Error updating executioner animations:', error)
       }
+
+      // Attack fighter if enough time has passed
+      if (
+        currentTime - this.lastFighterAttackTime >=
+        this.fighterAttackInterval
+      ) {
+        this.attackFighter()
+        this.lastFighterAttackTime = currentTime
+      }
+    }
+  }
+
+  private attackFighter(): void {
+    if (!this.attackingFighter || this.isDeadAnimation) return
+
+    try {
+      const fighter = this.attackingFighter
+      const executionerTransform = Transform.get(this.entity)
+      const fighterTransform = Transform.get(fighter.entity)
+
+      if (!executionerTransform || !fighterTransform) return
+
+      const distance = Vector3.distance(
+        executionerTransform.position,
+        fighterTransform.position
+      )
+
+      // Only attack if fighter is close enough (within 5 units)
+      if (distance <= 5) {
+        console.log(
+          'Executioner attacking fighter at distance:',
+          distance.toFixed(2)
+        )
+
+        // Play attack animation with smart animation state management
+        const attackAnim = Animator.getClip(this.entity, this.attackClip)
+        const idleAnim = Animator.getClip(this.entity, this.idleClip)
+        const walkAnim = Animator.getClip(this.entity, this.walkClip)
+
+        console.log('Executioner attack animation states:', {
+          idlePlaying: idleAnim?.playing,
+          walkPlaying: walkAnim?.playing,
+          attackPlaying: attackAnim?.playing
+        })
+
+        // Stop other animations and start attack - using smart animation state management
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+          console.log('Executioner: Stopped idle animation')
+        }
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+          console.log('Executioner: Stopped walk animation')
+        }
+        if (attackAnim && !attackAnim.playing) {
+          attackAnim.playing = true
+          console.log('Executioner: Started attack animation')
+        }
+
+        // Deal damage to fighter
+        const damage = this.attack // Use executioner's attack value
+        fighter.takeDamage(damage)
+
+        console.log(`Executioner dealt ${damage} damage to fighter`)
+
+        // Return to idle after attack animation (2 seconds) - using smart animation state management
+        utils.timers.setTimeout(() => {
+          console.log(
+            'Executioner: Attack animation timeout, returning to idle'
+          )
+          if (attackAnim && attackAnim.playing) {
+            attackAnim.playing = false
+            console.log('Executioner: Stopped attack animation')
+          }
+          if (idleAnim && !idleAnim.playing) {
+            idleAnim.playing = true
+            console.log('Executioner: Started idle animation')
+          }
+        }, 2000)
+      }
+    } catch (error) {
+      console.log('Error attacking fighter:', error)
     }
   }
 
@@ -514,8 +718,31 @@ export default class Executioner extends MonsterMobAuto {
         engine.removeSystem(
           this.attackSystem.attackSystem.bind(this.attackSystem)
         )
-        Animator.stopAllAnimations(this.entity)
-        Animator.playSingleAnimation(this.entity, this.idleClip)
+        // Stop all animations and return to idle with smart animation state management
+        const idleAnim = Animator.getClip(this.entity, this.idleClip)
+        const walkAnim = Animator.getClip(this.entity, this.walkClip)
+        const attackAnim = Animator.getClip(this.entity, this.attackClip)
+        const impactAnim = Animator.getClip(this.entity, this.impactClip)
+
+        // Stop all other animations
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+          console.log('Executioner: Stopped walk animation on disengage')
+        }
+        if (attackAnim && attackAnim.playing) {
+          attackAnim.playing = false
+          console.log('Executioner: Stopped attack animation on disengage')
+        }
+        if (impactAnim && impactAnim.playing) {
+          impactAnim.playing = false
+          console.log('Executioner: Stopped impact animation on disengage')
+        }
+
+        // Start idle animation
+        if (idleAnim && !idleAnim.playing) {
+          idleAnim.playing = true
+          console.log('Executioner: Started idle animation on disengage')
+        }
       }
     )
   }

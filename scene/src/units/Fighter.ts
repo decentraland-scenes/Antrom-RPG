@@ -19,13 +19,13 @@ export class Fighter {
   public position: Vector3
   public lastAttackTime: number
   public isPlaced: boolean = false
-  public attackRange: number = 3 // Closer range for more dramatic combat
+  public attackRange: number = 6 // Increased range to ensure combat entry
   public attackDamage: number = 35
-  public attackInterval: number = 4000 // 4 seconds between attacks (slower for dramatic effect)
+  public attackInterval: number = 4000 // 4 seconds between attacks (faster since turn-based)
   public targetExecutioner: Entity | null = null
   public isAttacking: boolean = false
   public isWalking: boolean = false
-  public walkSpeed: number = 2.0 // units per second
+  public walkSpeed: number = 8.0 // units per second (increased for faster movement)
   public lastWalkTime: number = 0
   public walkInterval: number = 100 // milliseconds between walk updates
 
@@ -43,6 +43,16 @@ export class Fighter {
   public isDead: boolean = false
   public lastDamagedTime: number = 0
   public damageCooldown: number = 1000 // 1 second between taking damage
+  public lastHitByExecutioner: number = 0 // Track when last hit by executioner
+  public executionerHitCooldown: number = 3000 // 3 seconds before fighter can attack after being hit
+
+  // Combat initiative system
+  public combatState: 'idle' | 'approaching' | 'engaged' | 'disengaging' =
+    'idle'
+  public combatTarget: Entity | null = null
+  public lastCombatAction: number = 0
+  public combatActionInterval: number = 1500 // 1.5 seconds between combat actions (faster since only one attacks)
+  public hasInitiative: boolean = false // Whether fighter has initiative in current combat
 
   constructor(position: Vector3) {
     this.entity = entityController.addEntity()
@@ -112,10 +122,14 @@ export class Fighter {
   }
 
   public update(): void {
-    if (!this.isPlaced) return
+    if (!this.isPlaced) {
+      console.log('Fighter not placed yet')
+      return
+    }
 
     // If fighter is dead, don't do normal updates but allow cleanup
     if (this.isDead) {
+      console.log('Fighter is dead')
       return
     }
 
@@ -131,6 +145,11 @@ export class Fighter {
         this.targetExecutioner = null
       }
       this.findNearestExecutioner()
+      console.log(
+        `Fighter target after findNearestExecutioner: ${
+          this.targetExecutioner ? 'FOUND' : 'NOT FOUND'
+        }`
+      )
     }
 
     // If no target found, roam around
@@ -151,13 +170,109 @@ export class Fighter {
       this.lastWalkTime = currentTime
     }
 
-    // Attack if we have a target, are in range, and enough time has passed
-    if (
-      this.targetExecutioner &&
-      currentTime - this.lastAttackTime >= this.attackInterval
-    ) {
-      this.attackExecutioner()
-      this.lastAttackTime = currentTime
+    // Combat system with initiative
+    if (this.targetExecutioner) {
+      console.log(`Fighter has target: ${this.targetExecutioner}`)
+      const distance = Vector3.distance(
+        this.position,
+        Transform.get(this.targetExecutioner).position
+      )
+
+      // Debug: Log distance to target
+      console.log(
+        `Fighter distance to executioner: ${distance.toFixed(
+          2
+        )} units (attack range: ${this.attackRange})`
+      )
+
+      // If we're in combat range, handle combat
+      console.log(
+        `Fighter distance check: ${distance} <= ${this.attackRange} = ${
+          distance <= this.attackRange
+        }`
+      )
+      // Add small buffer for floating-point precision
+      if (distance <= this.attackRange + 0.01) {
+        if (this.combatState === 'idle' || this.combatState === 'approaching') {
+          // Starting combat - determine initiative
+          this.combatState = 'engaged'
+          this.combatTarget = this.targetExecutioner
+          this.hasInitiative = this.determineInitiative()
+          this.lastCombatAction = currentTime
+
+          console.log(
+            `Fighter entering combat with initiative: ${this.hasInitiative}`
+          )
+        }
+
+        // Debug: Log current combat state
+        console.log(
+          `Fighter combat state: ${this.combatState}, hasInitiative: ${
+            this.hasInitiative
+          }, timeSinceLastAction: ${currentTime - this.lastCombatAction}`
+        )
+
+        // Handle combat actions based on initiative
+        if (
+          this.combatState === 'engaged' &&
+          currentTime - this.lastCombatAction >= this.combatActionInterval &&
+          currentTime - this.lastHitByExecutioner >= this.executionerHitCooldown
+        ) {
+          if (this.hasInitiative) {
+            // Fighter has initiative - attack first
+            console.log('Fighter has initiative - ATTACKING!')
+            this.attackExecutioner()
+            this.hasInitiative = false // Give initiative to executioner
+            console.log('Fighter attacked, giving initiative to executioner')
+          } else {
+            // Fighter doesn't have initiative - check if executioner has attacked recently
+            // If executioner hasn't attacked in a while, fighter can regain initiative
+            const timeSinceExecutionerAttack =
+              currentTime - this.lastHitByExecutioner
+            console.log(
+              `Fighter no initiative. Time since executioner attack: ${timeSinceExecutionerAttack}ms`
+            )
+            if (timeSinceExecutionerAttack > this.combatActionInterval * 2) {
+              // Executioner hasn't attacked recently, fighter can take initiative
+              this.hasInitiative = true
+              console.log(
+                'Fighter regaining initiative after executioner delay'
+              )
+            } else {
+              console.log('Fighter waiting for executioner to attack first')
+            }
+          }
+          this.lastCombatAction = currentTime
+        }
+      } else {
+        // Out of range - approach target
+        if (this.combatState !== 'approaching') {
+          this.combatState = 'approaching'
+          console.log('Fighter approaching target')
+        }
+
+        // Walk towards target
+        if (currentTime - this.lastWalkTime >= this.walkInterval) {
+          console.log('Fighter calling walkTowardsTarget()')
+          this.walkTowardsTarget()
+          this.lastWalkTime = currentTime
+        } else {
+          console.log(
+            `Fighter walk cooldown: ${
+              currentTime - this.lastWalkTime
+            }ms remaining`
+          )
+        }
+      }
+    } else {
+      // No target - roam or idle
+      console.log('Fighter has NO target')
+      if (this.combatState !== 'idle') {
+        this.combatState = 'idle'
+        this.combatTarget = null
+        this.hasInitiative = false
+        console.log('Fighter returning to idle state')
+      }
     }
 
     // Check if we should take damage from nearby executioners
@@ -225,6 +340,24 @@ export class Fighter {
       console.log(
         `Fighter searching for executioners. Found ${executioners.length} executioners. Roaming: ${this.isRoaming}`
       )
+
+      // Debug: Log each executioner's status
+      for (let i = 0; i < executioners.length; i++) {
+        const executioner = executioners[i]
+        if (executioner) {
+          const distance = Vector3.distance(
+            this.position,
+            Transform.get(executioner.entity).position
+          )
+          console.log(
+            `Executioner ${i}: alive=${!executioner.isDead}, distance=${distance.toFixed(
+              2
+            )}, inRange=${distance <= this.roamRadius}`
+          )
+        } else {
+          console.log(`Executioner ${i}: null/undefined`)
+        }
+      }
 
       // Count how many fighters are targeting each executioner
       const targetCounts = new Map<Entity, number>()
@@ -422,8 +555,17 @@ export class Fighter {
       )
 
       // Update fighter position
+      const oldPosition = this.position
       Transform.getMutable(this.entity).position = newPosition
       this.position = newPosition
+
+      // Debug: Log movement
+      const movementDistance = Vector3.distance(oldPosition, newPosition)
+      console.log(
+        `Fighter movement: moved ${movementDistance.toFixed(
+          3
+        )} units toward target`
+      )
 
       // Face the direction we're walking
       Transform.getMutable(this.entity).rotation =
@@ -693,6 +835,7 @@ export class Fighter {
     if (this.isDead) return
 
     this.health -= damage
+    this.lastHitByExecutioner = Date.now() // Track when hit by executioner
     console.log(
       `Fighter took ${damage} damage. Health: ${this.health}/${this.maxHealth}`
     )
@@ -703,8 +846,49 @@ export class Fighter {
       return // Don't play impact animation if dead
     }
 
-    // Play damage animation only if not dead
-    Animator.playSingleAnimation(this.entity, 'impact')
+    // Play impact animation with smart animation state management
+    const impactAnim = Animator.getClip(this.entity, 'impact')
+    const idleAnim = Animator.getClip(this.entity, 'idle')
+    const walkAnim = Animator.getClip(this.entity, 'walk')
+    const attackAnim = Animator.getClip(this.entity, 'attack')
+
+    console.log('Fighter impact animation states:', {
+      idlePlaying: idleAnim?.playing,
+      walkPlaying: walkAnim?.playing,
+      attackPlaying: attackAnim?.playing,
+      impactPlaying: impactAnim?.playing
+    })
+
+    // Stop other animations and start impact - using smart animation state management
+    if (idleAnim && idleAnim.playing) {
+      idleAnim.playing = false
+      console.log('Fighter: Stopped idle animation for impact')
+    }
+    if (walkAnim && walkAnim.playing) {
+      walkAnim.playing = false
+      console.log('Fighter: Stopped walk animation for impact')
+    }
+    if (attackAnim && attackAnim.playing) {
+      attackAnim.playing = false
+      console.log('Fighter: Stopped attack animation for impact')
+    }
+    if (impactAnim && !impactAnim.playing) {
+      impactAnim.playing = true
+      console.log('Fighter: Started impact animation')
+    }
+
+    // Return to idle after impact animation (1.5 seconds) - using smart animation state management
+    utils.timers.setTimeout(() => {
+      console.log('Fighter: Impact animation timeout, returning to idle')
+      if (impactAnim && impactAnim.playing) {
+        impactAnim.playing = false
+        console.log('Fighter: Stopped impact animation')
+      }
+      if (idleAnim && !idleAnim.playing) {
+        idleAnim.playing = true
+        console.log('Fighter: Started idle animation after impact')
+      }
+    }, 1500)
 
     // Show damage feedback
     const player = Player.getInstanceOrNull()
@@ -717,14 +901,80 @@ export class Fighter {
     }
   }
 
+  private determineInitiative(): boolean {
+    const player = Player.getInstanceOrNull()
+    if (!player) return false
+
+    // Get player's luck percentage (0-100)
+    const playerLuck = player.getLuckRange()
+    const luckPercentage = playerLuck / 100 // Convert to 0-1 range
+
+    // Fighter gets 60% base chance + half of player's luck
+    // Example: 8% luck = 60% + 4% = 64% chance
+    const fighterChance = 0.6 + luckPercentage / 2
+
+    const randomRoll = Math.random()
+    const hasInitiative = randomRoll < fighterChance
+
+    console.log(
+      `Fighter initiative roll: ${randomRoll.toFixed(
+        3
+      )} < ${fighterChance.toFixed(3)} = ${hasInitiative}`
+    )
+    console.log(
+      `Player luck: ${playerLuck}%, Fighter chance: ${(
+        fighterChance * 100
+      ).toFixed(1)}%`
+    )
+    console.log(
+      `Fighter initiative result: ${hasInitiative ? 'WON' : 'LOST'} initiative`
+    )
+
+    return hasInitiative
+  }
+
   private die(): void {
     this.isDead = true
     this.targetExecutioner = null
     this.isWalking = false
     this.isAttacking = false
 
-    // Play death animation
-    Animator.playSingleAnimation(this.entity, 'die')
+    // Play death animation with smart animation state management
+    const dieAnim = Animator.getClip(this.entity, 'die')
+    const idleAnim = Animator.getClip(this.entity, 'idle')
+    const walkAnim = Animator.getClip(this.entity, 'walk')
+    const attackAnim = Animator.getClip(this.entity, 'attack')
+    const impactAnim = Animator.getClip(this.entity, 'impact')
+
+    console.log('Fighter death animation states:', {
+      idlePlaying: idleAnim?.playing,
+      walkPlaying: walkAnim?.playing,
+      attackPlaying: attackAnim?.playing,
+      impactPlaying: impactAnim?.playing,
+      diePlaying: dieAnim?.playing
+    })
+
+    // Stop all other animations and start death - using smart animation state management
+    if (idleAnim && idleAnim.playing) {
+      idleAnim.playing = false
+      console.log('Fighter: Stopped idle animation for death')
+    }
+    if (walkAnim && walkAnim.playing) {
+      walkAnim.playing = false
+      console.log('Fighter: Stopped walk animation for death')
+    }
+    if (attackAnim && attackAnim.playing) {
+      attackAnim.playing = false
+      console.log('Fighter: Stopped attack animation for death')
+    }
+    if (impactAnim && impactAnim.playing) {
+      impactAnim.playing = false
+      console.log('Fighter: Stopped impact animation for death')
+    }
+    if (dieAnim && !dieAnim.playing) {
+      dieAnim.playing = true
+      console.log('Fighter: Started death animation')
+    }
 
     // Show death feedback
     const player = Player.getInstanceOrNull()
