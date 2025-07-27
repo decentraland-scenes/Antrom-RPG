@@ -1,5 +1,5 @@
 import { UiCanvasInformation, engine } from '@dcl/sdk/ecs'
-import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import ReactEcs, { UiEntity, Label } from '@dcl/sdk/react-ecs'
 import { Color4 } from '@dcl/sdk/math'
 import { getUvs, type Sprite } from '../../utils/ui-utils'
 import Canvas from '../canvas/Canvas'
@@ -18,6 +18,9 @@ import {
   type CharacterClasses,
   type CharacterRaces
 } from '../creation-player/creationPlayerData'
+import { Player } from '../../player/player'
+import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
+import { LEVEL_TYPES } from '../../player/LevelManager'
 
 type MainHudProps = {
   isPlayerRollOpen: boolean
@@ -32,6 +35,129 @@ type MainHudProps = {
   characterAlliance: CharacterAlliances
   lastRoll: lastRollType
   playerProfessions: playersProfessionsType
+}
+
+// Resource Counter Component
+function ResourceCounter(): ReactEcs.JSX.Element {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) {
+    console.log('ResourceCounter: No canvas info')
+    return <UiEntity />
+  }
+
+  const player = Player.getInstanceOrNull()
+  if (!player) {
+    console.log('ResourceCounter: No player found')
+    return <UiEntity />
+  }
+
+  console.log('ResourceCounter: Rendering with wood count:', player.inventory.getItemCount(ITEM_TYPES.TREE))
+
+  const woodCount = player.inventory.getItemCount(ITEM_TYPES.TREE)
+  const rockCount = player.inventory.getItemCount(ITEM_TYPES.ROCK)
+  const chickenCount = player.inventory.getItemCount(ITEM_TYPES.CHICKEN)
+  const coinCount = player.inventory.getItemCount(ITEM_TYPES.COIN)
+
+  const iconSize = canvasInfo.height * 0.04
+  const fontSize = canvasInfo.height * 0.025
+
+  return (
+    <UiEntity
+      uiTransform={{
+        positionType: 'absolute',
+        position: { top: canvasInfo.height * 0.02, left: canvasInfo.width * 0.35 },
+        width: 'auto',
+        height: iconSize,
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}
+      uiBackground={{ color: Color4.create(0, 0, 0, 0.5) }}
+    >
+      {/* Lumberjack Counter */}
+      <UiEntity
+        uiTransform={{
+          width: iconSize,
+          height: iconSize,
+          margin: { right: iconSize * 0.3 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/unitPurchase/icons/lumberjack_icon.png' }
+        }}
+      />
+      <Label
+        value={woodCount.toString()}
+        fontSize={fontSize}
+        color={Color4.White()}
+        uiTransform={{
+          margin: { right: iconSize * 0.8 }
+        }}
+      />
+
+      {/* Miner Counter */}
+      <UiEntity
+        uiTransform={{
+          width: iconSize,
+          height: iconSize,
+          margin: { right: iconSize * 0.3 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/unitPurchase/icons/miner_icon.png' }
+        }}
+      />
+      <Label
+        value={rockCount.toString()}
+        fontSize={fontSize}
+        color={Color4.White()}
+        uiTransform={{
+          margin: { right: iconSize * 0.8 }
+        }}
+      />
+
+      {/* Farmer Counter */}
+      <UiEntity
+        uiTransform={{
+          width: iconSize,
+          height: iconSize,
+          margin: { right: iconSize * 0.3 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/unitPurchase/icons/farmer_icon.png' }
+        }}
+      />
+      <Label
+        value={chickenCount.toString()}
+        fontSize={fontSize}
+        color={Color4.White()}
+        uiTransform={{
+          margin: { right: iconSize * 0.8 }
+        }}
+      />
+
+      {/* Coin Counter */}
+      <UiEntity
+        uiTransform={{
+          width: iconSize,
+          height: iconSize,
+          margin: { right: iconSize * 0.3 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/daily_duties/coin.png' }
+        }}
+      />
+      <Label
+        value={coinCount.toString()}
+        fontSize={fontSize}
+        color={Color4.White()}
+        uiTransform={{
+          margin: { right: iconSize * 0.8 }
+        }}
+      />
+    </UiEntity>
+  )
 }
 
 function MainHud({
@@ -61,6 +187,9 @@ function MainHud({
 
   return (
     <Canvas>
+      {/* Resource Counter */}
+      <ResourceCounter />
+
       <UiEntity
         uiTransform={{
           width: 'auto',
@@ -71,101 +200,9 @@ function MainHud({
           justifyContent: 'flex-end'
         }}
       >
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%',
-            margin: { right: hudHeight * 0.2 }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(mainHudSprites.changeAvatarIcon),
-            texture: {
-              src: mainHudSprites.changeAvatarIcon.atlasSrc
-            }
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%',
-            margin: { right: hudHeight * 0.2 }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(mainHudSprites.inventoryIcon),
-            texture: {
-              src: mainHudSprites.inventoryIcon.atlasSrc
-            }
-          }}
-          onMouseDown={() => {
-            showInventory()
-          }}
-        />
-
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%',
-            margin: { right: hudHeight * 0.2 }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(mainHudSprites.dailyDutiesIcon),
-            texture: {
-              src: mainHudSprites.dailyDutiesIcon.atlasSrc
-            }
-          }}
-        />
-        
-
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%',
-            margin: { right: hudHeight * 0.2 }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(mainHudSprites.leaderIcon),
-            texture: {
-              src: mainHudSprites.leaderIcon.atlasSrc
-            }
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%',
-            margin: { right: hudHeight * 0.2 }
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(mainHudSprites.infoMenuIcon),
-            texture: {
-              src: mainHudSprites.infoMenuIcon.atlasSrc
-            }
-          }}
-          onMouseDown={() => {
-            showInfo(true)
-          }}
-        />
-        <UiEntity
-          uiTransform={{
-            width: hudHeight,
-            height: '100%'
-          }}
-          uiBackground={{
-            textureMode: 'stretch',
-            uvs: getUvs(menuIconSprite),
-            texture: {
-              src: menuIconSprite.atlasSrc
-            }
-          }}
-          onMouseDown={() => {
-            playerRollOnClick(!isPlayerRollOpen)
-          }}
-        />
+        {/* Change Avatar icon hidden */}
+        {/* Inventory and Info buttons moved to under unit purchase button */}
+        {/* Quick Menu icon hidden */}
         {isPlayerRollOpen && (
           <UiEntity
             uiTransform={{
@@ -428,7 +465,7 @@ function MainHud({
         uiTransform={{
           width: hudHeight,
           height: hudHeight,
-          position: { right: hudHeight * 0.2, top: hudHeight * 1.5 },
+          position: { right: hudHeight * 0.2, top: hudHeight * 12.5 },
           positionType: 'absolute'
         }}
         uiBackground={{
@@ -440,6 +477,82 @@ function MainHud({
         onMouseDown={() => {
           showLumberjack()
         }}
+      />
+      <Label
+        value="Units"
+        fontSize={hudHeight * 0.2}
+        color={Color4.White()}
+        uiTransform={{
+          position: { right: hudHeight * 0.2, top: hudHeight * 13.2 },
+          positionType: 'absolute',
+          width: hudHeight,
+          height: hudHeight * 0.4
+        }}
+        textAlign="middle-center"
+      />
+
+      {/* Inventory Button - positioned under unit purchase button */}
+      <UiEntity
+        uiTransform={{
+          width: hudHeight,
+          height: hudHeight,
+          position: { right: hudHeight * 0.2, top: hudHeight * 13.7 },
+          positionType: 'absolute'
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          uvs: getUvs(mainHudSprites.inventoryIcon),
+          texture: {
+            src: mainHudSprites.inventoryIcon.atlasSrc
+          }
+        }}
+        onMouseDown={() => {
+          showInventory()
+        }}
+      />
+      <Label
+        value="Inventory"
+        fontSize={hudHeight * 0.2}
+        color={Color4.White()}
+        uiTransform={{
+          position: { right: hudHeight * 0.2, top: hudHeight * 14.4 },
+          positionType: 'absolute',
+          width: hudHeight,
+          height: hudHeight * 0.4
+        }}
+        textAlign="middle-center"
+      />
+
+      {/* Info Button (question mark) - positioned under inventory button */}
+      <UiEntity
+        uiTransform={{
+          width: hudHeight,
+          height: hudHeight,
+          position: { right: hudHeight * 0.2, top: hudHeight * 14.9 },
+          positionType: 'absolute'
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          uvs: getUvs(mainHudSprites.infoMenuIcon),
+          texture: {
+            src: mainHudSprites.infoMenuIcon.atlasSrc
+          }
+        }}
+        onMouseDown={() => {
+          showInfo(true)
+        }}
+      />
+      <Label
+        value="Info"
+        fontSize={hudHeight * 0.2}
+        color={Color4.White()}
+        uiTransform={{
+          position: { right: hudHeight * 0.2, top: hudHeight * 15.6 },
+          positionType: 'absolute',
+          width: hudHeight,
+          height: hudHeight * 0.4
+        }}
+        textAlign="middle-center"
       />
     </Canvas>
   )

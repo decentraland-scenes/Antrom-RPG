@@ -209,12 +209,7 @@ export class Lumberjack {
       AudioSource.playSound(this.entity, 'assets/sounds/tree.mp3')
     }
 
-    // Show feedback
-    player.gameController.uiController.displayAnnouncement(
-      `+${this.harvestAmount} Wood +1 XP`,
-      Color4.Yellow(),
-      2000
-    )
+    // Resource counter will show the updated counts automatically
   }
 
   private findNearestAvailableTree(): void {
