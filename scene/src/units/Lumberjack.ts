@@ -71,7 +71,8 @@ export class Lumberjack {
     AudioSource.create(this.entity, {
       audioClipUrl: 'assets/sounds/tree.mp3',
       loop: false,
-      playing: false
+      playing: false,
+      volume: 0.3 // Low volume
     })
   }
 
@@ -110,9 +111,16 @@ export class Lumberjack {
     // Add 1 XP to lumberjack profession
     player.levels.addXp(LEVEL_TYPES.TREE, 1)
 
-    // Play chopping animation and sound
+    // Play chopping animation and sound from the lumberjack's position only if player is nearby
     Animator.playSingleAnimation(this.entity, 'chop')
-    AudioSource.playSound(this.entity, 'assets/sounds/tree.mp3')
+
+    const playerPos = Transform.get(engine.PlayerEntity).position
+    const distance = Vector3.distance(playerPos, this.position)
+    const soundRadius = 10 // Only hear sound within 10 units
+
+    if (distance <= soundRadius) {
+      AudioSource.playSound(this.entity, 'assets/sounds/tree.mp3')
+    }
 
     // Show feedback
     player.gameController.uiController.displayAnnouncement(

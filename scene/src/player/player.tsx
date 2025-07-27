@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
-import { engine, inputSystem, PointerEventType, type Entity, Transform, GltfContainer } from '@dcl/sdk/ecs'
+import { engine, inputSystem, PointerEventType, type Entity, Transform, GltfContainer, AudioSource } from '@dcl/sdk/ecs'
 import { Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
@@ -503,6 +503,14 @@ export class Player extends Character {
       src: 'assets/models/miner.glb'
     })
     
+    // Add AudioSource component for mining sounds
+    AudioSource.create(minerEntity, {
+      audioClipUrl: 'assets/sounds/rock.mp3',
+      loop: false,
+      playing: false,
+      volume: 0.3
+    })
+    
     // Add to miners array and track occupied rock
     const minerId = `miner_${Date.now()}`
     this.miners.push({ 
@@ -540,6 +548,15 @@ export class Player extends Character {
         
         // Update last harvest time
         miner.lastHarvestTime = currentTime
+        
+        // Play mining sound from the miner's position only if player is nearby
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        const distance = Vector3.distance(playerPos, miner.position)
+        const soundRadius = 10 // Only hear sound within 10 units
+        
+        if (distance <= soundRadius) {
+          AudioSource.playSound(miner.entity, 'assets/sounds/rock.mp3')
+        }
         
         // Show harvest announcement
         this.gameController.uiController.displayAnnouncement(
@@ -585,6 +602,14 @@ export class Player extends Character {
       src: 'assets/models/FarmerMale1.glb'
     })
     
+    // Add AudioSource component for farming sounds
+    AudioSource.create(farmerEntity, {
+      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder - no specific farming sound yet
+      loop: false,
+      playing: false,
+      volume: 0.3
+    })
+    
     // Add to farmers array
     const farmerId = `farmer_${Date.now()}`
     this.farmers.push({ 
@@ -617,6 +642,15 @@ export class Player extends Character {
         
         // Update last harvest time
         farmer.lastHarvestTime = currentTime
+        
+        // Play farming sound from the farmer's position only if player is nearby
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        const distance = Vector3.distance(playerPos, farmer.position)
+        const soundRadius = 10 // Only hear sound within 10 units
+        
+        if (distance <= soundRadius) {
+          AudioSource.playSound(farmer.entity, 'assets/sounds/buttonclick.mp3')
+        }
         
         // Show harvest announcement
         this.gameController.uiController.displayAnnouncement(
@@ -817,6 +851,16 @@ export class Player extends Character {
     if (skillIndex !== -1) {
       this.skills[skillIndex] = undefined
     }
+  }
+
+  private getRandomMinerSound(): string {
+    const minerSounds = [
+      'assets/sounds/miner_unit_sounds/miner_unit1.mp3',
+      'assets/sounds/miner_unit_sounds/miner_unit2.mp3',
+      'assets/sounds/miner_unit_sounds/miner_unit3.mp3'
+    ]
+    const randomIndex = Math.floor(Math.random() * minerSounds.length)
+    return minerSounds[randomIndex]
   }
 
   process(dt: number): void {
