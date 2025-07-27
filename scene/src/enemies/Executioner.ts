@@ -30,6 +30,12 @@ export default class Executioner extends MonsterMobAuto {
   hoverText: string
   private roamingSystem: MonsterRoaming | null = null
   private isEngaged: boolean = false
+  private isConfrontedByFighter: boolean = false
+  private lastFighterCheck: number = 0
+  private fighterCheckInterval: number = 1000 // Check for fighters every 1 second
+  private attackingFighter: any = null // Track which fighter is attacking
+  private lastAttackedBy: any = null // Track which fighter last attacked
+  private lastAttackTime: number = 0 // Track when last attacked
   constructor() {
     const player = Player.getInstanceOrNull()
     const level = player?.levels.getLevel(LEVEL_TYPES.PLAYER) ?? 2
@@ -54,6 +60,72 @@ export default class Executioner extends MonsterMobAuto {
     console.log('Executioner isDead:', this.isDead)
     console.log('Executioner isDeadAnimation:', this.isDeadAnimation)
 
+    // Track which fighter attacked us
+    this.lastAttackedBy = this.attackingFighter
+    this.lastAttackTime = Date.now()
+
+    // Face the attacking fighter if we know which one it is
+    if (this.attackingFighter && !this.isDeadAnimation) {
+      try {
+        const executionerTransform = Transform.get(this.entity)
+        const direction = Vector3.subtract(
+          this.attackingFighter.position,
+          executionerTransform.position
+        )
+        Transform.getMutable(this.entity).rotation =
+          Quaternion.lookRotation(direction)
+        console.log('Executioner facing attacking fighter')
+      } catch (error) {
+        console.log('Error facing fighter during damage:', error)
+      }
+    }
+
+    // Play impact animation when taking damage from fighter (unless dying)
+    if (!this.isDeadAnimation && this.health > attack) {
+      try {
+        const impactAnim = Animator.getClip(this.entity, this.impactClip)
+        const idleAnim = Animator.getClip(this.entity, this.idleClip)
+        const walkAnim = Animator.getClip(this.entity, this.walkClip)
+
+        console.log('Executioner impact animation states:', {
+          idlePlaying: idleAnim?.playing,
+          walkPlaying: walkAnim?.playing,
+          impactPlaying: impactAnim?.playing
+        })
+
+        // Stop other animations and play impact (following animation learnings)
+        if (idleAnim && idleAnim.playing) {
+          idleAnim.playing = false
+          console.log('Executioner: Stopped idle animation for impact')
+        }
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+          console.log('Executioner: Stopped walk animation for impact')
+        }
+        if (impactAnim && !impactAnim.playing) {
+          impactAnim.playing = true
+          console.log('Executioner: Started impact animation')
+        }
+
+        // Return to idle after impact animation (1.5 seconds)
+        utils.timers.setTimeout(() => {
+          console.log(
+            'Executioner: Impact animation timeout, returning to idle'
+          )
+          if (impactAnim && impactAnim.playing) {
+            impactAnim.playing = false
+            console.log('Executioner: Stopped impact animation')
+          }
+          if (idleAnim && !idleAnim.playing) {
+            idleAnim.playing = true
+            console.log('Executioner: Started idle animation after impact')
+          }
+        }, 1500)
+      } catch (error) {
+        console.log('Error playing executioner impact animation:', error)
+      }
+    }
+
     // Call the base reduceHealth method
     super.reduceHealth(attack)
 
@@ -66,6 +138,9 @@ export default class Executioner extends MonsterMobAuto {
     if (this.health <= 0 && !this.isDead) {
       console.log('Executioner died, calling onDead()')
       this.isDead = true
+
+      // Remove roaming system immediately to prevent errors
+      engine.removeSystem(this.roamingUpdateSystem.bind(this))
 
       // Play death animation first
       Animator.playSingleAnimation(this.entity, this.dieClip)
@@ -259,8 +334,8 @@ export default class Executioner extends MonsterMobAuto {
       {
         ...ROAMING_CONFIGS.aggressive,
         roamRadius: 15,
-        roamSpeed: 1.2,
-        idleTime: 2,
+        roamSpeed: 0.8, // Slower movement for more dramatic confrontations
+        idleTime: 3, // Longer idle time
         maxRoamDistance: 20
       },
       this.walkClip, // Use the actual walk clip
@@ -271,16 +346,144 @@ export default class Executioner extends MonsterMobAuto {
     engine.addSystem(this.roamingUpdateSystem.bind(this))
   }
 
+  private checkForNearbyFighters(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    // Safety check: Make sure executioner entity still exists and has Transform
+    try {
+      const executionerTransform = Transform.get(this.entity)
+      if (!executionerTransform) {
+        console.log('Executioner entity missing Transform component')
+        return
+      }
+    } catch (error) {
+      console.log('Executioner entity not found or invalid:', error)
+      return
+    }
+
+    // Get all fighters from the player
+    const fighters = player.fighters || []
+    let nearbyFighter = false
+    let closestFighter = null
+    let closestDistance = Infinity
+
+    for (const fighter of fighters) {
+      if (fighter && !fighter.isDead) {
+        try {
+          const executionerTransform = Transform.get(this.entity)
+          const distance = Vector3.distance(
+            executionerTransform.position,
+            fighter.position
+          )
+          if (distance <= 10) {
+            // 10 unit detection range
+            nearbyFighter = true
+            if (distance < closestDistance) {
+              closestDistance = distance
+              closestFighter = fighter
+            }
+          }
+        } catch (error) {
+          console.log('Error checking fighter distance:', error)
+          continue
+        }
+      }
+    }
+
+    this.isConfrontedByFighter = nearbyFighter
+    this.attackingFighter = closestFighter
+
+    // Face the fighter that last attacked us, or the closest one if none has attacked recently
+    const currentTime = Date.now()
+    const timeSinceLastAttack = currentTime - this.lastAttackTime
+
+    if (
+      this.lastAttackedBy &&
+      timeSinceLastAttack < 3000 &&
+      !this.isDeadAnimation
+    ) {
+      // Face the fighter that last attacked us (for 3 seconds)
+      try {
+        const executionerTransform = Transform.get(this.entity)
+        const direction = Vector3.subtract(
+          this.lastAttackedBy.position,
+          executionerTransform.position
+        )
+        Transform.getMutable(this.entity).rotation =
+          Quaternion.lookRotation(direction)
+      } catch (error) {
+        console.log('Error facing last attacker:', error)
+      }
+    } else if (this.attackingFighter && !this.isDeadAnimation) {
+      // Face the closest fighter if no recent attacker
+      try {
+        const executionerTransform = Transform.get(this.entity)
+        const direction = Vector3.subtract(
+          this.attackingFighter.position,
+          executionerTransform.position
+        )
+        Transform.getMutable(this.entity).rotation =
+          Quaternion.lookRotation(direction)
+      } catch (error) {
+        console.log('Error facing closest fighter:', error)
+      }
+    }
+  }
+
   private roamingUpdateSystem(dt: number): void {
-    // Only roam when not engaged with player
-    if (!this.isEngaged && this.roamingSystem && !this.isDeadAnimation) {
-      // console.log(
-      //   'Executioner roaming update - engaged:',
-      //   this.isEngaged,
-      //   'dead:',
-      //   this.isDeadAnimation
-      // )
+    // Safety check: Make sure executioner entity still exists and is not dead
+    if (this.isDead || this.isDeadAnimation) {
+      return // Don't update if dead
+    }
+
+    try {
+      const executionerTransform = Transform.get(this.entity)
+      if (!executionerTransform) {
+        console.log(
+          'Executioner roaming system: Entity missing Transform component'
+        )
+        return
+      }
+    } catch (error) {
+      console.log(
+        'Executioner roaming system: Entity not found or invalid:',
+        error
+      )
+      return
+    }
+
+    const currentTime = Date.now()
+
+    // Check for nearby fighters periodically
+    if (currentTime - this.lastFighterCheck >= this.fighterCheckInterval) {
+      this.checkForNearbyFighters()
+      this.lastFighterCheck = currentTime
+    }
+
+    // Only roam when not engaged with player and not confronted by fighter
+    if (
+      !this.isEngaged &&
+      !this.isConfrontedByFighter &&
+      this.roamingSystem &&
+      !this.isDeadAnimation
+    ) {
       this.roamingSystem.update(dt)
+    } else if (this.isConfrontedByFighter && !this.isDeadAnimation) {
+      // Stop moving and play idle animation when confronted by fighter
+      try {
+        const idleAnim = Animator.getClip(this.entity, this.idleClip)
+        const walkAnim = Animator.getClip(this.entity, this.walkClip)
+
+        if (walkAnim && walkAnim.playing) {
+          walkAnim.playing = false
+        }
+        if (idleAnim && !idleAnim.playing) {
+          idleAnim.playing = true
+        }
+      } catch (error) {
+        console.log('Error updating executioner animations:', error)
+      }
     }
   }
 
@@ -320,6 +523,11 @@ export default class Executioner extends MonsterMobAuto {
   removeEntity(): void {
     // Remove roaming system from engine
     engine.removeSystem(this.roamingUpdateSystem.bind(this))
+
+    // Clear all references to prevent memory leaks
+    this.roamingSystem = null
+    this.attackingFighter = null
+    this.lastAttackedBy = null
 
     super.cleanup()
     entityController.removeEntity(this.rangeAttackTrigger)

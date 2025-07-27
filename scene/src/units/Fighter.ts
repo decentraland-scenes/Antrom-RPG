@@ -19,9 +19,9 @@ export class Fighter {
   public position: Vector3
   public lastAttackTime: number
   public isPlaced: boolean = false
-  public attackRange: number = 7 // Increased range for better combat effectiveness
-  public attackDamage: number = 1000
-  public attackInterval: number = 2000 // 2 seconds between attacks
+  public attackRange: number = 3 // Closer range for more dramatic combat
+  public attackDamage: number = 35
+  public attackInterval: number = 4000 // 4 seconds between attacks (slower for dramatic effect)
   public targetExecutioner: Entity | null = null
   public isAttacking: boolean = false
   public isWalking: boolean = false
@@ -226,6 +226,17 @@ export class Fighter {
         `Fighter searching for executioners. Found ${executioners.length} executioners. Roaming: ${this.isRoaming}`
       )
 
+      // Count how many fighters are targeting each executioner
+      const targetCounts = new Map<Entity, number>()
+      const fighters = player.fighters || []
+
+      for (const fighter of fighters) {
+        if (fighter && fighter !== this && fighter.targetExecutioner) {
+          const count = targetCounts.get(fighter.targetExecutioner) || 0
+          targetCounts.set(fighter.targetExecutioner, count + 1)
+        }
+      }
+
       for (const executioner of executioners) {
         if (!executioner || executioner.isDead) {
           console.log('Skipping dead executioner:', executioner?.isDead)
@@ -237,12 +248,26 @@ export class Fighter {
 
         // Always use a large search range to find executioners
         const searchRange = this.roamRadius // Always use roam radius for searching
-        if (distance < nearestDistance && distance <= searchRange) {
-          nearestDistance = distance
-          nearestExecutioner = executioner.entity
-          console.log(
-            `Fighter found executioner at distance: ${distance.toFixed(2)}`
-          )
+        if (distance <= searchRange) {
+          // Prefer executioners with fewer fighters targeting them
+          const currentTargets = targetCounts.get(executioner.entity) || 0
+          const currentTargetsForNearest =
+            targetCounts.get(nearestExecutioner!) || 0
+
+          // Choose this executioner if it has fewer targets, or if same targets but closer
+          if (
+            currentTargets < currentTargetsForNearest ||
+            (currentTargets === currentTargetsForNearest &&
+              distance < nearestDistance)
+          ) {
+            nearestDistance = distance
+            nearestExecutioner = executioner.entity
+            console.log(
+              `Fighter found executioner at distance: ${distance.toFixed(
+                2
+              )} with ${currentTargets} current targets`
+            )
+          }
         }
       }
     }
@@ -458,6 +483,36 @@ export class Fighter {
           this.isWalking = false
         }
 
+        // Get closer to the executioner for dramatic effect, with offset to avoid stacking
+        if (distance > 2) {
+          const direction = Vector3.subtract(
+            executionerTransform.position,
+            this.position
+          )
+          const normalizedDirection = Vector3.normalize(direction)
+
+          // Add a small offset based on fighter entity ID to prevent stacking
+          const offsetAngle = (this.entity * 137.5) % 360 // Golden angle for good distribution
+          const offsetRadius = 0.5 // Small radius around executioner
+          const offsetX = Math.cos((offsetAngle * Math.PI) / 180) * offsetRadius
+          const offsetZ = Math.sin((offsetAngle * Math.PI) / 180) * offsetRadius
+
+          const targetDistance = 2 + (this.entity % 3) * 0.5 // Vary distance slightly (2-3 units)
+          const moveDistance = Math.min(distance - targetDistance, 0.5)
+
+          const newPosition = Vector3.add(
+            this.position,
+            Vector3.scale(normalizedDirection, moveDistance)
+          )
+
+          // Apply offset to prevent stacking
+          newPosition.x += offsetX
+          newPosition.z += offsetZ
+
+          Transform.getMutable(this.entity).position = newPosition
+          this.position = newPosition
+        }
+
         // Face the executioner
         const direction = Vector3.subtract(
           executionerTransform.position,
@@ -506,7 +561,7 @@ export class Fighter {
           1500
         )
 
-        // Return to idle after attack
+        // Return to idle after attack (longer timeout for dramatic effect)
         utils.timers.setTimeout(() => {
           console.log('Fighter: Attack animation timeout, returning to idle')
           if (attackAnim && attackAnim.playing) {
@@ -518,7 +573,7 @@ export class Fighter {
             console.log('Fighter: Started idle animation')
           }
           this.isAttacking = false
-        }, 1000)
+        }, 2000) // 2 seconds for attack animation
       } else {
         console.log(
           `Fighter too far to attack. Distance: ${distance.toFixed(

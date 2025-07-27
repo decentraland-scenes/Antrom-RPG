@@ -325,10 +325,38 @@ export class MonsterMobAuto extends GenericMonster {
       // showCriticalIcon()
     }
 
-    Animator.playSingleAnimation(this.entity, this.impactClip)
+    // Play impact animation with timeout for smooth transitions
+    const impactAnim = Animator.getClip(this.entity, this.impactClip)
+    const idleAnim = Animator.getClip(this.entity, this.idleClip)
+    const walkAnim = Animator.getClip(this.entity, this.walkClip)
+
+    // Stop other animations and play impact
+    if (idleAnim && idleAnim.playing) {
+      idleAnim.playing = false
+    }
+    if (walkAnim && walkAnim.playing) {
+      walkAnim.playing = false
+    }
+    if (impactAnim && !impactAnim.playing) {
+      impactAnim.playing = true
+    }
+
+    // Return to idle after impact animation (2 seconds)
+    utils.timers.setTimeout(() => {
+      if (impactAnim && impactAnim.playing) {
+        impactAnim.playing = false
+      }
+      if (idleAnim && !idleAnim.playing) {
+        idleAnim.playing = true
+      }
+    }, 2000)
+
     if (this.health <= 0) {
-      this.onDead()
-      pointerEventsSystem.removeOnPointerDown(this.entity)
+      // Add delay before death to allow impact animation to play
+      utils.timers.setTimeout(() => {
+        this.onDead()
+        pointerEventsSystem.removeOnPointerDown(this.entity)
+      }, 1000) // 1 second delay before death
     }
   }
 
