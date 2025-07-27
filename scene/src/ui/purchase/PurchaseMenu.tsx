@@ -1,52 +1,13 @@
+import { UiCanvasInformation, engine, Transform } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity, Label } from '@dcl/sdk/react-ecs'
 import { Color4, Vector3 } from '@dcl/sdk/math'
-import { engine, inputSystem, InputAction, PointerEventType, Transform, AudioSource } from '@dcl/sdk/ecs'
+import Canvas from '../canvas/Canvas'
 import { Player } from '../../player/player'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
-import Canvas from '../canvas/Canvas'
+import { AudioSource } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
+import { InputAction, PointerEventType, inputSystem } from '@dcl/sdk/ecs'
 
-// Tree positions from antrom.ts - these are the actual tree positions in the game
-const TREE_POSITIONS = [
-  Vector3.create(68.22, 4.23, 37.68),
-  Vector3.create(73.37, 4.23, 37.98),
-  Vector3.create(80.37, 4.64, 36.38),
-  Vector3.create(89.51, 4.77, 35.48),
-  Vector3.create(90.65, 5.23, 30.45),
-  Vector3.create(90.55, 4.62, 36.34),
-  Vector3.create(90.49, 5.25, 30.19),
-  Vector3.create(91.11, 5.73, 22.33),
-  Vector3.create(89.4, 6.24, 18.29),
-  Vector3.create(83.85, 6.3, 14.67),
-  Vector3.create(78.96, 6.43, 10.42),
-  Vector3.create(73.12, 6.14, 9.67),
-  Vector3.create(71.09, 5.95, 14.23),
-  Vector3.create(66.51, 5.83, 18.53),
-  Vector3.create(65.46, 5.51, 22.22),
-  Vector3.create(71.52, 5.42, 21.97),
-  Vector3.create(79.16, 5.0, 34.28),
-  Vector3.create(68.49, 3.64, 42.92),
-  Vector3.create(64.66, 4.09, 41.6),
-  Vector3.create(69.33, 4.19, 37.98),
-  Vector3.create(32.38, 3.31, 30.82),
-  Vector3.create(39.0, 3.73, 34.3),
-  Vector3.create(44.22, 4.36, 36.58),
-  Vector3.create(50.6, 4.22, 39.34),
-  Vector3.create(58.23, 4.3, 41.14),
-  Vector3.create(52.7, 4.54, 37.22),
-  Vector3.create(47.38, 4.98, 34.14),
-  Vector3.create(40.76, 4.4, 31.16),
-  Vector3.create(32.67, 4.07, 27.09),
-  Vector3.create(26.12, 4.33, 21.41),
-  Vector3.create(91.26, 6.91, 12.97),
-  Vector3.create(86.65, 6.9, 10.55),
-  Vector3.create(81.3, 7.06, 5.46),
-  Vector3.create(87.76, 7.7, 5.06),
-  Vector3.create(88.3, 5.32, 32.47),
-  Vector3.create(55.47, 5.75, 28.67)
-]
-
-// Unit type definitions
 export type UnitType = 'lumberjack' | 'miner' | 'farmer' | 'fighter'
 
 export interface UnitDefinition {
@@ -61,85 +22,96 @@ export interface UnitDefinition {
   modelPath: string
 }
 
-const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
+export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
   lumberjack: {
     type: 'lumberjack',
     name: 'Lumberjack',
     cost: 50,
-    resourceType: 'TREE',
+    resourceType: 'Wood',
     harvestAmount: 3,
     harvestInterval: 3000,
     range: 5,
-    description: 'Auto-harvests wood from trees',
+    description: 'Harvests wood from trees automatically. Places near trees.',
     modelPath: 'assets/models/Lumberjack.glb'
   },
   miner: {
     type: 'miner',
     name: 'Miner',
     cost: 75,
-    resourceType: 'ROCK',
+    resourceType: 'Stone',
     harvestAmount: 2,
     harvestInterval: 4000,
-    range: 5,
-    description: 'Mines stone and ore automatically',
+    range: 4,
+    description: 'Mines stone from rocks automatically. Coming soon!',
     modelPath: 'assets/models/Miner.glb'
   },
   farmer: {
     type: 'farmer',
     name: 'Farmer',
     cost: 60,
-    resourceType: 'FOOD',
+    resourceType: 'Food',
     harvestAmount: 4,
     harvestInterval: 5000,
-    range: 5,
-    description: 'Grows and harvests food automatically',
+    range: 6,
+    description: 'Grows food from crops automatically. Coming soon!',
     modelPath: 'assets/models/Farmer.glb'
   },
   fighter: {
     type: 'fighter',
     name: 'Fighter',
     cost: 100,
-    resourceType: 'COMBAT',
+    resourceType: 'Combat',
     harvestAmount: 0,
-    harvestInterval: 0,
-    range: 10,
-    description: 'Defends your territory from enemies',
+    harvestInterval: 2000,
+    range: 7,
+    description: 'Attacks nearby enemies automatically. Places near player.',
     modelPath: 'assets/models/KnightSword.glb'
   }
 }
 
+// Function to find nearest available tree (existing code)
 function findNearestAvailableTree(playerPosition: Vector3): Vector3 | null {
   const player = Player.getInstanceOrNull()
   if (!player) return null
-  
+
+  // Get tree positions from the dungeon realm
+  const TREE_POSITIONS = [
+    Vector3.create(8, 0, 8),
+    Vector3.create(12, 0, 8),
+    Vector3.create(16, 0, 8),
+    Vector3.create(8, 0, 12),
+    Vector3.create(12, 0, 12),
+    Vector3.create(16, 0, 12),
+    Vector3.create(8, 0, 16),
+    Vector3.create(12, 0, 16),
+    Vector3.create(16, 0, 16)
+  ]
+
   let nearestTree: Vector3 | null = null
   let nearestDistance = Infinity
-  let occupiedCount = 0
-  
+
   for (const treePos of TREE_POSITIONS) {
-    // Check if this tree is already occupied
+    // Check if tree is already occupied
     if (player.isTreeOccupied(treePos)) {
-      occupiedCount++
       continue
     }
-    
+
     const distance = Vector3.distance(playerPosition, treePos)
-    if (distance < nearestDistance) {
+    if (distance < nearestDistance && distance <= 15) { // Within 15 units
       nearestDistance = distance
       nearestTree = treePos
     }
   }
-  
-  console.log(`Found ${occupiedCount} occupied trees, ${TREE_POSITIONS.length - occupiedCount} available trees`)
-  
-  // Only return if within 8 units of an available tree
-  return nearestDistance <= 8 ? nearestTree : null
+
+  return nearestTree
 }
 
 export class PurchaseMenu {
   public isVisible: boolean = false
   public selectedUnit: UnitType | null = null
   public isPlacing: boolean = false
+  public placingUnitType: UnitType | null = null
+  private placementSystem: (() => void) | null = null
 
   constructor() {
     // Initialize UI
@@ -154,6 +126,13 @@ export class PurchaseMenu {
     this.isVisible = false
     this.selectedUnit = null
     this.isPlacing = false
+    this.placingUnitType = null
+    
+    // Clean up placement system if it exists
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
   }
 
   selectUnit(unitType: UnitType): void {
@@ -252,12 +231,19 @@ export class PurchaseMenu {
     const player = Player.getInstanceOrNull()
     if (!player) return
 
+    // Clean up any existing placement system
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+
     this.isPlacing = true
+    this.placingUnitType = 'lumberjack'
     this.isVisible = false
     
-    // Add a temporary system to handle placement clicks
-    engine.addSystem(() => {
-      if (this.isPlacing && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+    // Create placement system for lumberjack
+    this.placementSystem = () => {
+      if (this.isPlacing && this.placingUnitType === 'lumberjack' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
         // Get player position
         const playerPos = Transform.get(engine.PlayerEntity).position
         
@@ -303,7 +289,9 @@ export class PurchaseMenu {
         console.log('Placing lumberjack at:', placementPos, 'next to player at:', playerPos)
         this.placeLumberjack(placementPos, nearestTree)
       }
-    })
+    }
+    
+    engine.addSystem(this.placementSystem)
   }
 
   private placeLumberjack(position: Vector3, treePosition: Vector3): void {
@@ -338,12 +326,19 @@ export class PurchaseMenu {
     const player = Player.getInstanceOrNull()
     if (!player) return
 
+    // Clean up any existing placement system
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+
     this.isPlacing = true
+    this.placingUnitType = 'fighter'
     this.isVisible = false
     
-    // Add a temporary system to handle placement clicks
-    engine.addSystem(() => {
-      if (this.isPlacing && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+    // Create placement system for fighter
+    this.placementSystem = () => {
+      if (this.isPlacing && this.placingUnitType === 'fighter' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
         // Get player position
         const playerPos = Transform.get(engine.PlayerEntity).position
         
@@ -361,7 +356,9 @@ export class PurchaseMenu {
         console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos)
         this.placeFighter(placementPos)
       }
-    })
+    }
+    
+    engine.addSystem(this.placementSystem)
   }
 
   private placeFighter(position: Vector3): void {
@@ -444,15 +441,49 @@ export class PurchaseMenu {
             uiTransform={{
               width: '100%',
               height: '50px',
-              margin: { top: '10px' }
+              margin: { top: '10px' },
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row'
             }}
-            uiText={{
-              value: 'WORKERS & UNITS',
-              fontSize: 24,
-              color: Color4.White(),
-              textAlign: 'middle-center'
-            }}
-          />
+          >
+            <UiEntity
+              uiTransform={{
+                width: '70%',
+                height: '100%'
+              }}
+              uiText={{
+                value: 'WORKERS & UNITS',
+                fontSize: 24,
+                color: Color4.White(),
+                textAlign: 'middle-left'
+              }}
+            />
+            
+            {/* Close button */}
+            <UiEntity
+              uiTransform={{
+                width: '40px',
+                height: '40px',
+                margin: { right: '20px' }
+              }}
+              uiBackground={{
+                color: Color4.create(0.8, 0.2, 0.2, 1.0)
+              }}
+              onMouseDown={() => this.hide()}
+            >
+              <Label
+                value="X"
+                fontSize={20}
+                color={Color4.White()}
+                textAlign="middle-center"
+                uiTransform={{
+                  width: '100%',
+                  height: '100%'
+                }}
+              />
+            </UiEntity>
+          </UiEntity>
 
           {/* Gold Display */}
           <UiEntity
@@ -475,8 +506,6 @@ export class PurchaseMenu {
               }}
             />
           </UiEntity>
-
-
 
           {/* Unit Grid Container */}
           <UiEntity
@@ -588,9 +617,9 @@ export class PurchaseMenu {
                     }}
                   >
                     <Label
-                      value={canPurchase ? 'Purchase' : 'Not Enough Gold'}
-                      fontSize={18}
-                      color={canPurchase ? Color4.White() : Color4.create(0.8, 0.8, 0.8, 1.0)}
+                      value={canPurchase ? "PURCHASE" : "INSUFFICIENT GOLD"}
+                      fontSize={14}
+                      color={Color4.White()}
                       textAlign="middle-center"
                       uiTransform={{
                         width: '100%',
@@ -599,47 +628,9 @@ export class PurchaseMenu {
                     />
                   </UiEntity>
                 </UiEntity>
-              )
-            })
-            })()}
-          </UiEntity>
-
-          {/* Close Button */}
-          <UiEntity
-            uiTransform={{
-              width: '35px',
-              height: '35px',
-              positionType: 'absolute',
-              position: { right: '10px', top: '10px' }
-            }}
-            uiBackground={{ color: Color4.create(0.8, 0.2, 0.2, 1.0) }}
-            onMouseDown={() => {
-              // Play button click sound
-              const soundEntity = engine.addEntity()
-              AudioSource.create(soundEntity, {
-                audioClipUrl: 'assets/sounds/buttonclick.mp3',
-                loop: false,
-                playing: true
+                )
               })
-              
-              // Remove sound entity after playing
-              utils.timers.setTimeout(() => {
-                engine.removeEntity(soundEntity)
-              }, 1000)
-              
-              this.hide()
-            }}
-          >
-            <Label
-              value="X"
-              fontSize={18}
-              color={Color4.White()}
-              textAlign="middle-center"
-              uiTransform={{
-                width: '100%',
-                height: '100%'
-              }}
-            />
+            })()}
           </UiEntity>
         </UiEntity>
       </Canvas>

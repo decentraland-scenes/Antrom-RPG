@@ -32,12 +32,16 @@ export class Lumberjack {
     this.position = position
     this.lastHarvestTime = Date.now()
 
+    console.log('Creating Lumberjack entity:', this.entity)
     this.setupModel()
     this.setupClickHandler()
   }
 
   private setupModel(): void {
     // Create the lumberjack model
+    console.log(
+      'Setting up Lumberjack model with src: assets/models/Lumberjack.glb'
+    )
     Transform.create(this.entity, {
       position: this.position,
       rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),

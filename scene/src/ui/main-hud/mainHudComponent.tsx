@@ -423,7 +423,7 @@ function MainHud({
         {/* )} */}
       </UiEntity>
       
-      {/* Lumberjack Button - positioned below the main HUD bar */}
+      {/* Units Button - positioned below the main HUD bar */}
       <UiEntity
         uiTransform={{
           width: hudHeight,
@@ -432,25 +432,15 @@ function MainHud({
           positionType: 'absolute'
         }}
         uiBackground={{
-          color: Color4.create(0.8, 0.6, 0.2, 1) // Brown color for lumberjack
+          textureMode: 'stretch',
+          texture: {
+            src: 'assets/images/unitPurchase/unitPurchaseButton.png'
+          }
         }}
         onMouseDown={() => {
           showLumberjack()
         }}
-      >
-        <UiEntity
-          uiTransform={{
-            width: '100%',
-            height: '100%'
-          }}
-          uiText={{
-            value: 'UNITS',
-            fontSize: 10,
-            color: Color4.White(),
-            textAlign: 'middle-center'
-          }}
-        />
-      </UiEntity>
+      />
     </Canvas>
   )
 }

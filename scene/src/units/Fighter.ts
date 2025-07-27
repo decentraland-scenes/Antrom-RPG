@@ -50,6 +50,7 @@ export class Fighter {
     this.spawnPosition = position
     this.lastAttackTime = Date.now()
 
+    console.log('Creating Fighter entity:', this.entity)
     this.setupModel()
   }
 

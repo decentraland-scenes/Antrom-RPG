@@ -394,6 +394,7 @@ export class Player extends Character {
   }
 
   addLumberjack(position: Vector3, treePosition: Vector3): void {
+    console.log('Player.addLumberjack called with position:', position, 'treePosition:', treePosition)
     const lumberjack = new Lumberjack(position)
     lumberjack.place(position)
     this.lumberjacks.push(lumberjack)
@@ -402,6 +403,7 @@ export class Player extends Character {
     const treeKey = `${treePosition.x.toFixed(1)},${treePosition.y.toFixed(1)},${treePosition.z.toFixed(1)}`
     this.occupiedTrees.add(treeKey)
     console.log('Marked tree as occupied:', treeKey)
+    console.log('Lumberjack added to player.lumberjacks array, total count:', this.lumberjacks.length)
   }
 
   isTreeOccupied(treePosition: Vector3): boolean {
@@ -433,10 +435,12 @@ export class Player extends Character {
   }
 
   addFighter(position: Vector3): void {
+    console.log('Player.addFighter called with position:', position)
     const fighter = new Fighter(position)
     fighter.place(position)
     this.fighters.push(fighter)
     console.log('Fighter deployed at:', position)
+    console.log('Fighter added to player.fighters array, total count:', this.fighters.length)
   }
 
   updateFighters(): void {
