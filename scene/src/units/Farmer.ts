@@ -149,16 +149,18 @@ export class Farmer {
       }
     }
 
-    // If we're not walking or roaming, make sure we're idle
+    // Safety check: If we're not in any movement state, ensure we're idle
     if (!this.isWalking && !this.isRoaming && !this.isHunting) {
       const walkAnim = Animator.getClip(this.entity, 'walk')
       const idleAnim = Animator.getClip(this.entity, 'idle')
 
       if (walkAnim && walkAnim.playing) {
         walkAnim.playing = false
+        console.log('Farmer: Safety - stopped walk animation')
       }
       if (idleAnim && !idleAnim.playing) {
         idleAnim.playing = true
+        console.log('Farmer: Safety - started idle animation')
       }
     }
 
@@ -277,8 +279,7 @@ export class Farmer {
       Transform.getMutable(this.entity).rotation =
         Quaternion.lookRotation(direction)
 
-      // Play attack animation and sound
-      Animator.playSingleAnimation(this.entity, 'attack')
+      // Play attack sound and deal damage (no attack animation available)
       AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
 
       // Deal damage to the animal
@@ -291,10 +292,16 @@ export class Farmer {
         1500
       )
 
-      // Return to idle after attack
-      utils.timers.setTimeout(() => {
-        Animator.playSingleAnimation(this.entity, 'idle')
-      }, 1000)
+      // Ensure we're in idle animation during attack
+      const idleAnim = Animator.getClip(this.entity, 'idle')
+      const walkAnim = Animator.getClip(this.entity, 'walk')
+
+      if (walkAnim && walkAnim.playing) {
+        walkAnim.playing = false
+      }
+      if (idleAnim && !idleAnim.playing) {
+        idleAnim.playing = true
+      }
 
       this.lastAttackTime = currentTime
     }
@@ -499,7 +506,7 @@ export class Farmer {
 
       this.targetAnimal = null
 
-      // Stop walking animation and return to idle
+      // Stop walking animation and return to idle - using smart animation state management
       const walkAnim = Animator.getClip(this.entity, 'walk')
       const idleAnim = Animator.getClip(this.entity, 'idle')
 
@@ -507,10 +514,13 @@ export class Farmer {
         walkAnim.playing = false
         console.log('Farmer: Walk animation stopped at animal')
       }
+
+      // Ensure idle animation is playing when we stop walking
       if (idleAnim && !idleAnim.playing) {
         idleAnim.playing = true
         console.log('Farmer: Idle animation started at animal')
       }
+
       return
     }
 
