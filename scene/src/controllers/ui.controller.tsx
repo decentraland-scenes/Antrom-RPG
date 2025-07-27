@@ -201,25 +201,7 @@ export class UIController {
         <Canvas>{this.gameController.sendWearable.instructions?.render()}</Canvas>
         <Canvas>{this.gameController.sendWearable.loading?.render()}</Canvas>
 
-        {/* Test Notification - Always visible */}
-        <UiEntity
-          uiTransform={{
-            width: 200,
-            height: 50,
-            positionType: 'absolute',
-            position: { left: 20, top: 20 }
-          }}
-          uiBackground={{ color: Color4.create(0, 1, 0, 0.8) }}
-        >
-          <UiEntity
-            uiText={{
-              value: 'UI TEST',
-              fontSize: 16,
-              color: Color4.Black(),
-              textAlign: 'middle-left'
-            }}
-          />
-        </UiEntity>
+
 
         {/* Damage Flash - Red screen when player is damaged */}
         {(() => {
