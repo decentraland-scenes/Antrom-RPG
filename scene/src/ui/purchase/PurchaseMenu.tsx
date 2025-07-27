@@ -392,15 +392,30 @@ export class PurchaseMenu {
   private getUnitIcon(unitType: UnitType): string {
     switch (unitType) {
       case 'lumberjack':
-        return '🌳'
+        return '🪓' // Will be replaced with icon
       case 'miner':
-        return '⛏️'
+        return '⛏️' // Will be replaced with icon
       case 'farmer':
-        return '🌾'
+        return '🌾' // Will be replaced with icon
       case 'fighter':
-        return '⚔️'
+        return '⚔️' // Will be replaced with icon
       default:
-        return '📦'
+        return '❓'
+    }
+  }
+
+  private getUnitIconPath(unitType: UnitType): string {
+    switch (unitType) {
+      case 'lumberjack':
+        return 'assets/images/unitPurchase/icons/lumberjack_icon.png'
+      case 'miner':
+        return 'assets/images/unitPurchase/icons/miner_icon.png'
+      case 'farmer':
+        return 'assets/images/unitPurchase/icons/farmer_icon.png'
+      case 'fighter':
+        return 'assets/images/unitPurchase/icons/fighter_icon.png'
+      default:
+        return ''
     }
   }
 
@@ -434,7 +449,12 @@ export class PurchaseMenu {
             position: { left: '50%', top: '50%' },
             margin: { left: '-400px', top: '-300px' }
           }}
-          uiBackground={{ color: Color4.create(0.1, 0.1, 0.1, 1.0) }}
+          uiBackground={{
+            textureMode: 'stretch',
+            texture: {
+              src: 'assets/images/unitPurchase/frames/purchase_menu_frame.png'
+            }
+          }}
         >
           {/* Header */}
           <UiEntity
@@ -493,10 +513,15 @@ export class PurchaseMenu {
               positionType: 'absolute',
               position: { left: '20px', top: '20px' }
             }}
-            uiBackground={{ color: Color4.create(0.3, 0.3, 0.3, 1.0) }}
+            uiBackground={{
+              textureMode: 'stretch',
+              texture: {
+                src: 'assets/images/unitPurchase/frames/Background_Square_skill.png'
+              }
+            }}
           >
             <Label
-              value={`💰 Gold: ${goldAmount}`}
+              value={`Gold: ${goldAmount}`}
               fontSize={18}
               color={Color4.Yellow()}
               textAlign="middle-center"
@@ -540,48 +565,70 @@ export class PurchaseMenu {
                     }
                   }}
                   uiBackground={{
-                    color: isSelected 
-                      ? Color4.create(0.3, 0.3, 0.3, 1.0)
-                      : Color4.create(0.2, 0.2, 0.2, 1.0)
+                    textureMode: 'stretch',
+                    texture: {
+                      src: isSelected 
+                        ? 'assets/images/unitPurchase/frames/unit_card_frame.png'
+                        : 'assets/images/unitPurchase/frames/unit_card_background.png'
+                    }
                   }}
                   onMouseDown={() => this.selectUnit(unitDef.type)}
                 >
-                  {/* Unit Name with Icon */}
-                  <Label
-                    value={`${this.getUnitIcon(unitDef.type)} ${unitDef.name}`}
-                    fontSize={20}
-                    color={Color4.White()}
-                    textAlign="middle-center"
+                  {/* Unit Icon */}
+                  <UiEntity
                     uiTransform={{
-                      width: '100%',
-                      height: '35px',
-                      margin: { top: '15px' }
+                      width: '60px',
+                      height: '60px',
+                      positionType: 'absolute',
+                      position: { left: '15px', top: '15px' }
+                    }}
+                    uiBackground={{
+                      textureMode: 'stretch',
+                      texture: {
+                        src: this.getUnitIconPath(unitDef.type)
+                      }
+                    }}
+                  />
+                  
+                  {/* Unit Name */}
+                  <Label
+                    value={unitDef.name}
+                    fontSize={18}
+                    color={Color4.White()}
+                    textAlign="middle-left"
+                    uiTransform={{
+                      width: '70%',
+                      height: '30px',
+                      positionType: 'absolute',
+                      position: { left: '85px', top: '25px' }
                     }}
                   />
 
                   {/* Unit Cost */}
                   <Label
                     value={`Cost: ${unitDef.cost} Gold`}
-                    fontSize={16}
+                    fontSize={14}
                     color={canPurchase ? Color4.create(0.2, 0.9, 0.2, 1.0) : Color4.create(0.9, 0.2, 0.2, 1.0)}
-                    textAlign="middle-center"
+                    textAlign="middle-left"
                     uiTransform={{
-                      width: '100%',
-                      height: '30px',
-                      margin: { top: '50px' }
+                      width: '70%',
+                      height: '25px',
+                      positionType: 'absolute',
+                      position: { left: '85px', top: '55px' }
                     }}
                   />
 
                   {/* Unit Description */}
                   <Label
                     value={unitDef.description}
-                    fontSize={13}
+                    fontSize={12}
                     color={Color4.White()}
-                    textAlign="middle-center"
+                    textAlign="middle-left"
                     uiTransform={{
-                      width: '90%',
-                      height: '60px',
-                      margin: { top: '60px', left: '5%' }
+                      width: '85%',
+                      height: '50px',
+                      positionType: 'absolute',
+                      position: { left: '15px', top: '90px' }
                     }}
                   />
 
@@ -589,8 +636,9 @@ export class PurchaseMenu {
                   <UiEntity
                     uiTransform={{
                       width: '85%',
-                      height: '40px',
-                      margin: { top: '130px', left: '7.5%' }
+                      height: '35px',
+                      positionType: 'absolute',
+                      position: { left: '15px', top: '145px' }
                     }}
                     uiBackground={{
                       color: canPurchase 
@@ -618,7 +666,7 @@ export class PurchaseMenu {
                   >
                     <Label
                       value={canPurchase ? "PURCHASE" : "INSUFFICIENT GOLD"}
-                      fontSize={14}
+                      fontSize={13}
                       color={Color4.White()}
                       textAlign="middle-center"
                       uiTransform={{
