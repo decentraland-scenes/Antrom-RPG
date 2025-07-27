@@ -180,7 +180,8 @@ export class PurchaseMenu {
           AudioSource.create(soundEntity, {
             audioClipUrl: 'assets/sounds/invalidplacement.mp3',
             loop: false,
-            playing: true
+            playing: true,
+            volume: 200
           })
           
           // Remove sound entity after playing
@@ -209,7 +210,8 @@ export class PurchaseMenu {
         AudioSource.create(soundEntity, {
           audioClipUrl: 'assets/sounds/invalidplacement.mp3',
           loop: false,
-          playing: true
+          playing: true,
+          volume: 0.8
         })
         
         // Remove sound entity after playing
@@ -258,7 +260,8 @@ export class PurchaseMenu {
           AudioSource.create(soundEntity, {
             audioClipUrl: 'assets/sounds/invalidplacement.mp3',
             loop: false,
-            playing: true
+            playing: true,
+            volume: 0.8
           })
           
           // Remove sound entity after playing
@@ -304,9 +307,10 @@ export class PurchaseMenu {
     // Play lumberjack deployment sound
     const soundEntity = engine.addEntity()
     AudioSource.create(soundEntity, {
-      audioClipUrl: 'assets/sounds/letsgetchoppin.mp3',
+      audioClipUrl: this.getRandomLumberjackSound(),
       loop: false,
-      playing: true
+      playing: true,
+      volume: 1.0
     })
     
     // Remove sound entity after playing
@@ -371,9 +375,10 @@ export class PurchaseMenu {
     // Play fighter deployment sound
     const soundEntity = engine.addEntity()
     AudioSource.create(soundEntity, {
-      audioClipUrl: 'assets/sounds/letsgetchoppin.mp3',
+      audioClipUrl: this.getRandomKnightSound(),
       loop: false,
-      playing: true
+      playing: true,
+      volume: 1.0
     })
     
     // Remove sound entity after playing
@@ -417,6 +422,26 @@ export class PurchaseMenu {
       default:
         return ''
     }
+  }
+
+  private getRandomKnightSound(): string {
+    const knightSounds = [
+      'assets/sounds/knight_unit_sounds/knight_unit1.mp3',
+      'assets/sounds/knight_unit_sounds/knight_unit2.mp3',
+      'assets/sounds/knight_unit_sounds/knight_unit3.mp3'
+    ]
+    const randomIndex = Math.floor(Math.random() * knightSounds.length)
+    return knightSounds[randomIndex]
+  }
+
+  private getRandomLumberjackSound(): string {
+    const lumberjackSounds = [
+      'assets/sounds/lumberjack_unit_sounds/lj_unit1.mp3',
+      'assets/sounds/lumberjack_unit_sounds/lj_unit2.mp3',
+      'assets/sounds/lumberjack_unit_sounds/lj_unit3.mp3'
+    ]
+    const randomIndex = Math.floor(Math.random() * lumberjackSounds.length)
+    return lumberjackSounds[randomIndex]
   }
 
   render(): ReactEcs.JSX.Element | null {
