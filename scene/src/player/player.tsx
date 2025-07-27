@@ -27,6 +27,7 @@ import { ScreenFlashManager } from '../ui/screenFlash'
 import { Lumberjack } from '../units/Lumberjack'
 import { Fighter } from '../units/Fighter'
 import { Miner } from '../units/Miner'
+import { Farmer } from '../units/Farmer'
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,7 +138,7 @@ export class Player extends Character {
   public occupiedRocks: Set<string> = new Set() // Track which rocks have miners
 
   // Farmer management
-  public farmers: any[] = [] // Will be replaced with Farmer class when created
+  public farmers: Farmer[] = []
   public farmerCost: number = 60
   public farmerHarvestAmount: number = 1
   public farmerHarvestInterval: number = 5000 // 5 seconds in milliseconds
@@ -528,80 +529,20 @@ export class Player extends Character {
   addFarmer(position: Vector3): void {
     console.log('Player.addFarmer called with position:', position)
     
-    // Create farmer entity with model
-    const farmerEntity = engine.addEntity()
-    
-    // Add Transform component
-    Transform.create(farmerEntity, {
-      position: position,
-      rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),
-      scale: Vector3.create(1, 1, 1)
-    })
-    
-    // Add GltfContainer component with farmer model
-    GltfContainer.create(farmerEntity, {
-      src: 'assets/models/FarmerMale1.glb'
-    })
-    
-    // Add AudioSource component for farming sounds
-    AudioSource.create(farmerEntity, {
-      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder - no specific farming sound yet
-      loop: false,
-      playing: false,
-      volume: 0.3
-    })
+    // Create new Farmer instance
+    const farmer = new Farmer(position)
+    farmer.place(position)
     
     // Add to farmers array
-    const farmerId = `farmer_${Date.now()}`
-    this.farmers.push({ 
-      id: farmerId, 
-      position, 
-      entity: farmerEntity,
-      lastHarvestTime: Date.now()
-    })
+    this.farmers.push(farmer)
     
-    console.log('Farmer entity created:', farmerEntity)
-    console.log('Farmer added to player.farmers array, total count:', this.farmers.length)
+    console.log('Farmer created and added to player.farmers array, total count:', this.farmers.length)
   }
 
   updateFarmers(): void {
-    const currentTime = Date.now()
-    
+    // Update each farmer (they handle their own harvesting logic)
     for (const farmer of this.farmers) {
-      if (!farmer.lastHarvestTime) {
-        farmer.lastHarvestTime = currentTime
-        continue
-      }
-      
-      // Check if enough time has passed since last harvest
-      if (currentTime - farmer.lastHarvestTime >= this.farmerHarvestInterval) {
-        // Add chicken to inventory
-        this.inventory.incrementItem(ITEM_TYPES.CHICKEN, this.farmerHarvestAmount)
-        
-        // Add meat profession XP (butcher/farming)
-        this.levels.addXp(LEVEL_TYPES.MEAT, 1)
-        
-        // Update last harvest time
-        farmer.lastHarvestTime = currentTime
-        
-        // Play farming sound from the farmer's position only if player is nearby
-        const playerPos = Transform.get(engine.PlayerEntity).position
-        const distance = Vector3.distance(playerPos, farmer.position)
-        const soundRadius = 10 // Only hear sound within 10 units
-        
-        if (distance <= soundRadius) {
-          AudioSource.playSound(farmer.entity, 'assets/sounds/buttonclick.mp3')
-        }
-        
-        // Show harvest announcement
-        this.gameController.uiController.displayAnnouncement(
-          `+${this.farmerHarvestAmount} Chicken +1 Meat XP`,
-          Color4.Green(),
-          2000
-        )
-        
-        console.log(`Farmer harvested ${this.farmerHarvestAmount} chicken and gained 1 meat XP`)
-      }
+      farmer.update()
     }
   }
 
