@@ -522,8 +522,35 @@ export class Player extends Character {
   }
 
   updateMiners(): void {
-    // TODO: Implement miner harvesting logic when Miner class is created
-    // For now, just a placeholder
+    const currentTime = Date.now()
+    
+    for (const miner of this.miners) {
+      if (!miner.lastHarvestTime) {
+        miner.lastHarvestTime = currentTime
+        continue
+      }
+      
+      // Check if enough time has passed since last harvest
+      if (currentTime - miner.lastHarvestTime >= this.minerHarvestInterval) {
+        // Add rock to inventory
+        this.inventory.incrementItem(ITEM_TYPES.ROCK, this.minerHarvestAmount)
+        
+        // Add mining profession XP
+        this.levels.addXp(LEVEL_TYPES.ROCK, 1)
+        
+        // Update last harvest time
+        miner.lastHarvestTime = currentTime
+        
+        // Show harvest announcement
+        this.gameController.uiController.displayAnnouncement(
+          `+${this.minerHarvestAmount} Rock +1 Mining XP`,
+          Color4.Yellow(),
+          2000
+        )
+        
+        console.log(`Miner harvested ${this.minerHarvestAmount} rock and gained 1 mining XP`)
+      }
+    }
   }
 
   // Farmer methods
@@ -563,7 +590,8 @@ export class Player extends Character {
     this.farmers.push({ 
       id: farmerId, 
       position, 
-      entity: farmerEntity 
+      entity: farmerEntity,
+      lastHarvestTime: Date.now()
     })
     
     console.log('Farmer entity created:', farmerEntity)
@@ -571,8 +599,35 @@ export class Player extends Character {
   }
 
   updateFarmers(): void {
-    // TODO: Implement farmer harvesting logic when Farmer class is created
-    // For now, just a placeholder
+    const currentTime = Date.now()
+    
+    for (const farmer of this.farmers) {
+      if (!farmer.lastHarvestTime) {
+        farmer.lastHarvestTime = currentTime
+        continue
+      }
+      
+      // Check if enough time has passed since last harvest
+      if (currentTime - farmer.lastHarvestTime >= this.farmerHarvestInterval) {
+        // Add chicken to inventory
+        this.inventory.incrementItem(ITEM_TYPES.CHICKEN, this.farmerHarvestAmount)
+        
+        // Add meat profession XP (butcher/farming)
+        this.levels.addXp(LEVEL_TYPES.MEAT, 1)
+        
+        // Update last harvest time
+        farmer.lastHarvestTime = currentTime
+        
+        // Show harvest announcement
+        this.gameController.uiController.displayAnnouncement(
+          `+${this.farmerHarvestAmount} Chicken +1 Meat XP`,
+          Color4.Green(),
+          2000
+        )
+        
+        console.log(`Farmer harvested ${this.farmerHarvestAmount} chicken and gained 1 meat XP`)
+      }
+    }
   }
 
   reduceHealth(attack: number): void {

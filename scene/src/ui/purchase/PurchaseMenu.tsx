@@ -794,10 +794,10 @@ export class PurchaseMenu {
     player.addMiner(position, rockPosition)
     this.hide()
     
-    // Play miner deployment sound (placeholder for now)
+    // Play miner deployment sound
     const soundEntity = engine.addEntity()
     AudioSource.create(soundEntity, {
-      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder sound
+      audioClipUrl: this.getRandomMinerSound(),
       loop: false,
       playing: true,
       volume: 1.0
@@ -891,10 +891,10 @@ export class PurchaseMenu {
     player.addFarmer(position)
     this.hide()
     
-    // Play farmer deployment sound (placeholder for now)
+    // Play farmer deployment sound
     const soundEntity = engine.addEntity()
     AudioSource.create(soundEntity, {
-      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder sound
+      audioClipUrl: this.getRandomFarmerSound(),
       loop: false,
       playing: true,
       volume: 1.0
@@ -961,6 +961,26 @@ export class PurchaseMenu {
     ]
     const randomIndex = Math.floor(Math.random() * lumberjackSounds.length)
     return lumberjackSounds[randomIndex]
+  }
+
+  private getRandomMinerSound(): string {
+    const minerSounds = [
+      'assets/sounds/miner_unit_sounds/miner_unit1.mp3',
+      'assets/sounds/miner_unit_sounds/miner_unit2.mp3',
+      'assets/sounds/miner_unit_sounds/miner_unit3.mp3'
+    ]
+    const randomIndex = Math.floor(Math.random() * minerSounds.length)
+    return minerSounds[randomIndex]
+  }
+
+  private getRandomFarmerSound(): string {
+    const farmerSounds = [
+      'assets/sounds/farmer_unit_sounds/farmer_unit1.mp3',
+      'assets/sounds/farmer_unit_sounds/farmer_unit2.mp3',
+      'assets/sounds/farmer_unit_sounds/farmer_unit3.mp3'
+    ]
+    const randomIndex = Math.floor(Math.random() * farmerSounds.length)
+    return farmerSounds[randomIndex]
   }
 
   render(): ReactEcs.JSX.Element | null {
