@@ -155,6 +155,35 @@ function findNearestAvailableTree(playerPosition: Vector3): Vector3 | null {
   return nearestTree
 }
 
+function findNearestEnemy(playerPosition: Vector3): Vector3 | null {
+  const player = Player.getInstanceOrNull()
+  if (!player) return null
+
+  // Get current realm and its enemies
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm) return null
+
+  let nearestEnemy: Vector3 | null = null
+  let nearestDistance = Infinity
+
+  if (currentRealm.getId() === 'antrom') {
+    // Check executioners in Antrom realm
+    const executioners = (currentRealm as any).executioners || []
+    for (const executioner of executioners) {
+      if (executioner && !executioner.isDead && executioner.health > 0) {
+        const enemyPos = Transform.get(executioner.entity).position
+        const distance = Vector3.distance(playerPosition, enemyPos)
+        if (distance < nearestDistance && distance <= 20) { // Within 20 units
+          nearestDistance = distance
+          nearestEnemy = enemyPos
+        }
+      }
+    }
+  }
+
+  return nearestEnemy
+}
+
 export class PurchaseMenu {
   public isVisible: boolean = false
   public selectedUnit: UnitType | null = null
@@ -174,6 +203,17 @@ export class PurchaseMenu {
   hide(): void {
     this.isVisible = false
     this.selectedUnit = null
+    this.isPlacing = false
+    this.placingUnitType = null
+    
+    // Clean up placement system if it exists
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+  }
+
+  private clearPlacementState(): void {
     this.isPlacing = false
     this.placingUnitType = null
     
@@ -250,6 +290,33 @@ export class PurchaseMenu {
         player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         this.startLumberjackPlacement()
       } else if (unitType === 'fighter') {
+        // Check if we can actually place a fighter before deducting gold
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        const nearestEnemy = findNearestEnemy(playerPos)
+        
+        if (!nearestEnemy) {
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          player.gameController.uiController.displayAnnouncement(
+            'No enemies nearby! Place fighter near enemies.',
+            Color4.Red(),
+            3000
+          )
+          return
+        }
+        
         // Only deduct gold if we can actually place the unit
         player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         this.startFighterPlacement()
@@ -395,6 +462,35 @@ export class PurchaseMenu {
         // Get player position
         const playerPos = Transform.get(engine.PlayerEntity).position
         
+        // Check if there are enemies nearby
+        const nearestEnemy = findNearestEnemy(playerPos)
+        if (!nearestEnemy) {
+          // No enemies nearby, show invalid placement message
+          player.gameController.uiController.displayAnnouncement(
+            'No enemies nearby! Place fighter near enemies.',
+            Color4.Red(),
+            3000
+          )
+          
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          // Clear placement state but keep menu open
+          this.clearPlacementState()
+          return
+        }
+        
         // Place fighter next to the player
         const angle = Math.random() * Math.PI * 2
         const distance = 2 + Math.random() * 2
@@ -406,7 +502,7 @@ export class PurchaseMenu {
           playerPos.z + offsetZ
         )
         
-        console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos)
+        console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos, 'near enemy at:', nearestEnemy)
         this.placeFighter(placementPos)
       }
     }
