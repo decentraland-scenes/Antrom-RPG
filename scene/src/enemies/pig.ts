@@ -80,11 +80,39 @@ export default class Pig extends MonsterMeat {
   }
 
   loadTransformation(): void {
-    const initialPosition = Vector3.create(
-      getRandomIntRange(-24, -4),
-      0,
-      getRandomIntRange(10, -12)
-    )
+    // Randomly choose between three spawn areas
+    const spawnArea =
+      Math.random() < 0.33 ? 'forest' : Math.random() < 0.5 ? 'new' : 'forest2'
+
+    let initialPosition: Vector3
+
+    if (spawnArea === 'forest') {
+      // Forest area: around (7.26, 2.76, 67.18) with 50 radius
+      initialPosition = Vector3.create(
+        getRandomIntRange(-5, 20), // X: -5 to 20
+        2.76, // Y: Forest height
+        getRandomIntRange(55, 80) // Z: 55 to 80
+      )
+    } else if (spawnArea === 'new') {
+      // New area: around (-36.86, 0.91, 25.42) and (-47.29, 0.91, 12.26) with 30 radius
+      const centerX =
+        (getRandomIntRange(-47, -37) + getRandomIntRange(-47, -37)) / 2 // Average of the two X positions
+      const centerZ =
+        (getRandomIntRange(12, 26) + getRandomIntRange(12, 26)) / 2 // Average of the two Z positions
+
+      initialPosition = Vector3.create(
+        getRandomIntRange(centerX - 15, centerX + 15), // X: ±15 from center (30 radius)
+        -0.09, // Y: Lowered from 0.91 to ground level
+        getRandomIntRange(centerZ - 15, centerZ + 15) // Z: ±15 from center (30 radius)
+      )
+    } else {
+      // Forest2 area: around (-29.49, 1.64, 75.31) with 30 radius
+      initialPosition = Vector3.create(
+        getRandomIntRange(-44, -15), // X: -44 to -15 (30 radius)
+        1.64, // Y: Forest2 height
+        getRandomIntRange(60, 90) // Z: 60 to 90 (30 radius)
+      )
+    }
     const initialRotation = Quaternion.fromEulerDegrees(0, 80, 0)
     Transform.createOrReplace(this.entity, {
       position: initialPosition,
@@ -92,7 +120,20 @@ export default class Pig extends MonsterMeat {
     })
   }
 
-  create(): void {}
+  create(): void {
+    // Respawn the pig at a new random position
+    console.log('Pig respawning at new position')
+    this.loadTransformation() // This will set a new random position
+    this.health = DEFAULT_HP // Reset health
+    this.isDead = false
+    this.isDeadAnimation = false
+    console.log(
+      'Pig respawned with health:',
+      this.health,
+      'isDead:',
+      this.isDead
+    )
+  }
 
   removeEntity(): void {
     super.cleanup()

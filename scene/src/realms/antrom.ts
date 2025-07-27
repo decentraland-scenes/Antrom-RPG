@@ -418,10 +418,10 @@ export class Antrom implements Realm {
       this.executioners.push(new Executioner())
     }
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 8; i++) {
       this.pigs.push(new Pig(this.gameController))
     }
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 16; i++) {
       this.chickens.push(new Chicken())
     }
     this.AntromNPCs()

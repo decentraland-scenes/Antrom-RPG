@@ -225,7 +225,8 @@ export class MonsterMeat extends GenericMonster {
     if (this.dieClip) {
       Animator.playSingleAnimation(this.entity, this.dieClip)
     }
-    this.create()
+    // Don't call create() immediately - let the animation play first
+    // The create() will be called later in killChar() after a delay
   }
 
   callDyingAnimation(): void {
@@ -233,6 +234,7 @@ export class MonsterMeat extends GenericMonster {
   }
 
   killChar(): void {
+    console.log('Animal killChar() called')
     // TODO (first check if used )
 
     // lootEventManager.fireEvent(
@@ -243,6 +245,8 @@ export class MonsterMeat extends GenericMonster {
     //     )
     // )
     utils.timers.setTimeout(() => {
+      console.log('Animal calling create() after 5 seconds')
+      this.create() // This should respawn the animal
       // TODO entity removing triggers error
       super.cleanup()
       entityController.removeEntity(this.entity)
@@ -254,10 +258,15 @@ export class MonsterMeat extends GenericMonster {
   }
 
   isDeadOnce(): void {
-    if (!this.isDead) this.killChar()
+    console.log('Animal isDeadOnce() called, isDead:', this.isDead)
+    if (!this.isDead) {
+      console.log('Animal calling killChar()')
+      this.killChar()
+    }
   }
 
   onDead(): void {
+    console.log('Animal onDead() called')
     this.onDropXp()
     this.callDyingAnimation()
     engine.removeSystem(this.attackSystemRanged.attackSystem)
@@ -268,6 +277,7 @@ export class MonsterMeat extends GenericMonster {
       entityController.removeEntity(this.engageAttackTrigger)
     }
     utils.timers.setTimeout(() => {
+      console.log('Animal calling isDeadOnce() after 1 second')
       this.isDeadOnce()
     }, 1000)
   }

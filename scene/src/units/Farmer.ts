@@ -39,7 +39,7 @@ export class Farmer {
   public targetAnimal: Vector3 | null = null
   public isHunting: boolean = false
   public spawnPosition: Vector3 // Original spawn position for roaming
-  public roamRadius: number = 30 // How far they roam from spawn point
+  public roamRadius: number = 50 // How far they roam from spawn point (increased for larger spawn area)
   public isRoaming: boolean = false
   public roamSpeed: number = 1.0 // Slower speed when roaming
   public lastRoamTime: number = 0
@@ -412,17 +412,44 @@ export class Farmer {
       // If no live animals found, use spawn area positions as fallback
       if (!nearestAnimal) {
         const animalPositions = [
-          // Chicken spawn area: x: -24 to -4, z: 10 to -12
-          Vector3.create(-20, 0, 8),
-          Vector3.create(-18, 0, 6),
-          Vector3.create(-16, 0, 4),
-          Vector3.create(-14, 0, 2),
-          Vector3.create(-12, 0, 0),
-          Vector3.create(-10, 0, -2),
-          Vector3.create(-8, 0, -4),
-          Vector3.create(-6, 0, -6),
-          Vector3.create(-4, 0, -8),
-          Vector3.create(-2, 0, -10)
+          // Forest spawn area: x: -5 to 20, y: 2.76, z: 55 to 80
+          Vector3.create(7, 2.76, 67),
+          Vector3.create(5, 2.76, 65),
+          Vector3.create(9, 2.76, 69),
+          Vector3.create(3, 2.76, 63),
+          Vector3.create(11, 2.76, 71),
+          Vector3.create(4, 2.76, 64),
+          Vector3.create(8, 2.76, 68),
+          Vector3.create(6, 2.76, 66),
+          Vector3.create(10, 2.76, 70),
+          Vector3.create(2, 2.76, 62),
+          Vector3.create(-2, 2.76, 58),
+          Vector3.create(15, 2.76, 75),
+          Vector3.create(18, 2.76, 78),
+          Vector3.create(-3, 2.76, 57),
+          Vector3.create(12, 2.76, 72),
+          // New spawn area: around (-36.86, -0.09, 25.42) and (-47.29, -0.09, 12.26) with 30 radius
+          Vector3.create(-42, -0.09, 19),
+          Vector3.create(-40, -0.09, 22),
+          Vector3.create(-45, -0.09, 15),
+          Vector3.create(-38, -0.09, 25),
+          Vector3.create(-44, -0.09, 18),
+          Vector3.create(-41, -0.09, 20),
+          Vector3.create(-43, -0.09, 16),
+          Vector3.create(-39, -0.09, 23),
+          Vector3.create(-46, -0.09, 14),
+          Vector3.create(-37, -0.09, 26),
+          // Forest2 spawn area: around (-29.49, 1.64, 75.31) with 30 radius
+          Vector3.create(-35, 1.64, 70),
+          Vector3.create(-30, 1.64, 75),
+          Vector3.create(-25, 1.64, 80),
+          Vector3.create(-40, 1.64, 65),
+          Vector3.create(-20, 1.64, 85),
+          Vector3.create(-38, 1.64, 68),
+          Vector3.create(-32, 1.64, 72),
+          Vector3.create(-28, 1.64, 78),
+          Vector3.create(-42, 1.64, 62),
+          Vector3.create(-22, 1.64, 82)
         ]
 
         for (const animalPos of animalPositions) {
