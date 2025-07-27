@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
-import { engine, inputSystem, PointerEventType, type Entity } from '@dcl/sdk/ecs'
-import { Color4, Vector3 } from '@dcl/sdk/math'
+import { engine, inputSystem, PointerEventType, type Entity, Transform, GltfContainer } from '@dcl/sdk/ecs'
+import { Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
 import * as utils from '@dcl-sdk/utils'
@@ -126,6 +126,21 @@ export class Player extends Character {
   public fighterAttackDamage: number = 15
   public fighterAttackInterval: number = 2000 // 2 seconds between attacks
   public fighterAttackRange: number = 10
+
+  // Miner management
+  public miners: any[] = [] // Will be replaced with Miner class when created
+  public minerCost: number = 75
+  public minerHarvestAmount: number = 2
+  public minerHarvestInterval: number = 4000 // 4 seconds in milliseconds
+  public minerRange: number = 5
+  public occupiedRocks: Set<string> = new Set() // Track which rocks have miners
+
+  // Farmer management
+  public farmers: any[] = [] // Will be replaced with Farmer class when created
+  public farmerCost: number = 60
+  public farmerHarvestAmount: number = 1
+  public farmerHarvestInterval: number = 5000 // 5 seconds in milliseconds
+  public farmerRange: number = 8
 
   gameController: GameController
 
@@ -456,6 +471,110 @@ export class Player extends Character {
     }
   }
 
+  // Miner methods
+  canPurchaseMiner(): boolean {
+    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.minerCost
+  }
+
+  purchaseMiner(): boolean {
+    if (!this.canPurchaseMiner()) {
+      return false
+    }
+    
+    this.inventory.reduceItem(ITEM_TYPES.COIN, this.minerCost)
+    return true
+  }
+
+  addMiner(position: Vector3, rockPosition: Vector3): void {
+    console.log('Player.addMiner called with position:', position, 'rockPosition:', rockPosition)
+    
+    // Create miner entity with model
+    const minerEntity = engine.addEntity()
+    
+    // Add Transform component
+    Transform.create(minerEntity, {
+      position: position,
+      rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),
+      scale: Vector3.create(1, 1, 1)
+    })
+    
+    // Add GltfContainer component with miner model
+    GltfContainer.create(minerEntity, {
+      src: 'assets/models/miner.glb'
+    })
+    
+    // Add to miners array and track occupied rock
+    const minerId = `miner_${Date.now()}`
+    this.miners.push({ 
+      id: minerId, 
+      position, 
+      rockPosition,
+      entity: minerEntity 
+    })
+    this.occupiedRocks.add(`${rockPosition.x},${rockPosition.y},${rockPosition.z}`)
+    
+    console.log('Miner entity created:', minerEntity)
+    console.log('Miner added to player.miners array, total count:', this.miners.length)
+  }
+
+  isRockOccupied(rockPosition: Vector3): boolean {
+    return this.occupiedRocks.has(`${rockPosition.x},${rockPosition.y},${rockPosition.z}`)
+  }
+
+  updateMiners(): void {
+    // TODO: Implement miner harvesting logic when Miner class is created
+    // For now, just a placeholder
+  }
+
+  // Farmer methods
+  canPurchaseFarmer(): boolean {
+    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.farmerCost
+  }
+
+  purchaseFarmer(): boolean {
+    if (!this.canPurchaseFarmer()) {
+      return false
+    }
+    
+    this.inventory.reduceItem(ITEM_TYPES.COIN, this.farmerCost)
+    return true
+  }
+
+  addFarmer(position: Vector3): void {
+    console.log('Player.addFarmer called with position:', position)
+    
+    // Create farmer entity with model
+    const farmerEntity = engine.addEntity()
+    
+    // Add Transform component
+    Transform.create(farmerEntity, {
+      position: position,
+      rotation: Quaternion.fromEulerDegrees(0, Math.random() * 360, 0),
+      scale: Vector3.create(1, 1, 1)
+    })
+    
+    // Add GltfContainer component with farmer model
+    GltfContainer.create(farmerEntity, {
+      src: 'assets/models/FarmerMale1.glb'
+    })
+    
+    // Add to farmers array
+    const farmerId = `farmer_${Date.now()}`
+    this.farmers.push({ 
+      id: farmerId, 
+      position, 
+      entity: farmerEntity 
+    })
+    
+    console.log('Farmer entity created:', farmerEntity)
+    console.log('Farmer added to player.farmers array, total count:', this.farmers.length)
+  }
+
+  updateFarmers(): void {
+    // TODO: Implement farmer harvesting logic when Farmer class is created
+    // For now, just a placeholder
+  }
+
   reduceHealth(attack: number): void {
     console.log('Player.reduceHealth called with attack:', attack)
     super.reduceHealth(attack)
@@ -666,6 +785,12 @@ export class Player extends Character {
     
     // Update fighters
     this.updateFighters()
+    
+    // Update miners
+    this.updateMiners()
+    
+    // Update farmers
+    this.updateFarmers()
   }
 
   checkHealth(): boolean {

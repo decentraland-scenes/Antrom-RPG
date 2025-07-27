@@ -43,7 +43,7 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     harvestInterval: 4000,
     range: 4,
     description: 'Mines stone from rocks automatically. Coming soon!',
-    modelPath: 'assets/models/Miner.glb'
+    modelPath: 'assets/models/miner.glb'
   },
   farmer: {
     type: 'farmer',
@@ -54,7 +54,7 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     harvestInterval: 5000,
     range: 6,
     description: 'Grows food from crops automatically. Coming soon!',
-    modelPath: 'assets/models/Farmer.glb'
+    modelPath: 'assets/models/FarmerMale1.glb'
   },
   fighter: {
     type: 'fighter',
@@ -182,6 +182,123 @@ function findNearestEnemy(playerPosition: Vector3): Vector3 | null {
   }
 
   return nearestEnemy
+}
+
+function findNearestAvailableRock(playerPosition: Vector3): Vector3 | null {
+  const player = Player.getInstanceOrNull()
+  if (!player) return null
+
+  // Get current realm and its rocks
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm) return null
+
+  let nearestRock: Vector3 | null = null
+  let nearestDistance = Infinity
+
+  if (currentRealm.getId() === 'antrom') {
+    console.log('Checking for rocks near player position:', playerPosition)
+    
+    // Use actual rock positions from Antrom realm
+    const rockPositions = [
+      // Negative Z area rocks
+      Vector3.create(58.79, 1.26, -50.96),
+      Vector3.create(50.85, 1.26, -45.08),
+      Vector3.create(49.09, 1.26, -54.18),
+      Vector3.create(52.56, 1.26, -23.76),
+      Vector3.create(83.12, 1.26, -28.51),
+      Vector3.create(85.94, 1.26, -15.38),
+      Vector3.create(74.72, 1.26, -12.42),
+      Vector3.create(55.71, 1.26, -38.81),
+      Vector3.create(81.29, 1.26, -54.54),
+      Vector3.create(84.09, 1.26, -39.22),
+      Vector3.create(90.35, 1.26, -49.22),
+      Vector3.create(70.79, 1.26, -61.73),
+      Vector3.create(37.59, 4.64, -32.27),
+      Vector3.create(28.28, 4.34, -28.64),
+      Vector3.create(28.65, 4.49, -19.29),
+      
+      // Positive Z area rocks
+      Vector3.create(44.78, 7.41, 18.91),
+      Vector3.create(46.4, 3.76, 52.16),
+      Vector3.create(51.94, 4.29, 56.65),
+      Vector3.create(50.93, 4.48, 58.95),
+      Vector3.create(46.97, 4.25, 57.51),
+      Vector3.create(65.85, 4.08, 62.56),
+      
+      // Negative X area rocks
+      Vector3.create(-42.15, 0.91, 37.1),
+      Vector3.create(-34.41, 1.72, 41.06)
+    ]
+    
+    for (const rockPos of rockPositions) {
+      // Check if rock is already occupied
+      if (player.isRockOccupied(rockPos)) {
+        console.log('Rock at', rockPos, 'is already occupied')
+        continue
+      }
+      
+      const distance = Vector3.distance(playerPosition, rockPos)
+      console.log('Rock at', rockPos, 'distance:', distance)
+      
+      if (distance < nearestDistance && distance <= 30) { // Increased to 30 units for testing
+        nearestDistance = distance
+        nearestRock = rockPos
+        console.log('Found closer rock at', rockPos, 'distance:', distance)
+      }
+    }
+    
+    if (nearestRock) {
+      console.log('Selected rock for miner placement:', nearestRock, 'distance:', nearestDistance)
+    } else {
+      console.log('No suitable rock found within 30 units')
+    }
+  }
+
+  return nearestRock
+}
+
+function findNearestAnimal(playerPosition: Vector3): Vector3 | null {
+  const player = Player.getInstanceOrNull()
+  if (!player) return null
+
+  // Get current realm and its animals
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm) return null
+
+  let nearestAnimal: Vector3 | null = null
+  let nearestDistance = Infinity
+
+  if (currentRealm.getId() === 'antrom') {
+    // Check pigs and chickens in Antrom realm
+    const pigs = (currentRealm as any).pigs || []
+    const chickens = (currentRealm as any).chickens || []
+    
+    // Check pigs
+    for (const pig of pigs) {
+      if (pig && !pig.isDead && pig.health > 0) {
+        const animalPos = Transform.get(pig.entity).position
+        const distance = Vector3.distance(playerPosition, animalPos)
+        if (distance < nearestDistance && distance <= 20) { // Within 20 units
+          nearestDistance = distance
+          nearestAnimal = animalPos
+        }
+      }
+    }
+    
+    // Check chickens
+    for (const chicken of chickens) {
+      if (chicken && !chicken.isDead && chicken.health > 0) {
+        const animalPos = Transform.get(chicken.entity).position
+        const distance = Vector3.distance(playerPosition, animalPos)
+        if (distance < nearestDistance && distance <= 20) { // Within 20 units
+          nearestDistance = distance
+          nearestAnimal = animalPos
+        }
+      }
+    }
+  }
+
+  return nearestAnimal
 }
 
 export class PurchaseMenu {
@@ -320,6 +437,68 @@ export class PurchaseMenu {
         // Only deduct gold if we can actually place the unit
         player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         this.startFighterPlacement()
+      } else if (unitType === 'miner') {
+        // Check if we can actually place a miner before deducting gold
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        const nearestRock = findNearestAvailableRock(playerPos)
+        
+        if (!nearestRock) {
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          player.gameController.uiController.displayAnnouncement(
+            'Must be near rocks to place miner!',
+            Color4.Red(),
+            3000
+          )
+          return
+        }
+        
+        // Only deduct gold if we can actually place the unit
+        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        this.startMinerPlacement()
+      } else if (unitType === 'farmer') {
+        // Check if we can actually place a farmer before deducting gold
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        const nearestAnimal = findNearestAnimal(playerPos)
+        
+        if (!nearestAnimal) {
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          player.gameController.uiController.displayAnnouncement(
+            'Must be near animals to place farmer!',
+            Color4.Red(),
+            3000
+          )
+          return
+        }
+        
+        // Only deduct gold if we can actually place the unit
+        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        this.startFarmerPlacement()
       } else {
         // Play invalid placement sound for unavailable units
         const soundEntity = engine.addEntity()
@@ -534,6 +713,201 @@ export class PurchaseMenu {
     // Show success message
     player.gameController.uiController.displayAnnouncement(
       'Fighter deployed!',
+      Color4.Green(),
+      2000
+    )
+  }
+
+  private startMinerPlacement(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    // Clean up any existing placement system
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+
+    this.isPlacing = true
+    this.placingUnitType = 'miner'
+    this.isVisible = false
+    
+    // Create placement system for miner
+    this.placementSystem = () => {
+      if (this.isPlacing && this.placingUnitType === 'miner' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        // Get player position
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        
+        // Check if there's an available rock nearby
+        const nearestRock = findNearestAvailableRock(playerPos)
+        
+        if (!nearestRock) {
+          console.log('No available rock found near player position:', playerPos)
+          
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          player.gameController.uiController.displayAnnouncement(
+            'Must be near rocks to place miner!',
+            Color4.Red(),
+            3000
+          )
+          // Clear placement state but keep menu open
+          this.clearPlacementState()
+          return
+        }
+        
+        // Place miner next to the player
+        const angle = Math.random() * Math.PI * 2
+        const distance = 2 + Math.random() * 2
+        const offsetX = Math.cos(angle) * distance
+        const offsetZ = Math.sin(angle) * distance
+        const placementPos = Vector3.create(
+          playerPos.x + offsetX,
+          playerPos.y - 0.5,
+          playerPos.z + offsetZ
+        )
+        
+        console.log('Placing miner at:', placementPos, 'next to player at:', playerPos, 'near rock at:', nearestRock)
+        this.placeMiner(placementPos, nearestRock)
+      }
+    }
+    
+    engine.addSystem(this.placementSystem)
+  }
+
+  private placeMiner(position: Vector3, rockPosition: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    player.addMiner(position, rockPosition)
+    this.hide()
+    
+    // Play miner deployment sound (placeholder for now)
+    const soundEntity = engine.addEntity()
+    AudioSource.create(soundEntity, {
+      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder sound
+      loop: false,
+      playing: true,
+      volume: 1.0
+    })
+    
+    // Remove sound entity after playing
+    utils.timers.setTimeout(() => {
+      engine.removeEntity(soundEntity)
+    }, 3000)
+    
+    // Show success message
+    player.gameController.uiController.displayAnnouncement(
+      'Miner deployed!',
+      Color4.Green(),
+      2000
+    )
+  }
+
+  private startFarmerPlacement(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    // Clean up any existing placement system
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+
+    this.isPlacing = true
+    this.placingUnitType = 'farmer'
+    this.isVisible = false
+    
+    // Create placement system for farmer
+    this.placementSystem = () => {
+      if (this.isPlacing && this.placingUnitType === 'farmer' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        // Get player position
+        const playerPos = Transform.get(engine.PlayerEntity).position
+        
+        // Check if there are animals nearby
+        const nearestAnimal = findNearestAnimal(playerPos)
+        if (!nearestAnimal) {
+          // No animals nearby, show invalid placement message
+          player.gameController.uiController.displayAnnouncement(
+            'No animals nearby! Place farmer near animals.',
+            Color4.Red(),
+            3000
+          )
+          
+          // Play invalid placement sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 1000)
+          
+          // Clear placement state but keep menu open
+          this.clearPlacementState()
+          return
+        }
+        
+        // Place farmer next to the player
+        const angle = Math.random() * Math.PI * 2
+        const distance = 2 + Math.random() * 2
+        const offsetX = Math.cos(angle) * distance
+        const offsetZ = Math.sin(angle) * distance
+        const placementPos = Vector3.create(
+          playerPos.x + offsetX,
+          playerPos.y - 0.5,
+          playerPos.z + offsetZ
+        )
+        
+        console.log('Placing farmer at:', placementPos, 'next to player at:', playerPos, 'near animal at:', nearestAnimal)
+        this.placeFarmer(placementPos)
+      }
+    }
+    
+    engine.addSystem(this.placementSystem)
+  }
+
+  private placeFarmer(position: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    player.addFarmer(position)
+    this.hide()
+    
+    // Play farmer deployment sound (placeholder for now)
+    const soundEntity = engine.addEntity()
+    AudioSource.create(soundEntity, {
+      audioClipUrl: 'assets/sounds/buttonclick.mp3', // Placeholder sound
+      loop: false,
+      playing: true,
+      volume: 1.0
+    })
+    
+    // Remove sound entity after playing
+    utils.timers.setTimeout(() => {
+      engine.removeEntity(soundEntity)
+    }, 3000)
+    
+    // Show success message
+    player.gameController.uiController.displayAnnouncement(
+      'Farmer deployed!',
       Color4.Green(),
       2000
     )
