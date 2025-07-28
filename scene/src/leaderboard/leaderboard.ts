@@ -38,7 +38,7 @@ export class LeaderBoard {
 
     this.nameTitle = this.createScoreBoardText(
       TextTypes.BIGTITLE,
-      '   Callan Quest',
+      '', // Hidden Callan Quest text
       Vector3.create(-0.4, 0.65, 0),
       this.leaderBoard
     )

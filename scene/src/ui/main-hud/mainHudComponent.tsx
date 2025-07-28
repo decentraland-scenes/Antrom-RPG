@@ -21,6 +21,7 @@ import {
 import { Player } from '../../player/player'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
+import { DeployedUnitsDisplay } from '../deployed-units/DeployedUnitsDisplay'
 
 type MainHudProps = {
   isPlayerRollOpen: boolean
@@ -554,6 +555,9 @@ function MainHud({
         }}
         textAlign="middle-center"
       />
+
+      {/* Deployed Units Display */}
+      <DeployedUnitsDisplay isVisible={true} />
     </Canvas>
   )
 }
