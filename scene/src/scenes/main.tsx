@@ -17,8 +17,36 @@ import {
 } from '../utils/engine'
 import { getPlayer } from '@dcl/sdk/src/players'
 import { getWearables, getWearablesEffects, applyWearableStatsEffect } from '../player/wearables'
+import { engine, Transform, AudioSource } from '@dcl/sdk/ecs'
+import { Vector3 } from '@dcl/sdk/math'
 
 let gameInstance: GameController
+let backgroundMusicEntity: any = null
+
+// Setup background music that follows the player
+function setupBackgroundMusic(): void {
+  // Create background music entity
+  backgroundMusicEntity = engine.addEntity()
+  Transform.create(backgroundMusicEntity, { 
+    position: Vector3.create(0, 0, 0) 
+  })
+  AudioSource.create(backgroundMusicEntity, {
+    audioClipUrl: 'assets/sounds/dungJams.mp3',
+    loop: true,
+    playing: true,
+    volume: 0.4 // Moderate volume for background music
+  })
+  
+  console.log('Background music initialized with dungJams.mp3')
+}
+
+// System to keep background music near the player
+function updateBackgroundMusicPosition(): void {
+  if (backgroundMusicEntity) {
+    const playerTransform = Transform.get(engine.PlayerEntity)
+    Transform.getMutable(backgroundMusicEntity).position = playerTransform.position
+  }
+}
 
 export function main(): void {
   init(false).catch((e) => {
@@ -192,6 +220,12 @@ async function init(retry: boolean): Promise<void> {
 
   gameInstance.uiController.playDungeonUI.setVisibility(true)
   gameInstance.uiController.showMainHud()
+  
+  // Setup background music
+  setupBackgroundMusic()
+  
+  // Add system to keep background music near player
+  engine.addSystem(updateBackgroundMusicPosition)
 }
 
 function updateRaceBuffs(player: Player, race: CharacterRaces): void {

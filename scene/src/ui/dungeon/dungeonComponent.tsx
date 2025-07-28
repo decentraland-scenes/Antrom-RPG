@@ -89,6 +89,7 @@ function Dungeon({
               alignItems: 'center'
             }}
           >
+            {/* Dungeon button disabled for now
             <UiEntity
               uiTransform={{
                 width:
@@ -105,6 +106,7 @@ function Dungeon({
               }}
               onMouseDown={openDungeonSelection}
             />
+            */}
           </UiEntity>
           <UiEntity
             uiTransform={{
