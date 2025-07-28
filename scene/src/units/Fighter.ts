@@ -722,12 +722,7 @@ export class Fighter {
         // Deal damage to executioner
         this.dealDamageToExecutioner()
 
-        // Show feedback
-        player.gameController.uiController.displayAnnouncement(
-          `Fighter attacks! -${this.attackDamage} damage`,
-          Color4.Red(),
-          1500
-        )
+        // Show feedback - removed to reduce spam
 
         // Return to idle after attack (longer timeout for dramatic effect)
         utils.timers.setTimeout(() => {
@@ -809,17 +804,9 @@ export class Fighter {
       const coinAmount = Math.floor(Math.random() * 5) + 1 // 1-5 coins
       player.inventory.incrementItem(ITEM_TYPES.COIN, coinAmount)
 
-      player.gameController.uiController.displayAnnouncement(
-        `Fighter killed executioner! +1 Assassin XP +2 Player XP +${coinAmount} Coins`,
-        Color4.Green(),
-        3000
-      )
+      // Announcement removed to reduce spam
     } else {
-      player.gameController.uiController.displayAnnouncement(
-        'Fighter killed executioner! +1 Assassin XP +2 Player XP',
-        Color4.Green(),
-        3000
-      )
+      // Announcement removed to reduce spam
     }
   }
 
@@ -916,15 +903,7 @@ export class Fighter {
       }
     }, 1500)
 
-    // Show damage feedback
-    const player = Player.getInstanceOrNull()
-    if (player) {
-      player.gameController.uiController.displayAnnouncement(
-        `Fighter took ${damage} damage!`,
-        Color4.Red(),
-        1500
-      )
-    }
+    // Show damage feedback - removed to reduce spam
   }
 
   private determineInitiative(): boolean {
@@ -1002,15 +981,7 @@ export class Fighter {
       console.log('Fighter: Started death animation')
     }
 
-    // Show death feedback
-    const player = Player.getInstanceOrNull()
-    if (player) {
-      player.gameController.uiController.displayAnnouncement(
-        'Fighter has fallen!',
-        Color4.Red(),
-        3000
-      )
-    }
+    // Show death feedback - removed to reduce spam
 
     // Remove entity after death animation
     utils.timers.setTimeout(() => {

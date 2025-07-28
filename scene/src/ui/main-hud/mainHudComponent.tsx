@@ -23,6 +23,21 @@ import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { DeployedUnitsDisplay } from '../deployed-units/DeployedUnitsDisplay'
 
+// Number formatting function to abbreviate large numbers
+function formatNumber(num: number): string {
+  if (num >= 1000000000000) {
+    return (num / 1000000000000).toFixed(1) + 'T'
+  } else if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1) + 'B'
+  } else if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  } else {
+    return num.toString()
+  }
+}
+
 type MainHudProps = {
   isPlayerRollOpen: boolean
   isInfoOpen: boolean
@@ -87,7 +102,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
         }}
       />
       <Label
-        value={woodCount.toString()}
+        value={formatNumber(woodCount)}
         fontSize={fontSize}
         color={Color4.White()}
         uiTransform={{
@@ -108,7 +123,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
         }}
       />
       <Label
-        value={rockCount.toString()}
+        value={formatNumber(rockCount)}
         fontSize={fontSize}
         color={Color4.White()}
         uiTransform={{
@@ -129,7 +144,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
         }}
       />
       <Label
-        value={chickenCount.toString()}
+        value={formatNumber(chickenCount)}
         fontSize={fontSize}
         color={Color4.White()}
         uiTransform={{
@@ -150,7 +165,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
         }}
       />
       <Label
-        value={coinCount.toString()}
+        value={formatNumber(coinCount)}
         fontSize={fontSize}
         color={Color4.White()}
         uiTransform={{

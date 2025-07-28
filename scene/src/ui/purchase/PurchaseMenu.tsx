@@ -740,12 +740,7 @@ export class PurchaseMenu {
       engine.removeEntity(soundEntity)
     }, 3000)
     
-    // Show success message
-    player.gameController.uiController.displayAnnouncement(
-      'Fighter deployed!',
-      Color4.Green(),
-      2000
-    )
+    // Show success message - removed to reduce spam
   }
 
   private startMinerPlacement(): void {

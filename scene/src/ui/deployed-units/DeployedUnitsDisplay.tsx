@@ -21,6 +21,21 @@ interface UnitDisplayData {
   name: string
 }
 
+// Number formatting function to abbreviate large numbers
+function formatNumber(num: number): string {
+  if (num >= 1000000000000) {
+    return (num / 1000000000000).toFixed(1) + 'T'
+  } else if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1) + 'B'
+  } else if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'M'
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'K'
+  } else {
+    return num.toString()
+  }
+}
+
 export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): ReactEcs.JSX.Element | null {
   console.log('DeployedUnitsDisplay: isVisible =', isVisible)
   
@@ -208,7 +223,7 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
 
             {/* Health Text */}
             <Label
-              value={`${Math.max(0, unit.health)}/${unit.maxHealth}`}
+              value={`${formatNumber(Math.max(0, unit.health))}/${formatNumber(unit.maxHealth)}`}
               fontSize={12}
               color={unit.isDead ? Color4.Red() : Color4.White()}
               textAlign="middle-left"
