@@ -1,4 +1,4 @@
-import { UiCanvasInformation, engine, Transform } from '@dcl/sdk/ecs'
+import { UiCanvasInformation, engine, Transform, GltfContainer } from '@dcl/sdk/ecs'
 import ReactEcs, { UiEntity, Label } from '@dcl/sdk/react-ecs'
 import { Color4, Vector3 } from '@dcl/sdk/math'
 import Canvas from '../canvas/Canvas'
@@ -732,17 +732,39 @@ export class PurchaseMenu {
     this.placingUnitType = 'miner'
     this.isVisible = false
     
+    // Show instruction to player
+    player.gameController.uiController.displayAnnouncement(
+      'Click on a rock to assign miner!',
+      Color4.Blue(),
+      5000
+    )
+    
+    // Add a delay before the placement system becomes active
+    let placementActive = false
+    let lastClickPosition: Vector3 | null = null
+    
+    utils.timers.setTimeout(() => {
+      placementActive = true
+      console.log('Miner placement system now active')
+    }, 1000) // 1 second delay
+    
     // Create placement system for miner
     this.placementSystem = () => {
-      if (this.isPlacing && this.placingUnitType === 'miner' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+      if (this.isPlacing && this.placingUnitType === 'miner' && placementActive && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        // Store the click position immediately
+        const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+        if (input && input.hit && input.hit.position) {
+          lastClickPosition = input.hit.position
+        }
+        
         // Get player position
         const playerPos = Transform.get(engine.PlayerEntity).position
         
-        // Check if there's an available rock nearby
-        const nearestRock = findNearestAvailableRock(playerPos)
+        // Get all available rocks in the area
+        const availableRocks = this.getAllAvailableRocks(playerPos)
         
-        if (!nearestRock) {
-          console.log('No available rock found near player position:', playerPos)
+        if (availableRocks.length === 0) {
+          console.log('No available rocks found near player position:', playerPos)
           
           // Play invalid placement sound
           const soundEntity = engine.addEntity()
@@ -759,7 +781,7 @@ export class PurchaseMenu {
           }, 1000)
           
           player.gameController.uiController.displayAnnouncement(
-            'Must be near rocks to place miner!',
+            'No available rocks nearby! Move closer to rocks.',
             Color4.Red(),
             3000
           )
@@ -768,19 +790,40 @@ export class PurchaseMenu {
           return
         }
         
-        // Place miner next to the player
+        // Use the stored click position
+        if (!lastClickPosition) {
+          player.gameController.uiController.displayAnnouncement(
+            'Could not detect click position. Try again.',
+            Color4.Red(),
+            2000
+          )
+          return
+        }
+        
+        const selectedRock = this.findClickedRock(lastClickPosition)
+        
+        if (!selectedRock) {
+          player.gameController.uiController.displayAnnouncement(
+            'Click directly on a rock to assign miner!',
+            Color4.Red(),
+            2000
+          )
+          return
+        }
+        
+        // Place miner next to the selected rock
         const angle = Math.random() * Math.PI * 2
         const distance = 2 + Math.random() * 2
         const offsetX = Math.cos(angle) * distance
         const offsetZ = Math.sin(angle) * distance
         const placementPos = Vector3.create(
-          playerPos.x + offsetX,
-          playerPos.y - 0.5,
-          playerPos.z + offsetZ
+          selectedRock.x + offsetX,
+          selectedRock.y - 0.5,
+          selectedRock.z + offsetZ
         )
         
-        console.log('Placing miner at:', placementPos, 'next to player at:', playerPos, 'near rock at:', nearestRock)
-        this.placeMiner(placementPos, nearestRock)
+        console.log('Placing miner at:', placementPos, 'next to selected rock at:', selectedRock)
+        this.placeMiner(placementPos, selectedRock)
       }
     }
     
@@ -981,6 +1024,71 @@ export class PurchaseMenu {
     ]
     const randomIndex = Math.floor(Math.random() * farmerSounds.length)
     return farmerSounds[randomIndex]
+  }
+
+  private getAllAvailableRocks(playerPosition: Vector3): Vector3[] {
+    const player = Player.getInstanceOrNull()
+    if (!player) return []
+
+    const availableRocks: Vector3[] = []
+    const rockPositions = [
+      Vector3.create(58.79, 1.26, -50.96),
+      Vector3.create(50.85, 1.26, -45.08),
+      Vector3.create(49.09, 1.26, -54.18),
+      Vector3.create(52.56, 1.26, -23.76),
+      Vector3.create(83.12, 1.26, -28.51),
+      Vector3.create(85.94, 1.26, -15.38),
+      Vector3.create(74.72, 1.26, -12.42),
+      Vector3.create(55.71, 1.26, -38.81),
+      Vector3.create(81.29, 1.26, -54.54),
+      Vector3.create(84.09, 1.26, -39.22),
+      Vector3.create(90.35, 1.26, -49.22),
+      Vector3.create(70.79, 1.26, -61.73),
+      Vector3.create(37.59, 4.64, -32.27),
+      Vector3.create(28.28, 4.34, -28.64)
+    ]
+
+    for (const rockPos of rockPositions) {
+      // Check if rock is within reasonable distance of player
+      const distance = Vector3.distance(playerPosition, rockPos)
+      if (distance <= 50 && !player.isRockOccupied(rockPos)) {
+        availableRocks.push(rockPos)
+      }
+    }
+
+    return availableRocks
+  }
+
+  private getClickPosition(): Vector3 | null {
+    // Get the actual click position from the input system
+    const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+    if (input && input.hit && input.hit.position) {
+      return input.hit.position
+    }
+    return null
+  }
+
+  private findClickedRock(clickPosition: Vector3): Vector3 | null {
+    // Get the actual clicked entity from the input system
+    const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+    if (!input || !input.hit || !input.hit.entityId) {
+      return null
+    }
+
+    // Check if the clicked entity is a rock by looking at its model
+    const clickedEntity = input.hit.entityId as any
+    const gltfContainer = GltfContainer.getOrNull(clickedEntity)
+    
+    if (gltfContainer && gltfContainer.src.includes('mining.glb')) {
+      // This is a rock! Get its position
+      const transform = Transform.getOrNull(clickedEntity)
+      if (transform) {
+        console.log('Clicked on rock at position:', transform.position)
+        return transform.position
+      }
+    }
+
+    return null
   }
 
   render(): ReactEcs.JSX.Element | null {

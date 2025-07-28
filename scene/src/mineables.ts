@@ -11,6 +11,7 @@ import {
 } from '@dcl/sdk/ecs'
 import { Color4, Quaternion, Vector3 } from '@dcl/sdk/math'
 import { getUserData } from '~system/UserIdentity'
+import * as utils from '@dcl-sdk/utils'
 import { type GameController } from './controllers/game.controller'
 import { ITEM_TYPES } from './inventory/playerInventoryMap'
 import { INVENTORY_ACTION_REASONS } from './inventory/reducer'
@@ -185,23 +186,63 @@ export class MineableItem {
   }
 
   killChar(): void {
+    // Store the position before removing the entity
+    const originalTransform = Transform.getOrNull(this.mineable)
+    const originalPosition = originalTransform
+      ? originalTransform.position
+      : Vector3.create(0, 0, 0)
+
     entityController.removeEntity(this.mineable)
     if (this.mineableType === mineables.rock) {
       this.mineable = entityController.addEntity()
+
       Transform.createOrReplace(this.mineable, {
-        position: Vector3.create(
-          getRandomInt(12) + 24,
-          3.06,
-          getRandomInt(14) + 38
-        ),
+        position: originalPosition, // Keep the same position
         rotation: Quaternion.create(
           0,
           getRandomInt(10) / 10 + getRandomInt(4),
           0,
           1
         ),
-        scale: Vector3.create(0.04, 0.04, 0.04)
+        scale: Vector3.create(1, 1, 1) // Use normal scale for rocks
       })
+
+      // Recreate the necessary components for the new rock
+      GltfContainer.create(this.mineable, { src: this.mineableType.shape })
+      AudioSource.create(this.mineable, {
+        audioClipUrl: this.mineableType.audioClipUrl
+      })
+      Animator.create(this.mineable, {
+        states: [
+          {
+            clip: 'idle',
+            playing: true
+          },
+          {
+            clip: 'mine',
+            playing: false,
+            loop: false
+          },
+          {
+            clip: 'chop',
+            playing: false,
+            loop: true
+          },
+          {
+            clip: 'action',
+            playing: false,
+            loop: false
+          },
+          {
+            clip: 'gather',
+            playing: false,
+            loop: false
+          }
+        ]
+      })
+
+      // Re-add pointer events for the new rock
+      this.battle()
     }
     if (this.mineableType === mineables.tree) {
       this.mineable = entityController.addEntity()
@@ -254,6 +295,7 @@ export class MineableItem {
   }
 
   battle(): void {
+    // Add pointer events for all mineables, but handle rocks differently
     PointerEvents.createOrReplace(this.mineable, {
       pointerEvents: [
         {
@@ -276,8 +318,14 @@ export class MineableItem {
         )
       ) {
         if (refreshtimer <= 0 && !this.checkIfIsWorking()) {
+          // Handle rocks differently - don't mine them when clicked
+          if (this.mineableType === mineables.rock) {
+            // Rocks are clickable for miner assignment but don't mine when clicked
+            console.log('Rock clicked - available for miner assignment')
+            return
+          }
+
           if (
-            this.mineableType === mineables.rock ||
             this.mineableType === mineables.tree ||
             this.mineableType === mineables.berryTree
           ) {
@@ -557,5 +605,25 @@ export class MineableItem {
         player.isMining = bool
         break
     }
+  }
+
+  // Method for miners to trigger rock mining
+  triggerMining(): void {
+    if (this.mineableType === mineables.rock && !this.checkIfIsWorking()) {
+      console.log('Miner triggering rock mining animation')
+      Animator.playSingleAnimation(this.mineable, this.mineableType.action)
+      AudioSource.playSound(this.mineable, this.mineableType.audioClipUrl)
+      this.setWorking(true)
+      utils.timers.setTimeout(() => {
+        void this.dyingAnimation()
+        this.isDeadOnce()
+        this.setWorking(false)
+      }, this.mineableType.timeout * 1000)
+    }
+  }
+
+  // Get the mineable entity
+  getEntity(): any {
+    return this.mineable
   }
 }

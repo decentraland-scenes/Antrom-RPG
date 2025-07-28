@@ -85,9 +85,15 @@ export class Miner {
   }
 
   public place(position: Vector3): void {
-    this.position = position
-    this.spawnPosition = position
-    Transform.getMutable(this.entity).position = position
+    // Move miner up +0.5 on Y axis
+    const elevatedPosition = Vector3.create(
+      position.x,
+      position.y + 0.5,
+      position.z
+    )
+    this.position = elevatedPosition
+    this.spawnPosition = elevatedPosition
+    Transform.getMutable(this.entity).position = elevatedPosition
     this.isPlaced = true
     this.lastHarvestTime = Date.now()
   }
@@ -193,12 +199,47 @@ export class Miner {
       AudioSource.playSound(this.entity, 'assets/sounds/rock.mp3')
     }
 
-    // Show feedback
-    player.gameController.uiController.displayAnnouncement(
-      `+${this.harvestAmount} Rock +1 Mining XP`,
-      Color4.Yellow(),
-      2000
-    )
+    // Resource counter will show the updated counts automatically
+  }
+
+  private triggerRockMining(rockPosition: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    console.log('triggerRockMining called with rockPosition:', rockPosition)
+
+    // Get current realm and find the rock entity
+    const currentRealm = player.gameController.realmController.currentRealm
+    if (!currentRealm || currentRealm.getId() !== 'antrom') return
+
+    console.log('Current realm is antrom, looking for rocks...')
+
+    // Find the rock in the realm's rocks array
+    const antromRealm = currentRealm as any
+    if (antromRealm.rocks) {
+      console.log('Found rocks array with', antromRealm.rocks.length, 'rocks')
+      for (const rock of antromRealm.rocks) {
+        const rockTransform = Transform.getOrNull(rock.getEntity())
+        if (rockTransform) {
+          const distance = Vector3.distance(
+            rockTransform.position,
+            rockPosition
+          )
+          console.log('Rock at', rockTransform.position, 'distance:', distance)
+          if (distance < 2) {
+            // Within 2 units of the target rock position
+            console.log(
+              'Miner triggering rock mining animation for rock at:',
+              rockPosition
+            )
+            rock.triggerMining()
+            break
+          }
+        }
+      }
+    } else {
+      console.log('No rocks array found in antrom realm')
+    }
   }
 
   private findNearestAvailableRock(): void {
@@ -268,6 +309,9 @@ export class Miner {
       this.isWalking = false
       this.isRoaming = false // Make sure roaming is also stopped
 
+      // Store the rock position before clearing it
+      const rockPosition = this.targetRock
+
       // Face the rock before mining
       const direction = Vector3.subtract(this.targetRock, this.position)
       const targetRotation = Math.atan2(direction.x, direction.z)
@@ -290,6 +334,15 @@ export class Miner {
       if (idleAnim && !idleAnim.playing) {
         idleAnim.playing = true
         console.log('Miner: Idle animation started at rock')
+      }
+
+      // Trigger rock mining animation
+      if (rockPosition) {
+        console.log(
+          'Miner: About to trigger rock mining animation for rock at:',
+          rockPosition
+        )
+        this.triggerRockMining(rockPosition)
       }
       return
     }
