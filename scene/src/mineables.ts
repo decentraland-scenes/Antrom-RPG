@@ -318,17 +318,20 @@ export class MineableItem {
         )
       ) {
         if (refreshtimer <= 0 && !this.checkIfIsWorking()) {
-          // Handle rocks differently - don't mine them when clicked
+          // Handle rocks and trees differently - don't mine/chop them when clicked
           if (this.mineableType === mineables.rock) {
             // Rocks are clickable for miner assignment but don't mine when clicked
             console.log('Rock clicked - available for miner assignment')
             return
           }
 
-          if (
-            this.mineableType === mineables.tree ||
-            this.mineableType === mineables.berryTree
-          ) {
+          if (this.mineableType === mineables.tree) {
+            // Trees are clickable for lumberjack assignment but don't chop when clicked
+            console.log('Tree clicked - available for lumberjack assignment')
+            return
+          }
+
+          if (this.mineableType === mineables.berryTree) {
             Animator.playSingleAnimation(
               this.mineable,
               this.mineableType.action

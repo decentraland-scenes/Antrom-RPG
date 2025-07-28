@@ -29,6 +29,7 @@ export class Miner {
 
   // Rock targeting system
   public targetRock: Vector3 | null = null
+  public assignedRock: Vector3 | null = null // The rock this miner was assigned to
   public isMining: boolean = false
   public spawnPosition: Vector3 // Original spawn position for roaming
   public roamRadius: number = 30 // How far they roam from spawn point
@@ -84,7 +85,7 @@ export class Miner {
     })
   }
 
-  public place(position: Vector3): void {
+  public place(position: Vector3, assignedRock?: Vector3): void {
     // Move miner up +0.5 on Y axis
     const elevatedPosition = Vector3.create(
       position.x,
@@ -96,6 +97,13 @@ export class Miner {
     Transform.getMutable(this.entity).position = elevatedPosition
     this.isPlaced = true
     this.lastHarvestTime = Date.now()
+
+    // Set the assigned rock if provided
+    if (assignedRock) {
+      this.assignedRock = assignedRock
+      this.targetRock = assignedRock
+      console.log('Miner assigned to rock at:', assignedRock)
+    }
   }
 
   public update(): void {
@@ -103,9 +111,14 @@ export class Miner {
 
     const currentTime = Date.now()
 
-    // Find a target rock if we don't have one
+    // Use assigned rock if we have one, otherwise find a target rock
     if (!this.targetRock) {
-      this.findNearestAvailableRock()
+      if (this.assignedRock) {
+        this.targetRock = this.assignedRock
+        console.log('Miner using assigned rock at:', this.assignedRock)
+      } else {
+        this.findNearestAvailableRock()
+      }
     }
 
     // If we have a target rock, walk towards it

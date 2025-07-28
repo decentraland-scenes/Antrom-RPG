@@ -35,6 +35,7 @@ export class Lumberjack {
 
   // Tree targeting system
   public targetTree: Vector3 | null = null
+  public assignedTree: Vector3 | null = null // The tree this lumberjack was assigned to
   public isChopping: boolean = false
   public spawnPosition: Vector3 // Original spawn position for roaming
   public roamRadius: number = 30 // How far they roam from spawn point
@@ -97,11 +98,24 @@ export class Lumberjack {
     // Removed click handler - lumberjacks cannot be removed
   }
 
-  public place(position: Vector3): void {
-    this.position = position
-    Transform.getMutable(this.entity).position = position
+  public place(position: Vector3, assignedTree?: Vector3): void {
+    // Move lumberjack up +0.5 on Y axis
+    const elevatedPosition = Vector3.create(
+      position.x,
+      position.y + 0.5,
+      position.z
+    )
+    this.position = elevatedPosition
+    Transform.getMutable(this.entity).position = elevatedPosition
     this.isPlaced = true
     this.lastHarvestTime = Date.now()
+
+    // Set the assigned tree if provided
+    if (assignedTree) {
+      this.assignedTree = assignedTree
+      this.targetTree = assignedTree
+      console.log('Lumberjack assigned to tree at:', assignedTree)
+    }
   }
 
   public update(): void {
@@ -109,9 +123,14 @@ export class Lumberjack {
 
     const currentTime = Date.now()
 
-    // Find a target tree if we don't have one
+    // Use assigned tree if we have one, otherwise find a target tree
     if (!this.targetTree) {
-      this.findNearestAvailableTree()
+      if (this.assignedTree) {
+        this.targetTree = this.assignedTree
+        console.log('Lumberjack using assigned tree at:', this.assignedTree)
+      } else {
+        this.findNearestAvailableTree()
+      }
     }
 
     // If we have a target tree, walk towards it
@@ -212,6 +231,46 @@ export class Lumberjack {
     // Resource counter will show the updated counts automatically
   }
 
+  private triggerTreeChopping(treePosition: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    console.log('triggerTreeChopping called with treePosition:', treePosition)
+
+    // Get current realm and find the tree entity
+    const currentRealm = player.gameController.realmController.currentRealm
+    if (!currentRealm || currentRealm.getId() !== 'antrom') return
+
+    console.log('Current realm is antrom, looking for trees...')
+
+    // Find the tree in the realm's trees array
+    const antromRealm = currentRealm as any
+    if (antromRealm.trees) {
+      console.log('Found trees array with', antromRealm.trees.length, 'trees')
+      for (const tree of antromRealm.trees) {
+        const treeTransform = Transform.getOrNull(tree.getEntity())
+        if (treeTransform) {
+          const distance = Vector3.distance(
+            treeTransform.position,
+            treePosition
+          )
+          console.log('Tree at', treeTransform.position, 'distance:', distance)
+          if (distance < 2) {
+            // Within 2 units of the target tree position
+            console.log(
+              'Lumberjack triggering tree chopping animation for tree at:',
+              treePosition
+            )
+            tree.triggerMining()
+            break
+          }
+        }
+      }
+    } else {
+      console.log('No trees array found in antrom realm')
+    }
+  }
+
   private findNearestAvailableTree(): void {
     const player = Player.getInstanceOrNull()
     if (!player) return
@@ -308,7 +367,18 @@ export class Lumberjack {
         0
       )
 
+      // Store the tree position before nulling targetTree
+      const treePosition = this.targetTree
       this.targetTree = null
+
+      // Trigger tree chopping animation
+      if (treePosition) {
+        console.log(
+          'Lumberjack: About to trigger tree chopping animation for tree at:',
+          treePosition
+        )
+        this.triggerTreeChopping(treePosition)
+      }
 
       // Stop walking animation and return to idle
       const walkAnim = Animator.getClip(this.entity, 'walk')

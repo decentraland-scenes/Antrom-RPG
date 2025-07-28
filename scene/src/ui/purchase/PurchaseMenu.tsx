@@ -528,7 +528,6 @@ export class PurchaseMenu {
     const player = Player.getInstanceOrNull()
     if (!player) return
 
-    // Clean up any existing placement system
     if (this.placementSystem) {
       engine.removeSystem(this.placementSystem)
       this.placementSystem = null
@@ -537,19 +536,32 @@ export class PurchaseMenu {
     this.isPlacing = true
     this.placingUnitType = 'lumberjack'
     this.isVisible = false
-    
-    // Create placement system for lumberjack
+
+    player.gameController.uiController.displayAnnouncement(
+      'Click on a tree to assign lumberjack!',
+      Color4.Blue(),
+      5000
+    )
+
+    let placementActive = false
+    let lastClickPosition: Vector3 | null = null
+
+    utils.timers.setTimeout(() => {
+      placementActive = true
+      console.log('Lumberjack placement system now active')
+    }, 1000) // 1 second delay
+
     this.placementSystem = () => {
-      if (this.isPlacing && this.placingUnitType === 'lumberjack' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
-        // Get player position
+      if (this.isPlacing && this.placingUnitType === 'lumberjack' && placementActive && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+        if (input && input.hit && input.hit.position) {
+          lastClickPosition = input.hit.position
+        }
+
         const playerPos = Transform.get(engine.PlayerEntity).position
-        
-        // Check if there's an available tree nearby
-        const nearestTree = findNearestAvailableTree(playerPos)
-        
-        if (!nearestTree) {
-          console.log('No available tree found near player position:', playerPos)
-          
+        const availableTrees = this.getAllAvailableTrees(playerPos)
+
+        if (availableTrees.length === 0) {
           // Play invalid placement sound
           const soundEntity = engine.addEntity()
           AudioSource.create(soundEntity, {
@@ -565,30 +577,48 @@ export class PurchaseMenu {
           }, 3000)
           
           player.gameController.uiController.displayAnnouncement(
-            'Must be near an unoccupied tree to place lumberjack!',
+            'No available trees nearby! Move closer to trees.',
             Color4.Red(),
             3000
           )
-          this.hide()
+          this.clearPlacementState()
           return
         }
-        
-        // Place lumberjack next to the player
+
+        if (!lastClickPosition) {
+          player.gameController.uiController.displayAnnouncement(
+            'Could not detect click position. Try again.',
+            Color4.Red(),
+            2000
+          )
+          return
+        }
+
+        const selectedTree = this.findClickedTree(lastClickPosition)
+
+        if (!selectedTree) {
+          player.gameController.uiController.displayAnnouncement(
+            'Click directly on a tree to assign lumberjack!',
+            Color4.Red(),
+            2000
+          )
+          return
+        }
+
         const angle = Math.random() * Math.PI * 2
         const distance = 2 + Math.random() * 2
         const offsetX = Math.cos(angle) * distance
         const offsetZ = Math.sin(angle) * distance
         const placementPos = Vector3.create(
-          playerPos.x + offsetX,
-          playerPos.y - 0.5,
-          playerPos.z + offsetZ
+          selectedTree.x + offsetX,
+          selectedTree.y - 0.5,
+          selectedTree.z + offsetZ
         )
-        
-        console.log('Placing lumberjack at:', placementPos, 'next to player at:', playerPos)
-        this.placeLumberjack(placementPos, nearestTree)
+
+        console.log('Placing lumberjack at:', placementPos, 'next to selected tree at:', selectedTree)
+        this.placeLumberjack(placementPos, selectedTree)
       }
     }
-    
     engine.addSystem(this.placementSystem)
   }
 
@@ -1059,6 +1089,61 @@ export class PurchaseMenu {
     return availableRocks
   }
 
+  private getAllAvailableTrees(playerPosition: Vector3): Vector3[] {
+    const player = Player.getInstanceOrNull()
+    if (!player) return []
+
+    const availableTrees: Vector3[] = []
+    const treePositions = [
+      Vector3.create(68.22, 4.23, 37.68),
+      Vector3.create(73.37, 4.23, 37.98),
+      Vector3.create(80.37, 4.64, 36.38),
+      Vector3.create(89.51, 4.77, 35.48),
+      Vector3.create(90.65, 5.23, 30.45),
+      Vector3.create(90.55, 4.62, 36.34),
+      Vector3.create(90.49, 5.25, 30.19),
+      Vector3.create(91.11, 5.73, 22.33),
+      Vector3.create(89.4, 6.24, 18.29),
+      Vector3.create(83.85, 6.3, 14.67),
+      Vector3.create(78.96, 6.43, 10.42),
+      Vector3.create(73.12, 6.14, 9.67),
+      Vector3.create(71.09, 5.95, 14.23),
+      Vector3.create(66.51, 5.83, 18.53),
+      Vector3.create(65.46, 5.51, 22.22),
+      Vector3.create(71.52, 5.42, 21.97),
+      Vector3.create(79.16, 5.0, 34.28),
+      Vector3.create(68.49, 3.64, 42.92),
+      Vector3.create(64.66, 4.09, 41.6),
+      Vector3.create(69.33, 4.19, 37.98),
+      Vector3.create(32.38, 3.31, 30.82),
+      Vector3.create(39.0, 3.73, 34.3),
+      Vector3.create(44.22, 4.36, 36.58),
+      Vector3.create(50.6, 4.22, 39.34),
+      Vector3.create(58.23, 4.3, 41.14),
+      Vector3.create(52.7, 4.54, 37.22),
+      Vector3.create(47.38, 4.98, 34.14),
+      Vector3.create(40.76, 4.4, 31.16),
+      Vector3.create(32.67, 4.07, 27.09),
+      Vector3.create(26.12, 4.33, 21.41),
+      Vector3.create(91.26, 6.91, 12.97),
+      Vector3.create(86.65, 6.9, 10.55),
+      Vector3.create(81.3, 7.06, 5.46),
+      Vector3.create(87.76, 7.7, 5.06),
+      Vector3.create(88.3, 5.32, 32.47),
+      Vector3.create(55.47, 5.75, 28.67)
+    ]
+
+    for (const treePos of treePositions) {
+      // Check if tree is within reasonable distance of player
+      const distance = Vector3.distance(playerPosition, treePos)
+      if (distance <= 50 && !player.isTreeOccupied(treePos)) {
+        availableTrees.push(treePos)
+      }
+    }
+
+    return availableTrees
+  }
+
   private getClickPosition(): Vector3 | null {
     // Get the actual click position from the input system
     const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
@@ -1084,6 +1169,29 @@ export class PurchaseMenu {
       const transform = Transform.getOrNull(clickedEntity)
       if (transform) {
         console.log('Clicked on rock at position:', transform.position)
+        return transform.position
+      }
+    }
+
+    return null
+  }
+
+  private findClickedTree(clickPosition: Vector3): Vector3 | null {
+    // Get the actual clicked entity from the input system
+    const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+    if (!input || !input.hit || !input.hit.entityId) {
+      return null
+    }
+
+    // Check if the clicked entity is a tree by looking at its model
+    const clickedEntity = input.hit.entityId as any
+    const gltfContainer = GltfContainer.getOrNull(clickedEntity)
+    
+    if (gltfContainer && gltfContainer.src.includes('Pine.glb')) {
+      // This is a tree! Get its position
+      const transform = Transform.getOrNull(clickedEntity)
+      if (transform) {
+        console.log('Clicked on tree at position:', transform.position)
         return transform.position
       }
     }

@@ -413,7 +413,7 @@ export class Player extends Character {
   addLumberjack(position: Vector3, treePosition: Vector3): void {
     console.log('Player.addLumberjack called with position:', position, 'treePosition:', treePosition)
     const lumberjack = new Lumberjack(position)
-    lumberjack.place(position)
+    lumberjack.place(position, treePosition)
     this.lumberjacks.push(lumberjack)
     
     // Mark this tree as occupied
@@ -492,7 +492,7 @@ export class Player extends Character {
     
     // Create new Miner instance
     const miner = new Miner(position)
-    miner.place(position)
+    miner.place(position, rockPosition)
     
     // Add to miners array and track occupied rock
     this.miners.push(miner)
