@@ -19,6 +19,8 @@ interface UnitDisplayData {
   isDead: boolean
   iconPath: string
   name: string
+  resourcesHarvested?: number
+  resourceType?: string
 }
 
 // Number formatting function to abbreviate large numbers
@@ -78,7 +80,9 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
       maxHealth: 100,
       isDead: false,
       iconPath: 'assets/images/unitPurchase/icons/lumberjack_icon.png',
-      name: 'Lumberjack'
+      name: 'Lumberjack',
+      resourcesHarvested: lumberjack.totalWoodHarvested,
+      resourceType: 'Wood'
     })
   })
 
@@ -90,7 +94,9 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
       maxHealth: 100,
       isDead: false,
       iconPath: 'assets/images/unitPurchase/icons/miner_icon.png',
-      name: 'Miner'
+      name: 'Miner',
+      resourcesHarvested: miner.totalRockHarvested,
+      resourceType: 'Rock'
     })
   })
 
@@ -102,7 +108,9 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
       maxHealth: 100,
       isDead: false,
       iconPath: 'assets/images/unitPurchase/icons/farmer_icon.png',
-      name: 'Farmer'
+      name: 'Farmer',
+      resourcesHarvested: farmer.totalChickenHarvested,
+      resourceType: 'Chicken'
     })
   })
 
@@ -202,28 +210,40 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
               uiBackground={{ color: Color4.create(0.2, 0.2, 0.2, 1.0) }}
             />
 
-            {/* Health Bar Fill */}
+            {/* Health Bar Fill or Resource Progress */}
             <UiEntity
               uiTransform={{
-                width: `${(unit.health / unit.maxHealth) * 60}%`,
+                width: unit.type === 'fighter' 
+                  ? `${(unit.health / unit.maxHealth) * 60}%`
+                  : unit.resourcesHarvested !== undefined && unit.resourcesHarvested > 0
+                    ? `${Math.min(60, (unit.resourcesHarvested / 100) * 60)}%` // Scale based on resources harvested (TODO: Update when resource limits are implemented)
+                    : '0%',
                 height: healthBarHeight,
                 positionType: 'absolute',
                 position: { left: 60, top: 30 }
               }}
               uiBackground={{ 
-                color: unit.isDead 
-                  ? Color4.Red() 
-                  : unit.health / unit.maxHealth > 0.5 
-                    ? Color4.Green() 
-                    : unit.health / unit.maxHealth > 0.25 
-                      ? Color4.Yellow() 
-                      : Color4.Red() 
+                color: unit.type === 'fighter'
+                  ? (unit.isDead 
+                      ? Color4.Red() 
+                      : unit.health / unit.maxHealth > 0.5 
+                        ? Color4.Green() 
+                        : unit.health / unit.maxHealth > 0.25 
+                          ? Color4.Yellow() 
+                          : Color4.Red())
+                  : Color4.Blue() // Blue for resource progress
               }}
             />
 
-            {/* Health Text */}
+            {/* Health Text or Resource Text */}
             <Label
-              value={`${formatNumber(Math.max(0, unit.health))}/${formatNumber(unit.maxHealth)}`}
+              value={
+                unit.type === 'fighter' 
+                  ? `${formatNumber(Math.max(0, unit.health))}/${formatNumber(unit.maxHealth)}`
+                  : unit.resourcesHarvested !== undefined && unit.resourceType
+                    ? `${formatNumber(unit.resourcesHarvested)} ${unit.resourceType}`
+                    : 'N/A'
+              }
               fontSize={12}
               color={unit.isDead ? Color4.Red() : Color4.White()}
               textAlign="middle-left"
@@ -237,9 +257,9 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
 
             {/* Status Indicator */}
             <Label
-              value={unit.isDead ? 'DEAD' : 'ALIVE'}
+              value={unit.isDead ? 'DEAD' : unit.type === 'fighter' ? 'ALIVE' : 'WORKING'}
               fontSize={10}
-              color={unit.isDead ? Color4.Red() : Color4.Green()}
+              color={unit.isDead ? Color4.Red() : unit.type === 'fighter' ? Color4.Green() : Color4.Blue()}
               textAlign="middle-right"
               uiTransform={{
                 width: '25%',

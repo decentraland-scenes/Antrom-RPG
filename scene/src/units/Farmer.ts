@@ -45,6 +45,9 @@ export class Farmer {
   public lastRoamTime: number = 0
   public roamInterval: number = 3000 // Check for new animals every 3 seconds
 
+  // Resource tracking
+  public totalChickenHarvested: number = 0
+
   constructor(position: Vector3) {
     this.entity = engine.addEntity()
     this.position = position
@@ -347,6 +350,9 @@ export class Farmer {
 
     // Add chicken to player inventory (both chickens and pigs drop chicken meat)
     player.inventory.incrementItem(ITEM_TYPES.CHICKEN, this.harvestAmount)
+
+    // Track harvested resources
+    this.totalChickenHarvested += this.harvestAmount
 
     // Add XP to meat profession
     player.levels.addXp(LEVEL_TYPES.MEAT, 1)

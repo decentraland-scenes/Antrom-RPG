@@ -44,6 +44,9 @@ export class Lumberjack {
   public lastRoamTime: number = 0
   public roamInterval: number = 3000 // Check for new trees every 3 seconds
 
+  // Resource tracking
+  public totalWoodHarvested: number = 0
+
   constructor(position: Vector3) {
     this.entity = entityController.addEntity()
     this.position = position
@@ -204,6 +207,9 @@ export class Lumberjack {
       this.harvestAmount,
       INVENTORY_ACTION_REASONS.MINED_RESOURCE
     )
+
+    // Track harvested resources
+    this.totalWoodHarvested += this.harvestAmount
 
     // Add 1 XP to lumberjack profession
     player.levels.addXp(LEVEL_TYPES.TREE, 1)

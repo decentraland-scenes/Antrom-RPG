@@ -38,6 +38,9 @@ export class Miner {
   public lastRoamTime: number = 0
   public roamInterval: number = 3000 // Check for new rocks every 3 seconds
 
+  // Resource tracking
+  public totalRockHarvested: number = 0
+
   constructor(position: Vector3) {
     this.entity = engine.addEntity()
     this.position = position
@@ -188,6 +191,9 @@ export class Miner {
 
     // Add rock to player inventory
     player.inventory.incrementItem(ITEM_TYPES.ROCK, this.harvestAmount)
+
+    // Track harvested resources
+    this.totalRockHarvested += this.harvestAmount
 
     // Add 1 XP to mining profession
     player.levels.addXp(LEVEL_TYPES.ROCK, 1)
