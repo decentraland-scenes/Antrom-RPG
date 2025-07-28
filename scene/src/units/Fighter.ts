@@ -31,11 +31,18 @@ export class Fighter {
 
   // Roaming system
   public isRoaming: boolean = false
-  public roamRadius: number = 20 // How far they roam from spawn point
+  public roamRadius: number = 100 // Much larger search radius
   public roamSpeed: number = 1.5 // Slower speed when roaming
   public lastRoamTime: number = 0
   public roamInterval: number = 2000 // Check for new targets every 2 seconds
   public spawnPosition: Vector3 // Original spawn position for roaming
+
+  // Systematic search system
+  public searchDirection: Vector3 = Vector3.create(1, 0, 0) // Current search direction
+  public searchDistance: number = 0 // How far we've walked in current direction
+  public maxSearchDistance: number = 50 // Maximum distance to walk in one direction
+  public searchAngle: number = 0 // Current search angle (0-360 degrees)
+  public searchAngleIncrement: number = 45 // Degrees to turn between search directions
 
   // Fighter health and combat stats
   public health: number = 200
@@ -379,8 +386,8 @@ export class Fighter {
         const executionerPos = Transform.get(executioner.entity).position
         const distance = Vector3.distance(this.position, executionerPos)
 
-        // Always use a large search range to find executioners
-        const searchRange = this.roamRadius // Always use roam radius for searching
+        // Use the much larger search range to find executioners
+        const searchRange = this.roamRadius // Use roam radius for searching (now 100 units)
         if (distance <= searchRange) {
           // Prefer executioners with fewer fighters targeting them
           const currentTargets = targetCounts.get(executioner.entity) || 0
@@ -432,34 +439,49 @@ export class Fighter {
       }
     }
 
-    // Calculate a random point within roam radius
-    const angle = Math.random() * Math.PI * 2
-    const distance = Math.random() * this.roamRadius
-    const offsetX = Math.cos(angle) * distance
-    const offsetZ = Math.sin(angle) * distance
+    // Check if we need to change direction (reached max distance or need to turn)
+    if (this.searchDistance >= this.maxSearchDistance) {
+      // Change to next search direction
+      this.searchAngle += this.searchAngleIncrement
+      if (this.searchAngle >= 360) {
+        // Completed full circle, expand search area
+        this.maxSearchDistance += 25
+        this.searchAngle = 0
+        console.log(
+          `Fighter expanding search area to ${this.maxSearchDistance} units`
+        )
+      }
 
-    const roamTarget = Vector3.create(
-      this.spawnPosition.x + offsetX,
-      this.spawnPosition.y,
-      this.spawnPosition.z + offsetZ
-    )
+      // Calculate new direction
+      const angleRad = (this.searchAngle * Math.PI) / 180
+      this.searchDirection = Vector3.create(
+        Math.cos(angleRad),
+        0,
+        Math.sin(angleRad)
+      )
+      this.searchDistance = 0
 
-    // Move towards roam target
-    const direction = Vector3.subtract(roamTarget, this.position)
-    const normalizedDirection = Vector3.normalize(direction)
+      console.log(
+        `Fighter changing search direction to ${this.searchAngle} degrees`
+      )
+    }
+
+    // Move in current search direction
     const roamDistance = this.roamSpeed * (this.roamInterval / 1000)
     const newPosition = Vector3.add(
       this.position,
-      Vector3.scale(normalizedDirection, roamDistance)
+      Vector3.scale(this.searchDirection, roamDistance)
     )
 
     // Update fighter position
     Transform.getMutable(this.entity).position = newPosition
     this.position = newPosition
+    this.searchDistance += roamDistance
 
-    // Face the direction we're roaming
-    Transform.getMutable(this.entity).rotation =
-      Quaternion.lookRotation(direction)
+    // Face the direction we're searching
+    Transform.getMutable(this.entity).rotation = Quaternion.lookRotation(
+      this.searchDirection
+    )
 
     // Play walk animation while roaming - using smart animation state management
     if (!this.isWalking) {
@@ -476,7 +498,11 @@ export class Fighter {
     }
 
     this.isRoaming = true
-    console.log('Fighter roaming to find executioners')
+    console.log(
+      `Fighter searching in direction ${
+        this.searchAngle
+      }°, distance: ${this.searchDistance.toFixed(1)}/${this.maxSearchDistance}`
+    )
   }
 
   private isExecutionerValid(executionerEntity: Entity): boolean {
