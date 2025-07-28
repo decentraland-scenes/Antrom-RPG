@@ -40,11 +40,17 @@ function setupBackgroundMusic(): void {
   console.log('Background music initialized with dungJams.mp3')
 }
 
-// System to keep background music near the player
+// System to keep background music near the player (less frequent updates to prevent choppiness)
 function updateBackgroundMusicPosition(): void {
   if (backgroundMusicEntity) {
     const playerTransform = Transform.get(engine.PlayerEntity)
-    Transform.getMutable(backgroundMusicEntity).position = playerTransform.position
+    const currentMusicPos = Transform.get(backgroundMusicEntity)
+    
+    // Only update if player has moved significantly (reduces choppiness)
+    const distance = Vector3.distance(playerTransform.position, currentMusicPos.position)
+    if (distance > 5) { // Only update if player moved more than 5 units
+      Transform.getMutable(backgroundMusicEntity).position = playerTransform.position
+    }
   }
 }
 
@@ -223,9 +229,6 @@ async function init(retry: boolean): Promise<void> {
   
   // Setup background music
   setupBackgroundMusic()
-  
-  // Add system to keep background music near player
-  engine.addSystem(updateBackgroundMusicPosition)
 }
 
 function updateRaceBuffs(player: Player, race: CharacterRaces): void {
