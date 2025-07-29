@@ -49,6 +49,7 @@ type MainHudProps = {
   showInfo: (arg: boolean) => void
   showInventory: () => void
   showLumberjack: () => void
+  showTowerUpgrade: () => void
   openLink: (arg: string) => void
   characterRace: CharacterRaces
   characterClass: CharacterClasses
@@ -422,6 +423,7 @@ function MainHud({
   showInfo,
   showInventory,
   showLumberjack,
+  showTowerUpgrade,
   openLink,
   characterAlliance,
   characterRace,
@@ -741,10 +743,7 @@ function MainHud({
           }
         }}
         onMouseDown={() => {
-          const player = Player.getInstanceOrNull()
-          if (player) {
-            player.gameController.uiController.towerUpgradeMenu.show()
-          }
+          showTowerUpgrade()
         }}
       />
       <Label

@@ -33,6 +33,9 @@ export class MainHudController {
           showLumberjack={() => {
             this.showLumberjack()
           }}
+          showTowerUpgrade={() => {
+            this.showTowerUpgrade()
+          }}
           characterRace={player.race}
           characterClass={player.class}
           characterAlliance={player.alliance}
@@ -81,8 +84,27 @@ export class MainHudController {
     console.log('MainHudController.showLumberjack() called')
     const player = Player.getInstanceOrNull()
     if (player) {
+      // Close other menus first
+      player.gameController.uiController.towerUpgradeMenu.hide()
+      this.inventoryController?.showInventory(false)
+      
       console.log('MainHudController: Player found, showing purchase menu')
       player.gameController.uiController.purchaseMenu.show()
+    } else {
+      console.log('MainHudController: No player found')
+    }
+  }
+
+  showTowerUpgrade(): void {
+    console.log('MainHudController.showTowerUpgrade() called')
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      // Close other menus first
+      player.gameController.uiController.purchaseMenu.hide()
+      this.inventoryController?.showInventory(false)
+      
+      console.log('MainHudController: Player found, showing tower upgrade menu')
+      player.gameController.uiController.towerUpgradeMenu.show()
     } else {
       console.log('MainHudController: No player found')
     }
