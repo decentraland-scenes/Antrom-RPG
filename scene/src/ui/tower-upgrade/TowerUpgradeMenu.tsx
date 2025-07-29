@@ -21,7 +21,7 @@ export const TOWER_UPGRADE_DEFINITIONS: Record<TowerUpgradeType, TowerUpgradeDef
   health: {
     type: 'health',
     name: 'Tower Health',
-    cost: 200,
+    cost: 100,
     description: 'Increases tower health by 10,000',
     iconPath: 'assets/images/towerUpgradePurchace/42_wall_nobg.png',
     effect: '+10,000 HP'
@@ -77,7 +77,7 @@ export class TowerUpgradeMenu {
     if (!player) return false
 
     const upgradeDef = TOWER_UPGRADE_DEFINITIONS[upgradeType]
-    return player.inventory.getItemCount(ITEM_TYPES.COIN) >= upgradeDef.cost
+    return player.inventory.getItemCount(ITEM_TYPES.TREE) >= upgradeDef.cost
   }
 
   private purchaseUpgrade(upgradeType: TowerUpgradeType): void {
@@ -86,15 +86,15 @@ export class TowerUpgradeMenu {
 
     const upgradeDef = TOWER_UPGRADE_DEFINITIONS[upgradeType]
 
-    if (player.inventory.getItemCount(ITEM_TYPES.COIN) >= upgradeDef.cost) {
+    if (player.inventory.getItemCount(ITEM_TYPES.TREE) >= upgradeDef.cost) {
       if (upgradeType === 'health') {
         // Apply health upgrade to gargoyle fountain
         const currentRealm = player.gameController.realmController.currentRealm
         if (currentRealm && currentRealm.getId() === 'antrom') {
           const gargoyleFountain = (currentRealm as any).gargoyleFountain
           if (gargoyleFountain && !gargoyleFountain.isDead) {
-            // Deduct coins
-            player.inventory.incrementItem(ITEM_TYPES.COIN, -upgradeDef.cost)
+            // Deduct wood
+            player.inventory.incrementItem(ITEM_TYPES.TREE, -upgradeDef.cost)
             
             // Apply health upgrade
             gargoyleFountain.maxHealth += 10000
@@ -167,7 +167,7 @@ export class TowerUpgradeMenu {
       }, 1000)
       
       player.gameController.uiController.displayAnnouncement(
-        'Insufficient coins for upgrade!',
+        'Insufficient wood for upgrade!',
         Color4.Red(),
         3000
       )
@@ -180,7 +180,7 @@ export class TowerUpgradeMenu {
     const player = Player.getInstanceOrNull()
     if (!player) return null
 
-    const goldAmount = player.inventory.getItemCount(ITEM_TYPES.COIN)
+    const woodAmount = player.inventory.getItemCount(ITEM_TYPES.TREE)
 
     return (
       <Canvas>
@@ -304,7 +304,7 @@ export class TowerUpgradeMenu {
             }}
           >
             <Label
-              value={`Coin: ${goldAmount}`}
+              value={`Wood: ${woodAmount}`}
               fontSize={16}
               color={Color4.Yellow()}
               textAlign="middle-center"
@@ -382,7 +382,7 @@ export class TowerUpgradeMenu {
                   
                   {/* Upgrade Cost */}
                   <Label
-                    value={`Cost: ${upgradeDef.cost} coins`}
+                    value={`Cost: ${upgradeDef.cost} wood`}
                     fontSize={12}
                     color={Color4.Yellow()}
                     textAlign="middle-left"
@@ -455,7 +455,7 @@ export class TowerUpgradeMenu {
                     }}
                   >
                     <Label
-                      value={canPurchase ? "UPGRADE" : "INSUFFICIENT COINS"}
+                      value={canPurchase ? "UPGRADE" : "INSUFFICIENT WOOD"}
                       fontSize={13}
                       color={Color4.White()}
                       textAlign="middle-center"

@@ -124,7 +124,7 @@ export class Player extends Character {
 
   // Fighter system
   public fighters: Fighter[] = []
-  public fighterCost: number = 100
+  public fighterCost: { wood: number; rock: number } = { wood: 50, rock: 50 }
   public fighterAttackDamage: number = 15
   public fighterAttackInterval: number = 2000 // 2 seconds between attacks
   public fighterAttackRange: number = 10
@@ -439,7 +439,7 @@ export class Player extends Character {
 
   // Fighter system methods
   canPurchaseFighter(): boolean {
-    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.fighterCost
+    return this.inventory.getItemCount(ITEM_TYPES.TREE) >= this.fighterCost.wood && this.inventory.getItemCount(ITEM_TYPES.ROCK) >= this.fighterCost.rock
   }
 
   purchaseFighter(): boolean {
@@ -447,7 +447,8 @@ export class Player extends Character {
       return false
     }
     
-    this.inventory.reduceItem(ITEM_TYPES.COIN, this.fighterCost)
+    this.inventory.reduceItem(ITEM_TYPES.TREE, this.fighterCost.wood)
+    this.inventory.reduceItem(ITEM_TYPES.ROCK, this.fighterCost.rock)
     return true
   }
 

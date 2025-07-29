@@ -60,6 +60,7 @@ export class Fighter {
   public lastCombatAction: number = 0
   public combatActionInterval: number = 1500 // 1.5 seconds between combat actions (faster since only one attacks)
   public hasInitiative: boolean = false // Whether fighter has initiative in current combat
+  public hasBeenInCombat: boolean = false // Track if fighter has ever been in combat
 
   constructor(position: Vector3) {
     this.entity = entityController.addEntity()
@@ -159,9 +160,11 @@ export class Fighter {
       )
     }
 
-    // If no target found, roam around
+    // Only roam if we've been in combat before and have no current target
+    // This prevents immediate roaming when first placed
     if (
       !this.targetExecutioner &&
+      this.hasBeenInCombat &&
       currentTime - this.lastRoamTime >= this.roamInterval
     ) {
       this.roam()
@@ -205,6 +208,7 @@ export class Fighter {
           this.combatState = 'engaged'
           this.combatTarget = this.targetExecutioner
           this.hasInitiative = this.determineInitiative()
+          this.hasBeenInCombat = true // Mark that we've been in combat
           this.lastCombatAction = currentTime
 
           console.log(

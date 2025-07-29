@@ -13,7 +13,7 @@ export type UnitType = 'lumberjack' | 'miner' | 'farmer' | 'fighter'
 export interface UnitDefinition {
   type: UnitType
   name: string
-  cost: number
+  cost: number | { wood: number; rock: number }
   resourceType: string
   harvestAmount: number
   harvestInterval: number
@@ -59,7 +59,7 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
   fighter: {
     type: 'fighter',
     name: 'Fighter',
-    cost: 100,
+    cost: { wood: 50, rock: 50 },
     resourceType: 'Combat',
     harvestAmount: 0,
     harvestInterval: 2000,
@@ -364,7 +364,15 @@ export class PurchaseMenu {
     if (!player) return false
     
     const unitDef = UNIT_DEFINITIONS[unitType]
-    return player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost
+    
+    // Handle different cost types
+    if (typeof unitDef.cost === 'number') {
+      return player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost
+    } else {
+      // Fighter cost structure
+      return player.inventory.getItemCount(ITEM_TYPES.TREE) >= unitDef.cost.wood && 
+             player.inventory.getItemCount(ITEM_TYPES.ROCK) >= unitDef.cost.rock
+    }
   }
 
   purchaseUnit(unitType: UnitType): void {
@@ -373,7 +381,17 @@ export class PurchaseMenu {
     
     const unitDef = UNIT_DEFINITIONS[unitType]
     
-    if (player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost) {
+    // Check if player can afford the unit
+    let canAfford = false
+    if (typeof unitDef.cost === 'number') {
+      canAfford = player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost
+    } else {
+      // Fighter cost structure
+      canAfford = player.inventory.getItemCount(ITEM_TYPES.TREE) >= unitDef.cost.wood && 
+                  player.inventory.getItemCount(ITEM_TYPES.ROCK) >= unitDef.cost.rock
+    }
+    
+    if (canAfford) {
       // For now, only implement lumberjack and fighter placement
       if (unitType === 'lumberjack') {
         // Check if we can actually place a lumberjack before deducting gold
@@ -403,39 +421,24 @@ export class PurchaseMenu {
           return
         }
         
-        // Only deduct gold if we can actually place the unit
-        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        // Only deduct resources if we can actually place the unit
+        if (typeof unitDef.cost === 'number') {
+          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        }
         this.startLumberjackPlacement()
       } else if (unitType === 'fighter') {
-        // Check if we can actually place a fighter before deducting gold
+        // Check if we can actually place a fighter before deducting resources
         const playerPos = Transform.get(engine.PlayerEntity).position
-        const nearestEnemy = findNearestEnemy(playerPos)
         
-        if (!nearestEnemy) {
-          // Play invalid placement sound
-          const soundEntity = engine.addEntity()
-          AudioSource.create(soundEntity, {
-            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
-            loop: false,
-            playing: true,
-            volume: 0.8
-          })
-          
-          // Remove sound entity after playing
-          utils.timers.setTimeout(() => {
-            engine.removeEntity(soundEntity)
-          }, 1000)
-          
-          player.gameController.uiController.displayAnnouncement(
-            'No enemies nearby! Place fighter near enemies.',
-            Color4.Red(),
-            3000
-          )
-          return
+        // Allow fighter placement without requiring enemies - tower defense strategy
+        // Only deduct resources if we can actually place the unit
+        if (typeof unitDef.cost === 'number') {
+          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        } else {
+          // Fighter cost structure
+          player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+          player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
         }
-        
-        // Only deduct gold if we can actually place the unit
-        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         this.startFighterPlacement()
       } else if (unitType === 'miner') {
         // Check if we can actually place a miner before deducting gold
@@ -465,8 +468,10 @@ export class PurchaseMenu {
           return
         }
         
-        // Only deduct gold if we can actually place the unit
-        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        // Only deduct resources if we can actually place the unit
+        if (typeof unitDef.cost === 'number') {
+          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        }
         this.startMinerPlacement()
       } else if (unitType === 'farmer') {
         // Check if we can actually place a farmer before deducting gold
@@ -496,8 +501,10 @@ export class PurchaseMenu {
           return
         }
         
-        // Only deduct gold if we can actually place the unit
-        player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        // Only deduct resources if we can actually place the unit
+        if (typeof unitDef.cost === 'number') {
+          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        }
         this.startFarmerPlacement()
       } else {
         // Play invalid placement sound for unavailable units
@@ -671,36 +678,7 @@ export class PurchaseMenu {
         // Get player position
         const playerPos = Transform.get(engine.PlayerEntity).position
         
-        // Check if there are enemies nearby
-        const nearestEnemy = findNearestEnemy(playerPos)
-        if (!nearestEnemy) {
-          // No enemies nearby, show invalid placement message
-          player.gameController.uiController.displayAnnouncement(
-            'No enemies nearby! Place fighter near enemies.',
-            Color4.Red(),
-            3000
-          )
-          
-          // Play invalid placement sound
-          const soundEntity = engine.addEntity()
-          AudioSource.create(soundEntity, {
-            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
-            loop: false,
-            playing: true,
-            volume: 0.8
-          })
-          
-          // Remove sound entity after playing
-          utils.timers.setTimeout(() => {
-            engine.removeEntity(soundEntity)
-          }, 1000)
-          
-          // Clear placement state but keep menu open
-          this.clearPlacementState()
-          return
-        }
-        
-        // Place fighter next to the player
+        // Place fighter next to the player for tower defense strategy
         const angle = Math.random() * Math.PI * 2
         const distance = 2 + Math.random() * 2
         const offsetX = Math.cos(angle) * distance
@@ -711,7 +689,7 @@ export class PurchaseMenu {
           playerPos.z + offsetZ
         )
         
-        console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos, 'near enemy at:', nearestEnemy)
+        console.log('Placing fighter at:', placementPos, 'next to player at:', playerPos)
         this.placeFighter(placementPos)
       }
     }
@@ -1392,7 +1370,9 @@ export class PurchaseMenu {
 
                   {/* Unit Cost */}
                   <Label
-                    value={`Cost: ${unitDef.cost} Coin`}
+                    value={typeof unitDef.cost === 'number' 
+                      ? `Cost: ${unitDef.cost} Coin` 
+                      : `Cost: ${unitDef.cost.wood} Wood, ${unitDef.cost.rock} Rock`}
                     fontSize={14}
                     color={canPurchase ? Color4.create(0.2, 0.9, 0.2, 1.0) : Color4.create(0.9, 0.2, 0.2, 1.0)}
                     textAlign="middle-left"
@@ -1451,7 +1431,7 @@ export class PurchaseMenu {
                     }}
                   >
                     <Label
-                      value={canPurchase ? "PURCHASE" : "INSUFFICIENT GOLD"}
+                      value={canPurchase ? "PURCHASE" : "INSUFFICIENT RESOURCES"}
                       fontSize={13}
                       color={Color4.White()}
                       textAlign="middle-center"
