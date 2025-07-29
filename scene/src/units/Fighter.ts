@@ -20,7 +20,7 @@ export class Fighter {
   public lastAttackTime: number
   public isPlaced: boolean = false
   public attackRange: number = 6 // Increased range to ensure combat entry
-  public attackDamage: number = 35
+  // attackDamage will be set from player stats
   public attackInterval: number = 4000 // 4 seconds between attacks (faster since turn-based)
   public targetExecutioner: Entity | null = null
   public isAttacking: boolean = false
@@ -44,9 +44,10 @@ export class Fighter {
   public searchAngle: number = 0 // Current search angle (0-360 degrees)
   public searchAngleIncrement: number = 45 // Degrees to turn between search directions
 
-  // Fighter health and combat stats
-  public health: number = 200
-  public maxHealth: number = 200
+  // Fighter health and combat stats - will be set from player stats
+  public health: number = 0
+  public maxHealth: number = 0
+  public attackDamage: number = 0
   public isDead: boolean = false
   public lastDamagedTime: number = 0
   public damageCooldown: number = 1000 // 1 second between taking damage
@@ -70,6 +71,7 @@ export class Fighter {
 
     console.log('Creating Fighter entity:', this.entity)
     this.setupModel()
+    this.initializeStatsFromPlayer()
   }
 
   private setupModel(): void {
@@ -120,6 +122,26 @@ export class Fighter {
       loop: false,
       playing: false
     })
+  }
+
+  private initializeStatsFromPlayer(): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) {
+      console.log('Player not found, using default fighter stats')
+      this.maxHealth = 200
+      this.health = 200
+      this.attackDamage = 35
+      return
+    }
+
+    // Get player's base health and attack including wearable bonuses
+    this.maxHealth = player.maxHealth
+    this.health = player.maxHealth
+    this.attackDamage = player.getPlayerAttack()
+
+    console.log(
+      `Fighter initialized with stats - Health: ${this.health}, Attack: ${this.attackDamage}`
+    )
   }
 
   public place(position: Vector3): void {
@@ -851,10 +873,18 @@ export class Fighter {
   private takeDamage(damage: number): void {
     if (this.isDead) return
 
-    this.health -= damage
+    // Apply player's defense bonuses to reduce damage
+    const player = Player.getInstanceOrNull()
+    let finalDamage = damage
+    if (player) {
+      const defensePercent = player.getDefensePercent()
+      finalDamage = Math.max(1, Math.round(damage * (1 - defensePercent)))
+    }
+
+    this.health -= finalDamage
     this.lastHitByExecutioner = Date.now() // Track when hit by executioner
     console.log(
-      `Fighter took ${damage} damage. Health: ${this.health}/${this.maxHealth}`
+      `Fighter took ${finalDamage} damage (reduced from ${damage}). Health: ${this.health}/${this.maxHealth}`
     )
 
     // Check if fighter died first

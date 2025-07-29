@@ -1029,6 +1029,18 @@ export class PurchaseMenu {
     return farmerSounds[randomIndex]
   }
 
+  private getFighterStats(): { health: number; attack: number } {
+    const player = Player.getInstanceOrNull()
+    if (!player) {
+      return { health: 200, attack: 35 } // Default stats
+    }
+    
+    return {
+      health: player.maxHealth,
+      attack: player.getPlayerAttack()
+    }
+  }
+
   private getAllAvailableRocks(playerPosition: Vector3): Vector3[] {
     const player = Player.getInstanceOrNull()
     if (!player) return []
@@ -1392,11 +1404,27 @@ export class PurchaseMenu {
                     textAlign="middle-left"
                     uiTransform={{
                       width: '85%',
-                      height: '50px',
+                      height: '30px',
                       positionType: 'absolute',
                       position: { left: '15px', top: '90px' }
                     }}
                   />
+
+                  {/* Fighter Stats - only show for fighter */}
+                  {unitDef.type === 'fighter' && (
+                    <Label
+                      value={`HP: ${this.getFighterStats().health} | ATK: ${this.getFighterStats().attack}`}
+                      fontSize={11}
+                      color={Color4.create(0.8, 0.8, 0.2, 1.0)}
+                      textAlign="middle-left"
+                      uiTransform={{
+                        width: '85%',
+                        height: '20px',
+                        positionType: 'absolute',
+                        position: { left: '15px', top: '120px' }
+                      }}
+                    />
+                  )}
 
                   {/* Purchase Button */}
                   <UiEntity
