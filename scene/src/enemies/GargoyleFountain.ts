@@ -15,6 +15,7 @@ import { entityController } from '../realms/entityController'
 import MonsterMobAuto from './monsterMobAuto'
 import Executioner from './Executioner'
 import * as utils from '@dcl-sdk/utils'
+import { CountdownTimerManager } from '../ui/timer/countdownTimerManager'
 
 export default class GargoyleFountain extends MonsterMobAuto {
   shapeFile = 'assets/models/gargoyle_fountain.glb'
@@ -26,6 +27,14 @@ export default class GargoyleFountain extends MonsterMobAuto {
   private rotationSpeed: number = 0.5 // degrees per frame
   private currentRotation: number = 0
   private spawnInterval: any = null
+
+  // New executioner spawning system
+  private initialDelay: number = 5 * 60 * 1000 // 5 minutes initial delay
+  private spawnCycleInterval: number = 3 * 60 * 1000 // 3 minutes between spawn cycles
+  private spawnWindowDuration: number = 45 * 1000 // 45 seconds spawn window
+  private isSpawning: boolean = false
+  private spawnCycleTimer: any = null
+  private spawnWindowTimer: any = null
 
   constructor() {
     const player = Player.getInstanceOrNull()
@@ -178,8 +187,11 @@ export default class GargoyleFountain extends MonsterMobAuto {
     // Add rotation system
     engine.addSystem(this.rotationSystem.bind(this))
 
-    // Start fountain attack system
-    this.startFountainAttackSystem()
+    // Add game time check system
+    engine.addSystem(this.gameTimeCheckSystem.bind(this))
+
+    // Start new executioner spawning system
+    this.startExecutionerSpawningSystem()
   }
 
   loadTransformation(): void {
@@ -273,12 +285,23 @@ export default class GargoyleFountain extends MonsterMobAuto {
     // Stop all executioner spawning
     this.stopExecutionerSpawning()
 
+    // Hide the countdown timer
+    CountdownTimerManager.getInstance().hideTimer()
+
     // Show game over UI
     this.showGameOverUI()
   }
 
   private stopExecutionerSpawning(): void {
-    // Clear any existing intervals
+    // Clear all timers
+    if (this.spawnCycleTimer) {
+      utils.timers.clearInterval(this.spawnCycleTimer)
+      this.spawnCycleTimer = null
+    }
+    if (this.spawnWindowTimer) {
+      utils.timers.clearTimeout(this.spawnWindowTimer)
+      this.spawnWindowTimer = null
+    }
     if (this.spawnInterval) {
       utils.timers.clearInterval(this.spawnInterval)
       this.spawnInterval = null
@@ -319,16 +342,66 @@ export default class GargoyleFountain extends MonsterMobAuto {
     }
   }
 
-  private startFountainAttackSystem(): void {
-    console.log('Starting fountain attack system')
+  // Game time check system
+  private gameTimeCheckSystem(dt: number): void {
+    if (this.isDead || this.isDeadAnimation) return
 
-    // Spawn executioners around the fountain every 10 seconds for testing
+    // Check if game time has expired
+    const timerManager = CountdownTimerManager.getInstance()
+    const currentTime = timerManager.getCurrentTime()
+
+    if (
+      currentTime.minutes === '00' &&
+      currentTime.seconds === '00' &&
+      currentTime.isVisible === false
+    ) {
+      // Game time has expired, trigger game over
+      console.log('Game time expired, triggering game over')
+      this.triggerGameOver()
+    }
+  }
+
+  private startExecutionerSpawningSystem(): void {
+    console.log('Starting new executioner spawning system')
+
+    // Initialize the countdown timer manager and reset it
+    CountdownTimerManager.getInstance().resetTimer()
+
+    // Schedule the first spawn cycle after initial delay
+    this.spawnCycleTimer = utils.timers.setTimeout(() => {
+      this.startSpawnCycle()
+    }, this.initialDelay)
+  }
+
+  private startSpawnCycle(): void {
+    if (this.isDead || this.isDeadAnimation) return
+
+    console.log('Starting executioner spawn cycle')
+    this.isSpawning = true
+
+    // Spawn executioners continuously for 45 seconds
     this.spawnInterval = utils.timers.setInterval(() => {
-      if (this.isDead || this.isDeadAnimation) return
+      if (this.isDead || this.isDeadAnimation || !this.isSpawning) return
 
-      console.log('Spawning executioners around fountain')
+      console.log('Spawning executioners during spawn window')
       this.spawnExecutionersAroundFountain()
-    }, 10000) // 10 seconds for testing
+    }, 5000) // Spawn every 5 seconds during the window
+
+    // Stop spawning after 45 seconds
+    this.spawnWindowTimer = utils.timers.setTimeout(() => {
+      console.log('Spawn window ended, stopping executioner spawning')
+      this.isSpawning = false
+
+      if (this.spawnInterval) {
+        utils.timers.clearInterval(this.spawnInterval)
+        this.spawnInterval = null
+      }
+
+      // Schedule next spawn cycle in 3 minutes
+      this.spawnCycleTimer = utils.timers.setTimeout(() => {
+        this.startSpawnCycle()
+      }, this.spawnCycleInterval)
+    }, this.spawnWindowDuration)
   }
 
   private spawnExecutionersAroundFountain(): void {

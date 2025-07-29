@@ -22,6 +22,8 @@ import { Player } from '../../player/player'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { LEVEL_TYPES } from '../../player/LevelManager'
 import { DeployedUnitsDisplay } from '../deployed-units/DeployedUnitsDisplay'
+import CountdownTimer from '../timer/countdownTimer'
+import { CountdownTimerManager } from '../timer/countdownTimerManager'
 
 // Number formatting function to abbreviate large numbers
 function formatNumber(num: number): string {
@@ -442,6 +444,14 @@ function MainHud({
       
       {/* Gargoyle Fountain Health */}
       <GargoyleFountainHealth />
+      
+      {/* Countdown Timer */}
+      <CountdownTimer 
+        minutes={CountdownTimerManager.getInstance().getCurrentTime().minutes}
+        seconds={CountdownTimerManager.getInstance().getCurrentTime().seconds}
+        isVisible={CountdownTimerManager.getInstance().getCurrentTime().isVisible}
+        shouldFlash={CountdownTimerManager.getInstance().getCurrentTime().shouldFlash}
+      />
 
       <UiEntity
         uiTransform={{
