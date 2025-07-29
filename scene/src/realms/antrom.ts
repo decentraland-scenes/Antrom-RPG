@@ -92,7 +92,6 @@ export class Antrom implements Realm {
   public readonly executioners: Executioner[]
   public readonly pigs: Pig[]
   public readonly chickens: Chicken[]
-  public waveEnemies: any[] = [] // Array to track wave enemies
   public gargoyleFountain!: GargoyleFountain
   public butcher!: BetaBoss1
   public jailGuard1!: Minion

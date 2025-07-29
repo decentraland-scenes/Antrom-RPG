@@ -14,7 +14,6 @@ import { Player } from '../player/player'
 import { entityController } from '../realms/entityController'
 import MonsterMobAuto from './monsterMobAuto'
 import Executioner from './Executioner'
-import WaveEnemy from './WaveEnemy'
 import * as utils from '@dcl-sdk/utils'
 
 export default class GargoyleFountain extends MonsterMobAuto {
@@ -27,27 +26,6 @@ export default class GargoyleFountain extends MonsterMobAuto {
   private rotationSpeed: number = 0.5 // degrees per frame
   private currentRotation: number = 0
   private spawnInterval: any = null
-
-  // Wave system properties
-  private currentWave: number = 1
-  private enemiesPerWave: number = 3
-  private waveInterval: number = 10000 // 10 seconds between waves
-  private modelList: string[] = [
-    'assets/models/SkeletonSword.glb',
-    'assets/models/SkeletonwBow.glb',
-    'assets/models/SkeletonSwordEnemy.glb',
-    'assets/models/SkeletonPvP.glb',
-    'assets/models/Sceleton.glb',
-    'assets/models/RockMonster.glb',
-    'assets/models/TreeMonster.glb',
-    'assets/models/Turkey.glb',
-    'assets/models/zombie.glb',
-    'assets/models/UndeadKing.glb',
-    'assets/models/Ghost.glb',
-    'assets/models/KnightSword.glb',
-    'assets/models/Chicken.glb',
-    'assets/models/Pig.glb'
-  ]
 
   constructor() {
     const player = Player.getInstanceOrNull()
@@ -342,89 +320,75 @@ export default class GargoyleFountain extends MonsterMobAuto {
   }
 
   private startFountainAttackSystem(): void {
-    console.log('Starting fountain attack system - Wave 1')
+    console.log('Starting fountain attack system')
 
-    // Spawn first wave immediately
-    console.log('Spawning first wave immediately')
-    this.spawnWaveEnemies()
-
-    // Spawn wave enemies around the fountain every 10 seconds
+    // Spawn executioners around the fountain every 10 seconds for testing
     this.spawnInterval = utils.timers.setInterval(() => {
       if (this.isDead || this.isDeadAnimation) return
 
-      console.log(`Spawning wave ${this.currentWave} enemies around fountain`)
-      this.spawnWaveEnemies()
-    }, this.waveInterval)
+      console.log('Spawning executioners around fountain')
+      this.spawnExecutionersAroundFountain()
+    }, 10000) // 10 seconds for testing
   }
 
-  private spawnWaveEnemies(): void {
-    // Specific spawn points for enemies - moved closer to fountain
+  private spawnExecutionersAroundFountain(): void {
+    // Specific spawn points for executioners
     const spawnPoints = [
-      Vector3.create(-20.22, 0.91, 2.24), // Closer to fountain
-      Vector3.create(-10.01, 0.91, 15.13), // Closer to fountain
-      Vector3.create(-8.28, 0.91, 0.6) // Closer to fountain
+      Vector3.create(-25.22, 0.91, -5.76),
+      Vector3.create(-16.01, 0.91, 23.13),
+      Vector3.create(-4.28, 0.91, -10.4),
+      Vector3.create(-18.22, 0.91, -8.54),
+      Vector3.create(-38.65, 0.92, 1.87),
+      Vector3.create(-33.07, 0.91, 35.57),
+      Vector3.create(5.34, 1.35, 15.28)
     ]
+    const numExecutioners = 3 // Spawn 3 executioners at a time
 
-    // Calculate wave difficulty
-    const enemiesThisWave =
-      this.enemiesPerWave + Math.floor(this.currentWave / 3) // +1 enemy every 3 waves
-    const modelIndex =
-      Math.floor((this.currentWave - 1) / 5) % this.modelList.length // Change model every 5 waves
-    const modelPath = this.modelList[modelIndex]
+    for (let i = 0; i < numExecutioners; i++) {
+      // Use specific spawn point
+      const spawnPoint = spawnPoints[i]
 
-    console.log(
-      `Wave ${this.currentWave}: Spawning ${enemiesThisWave} enemies with model: ${modelPath} (index: ${modelIndex}/${this.modelList.length})`
-    )
-    console.log('Available models:', this.modelList)
+      const executioner = new Executioner()
+      const executionerTransform = Transform.get(executioner.entity)
+      if (executionerTransform) {
+        Transform.getMutable(executioner.entity).position = spawnPoint
+        console.log(
+          `Spawned executioner at: ${spawnPoint.x}, ${spawnPoint.y}, ${spawnPoint.z}`
+        )
+      }
 
-    for (let i = 0; i < enemiesThisWave; i++) {
-      // Use specific spawn point (cycle through them)
-      const spawnPoint = spawnPoints[i % spawnPoints.length]
-
-      const waveEnemy = new WaveEnemy(modelPath, this.currentWave)
-
-      // Set position first before initializing
-      Transform.getMutable(waveEnemy.entity).position = spawnPoint
-      console.log(
-        `Spawned wave enemy at: ${spawnPoint.x}, ${spawnPoint.y}, ${spawnPoint.z}`
-      )
-
-      // Initialize the enemy properly after setting position
-      waveEnemy.initMonster()
-
-      // Initialize roaming system for the enemy
-      waveEnemy.initRoamingSystem()
-
-      // Force enemy to check for targets immediately
+      // Force executioner to check for targets immediately
       utils.timers.setTimeout(() => {
-        if (waveEnemy && !waveEnemy.isDead) {
-          console.log('Forcing wave enemy to check for targets')
+        // Trigger target detection after a short delay to ensure entity is fully initialized
+        if (executioner && !executioner.isDead) {
+          console.log('Forcing executioner to check for targets')
+          // The executioner should detect the fountain since it's spawned very close
         }
       }, 100)
 
-      // Add to the realm's enemies list
+      // Ensure executioner attack systems are properly initialized
+      if (executioner.attackSystem) {
+        engine.addSystem(
+          executioner.attackSystem.attackSystem.bind(executioner.attackSystem)
+        )
+      }
+      if (executioner.attackSystemRanged) {
+        engine.addSystem(
+          executioner.attackSystemRanged.attackSystem.bind(
+            executioner.attackSystemRanged
+          )
+        )
+      }
+
+      // Add to the realm's executioner list
       const player = Player.getInstanceOrNull()
       if (player && player.gameController.realmController.currentRealm) {
         const currentRealm = player.gameController.realmController
           .currentRealm as any
-        if (currentRealm.waveEnemies) {
-          currentRealm.waveEnemies.push(waveEnemy)
-        } else {
-          currentRealm.waveEnemies = [waveEnemy]
+        if (currentRealm.executioners) {
+          currentRealm.executioners.push(executioner)
         }
       }
-    }
-
-    // Increment wave counter
-    this.currentWave++
-
-    // Increase difficulty over time
-    if (this.currentWave % 5 === 0) {
-      // Every 5 waves, increase spawn rate slightly
-      this.waveInterval = Math.max(5000, this.waveInterval - 500) // Minimum 5 seconds
-      console.log(
-        `Wave ${this.currentWave}: Increased difficulty, new interval: ${this.waveInterval}ms`
-      )
     }
   }
 

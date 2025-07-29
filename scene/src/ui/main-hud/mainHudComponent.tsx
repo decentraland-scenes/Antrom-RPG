@@ -270,72 +270,6 @@ function GameOverScreen(): ReactEcs.JSX.Element {
   )
 }
 
-// Wave Display Component
-function WaveDisplay(): ReactEcs.JSX.Element {
-  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
-  if (canvasInfo === null) {
-    return <UiEntity />
-  }
-
-  const player = Player.getInstanceOrNull()
-  if (!player) {
-    return <UiEntity />
-  }
-
-  // Get gargoyle fountain from current realm
-  const currentRealm = player.gameController.realmController.currentRealm
-  if (!currentRealm || currentRealm.getId() !== 'antrom') {
-    return <UiEntity />
-  }
-
-  const gargoyleFountain = (currentRealm as any).gargoyleFountain
-  if (!gargoyleFountain || gargoyleFountain.isDead) {
-    return <UiEntity />
-  }
-
-  // Get current wave from gargoyle fountain
-  const currentWave = (gargoyleFountain as any).currentWave || 1
-
-  return (
-    <UiEntity
-      uiTransform={{
-        positionType: 'absolute',
-        position: { top: canvasInfo.height * 0.15, left: canvasInfo.width * 0.45 },
-        width: 200,
-        height: 60,
-        flexDirection: 'row',
-        alignItems: 'center'
-      }}
-      uiBackground={{ color: Color4.create(0, 0, 0, 0.8) }}
-    >
-      {/* Wave Icon */}
-      <UiEntity
-        uiTransform={{
-          width: 40,
-          height: 40,
-          margin: { right: 20 }
-        }}
-        uiBackground={{
-          textureMode: 'stretch',
-          texture: { src: 'assets/images/Inventory_ui_icon.png' }
-        }}
-      />
-      
-      {/* Wave Text */}
-      <Label
-        value={`Wave ${currentWave}`}
-        fontSize={24}
-        color={Color4.White()}
-        textAlign="middle-left"
-        uiTransform={{
-          width: '70%',
-          height: '100%'
-        }}
-      />
-    </UiEntity>
-  )
-}
-
 // Gargoyle Fountain Health Display Component
 function GargoyleFountainHealth(): ReactEcs.JSX.Element {
   const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
@@ -879,9 +813,6 @@ function MainHud({
 
       {/* Game Over Screen - rendered on top when game is over */}
       <GameOverScreen />
-
-      {/* Wave Display */}
-      <WaveDisplay />
     </Canvas>
   )
 }
