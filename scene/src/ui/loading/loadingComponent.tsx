@@ -1,4 +1,5 @@
 import ReactEcs, { UiEntity } from '@dcl/sdk/react-ecs'
+import { PlayButtonManager } from '../play-button/PlayButtonManager'
 
 type LoadingProps = {
   isLoading: boolean
@@ -58,7 +59,11 @@ function Loading({
           alignItems: 'flex-end'
         }}
         uiBackground={{ texture: { src: 'assets/images/classic.png' } }}
-        onMouseDown={changeVisibility}
+        onMouseDown={() => {
+          changeVisibility()
+          // Start the game when PLAY is clicked
+          PlayButtonManager.getInstance().startGame()
+        }}
       />
     </UiEntity>
   )

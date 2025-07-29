@@ -177,7 +177,7 @@ export class ConfirmLoot {
       void this.uiController.gameController.sendWearable.send(
         this.uiController.confirmAndSendLoot.urn,
         {
-          chicken: 0,
+          // chicken: 0, // Commented out
           wood: 0,
           iron: 0,
           bone: 0

@@ -15,7 +15,8 @@ export class CountdownTimerManager {
   private warningSoundEntity: any = null
 
   private constructor() {
-    this.startTimerSystem()
+    // Don't start timer immediately - wait for play button
+    // this.startTimerSystem()
   }
 
   public static getInstance(): CountdownTimerManager {
@@ -153,6 +154,12 @@ export class CountdownTimerManager {
 
   public showTimer(): void {
     this.isVisible = true
+  }
+
+  public initializeTimerSystem(): void {
+    if (!this.timerSystem) {
+      this.startTimerSystem()
+    }
   }
 
   public resetTimer(): void {

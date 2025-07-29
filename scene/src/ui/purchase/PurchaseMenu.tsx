@@ -8,7 +8,7 @@ import { AudioSource } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
 import { InputAction, PointerEventType, inputSystem } from '@dcl/sdk/ecs'
 
-export type UnitType = 'lumberjack' | 'miner' | 'farmer' | 'fighter'
+export type UnitType = 'lumberjack' | 'miner' | 'fighter' // 'farmer' commented out
 
 export interface UnitDefinition {
   type: UnitType
@@ -45,17 +45,17 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     description: 'Mines stone from rocks automatically. Coming soon!',
     modelPath: 'assets/models/miner.glb'
   },
-  farmer: {
-    type: 'farmer',
-    name: 'Farmer',
-    cost: 60,
-    resourceType: 'Food',
-    harvestAmount: 4,
-    harvestInterval: 5000,
-    range: 6,
-    description: 'Grows food from crops automatically. Coming soon!',
-    modelPath: 'assets/models/FarmerMale1.glb'
-  },
+  // farmer: {
+  //   type: 'farmer',
+  //   name: 'Farmer',
+  //   cost: 60,
+  //   resourceType: 'Food',
+  //   harvestAmount: 4,
+  //   harvestInterval: 5000,
+  //   range: 6,
+  //   description: 'Grows food from crops automatically. Coming soon!',
+  //   modelPath: 'assets/models/FarmerMale1.glb'
+  // },
   fighter: {
     type: 'fighter',
     name: 'Fighter',
@@ -473,39 +473,39 @@ export class PurchaseMenu {
           player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
         }
         this.startMinerPlacement()
-      } else if (unitType === 'farmer') {
-        // Check if we can actually place a farmer before deducting gold
-        const playerPos = Transform.get(engine.PlayerEntity).position
-        const nearestAnimal = findNearestAnimal(playerPos)
-        
-        if (!nearestAnimal) {
-          // Play invalid placement sound
-          const soundEntity = engine.addEntity()
-          AudioSource.create(soundEntity, {
-            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
-            loop: false,
-            playing: true,
-            volume: 0.8
-          })
-          
-          // Remove sound entity after playing
-          utils.timers.setTimeout(() => {
-            engine.removeEntity(soundEntity)
-          }, 1000)
-          
-          player.gameController.uiController.displayAnnouncement(
-            'Must be near animals to place farmer!',
-            Color4.Red(),
-            3000
-          )
-          return
-        }
-        
-        // Only deduct resources if we can actually place the unit
-        if (typeof unitDef.cost === 'number') {
-          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
-        }
-        this.startFarmerPlacement()
+      // } else if (unitType === 'farmer') {
+      //   // Check if we can actually place a farmer before deducting gold
+      //   const playerPos = Transform.get(engine.PlayerEntity).position
+      //   const nearestAnimal = findNearestAnimal(playerPos)
+      //   
+      //   if (!nearestAnimal) {
+      //     // Play invalid placement sound
+      //     const soundEntity = engine.addEntity()
+      //     AudioSource.create(soundEntity, {
+      //       audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+      //       loop: false,
+      //       playing: true,
+      //       volume: 0.8
+      //   })
+      //   
+      //   // Remove sound entity after playing
+      //   utils.timers.setTimeout(() => {
+      //     engine.removeEntity(soundEntity)
+      //   }, 1000)
+      //   
+      //   player.gameController.uiController.displayAnnouncement(
+      //     'Must be near animals to place farmer!',
+      //     Color4.Red(),
+      //     3000
+      //   )
+      //   return
+      // }
+      // 
+      // // Only deduct resources if we can actually place the unit
+      // if (typeof unitDef.cost === 'number') {
+      //   player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+      // }
+      // this.startFarmerPlacement()
       } else {
         // Play invalid placement sound for unavailable units
         const soundEntity = engine.addEntity()
@@ -862,102 +862,102 @@ export class PurchaseMenu {
     )
   }
 
-  private startFarmerPlacement(): void {
-    const player = Player.getInstanceOrNull()
-    if (!player) return
+  // private startFarmerPlacement(): void {
+  //   const player = Player.getInstanceOrNull()
+  //   if (!player) return
 
-    // Clean up any existing placement system
-    if (this.placementSystem) {
-      engine.removeSystem(this.placementSystem)
-      this.placementSystem = null
-    }
+  //   // Clean up any existing placement system
+  //   if (this.placementSystem) {
+  //     engine.removeSystem(this.placementSystem)
+  //     this.placementSystem = null
+  //   }
 
-    this.isPlacing = true
-    this.placingUnitType = 'farmer'
-    this.isVisible = false
-    
-    // Create placement system for farmer
-    this.placementSystem = () => {
-      if (this.isPlacing && this.placingUnitType === 'farmer' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
-        // Get player position
-        const playerPos = Transform.get(engine.PlayerEntity).position
-        
-        // Check if there are animals nearby
-        const nearestAnimal = findNearestAnimal(playerPos)
-        if (!nearestAnimal) {
-          // No animals nearby, show invalid placement message
-          player.gameController.uiController.displayAnnouncement(
-            'No animals nearby! Place farmer near animals.',
-            Color4.Red(),
-            3000
-          )
-          
-          // Play invalid placement sound
-          const soundEntity = engine.addEntity()
-          AudioSource.create(soundEntity, {
-            audioClipUrl: 'assets/sounds/invalidplacement.mp3',
-            loop: false,
-            playing: true,
-            volume: 0.8
-          })
-          
-          // Remove sound entity after playing
-          utils.timers.setTimeout(() => {
-            engine.removeEntity(soundEntity)
-          }, 1000)
-          
-          // Clear placement state but keep menu open
-          this.clearPlacementState()
-          return
-        }
-        
-        // Place farmer next to the player
-        const angle = Math.random() * Math.PI * 2
-        const distance = 2 + Math.random() * 2
-        const offsetX = Math.cos(angle) * distance
-        const offsetZ = Math.sin(angle) * distance
-        const placementPos = Vector3.create(
-          playerPos.x + offsetX,
-          playerPos.y - 0.5,
-          playerPos.z + offsetZ
-        )
-        
-        console.log('Placing farmer at:', placementPos, 'next to player at:', playerPos, 'near animal at:', nearestAnimal)
-        this.placeFarmer(placementPos)
-      }
-    }
-    
-    engine.addSystem(this.placementSystem)
-  }
+  //   this.isPlacing = true
+  //   this.placingUnitType = 'farmer'
+  //   this.isVisible = false
+  //   
+  //   // Create placement system for farmer
+  //   this.placementSystem = () => {
+  //     if (this.isPlacing && this.placingUnitType === 'farmer' && inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+  //       // Get player position
+  //       const playerPos = Transform.get(engine.PlayerEntity).position
+  //       
+  //       // Check if there are animals nearby
+  //       const nearestAnimal = findNearestAnimal(playerPos)
+  //       if (!nearestAnimal) {
+  //         // No animals nearby, show invalid placement message
+  //         player.gameController.uiController.displayAnnouncement(
+  //           'No animals nearby! Place farmer near animals.',
+  //           Color4.Red(),
+  //           3000
+  //         )
+  //         
+  //         // Play invalid placement sound
+  //         const soundEntity = engine.addEntity()
+  //         AudioSource.create(soundEntity, {
+  //           audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+  //           loop: false,
+  //           playing: true,
+  //           volume: 0.8
+  //         })
+  //         
+  //         // Remove sound entity after playing
+  //         utils.timers.setTimeout(() => {
+  //           engine.removeEntity(soundEntity)
+  //         }, 1000)
+  //         
+  //         // Clear placement state but keep menu open
+  //         this.clearPlacementState()
+  //         return
+  //       }
+  //       
+  //       // Place farmer next to the player
+  //       const angle = Math.random() * Math.PI * 2
+  //       const distance = 2 + Math.random() * 2
+  //       const offsetX = Math.cos(angle) * distance
+  //       const offsetZ = Math.sin(angle) * distance
+  //       const placementPos = Vector3.create(
+  //         playerPos.x + offsetX,
+  //         playerPos.y - 0.5,
+  //         playerPos.z + offsetZ
+  //       )
+  //       
+  //       console.log('Placing farmer at:', placementPos, 'next to player at:', playerPos, 'near animal at:', nearestAnimal)
+  //       this.placeFarmer(placementPos)
+  //     }
+  //   }
+  //   
+  //   engine.addSystem(this.placementSystem)
+  // }
 
-  private placeFarmer(position: Vector3): void {
-    const player = Player.getInstanceOrNull()
-    if (!player) return
+  // private placeFarmer(position: Vector3): void {
+  //   const player = Player.getInstanceOrNull()
+  //   if (!player) return
 
-    player.addFarmer(position)
-    this.hide()
-    
-    // Play farmer deployment sound
-    const soundEntity = engine.addEntity()
-    AudioSource.create(soundEntity, {
-      audioClipUrl: this.getRandomFarmerSound(),
-      loop: false,
-      playing: true,
-      volume: 1.0
-    })
-    
-    // Remove sound entity after playing
-    utils.timers.setTimeout(() => {
-      engine.removeEntity(soundEntity)
-    }, 3000)
-    
-    // Show success message
-    player.gameController.uiController.displayAnnouncement(
-      'Farmer deployed!',
-      Color4.Green(),
-      2000
-    )
-  }
+  //   player.addFarmer(position)
+  //   this.hide()
+  //   
+  //   // Play farmer deployment sound
+  //   const soundEntity = engine.addEntity()
+  //   AudioSource.create(soundEntity, {
+  //     audioClipUrl: this.getRandomFarmerSound(),
+  //     loop: false,
+  //     playing: true,
+  //     volume: 1.0
+  //   })
+  //   
+  //   // Remove sound entity after playing
+  //   utils.timers.setTimeout(() => {
+  //     engine.removeEntity(soundEntity)
+  //   }, 3000)
+  //   
+  //   // Show success message
+  //   player.gameController.uiController.displayAnnouncement(
+  //     'Farmer deployed!',
+  //     Color4.Green(),
+  //     2000
+  //   )
+  // }
 
   private getUnitIcon(unitType: UnitType): string {
     switch (unitType) {
@@ -965,8 +965,8 @@ export class PurchaseMenu {
         return '🪓' // Will be replaced with icon
       case 'miner':
         return '⛏️' // Will be replaced with icon
-      case 'farmer':
-        return '🌾' // Will be replaced with icon
+      // case 'farmer':
+      //   return '🌾' // Will be replaced with icon
       case 'fighter':
         return '⚔️' // Will be replaced with icon
       default:
@@ -980,8 +980,8 @@ export class PurchaseMenu {
         return 'assets/images/unitPurchase/icons/lumberjack_icon.png'
       case 'miner':
         return 'assets/images/unitPurchase/icons/miner_icon.png'
-      case 'farmer':
-        return 'assets/images/unitPurchase/icons/farmer_icon.png'
+      // case 'farmer':
+      //   return 'assets/images/unitPurchase/icons/farmer_icon.png'
       case 'fighter':
         return 'assets/images/unitPurchase/icons/fighter_icon.png'
       default:
@@ -1265,21 +1265,11 @@ export class PurchaseMenu {
                 position: { right: '40px', top: '-10px' }
               }}
               uiBackground={{
-                color: Color4.create(0.8, 0.2, 0.2, 1.0)
+                textureMode: 'stretch',
+                texture: { src: 'assets/images/x.png' }
               }}
               onMouseDown={() => this.hide()}
-            >
-              <Label
-                value="X"
-                fontSize={20}
-                color={Color4.White()}
-                textAlign="middle-center"
-                uiTransform={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              />
-            </UiEntity>
+            />
           </UiEntity>
 
           {/* Coin Display */}

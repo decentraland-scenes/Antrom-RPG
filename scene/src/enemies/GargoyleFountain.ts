@@ -190,8 +190,8 @@ export default class GargoyleFountain extends MonsterMobAuto {
     // Add game time check system
     engine.addSystem(this.gameTimeCheckSystem.bind(this))
 
-    // Start new executioner spawning system
-    this.startExecutionerSpawningSystem()
+    // Don't start spawning immediately - wait for play button
+    // this.startExecutionerSpawningSystem()
   }
 
   loadTransformation(): void {

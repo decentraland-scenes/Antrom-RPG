@@ -27,7 +27,7 @@ import { ScreenFlashManager } from '../ui/screenFlash'
 import { Lumberjack } from '../units/Lumberjack'
 import { Fighter } from '../units/Fighter'
 import { Miner } from '../units/Miner'
-import { Farmer } from '../units/Farmer'
+// import { Farmer } from '../units/Farmer' // Commented out
 
 // health increase by 10%
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -137,12 +137,12 @@ export class Player extends Character {
   public minerRange: number = 5
   public occupiedRocks: Set<string> = new Set() // Track which rocks have miners
 
-  // Farmer management
-  public farmers: Farmer[] = []
-  public farmerCost: number = 60
-  public farmerHarvestAmount: number = 1
-  public farmerHarvestInterval: number = 5000 // 5 seconds in milliseconds
-  public farmerRange: number = 8
+  // Farmer management - Commented out
+  // public farmers: Farmer[] = []
+  // public farmerCost: number = 60
+  // public farmerHarvestAmount: number = 1
+  // public farmerHarvestInterval: number = 5000 // 5 seconds in milliseconds
+  // public farmerRange: number = 8
 
   gameController: GameController
 
@@ -513,39 +513,39 @@ export class Player extends Character {
     }
   }
 
-  // Farmer methods
-  canPurchaseFarmer(): boolean {
-    return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.farmerCost
-  }
+  // Farmer methods - Commented out
+  // canPurchaseFarmer(): boolean {
+  //   return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.farmerCost
+  // }
 
-  purchaseFarmer(): boolean {
-    if (!this.canPurchaseFarmer()) {
-      return false
-    }
-    
-    this.inventory.reduceItem(ITEM_TYPES.COIN, this.farmerCost)
-    return true
-  }
+  // purchaseFarmer(): boolean {
+  //   if (!this.canPurchaseFarmer()) {
+  //     return false
+  //   }
+  //   
+  //   this.inventory.reduceItem(ITEM_TYPES.COIN, this.farmerCost)
+  //   return true
+  // }
 
-  addFarmer(position: Vector3): void {
-    console.log('Player.addFarmer called with position:', position)
-    
-    // Create new Farmer instance
-    const farmer = new Farmer(position)
-    farmer.place(position)
-    
-    // Add to farmers array
-    this.farmers.push(farmer)
-    
-    console.log('Farmer created and added to player.farmers array, total count:', this.farmers.length)
-  }
+  // addFarmer(position: Vector3): void {
+  //   console.log('Player.addFarmer called with position:', position)
+  //   
+  //   // Create new Farmer instance
+  //   const farmer = new Farmer(position)
+  //   farmer.place(position)
+  //   
+  //   // Add to farmers array
+  //   this.farmers.push(farmer)
+  //   
+  //   console.log('Farmer created and added to player.farmers array, total count:', this.farmers.length)
+  // }
 
-  updateFarmers(): void {
-    // Update each farmer (they handle their own harvesting logic)
-    for (const farmer of this.farmers) {
-      farmer.update()
-    }
-  }
+  // updateFarmers(): void {
+  //   // Update each farmer (they handle their own harvesting logic)
+  //   for (const farmer of this.farmers) {
+  //     farmer.update()
+  //   }
+  // }
 
   reduceHealth(attack: number): void {
     console.log('Player.reduceHealth called with attack:', attack)
@@ -771,8 +771,8 @@ export class Player extends Character {
     // Update miners
     this.updateMiners()
     
-    // Update farmers
-    this.updateFarmers()
+    // Update farmers - Commented out
+    // this.updateFarmers()
   }
 
   checkHealth(): boolean {

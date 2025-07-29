@@ -13,7 +13,7 @@ export class ConfirmAndSendLoot {
   name: string = ''
   urn: string = ''
   lootImage: string = ''
-  chicken: number = 0
+  // chicken: number = 0 // Commented out
   wood: number = 0
   iron: number = 0
   bone: number = 0
@@ -44,7 +44,7 @@ export class ConfirmAndSendLoot {
     this.name = name
     this.urn = urn
     this.lootImage = lootImage
-    this.chicken = chicken
+    // this.chicken = chicken // Commented out
     this.wood = wood
     this.iron = iron
     this.bone = bone
@@ -147,7 +147,7 @@ export class ConfirmAndSendLoot {
                       void this.uiController.gameController.sendWearable.send(
                         this.urn,
                         {
-                          chicken: 0,
+                          // chicken: 0, // Commented out
                           wood: 0,
                           iron: 0,
                           bone: 0

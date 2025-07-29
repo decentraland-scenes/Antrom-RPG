@@ -256,7 +256,8 @@ export class TowerUpgradeMenu {
                 position: { right: '40px', top: '-10px' }
               }}
               uiBackground={{
-                color: Color4.create(0.8, 0.2, 0.2, 1.0)
+                textureMode: 'stretch',
+                texture: { src: 'assets/images/x.png' }
               }}
               onMouseDown={() => {
                 // Play button click sound
@@ -274,18 +275,7 @@ export class TowerUpgradeMenu {
                 
                 this.hide()
               }}
-            >
-              <Label
-                value="X"
-                fontSize={20}
-                color={Color4.White()}
-                textAlign="middle-center"
-                uiTransform={{
-                  width: '100%',
-                  height: '100%'
-                }}
-              />
-            </UiEntity>
+            />
           </UiEntity>
 
           {/* Coin Display */}

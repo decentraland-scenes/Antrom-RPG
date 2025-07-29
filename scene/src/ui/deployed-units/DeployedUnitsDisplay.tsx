@@ -6,7 +6,7 @@ import { Player } from '../../player/player'
 import { Fighter } from '../../units/Fighter'
 import { Lumberjack } from '../../units/Lumberjack'
 import { Miner } from '../../units/Miner'
-import { Farmer } from '../../units/Farmer'
+// import { Farmer } from '../../units/Farmer' // Commented out
 
 interface DeployedUnitsDisplayProps {
   isVisible: boolean
@@ -100,19 +100,19 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
     })
   })
 
-  // Add farmers (no health system - always alive)
-  player.farmers.forEach((farmer: Farmer) => {
-    deployedUnits.push({
-      type: 'farmer',
-      health: 100,
-      maxHealth: 100,
-      isDead: false,
-      iconPath: 'assets/images/unitPurchase/icons/farmer_icon.png',
-      name: 'Farmer',
-      resourcesHarvested: farmer.totalChickenHarvested,
-      resourceType: 'Chicken'
-    })
-  })
+  // Add farmers (no health system - always alive) - Commented out
+  // player.farmers.forEach((farmer: Farmer) => {
+  //   deployedUnits.push({
+  //     type: 'farmer',
+  //     health: 100,
+  //     maxHealth: 100,
+  //     isDead: false,
+  //     iconPath: 'assets/images/unitPurchase/icons/farmer_icon.png',
+  //     name: 'Farmer',
+  //     resourcesHarvested: farmer.totalChickenHarvested,
+  //     resourceType: 'Chicken'
+  //   })
+  // })
 
   console.log('DeployedUnitsDisplay: Total deployed units:', deployedUnits.length)
   

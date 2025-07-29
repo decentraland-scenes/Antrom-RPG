@@ -24,6 +24,8 @@ import { LEVEL_TYPES } from '../../player/LevelManager'
 import { DeployedUnitsDisplay } from '../deployed-units/DeployedUnitsDisplay'
 import CountdownTimer from '../timer/countdownTimer'
 import { CountdownTimerManager } from '../timer/countdownTimerManager'
+import { PlayButton } from '../play-button/PlayButton'
+import { PlayButtonManager } from '../play-button/PlayButtonManager'
 
 // Number formatting function to abbreviate large numbers
 function formatNumber(num: number): string {
@@ -73,7 +75,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
 
   const woodCount = player.inventory.getItemCount(ITEM_TYPES.TREE)
   const rockCount = player.inventory.getItemCount(ITEM_TYPES.ROCK)
-  const chickenCount = player.inventory.getItemCount(ITEM_TYPES.CHICKEN)
+  // const chickenCount = player.inventory.getItemCount(ITEM_TYPES.CHICKEN) // Commented out
   const coinCount = player.inventory.getItemCount(ITEM_TYPES.COIN)
 
   const iconSize = canvasInfo.height * 0.04
@@ -133,7 +135,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
         }}
       />
 
-      {/* Farmer Counter */}
+      {/* Farmer Counter - Commented out
       <UiEntity
         uiTransform={{
           width: iconSize,
@@ -153,6 +155,7 @@ function ResourceCounter(): ReactEcs.JSX.Element {
           margin: { right: iconSize * 0.8 }
         }}
       />
+      */}
 
       {/* Coin Counter */}
       <UiEntity
@@ -445,11 +448,11 @@ function MainHud({
       {/* Gargoyle Fountain Health */}
       <GargoyleFountainHealth />
       
-      {/* Countdown Timer */}
+      {/* Countdown Timer - only show when game has started */}
       <CountdownTimer 
         minutes={CountdownTimerManager.getInstance().getCurrentTime().minutes}
         seconds={CountdownTimerManager.getInstance().getCurrentTime().seconds}
-        isVisible={CountdownTimerManager.getInstance().getCurrentTime().isVisible}
+        isVisible={CountdownTimerManager.getInstance().getCurrentTime().isVisible && PlayButtonManager.getInstance().getIsGameStarted()}
         shouldFlash={CountdownTimerManager.getInstance().getCurrentTime().shouldFlash}
       />
 
@@ -854,6 +857,14 @@ function MainHud({
 
       {/* Deployed Units Display */}
       <DeployedUnitsDisplay isVisible={true} />
+
+      {/* Rules Screen - rendered on top when game hasn't started */}
+      <PlayButton 
+        isVisible={PlayButtonManager.getInstance().getIsVisible()}
+        onPlayClicked={() => PlayButtonManager.getInstance().dismissRules()}
+      />
+
+
 
       {/* Game Over Screen - rendered on top when game is over */}
       <GameOverScreen />
