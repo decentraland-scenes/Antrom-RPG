@@ -23,6 +23,7 @@ import { ConfirmAndSendLoot } from '../ui/confirmloot/confirmAndSendLoot'
 import { Player } from '../player/player'
 
 import { PurchaseMenu } from '../ui/purchase/PurchaseMenu'
+import { TowerUpgradeMenu } from '../ui/tower-upgrade/TowerUpgradeMenu'
 
 export class UIController {
   loadingUI: LoadingUI
@@ -31,6 +32,7 @@ export class UIController {
   confirmAndSendLoot: ConfirmAndSendLoot
 
   purchaseMenu: PurchaseMenu
+  towerUpgradeMenu: TowerUpgradeMenu
   // Banner
   gameController: GameController
 
@@ -64,6 +66,7 @@ export class UIController {
     this.playDungeonUI = new PlayDungeonUI(this)
 
     this.purchaseMenu = new PurchaseMenu()
+    this.towerUpgradeMenu = new TowerUpgradeMenu()
     ReactEcsRenderer.setUiRenderer(this.ui.bind(this))
   }
 
@@ -202,6 +205,9 @@ export class UIController {
 
         {/* Purchase Menu */}
         {this.purchaseMenu.render()}
+
+        {/* Tower Upgrade Menu */}
+        {this.towerUpgradeMenu.render()}
 
         {/* Send Wearable */}
         <Canvas>{this.gameController.sendWearable.instructions?.render()}</Canvas>

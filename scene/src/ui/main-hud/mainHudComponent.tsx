@@ -723,6 +723,40 @@ function MainHud({
         {/* )} */}
       </UiEntity>
       
+      {/* Tower Upgrade Button - positioned above the units button */}
+      <UiEntity
+        uiTransform={{
+          width: hudHeight,
+          height: hudHeight,
+          position: { right: hudHeight * 0.2, top: hudHeight * 11.3 },
+          positionType: 'absolute'
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: {
+            src: 'assets/images/towerUpgradePurchace/Icon_Tower.png'
+          }
+        }}
+        onMouseDown={() => {
+          const player = Player.getInstanceOrNull()
+          if (player) {
+            player.gameController.uiController.towerUpgradeMenu.show()
+          }
+        }}
+      />
+      <Label
+        value="Tower"
+        fontSize={hudHeight * 0.2}
+        color={Color4.White()}
+        uiTransform={{
+          position: { right: hudHeight * 0.2, top: hudHeight * 12.0 },
+          positionType: 'absolute',
+          width: hudHeight,
+          height: hudHeight * 0.4
+        }}
+        textAlign="middle-center"
+      />
+
       {/* Units Button - positioned below the main HUD bar */}
       <UiEntity
         uiTransform={{
