@@ -1194,25 +1194,14 @@ export class PurchaseMenu {
 
     return (
       <Canvas>
-        {/* Background Overlay */}
+        {/* Main Menu Container - positioned to the left of Units button */}
         <UiEntity
           uiTransform={{
-            width: '100%',
-            height: '100%',
+            width: '400px',
+            height: '500px',
             positionType: 'absolute',
-            position: { left: 0, top: 0 }
-          }}
-          uiBackground={{ color: Color4.create(0, 0, 0, 0.4) }}
-        />
-        
-        {/* Main Menu Container */}
-        <UiEntity
-          uiTransform={{
-            width: '800px',
-            height: '600px',
-            positionType: 'absolute',
-            position: { left: '50%', top: '50%' },
-            margin: { left: '-400px', top: '-300px' }
+            position: { right: '120px', top: '70%' },
+            margin: { top: '-250px' }
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -1235,8 +1224,8 @@ export class PurchaseMenu {
           <UiEntity
             uiTransform={{
               width: '100%',
-              height: '50px',
-              margin: { top: '40px' },
+              height: '40px',
+              margin: { top: '60px' },
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row'
@@ -1250,7 +1239,7 @@ export class PurchaseMenu {
               }}
               uiText={{
                 value: 'WORKERS & UNITS',
-                fontSize: 24,
+                fontSize: 20,
                 color: Color4.White(),
                 textAlign: 'middle-center'
               }}
@@ -1262,7 +1251,7 @@ export class PurchaseMenu {
                 width: '40px',
                 height: '40px',
                 positionType: 'absolute',
-                position: { right: '40px', top: '-10px' }
+                position: { right: '30px', top: '-25px' }
               }}
               uiBackground={{
                 textureMode: 'stretch',
@@ -1275,10 +1264,10 @@ export class PurchaseMenu {
           {/* Coin Display */}
           <UiEntity
             uiTransform={{
-              width: '200px',
-              height: '40px',
+              width: '180px',
+              height: '35px',
               positionType: 'absolute',
-              position: { left: '50px', top: '40px' }
+              position: { left: '30px', top: '30px' }
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -1289,7 +1278,7 @@ export class PurchaseMenu {
           >
             <Label
               value={`Coin: ${goldAmount}`}
-              fontSize={16}
+              fontSize={14}
               color={Color4.Yellow()}
               textAlign="middle-center"
               uiTransform={{
@@ -1303,8 +1292,8 @@ export class PurchaseMenu {
           <UiEntity
             uiTransform={{
               width: '90%',
-              height: '450px',
-              margin: { top: '120px', left: '5%' },
+              height: '350px',
+              margin: { top: '100px', left: '5%' },
               positionType: 'absolute'
             }}
           >
@@ -1322,12 +1311,12 @@ export class PurchaseMenu {
                 <UiEntity
                   key={unitDef.type}
                   uiTransform={{
-                    width: '42%',
-                    height: '200px',
+                    width: '45%',
+                    height: '160px',
                     positionType: 'absolute',
                     position: { 
-                      top: `${Math.floor(index / 2) * 240}px`, 
-                      left: index % 2 === 0 ? '8%' : '55%' 
+                      top: `${Math.floor(index / 2) * 180}px`, 
+                      left: index % 2 === 0 ? '5%' : '52%' 
                     }
                   }}
                   uiBackground={{
@@ -1343,10 +1332,10 @@ export class PurchaseMenu {
                   {/* Unit Icon */}
                   <UiEntity
                     uiTransform={{
-                      width: '60px',
-                      height: '60px',
+                      width: '50px',
+                      height: '50px',
                       positionType: 'absolute',
-                      position: { left: '15px', top: '15px' }
+                      position: { left: '10px', top: '10px' }
                     }}
                     uiBackground={{
                       textureMode: 'stretch',
@@ -1359,14 +1348,14 @@ export class PurchaseMenu {
                   {/* Unit Name */}
                   <Label
                     value={unitDef.name}
-                    fontSize={18}
+                    fontSize={16}
                     color={Color4.White()}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '70%',
-                      height: '30px',
+                      height: '25px',
                       positionType: 'absolute',
-                      position: { left: '85px', top: '25px' }
+                      position: { left: '70px', top: '20px' }
                     }}
                   />
 
@@ -1375,28 +1364,28 @@ export class PurchaseMenu {
                     value={typeof unitDef.cost === 'number' 
                       ? `Cost: ${unitDef.cost} Coin` 
                       : `Cost: ${unitDef.cost.wood} Wood, ${unitDef.cost.rock} Rock`}
-                    fontSize={14}
+                    fontSize={12}
                     color={canPurchase ? Color4.create(0.2, 0.9, 0.2, 1.0) : Color4.create(0.9, 0.2, 0.2, 1.0)}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '70%',
-                      height: '25px',
+                      height: '20px',
                       positionType: 'absolute',
-                      position: { left: '85px', top: '55px' }
+                      position: { left: '70px', top: '45px' }
                     }}
                   />
 
                   {/* Unit Description */}
                   <Label
                     value={unitDef.description}
-                    fontSize={12}
+                    fontSize={11}
                     color={Color4.White()}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '85%',
-                      height: '30px',
+                      height: '25px',
                       positionType: 'absolute',
-                      position: { left: '15px', top: '90px' }
+                      position: { left: '10px', top: '70px' }
                     }}
                   />
 
@@ -1404,14 +1393,14 @@ export class PurchaseMenu {
                   {unitDef.type === 'fighter' && (
                     <Label
                       value={`HP: ${this.getFighterStats().health} | ATK: ${this.getFighterStats().attack}`}
-                      fontSize={11}
+                      fontSize={10}
                       color={Color4.create(0.8, 0.8, 0.2, 1.0)}
                       textAlign="middle-left"
                       uiTransform={{
                         width: '85%',
-                        height: '20px',
+                        height: '15px',
                         positionType: 'absolute',
-                        position: { left: '15px', top: '120px' }
+                        position: { left: '10px', top: '95px' }
                       }}
                     />
                   )}
@@ -1420,9 +1409,9 @@ export class PurchaseMenu {
                   <UiEntity
                     uiTransform={{
                       width: '90%',
-                      height: '35px',
+                      height: '30px',
                       positionType: 'absolute',
-                      position: { left: '5%', top: '155px' }
+                      position: { left: '5%', top: '125px' }
                     }}
                     uiBackground={{
                       color: canPurchase 
@@ -1450,7 +1439,7 @@ export class PurchaseMenu {
                   >
                     <Label
                       value={canPurchase ? "PURCHASE" : "INSUFFICIENT RESOURCES"}
-                      fontSize={13}
+                      fontSize={12}
                       color={Color4.White()}
                       textAlign="middle-center"
                       uiTransform={{

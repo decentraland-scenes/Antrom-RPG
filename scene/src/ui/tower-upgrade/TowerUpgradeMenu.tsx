@@ -184,25 +184,14 @@ export class TowerUpgradeMenu {
 
     return (
       <Canvas>
-        {/* Background Overlay */}
+        {/* Main Menu Container - positioned to the left of Tower button */}
         <UiEntity
           uiTransform={{
-            width: '100%',
-            height: '100%',
+            width: '400px',
+            height: '500px',
             positionType: 'absolute',
-            position: { left: 0, top: 0 }
-          }}
-          uiBackground={{ color: Color4.create(0, 0, 0, 0.4) }}
-        />
-        
-        {/* Main Menu Container */}
-        <UiEntity
-          uiTransform={{
-            width: '800px',
-            height: '600px',
-            positionType: 'absolute',
-            position: { left: '50%', top: '50%' },
-            margin: { left: '-400px', top: '-300px' }
+            position: { right: '120px', top: '70%' },
+            margin: { top: '-250px' }
           }}
           uiBackground={{
             textureMode: 'stretch',
@@ -226,8 +215,8 @@ export class TowerUpgradeMenu {
           <UiEntity
             uiTransform={{
               width: '100%',
-              height: '50px',
-              margin: { top: '40px' },
+              height: '40px',
+              margin: { top: '60px' },
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'row'
@@ -241,7 +230,7 @@ export class TowerUpgradeMenu {
               }}
               uiText={{
                 value: 'TOWER UPGRADES',
-                fontSize: 24,
+                fontSize: 20,
                 color: Color4.White(),
                 textAlign: 'middle-center'
               }}
@@ -253,7 +242,7 @@ export class TowerUpgradeMenu {
                 width: '40px',
                 height: '40px',
                 positionType: 'absolute',
-                position: { right: '40px', top: '-10px' }
+                position: { right: '30px', top: '-25px' }
               }}
               uiBackground={{
                 textureMode: 'stretch',
@@ -281,10 +270,10 @@ export class TowerUpgradeMenu {
           {/* Coin Display */}
           <UiEntity
             uiTransform={{
-              width: '200px',
-              height: '40px',
+              width: '180px',
+              height: '35px',
               positionType: 'absolute',
-              position: { left: '50px', top: '40px' }
+              position: { left: '30px', top: '30px' }
             }}
             uiBackground={{
               textureMode: 'stretch',
@@ -295,7 +284,7 @@ export class TowerUpgradeMenu {
           >
             <Label
               value={`Wood: ${woodAmount}`}
-              fontSize={16}
+              fontSize={14}
               color={Color4.Yellow()}
               textAlign="middle-center"
               uiTransform={{
@@ -309,8 +298,8 @@ export class TowerUpgradeMenu {
           <UiEntity
             uiTransform={{
               width: '90%',
-              height: '450px',
-              margin: { top: '120px', left: '5%' },
+              height: '350px',
+              margin: { top: '100px', left: '5%' },
               positionType: 'absolute'
             }}
           >
@@ -322,12 +311,12 @@ export class TowerUpgradeMenu {
                 <UiEntity
                   key={upgradeDef.type}
                   uiTransform={{
-                    width: '42%',
-                    height: '200px',
+                    width: '45%',
+                    height: '160px',
                     positionType: 'absolute',
                     position: { 
-                      top: `${Math.floor(index / 2) * 240}px`, 
-                      left: index % 2 === 0 ? '8%' : '55%' 
+                      top: `${Math.floor(index / 2) * 180}px`, 
+                      left: index % 2 === 0 ? '5%' : '52%' 
                     }
                   }}
                   uiBackground={{
@@ -343,10 +332,10 @@ export class TowerUpgradeMenu {
                   {/* Upgrade Icon */}
                   <UiEntity
                     uiTransform={{
-                      width: '60px',
-                      height: '60px',
+                      width: '50px',
+                      height: '50px',
                       positionType: 'absolute',
-                      position: { left: '15px', top: '15px' }
+                      position: { left: '10px', top: '10px' }
                     }}
                     uiBackground={{
                       textureMode: 'stretch',
@@ -359,56 +348,56 @@ export class TowerUpgradeMenu {
                   {/* Upgrade Name */}
                   <Label
                     value={upgradeDef.name}
-                    fontSize={16}
+                    fontSize={14}
                     color={Color4.White()}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '70%',
-                      height: '20px',
+                      height: '18px',
                       positionType: 'absolute',
-                      position: { left: '85px', top: '15px' }
+                      position: { left: '70px', top: '12px' }
                     }}
                   />
                   
                   {/* Upgrade Cost */}
                   <Label
                     value={`Cost: ${upgradeDef.cost} wood`}
-                    fontSize={12}
+                    fontSize={11}
                     color={Color4.Yellow()}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '70%',
                       height: '15px',
                       positionType: 'absolute',
-                      position: { left: '85px', top: '40px' }
+                      position: { left: '70px', top: '32px' }
                     }}
                   />
                   
                   {/* Upgrade Effect */}
                   <Label
                     value={upgradeDef.effect}
-                    fontSize={14}
+                    fontSize={12}
                     color={Color4.Green()}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '70%',
-                      height: '20px',
+                      height: '18px',
                       positionType: 'absolute',
-                      position: { left: '85px', top: '60px' }
+                      position: { left: '70px', top: '50px' }
                     }}
                   />
                   
                   {/* Upgrade Description */}
                   <Label
                     value={upgradeDef.description}
-                    fontSize={10}
+                    fontSize={9}
                     color={Color4.create(0.8, 0.8, 0.8, 1)}
                     textAlign="middle-left"
                     uiTransform={{
                       width: '90%',
-                      height: '40px',
+                      height: '35px',
                       positionType: 'absolute',
-                      position: { left: '5%', top: '85px' }
+                      position: { left: '5%', top: '70px' }
                     }}
                   />
                   
@@ -416,9 +405,9 @@ export class TowerUpgradeMenu {
                   <UiEntity
                     uiTransform={{
                       width: '90%',
-                      height: '35px',
+                      height: '30px',
                       positionType: 'absolute',
-                      position: { left: '5%', top: '155px' }
+                      position: { left: '5%', top: '125px' }
                     }}
                     uiBackground={{
                       color: canPurchase 
@@ -446,7 +435,7 @@ export class TowerUpgradeMenu {
                   >
                     <Label
                       value={canPurchase ? "UPGRADE" : "INSUFFICIENT WOOD"}
-                      fontSize={13}
+                      fontSize={12}
                       color={Color4.White()}
                       textAlign="middle-center"
                       uiTransform={{
