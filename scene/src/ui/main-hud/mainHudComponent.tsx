@@ -176,6 +176,306 @@ function ResourceCounter(): ReactEcs.JSX.Element {
   )
 }
 
+// Game Over Component
+function GameOverScreen(): ReactEcs.JSX.Element {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) {
+    return <UiEntity />
+  }
+
+  const player = Player.getInstanceOrNull()
+  if (!player) {
+    return <UiEntity />
+  }
+
+  // Check if game is over
+  const isGameOver = (player.gameController as any).isGameOver
+  if (!isGameOver) {
+    return <UiEntity />
+  }
+
+  return (
+    <UiEntity
+      uiTransform={{
+        positionType: 'absolute',
+        position: { top: 0, left: 0 },
+        width: canvasInfo.width,
+        height: canvasInfo.height
+      }}
+      uiBackground={{ color: Color4.create(0, 0, 0, 0.9) }}
+    >
+      {/* Game Over Title */}
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          position: { top: canvasInfo.height * 0.3, left: 0 },
+          width: canvasInfo.width,
+          height: 100
+        }}
+      >
+        <Label
+          value="GAME OVER"
+          fontSize={72}
+          color={Color4.Red()}
+          textAlign="middle-center"
+          uiTransform={{
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </UiEntity>
+
+      {/* Game Over Message */}
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          position: { top: canvasInfo.height * 0.45, left: 0 },
+          width: canvasInfo.width,
+          height: 60
+        }}
+      >
+        <Label
+          value="The Gargoyle Fountain has been destroyed!"
+          fontSize={24}
+          color={Color4.White()}
+          textAlign="middle-center"
+          uiTransform={{
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </UiEntity>
+
+      {/* Restart Message */}
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          position: { top: canvasInfo.height * 0.6, left: 0 },
+          width: canvasInfo.width,
+          height: 40
+        }}
+      >
+        <Label
+          value="Refresh the page to restart the game"
+          fontSize={18}
+          color={Color4.Yellow()}
+          textAlign="middle-center"
+          uiTransform={{
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </UiEntity>
+    </UiEntity>
+  )
+}
+
+// Wave Display Component
+function WaveDisplay(): ReactEcs.JSX.Element {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) {
+    return <UiEntity />
+  }
+
+  const player = Player.getInstanceOrNull()
+  if (!player) {
+    return <UiEntity />
+  }
+
+  // Get gargoyle fountain from current realm
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm || currentRealm.getId() !== 'antrom') {
+    return <UiEntity />
+  }
+
+  const gargoyleFountain = (currentRealm as any).gargoyleFountain
+  if (!gargoyleFountain || gargoyleFountain.isDead) {
+    return <UiEntity />
+  }
+
+  // Get current wave from gargoyle fountain
+  const currentWave = (gargoyleFountain as any).currentWave || 1
+
+  return (
+    <UiEntity
+      uiTransform={{
+        positionType: 'absolute',
+        position: { top: canvasInfo.height * 0.15, left: canvasInfo.width * 0.45 },
+        width: 200,
+        height: 60,
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}
+      uiBackground={{ color: Color4.create(0, 0, 0, 0.8) }}
+    >
+      {/* Wave Icon */}
+      <UiEntity
+        uiTransform={{
+          width: 40,
+          height: 40,
+          margin: { right: 20 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/Inventory_ui_icon.png' }
+        }}
+      />
+      
+      {/* Wave Text */}
+      <Label
+        value={`Wave ${currentWave}`}
+        fontSize={24}
+        color={Color4.White()}
+        textAlign="middle-left"
+        uiTransform={{
+          width: '70%',
+          height: '100%'
+        }}
+      />
+    </UiEntity>
+  )
+}
+
+// Gargoyle Fountain Health Display Component
+function GargoyleFountainHealth(): ReactEcs.JSX.Element {
+  const canvasInfo = UiCanvasInformation.getOrNull(engine.RootEntity)
+  if (canvasInfo === null) {
+    console.log('GargoyleFountainHealth: No canvas info')
+    return <UiEntity />
+  }
+
+  const player = Player.getInstanceOrNull()
+  if (!player) {
+    console.log('GargoyleFountainHealth: No player found')
+    return <UiEntity />
+  }
+
+  // Get gargoyle fountain from current realm
+  const currentRealm = player.gameController.realmController.currentRealm
+  if (!currentRealm || currentRealm.getId() !== 'antrom') {
+    return <UiEntity />
+  }
+
+  const gargoyleFountain = (currentRealm as any).gargoyleFountain
+  if (!gargoyleFountain || gargoyleFountain.isDead) {
+    return <UiEntity />
+  }
+
+    const healthPercent = (gargoyleFountain.health / gargoyleFountain.maxHealth) * 100
+  const iconSize = canvasInfo.height * 0.04
+  const fontSize = canvasInfo.height * 0.025
+  const barWidth = 300
+  const barHeight = 80
+  const healthBarHeight = 12
+
+  return (
+    <UiEntity
+      uiTransform={{
+        positionType: 'absolute',
+        position: { top: canvasInfo.height * 0.08, left: canvasInfo.width * 0.45 },
+        width: barWidth,
+        height: barHeight,
+        flexDirection: 'row',
+        alignItems: 'center'
+      }}
+      uiBackground={{ color: Color4.create(0, 0, 0, 0.8) }}
+    >
+      {/* Gargoyle Icon */}
+      <UiEntity
+        uiTransform={{
+          width: iconSize,
+          height: iconSize,
+          margin: { right: 20 }
+        }}
+        uiBackground={{
+          textureMode: 'stretch',
+          texture: { src: 'assets/images/Inventory_ui_icon.png' }
+        }}
+      />
+      
+      {/* Health Bar Container */}
+      <UiEntity
+        uiTransform={{
+          width: '70%',
+          height: barHeight,
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}
+      >
+        {/* Health Text */}
+        <Label
+          value={`Gargoyle Fountain`}
+          fontSize={14}
+          color={Color4.White()}
+          textAlign="middle-left"
+          uiTransform={{
+            width: '100%',
+            height: 20,
+            positionType: 'absolute',
+            position: { left: 0, top: 5 }
+          }}
+        />
+        
+        {/* Health Bar Background */}
+        <UiEntity
+          uiTransform={{
+            width: '100%',
+            height: healthBarHeight,
+            positionType: 'absolute',
+            position: { left: 0, top: 30 }
+          }}
+          uiBackground={{ color: Color4.create(0.2, 0.2, 0.2, 1) }}
+        />
+        
+        {/* Health Bar Fill */}
+        <UiEntity
+          uiTransform={{
+            width: `${(gargoyleFountain.health / gargoyleFountain.maxHealth) * 100}%`,
+            height: healthBarHeight,
+            positionType: 'absolute',
+            position: { left: 0, top: 30 }
+          }}
+          uiBackground={{
+            color: healthPercent > 50 
+              ? Color4.Green() 
+              : healthPercent > 25 
+                ? Color4.Yellow() 
+                : Color4.Red()
+          }}
+        />
+        
+        {/* Health Text */}
+        <Label
+          value={`${formatNumber(Math.max(0, gargoyleFountain.health))}/${formatNumber(gargoyleFountain.maxHealth)}`}
+          fontSize={12}
+          color={Color4.White()}
+          textAlign="middle-left"
+          uiTransform={{
+            width: '100%',
+            height: 15,
+            positionType: 'absolute',
+            position: { left: 0, top: 45 }
+          }}
+        />
+      </UiEntity>
+      
+      {/* Status */}
+      <Label
+        value={gargoyleFountain.isDead ? 'DESTROYED' : 'ALIVE'}
+        fontSize={10}
+        color={gargoyleFountain.isDead ? Color4.Red() : Color4.Green()}
+        textAlign="middle-right"
+        uiTransform={{
+          width: '25%',
+          height: 15,
+          positionType: 'absolute',
+          position: { left: '70%', top: 45 }
+        }}
+      />
+    </UiEntity>
+  )
+}
+
 function MainHud({
   isPlayerRollOpen,
   isInfoOpen,
@@ -205,6 +505,9 @@ function MainHud({
     <Canvas>
       {/* Resource Counter */}
       <ResourceCounter />
+      
+      {/* Gargoyle Fountain Health */}
+      <GargoyleFountainHealth />
 
       <UiEntity
         uiTransform={{
@@ -573,6 +876,12 @@ function MainHud({
 
       {/* Deployed Units Display */}
       <DeployedUnitsDisplay isVisible={true} />
+
+      {/* Game Over Screen - rendered on top when game is over */}
+      <GameOverScreen />
+
+      {/* Wave Display */}
+      <WaveDisplay />
     </Canvas>
   )
 }

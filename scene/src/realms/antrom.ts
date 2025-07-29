@@ -29,6 +29,7 @@ import {
 } from '../counters'
 import Chicken from '../enemies/chicken'
 import Executioner from '../enemies/Executioner'
+import GargoyleFountain from '../enemies/GargoyleFountain'
 import Pig from '../enemies/pig'
 import { setCurrentActiveScene } from '../instances'
 import { LeaderBoard } from '../leaderboard/leaderboard'
@@ -91,6 +92,8 @@ export class Antrom implements Realm {
   public readonly executioners: Executioner[]
   public readonly pigs: Pig[]
   public readonly chickens: Chicken[]
+  public waveEnemies: any[] = [] // Array to track wave enemies
+  public gargoyleFountain!: GargoyleFountain
   public butcher!: BetaBoss1
   public jailGuard1!: Minion
   public jailGuard2!: Minion
@@ -414,9 +417,10 @@ export class Antrom implements Realm {
       new MineableItem(mineables.berryTree, this.gameController),
       new MineableItem(mineables.berryTree, this.gameController)
     ]
-    for (let i = 0; i < 6; i++) {
-      this.executioners.push(new Executioner())
-    }
+    // Remove executioner spawning - they will be spawned around the fountain instead
+    // for (let i = 0; i < 6; i++) {
+    //   this.executioners.push(new Executioner())
+    // }
 
     for (let i = 0; i < 8; i++) {
       this.pigs.push(new Pig(this.gameController))
@@ -424,6 +428,9 @@ export class Antrom implements Realm {
     for (let i = 0; i < 16; i++) {
       this.chickens.push(new Chicken())
     }
+
+    // Spawn the gargoyle fountain in the middle of the map
+    this.gargoyleFountain = new GargoyleFountain()
     this.AntromNPCs()
     this.DungeonDoor()
     this.createTriggerZoneForBerserkerUpgradeMarket()

@@ -146,6 +146,12 @@ export class UIController {
     }, duration)
   }
 
+  showGameOverScreen(): void {
+    console.log('Showing game over screen')
+    // The game over screen is handled by the GameOverScreen component in mainHudComponent.tsx
+    // This method is called when the gargoyle fountain is destroyed
+  }
+
   ui(): ReactEcs.JSX.Element {
     return (
       <UiEntity>

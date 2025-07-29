@@ -325,28 +325,29 @@ export default class Executioner extends MonsterMobAuto {
     console.log('Health bar created for executioner')
 
     this.setupEngageTriggerBox()
-    this.setupAttackTriggerBox()
-    this.setupRangedAttackTriggerBox()
+    // Disable base class attack systems - executioners only attack gargoyle fountain
+    // this.setupAttackTriggerBox()
+    // this.setupRangedAttackTriggerBox()
 
-    // Use aggressive roaming configuration for executioners
-    this.attackSystem = new MonsterAttack(this, {
-      moveSpeed: 2.5,
-      engageDistance: this.engageDistance,
-      roaming: {
-        ...ROAMING_CONFIGS.aggressive,
-        roamRadius: 15,
-        roamSpeed: 1.2,
-        idleTime: 2,
-        maxRoamDistance: 20
-      }
-    })
+    // Disable base class attack systems - executioners use custom targeting
+    // this.attackSystem = new MonsterAttack(this, {
+    //   moveSpeed: 2.5,
+    //   engageDistance: this.engageDistance,
+    //   roaming: {
+    //     ...ROAMING_CONFIGS.aggressive,
+    //     roamRadius: 15,
+    //     roamSpeed: 1.2,
+    //     idleTime: 2,
+    //     maxRoamDistance: 20
+    //   }
+    // })
 
-    this.attackSystemRanged = new MonsterAttackRanged(this, {
-      moveSpeed: 2.5,
-      engageDistance: this.engageDistance
-    })
+    // this.attackSystemRanged = new MonsterAttackRanged(this, {
+    //   moveSpeed: 2.5,
+    //   engageDistance: this.engageDistance
+    // })
 
-    this.setupAttackHandler()
+    // this.setupAttackHandler()
   }
 
   setupAttackTriggerBox(): void {
@@ -391,7 +392,7 @@ export default class Executioner extends MonsterMobAuto {
     engine.addSystem(this.roamingUpdateSystem.bind(this))
   }
 
-  private checkForNearbyFighters(): void {
+  private checkForNearbyTargets(): void {
     const player = Player.getInstanceOrNull()
     if (!player) return
 
@@ -409,44 +410,82 @@ export default class Executioner extends MonsterMobAuto {
 
     // Get all fighters from the player
     const fighters = player.fighters || []
-    let nearbyFighter = false
-    let closestFighter = null
+    let nearbyTarget = false
+    let closestTarget = null
     let closestDistance = Infinity
+    let targetType: 'fighter' | 'gargoyle' = 'gargoyle'
 
-    for (const fighter of fighters) {
-      if (fighter && !fighter.isDead) {
+    // Check for gargoyle fountain first (primary target)
+    const currentRealm = player.gameController.realmController.currentRealm
+    if (currentRealm && currentRealm.getId() === 'antrom') {
+      const gargoyleFountain = (currentRealm as any).gargoyleFountain
+      if (gargoyleFountain && !gargoyleFountain.isDead) {
         try {
           const executionerTransform = Transform.get(this.entity)
+          const gargoyleTransform = Transform.get(gargoyleFountain.entity)
           const distance = Vector3.distance(
             executionerTransform.position,
-            fighter.position
+            gargoyleTransform.position
           )
-          if (distance <= 10) {
-            // 10 unit detection range
-            nearbyFighter = true
+          if (distance <= 20) {
+            // Larger range for gargoyle (primary target)
+            nearbyTarget = true
             if (distance < closestDistance) {
               closestDistance = distance
-              closestFighter = fighter
+              closestTarget = gargoyleFountain
+              targetType = 'gargoyle'
             }
           }
         } catch (error) {
-          console.log('Error checking fighter distance:', error)
-          continue
+          console.log('Error checking gargoyle distance:', error)
         }
       }
     }
 
-    this.isConfrontedByFighter = nearbyFighter
-    this.attackingFighter = closestFighter
+    // Check for fighters only if no gargoyle fountain nearby
+    if (!closestTarget) {
+      for (const fighter of fighters) {
+        if (fighter && !fighter.isDead) {
+          try {
+            const executionerTransform = Transform.get(this.entity)
+            const distance = Vector3.distance(
+              executionerTransform.position,
+              fighter.position
+            )
+            if (distance <= 10) {
+              // 10 unit detection range for fighters (secondary target)
+              nearbyTarget = true
+              if (distance < closestDistance) {
+                closestDistance = distance
+                closestTarget = fighter
+                targetType = 'fighter'
+              }
+            }
+          } catch (error) {
+            console.log('Error checking fighter distance:', error)
+            continue
+          }
+        }
+      }
+    }
+
+    this.isConfrontedByFighter = nearbyTarget
+    this.attackingFighter = closestTarget
 
     // Handle combat state transitions
     const currentTime = Date.now()
 
-    if (closestFighter) {
+    if (closestTarget) {
       const executionerTransform = Transform.get(this.entity)
       const distance = Vector3.distance(
         executionerTransform.position,
-        closestFighter.position
+        targetType === 'fighter'
+          ? closestTarget.position
+          : Transform.get(closestTarget.entity).position
+      )
+
+      console.log(
+        `Executioner found ${targetType} at distance: ${distance.toFixed(2)}`
       )
 
       if (distance <= 5) {
@@ -454,12 +493,15 @@ export default class Executioner extends MonsterMobAuto {
         if (this.combatState === 'idle') {
           // Starting combat - executioner gets initiative if fighter doesn't have it
           this.combatState = 'engaged'
-          this.combatTarget = closestFighter.entity
-          this.hasInitiative = !closestFighter.hasInitiative // Opposite of fighter's initiative
+          this.combatTarget = closestTarget.entity
+          this.hasInitiative =
+            targetType === 'fighter' ? !closestTarget.hasInitiative : true // Gargoyle doesn't have initiative
           this.lastCombatAction = currentTime
 
           console.log(
-            `Executioner entering combat with initiative: ${this.hasInitiative}`
+            `Executioner entering combat with ${targetType} (${
+              targetType === 'gargoyle' ? 'fountain' : 'fighter'
+            }) with initiative: ${this.hasInitiative}`
           )
         }
 
@@ -476,11 +518,11 @@ export default class Executioner extends MonsterMobAuto {
           currentTime - this.lastCombatAction >= this.combatActionInterval
         ) {
           if (this.hasInitiative) {
-            // Executioner has initiative - attack fighter
+            // Executioner has initiative - attack target
             console.log('Executioner has initiative - ATTACKING!')
-            this.attackFighter()
-            this.hasInitiative = false // Give initiative to fighter
-            console.log('Executioner attacked, giving initiative to fighter')
+            this.attackTarget()
+            this.hasInitiative = false // Give initiative to target
+            console.log('Executioner attacked, giving initiative to target')
           } else {
             // Executioner doesn't have initiative - check if fighter has attacked recently
             // If fighter hasn't attacked in a while, executioner can regain initiative
@@ -577,68 +619,132 @@ export default class Executioner extends MonsterMobAuto {
 
     const currentTime = Date.now()
 
-    // Check for nearby fighters periodically
+    // Check for nearby targets periodically
     if (currentTime - this.lastFighterCheck >= this.fighterCheckInterval) {
-      this.checkForNearbyFighters()
+      this.checkForNearbyTargets()
       this.lastFighterCheck = currentTime
     }
 
-    // Only roam when not engaged with player and not confronted by fighter
+    // Move towards target if found, otherwise roam
     if (
+      this.isConfrontedByFighter &&
+      this.attackingFighter &&
+      !this.isDeadAnimation
+    ) {
+      try {
+        const target = this.attackingFighter
+        const executionerTransform = Transform.get(this.entity)
+        const targetTransform = Transform.get(target.entity)
+
+        if (executionerTransform && targetTransform) {
+          const distance = Vector3.distance(
+            executionerTransform.position,
+            targetTransform.position
+          )
+
+          console.log(
+            `Executioner moving towards target, distance: ${distance.toFixed(
+              2
+            )}`
+          )
+
+          if (distance > 5) {
+            // Move towards target
+            const direction = Vector3.subtract(
+              targetTransform.position,
+              executionerTransform.position
+            )
+            const normalizedDirection = Vector3.normalize(direction)
+            const moveSpeed = 2.0
+
+            // Update position
+            const newPosition = Vector3.add(
+              executionerTransform.position,
+              Vector3.scale(normalizedDirection, moveSpeed * dt)
+            )
+            Transform.getMutable(this.entity).position = newPosition
+
+            // Play walk animation
+            const walkAnim = Animator.getClip(this.entity, this.walkClip)
+            const idleAnim = Animator.getClip(this.entity, this.idleClip)
+
+            if (walkAnim && !walkAnim.playing) {
+              walkAnim.playing = true
+            }
+            if (idleAnim && idleAnim.playing) {
+              idleAnim.playing = false
+            }
+          } else {
+            // Stop and attack
+            const idleAnim = Animator.getClip(this.entity, this.idleClip)
+            const walkAnim = Animator.getClip(this.entity, this.walkClip)
+
+            if (walkAnim && walkAnim.playing) {
+              walkAnim.playing = false
+            }
+            if (idleAnim && !idleAnim.playing) {
+              idleAnim.playing = true
+            }
+
+            // Attack target if enough time has passed
+            if (
+              currentTime - this.lastFighterAttackTime >=
+              this.fighterAttackInterval
+            ) {
+              this.attackTarget()
+              this.lastFighterAttackTime = currentTime
+            }
+          }
+        }
+      } catch (error) {
+        console.log('Error moving executioner towards target:', error)
+      }
+    } else if (
       !this.isEngaged &&
       !this.isConfrontedByFighter &&
       this.roamingSystem &&
       !this.isDeadAnimation
     ) {
+      // Normal roaming when no target found
       this.roamingSystem.update(dt)
-    } else if (this.isConfrontedByFighter && !this.isDeadAnimation) {
-      // Stop moving and play idle animation when confronted by fighter
-      try {
-        const idleAnim = Animator.getClip(this.entity, this.idleClip)
-        const walkAnim = Animator.getClip(this.entity, this.walkClip)
-
-        if (walkAnim && walkAnim.playing) {
-          walkAnim.playing = false
-        }
-        if (idleAnim && !idleAnim.playing) {
-          idleAnim.playing = true
-        }
-      } catch (error) {
-        console.log('Error updating executioner animations:', error)
-      }
-
-      // Attack fighter if enough time has passed
-      if (
-        currentTime - this.lastFighterAttackTime >=
-        this.fighterAttackInterval
-      ) {
-        this.attackFighter()
-        this.lastFighterAttackTime = currentTime
-      }
     }
   }
 
-  private attackFighter(): void {
+  private attackTarget(): void {
     if (!this.attackingFighter || this.isDeadAnimation) return
 
     try {
-      const fighter = this.attackingFighter
+      const target = this.attackingFighter
       const executionerTransform = Transform.get(this.entity)
-      const fighterTransform = Transform.get(fighter.entity)
+      const targetTransform = Transform.get(target.entity)
 
-      if (!executionerTransform || !fighterTransform) return
+      if (!executionerTransform || !targetTransform) return
 
       const distance = Vector3.distance(
         executionerTransform.position,
-        fighterTransform.position
+        targetTransform.position
       )
 
-      // Only attack if fighter is close enough (within 5 units)
+      // Face the target when close enough
+      if (distance <= 8) {
+        this.faceTarget(targetTransform.position)
+      }
+
+      // Only attack if target is close enough (within 5 units)
       if (distance <= 5) {
+        const isFighter =
+          target.hasOwnProperty('takeDamage') &&
+          typeof target.takeDamage === 'function'
+        const targetName = isFighter ? 'fighter' : 'gargoyle fountain'
+
         console.log(
-          'Executioner attacking fighter at distance:',
+          `Executioner attacking ${targetName} at distance:`,
           distance.toFixed(2)
         )
+
+        // Stop movement and face target
+        this.stopMovement()
+        this.faceTarget(targetTransform.position)
 
         // Play attack animation with smart animation state management
         const attackAnim = Animator.getClip(this.entity, this.attackClip)
@@ -665,11 +771,17 @@ export default class Executioner extends MonsterMobAuto {
           console.log('Executioner: Started attack animation')
         }
 
-        // Deal damage to fighter
+        // Deal damage to target
         const damage = this.attack // Use executioner's attack value
-        fighter.takeDamage(damage)
 
-        console.log(`Executioner dealt ${damage} damage to fighter`)
+        if (isFighter) {
+          target.takeDamage(damage)
+          console.log(`Executioner dealt ${damage} damage to fighter`)
+        } else {
+          // Attack gargoyle fountain
+          target.reduceHealth(damage)
+          console.log(`Executioner dealt ${damage} damage to gargoyle fountain`)
+        }
 
         // Return to idle after attack animation (2 seconds) - using smart animation state management
         utils.timers.setTimeout(() => {
@@ -687,8 +799,111 @@ export default class Executioner extends MonsterMobAuto {
         }, 2000)
       }
     } catch (error) {
-      console.log('Error attacking fighter:', error)
+      console.log('Error attacking target:', error)
     }
+  }
+
+  private faceTarget(targetPosition: Vector3): void {
+    try {
+      const executionerTransform = Transform.get(this.entity)
+      if (!executionerTransform) return
+
+      const direction = Vector3.subtract(
+        targetPosition,
+        executionerTransform.position
+      )
+      const lookRotation = Quaternion.lookRotation(direction)
+
+      Transform.getMutable(this.entity).rotation = lookRotation
+      console.log('Executioner facing target')
+    } catch (error) {
+      console.log('Error facing target:', error)
+    }
+  }
+
+  private stopMovement(): void {
+    try {
+      // Stop walking animation
+      const walkAnim = Animator.getClip(this.entity, this.walkClip)
+      const idleAnim = Animator.getClip(this.entity, this.idleClip)
+
+      if (walkAnim && walkAnim.playing) {
+        walkAnim.playing = false
+        console.log('Executioner: Stopped walk animation')
+      }
+      if (idleAnim && !idleAnim.playing) {
+        idleAnim.playing = true
+        console.log('Executioner: Started idle animation')
+      }
+
+      // Stop roaming by setting state flags
+      this.isEngaged = true
+      this.isConfrontedByFighter = true
+    } catch (error) {
+      console.log('Error stopping movement:', error)
+    }
+  }
+
+  // Override handleAttack to prevent attacking the player
+  handleAttack(): void {
+    // Executioners only attack the gargoyle fountain, not the player
+    console.log('Executioner handleAttack called - ignoring player attacks')
+    return
+  }
+
+  // Override attackPlayer to prevent attacking the player
+  attackPlayer(enemyAttack: number): void {
+    // Executioners only attack the gargoyle fountain, not the player
+    console.log('Executioner attackPlayer called - ignoring player attacks')
+    return
+  }
+
+  // Override performAttack to only attack the gargoyle fountain
+  performAttack(damage: number, isCriticalAttack: boolean): void {
+    // Only attack if we have a valid target and it's the gargoyle fountain
+    if (!this.attackingFighter) {
+      console.log('Executioner: No target to attack')
+      return
+    }
+
+    // Check if target is gargoyle fountain
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    const currentRealm = player.gameController.realmController.currentRealm
+    if (!currentRealm || currentRealm.getId() !== 'antrom') return
+
+    const gargoyleFountain = (currentRealm as any).gargoyleFountain
+    if (!gargoyleFountain || gargoyleFountain.isDead) {
+      console.log('Executioner: Gargoyle fountain not found or dead')
+      return
+    }
+
+    // Check if our target is the gargoyle fountain
+    if (this.attackingFighter !== gargoyleFountain) {
+      console.log(
+        'Executioner: Target is not gargoyle fountain, ignoring attack'
+      )
+      return
+    }
+
+    console.log('Executioner: Attacking gargoyle fountain with damage:', damage)
+
+    // Play attack animation
+    this.playAttack()
+
+    // Apply damage to gargoyle fountain
+    gargoyleFountain.reduceHealth(damage)
+
+    // Update UI
+    const mainHUD = player.gameController.uiController.mainHud
+    if (mainHUD !== null) {
+      mainHUD.lastEnemyAttack = damage
+      mainHUD.lastPlayerAttack = 'MISSED'
+    }
+
+    // Play sound
+    AudioSource.playSound(this.entity, 'assets/sounds/attack.mp3')
   }
 
   // Override the engage trigger to track engagement state
