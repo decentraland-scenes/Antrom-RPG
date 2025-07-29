@@ -155,7 +155,7 @@ export class TowerUpgradeMenu {
       // Play insufficient funds sound
       const soundEntity = engine.addEntity()
       AudioSource.create(soundEntity, {
-        audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+        audioClipUrl: 'assets/sounds/noResources.mp3',
         loop: false,
         playing: true,
         volume: 0.8
@@ -427,9 +427,32 @@ export class TowerUpgradeMenu {
                         // Remove sound entity after playing
                         utils.timers.setTimeout(() => {
                           engine.removeEntity(soundEntity)
-                        }, 1000)
+                        }, 3000) // Increased to 3 seconds to allow full sound to play
                         
                         this.purchaseUpgrade(upgradeDef.type)
+                      } else {
+                        // Play insufficient resources sound when button is clicked but can't afford
+                        const soundEntity = engine.addEntity()
+                        AudioSource.create(soundEntity, {
+                          audioClipUrl: 'assets/sounds/noResources.mp3',
+                          loop: false,
+                          playing: true,
+                          volume: 0.8
+                        })
+                        
+                        // Remove sound entity after playing
+                        utils.timers.setTimeout(() => {
+                          engine.removeEntity(soundEntity)
+                        }, 3000) // Increased to 3 seconds to allow full sound to play
+                        
+                        const player = Player.getInstanceOrNull()
+                        if (player) {
+                          player.gameController.uiController.displayAnnouncement(
+                            'Insufficient wood for upgrade!',
+                            Color4.Red(),
+                            3000
+                          )
+                        }
                       }
                     }}
                   >

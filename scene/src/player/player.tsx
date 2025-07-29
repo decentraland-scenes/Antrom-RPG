@@ -245,8 +245,8 @@ export class Player extends Character {
     this.consecutiveLoginDays = 0
     this.questTime = 99999
     
-    // Start with 500K gold for testing
-    this.inventory.setItem(ITEM_TYPES.COIN, 500000)
+    // Start with 500 coins
+    this.inventory.setItem(ITEM_TYPES.COIN, 500)
     // this.lvEvent(this.level)
     // StatusHUD.updateLv(this.level)
     // executeTask(async () => {

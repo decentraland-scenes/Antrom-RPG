@@ -25,7 +25,7 @@ export interface UnitDefinition {
 export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
   lumberjack: {
     type: 'lumberjack',
-    name: 'Lumberjack',
+    name: 'Chopper',
     cost: 50,
     resourceType: 'Wood',
     harvestAmount: 3,
@@ -42,7 +42,7 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     harvestAmount: 2,
     harvestInterval: 4000,
     range: 4,
-    description: 'Mines stone from rocks automatically. Coming soon!',
+    description: 'Mines stone from rocks automatically. Places near rocks.',
     modelPath: 'assets/models/miner.glb'
   },
   // farmer: {
@@ -381,6 +381,20 @@ export class PurchaseMenu {
 
         // Check if player can afford the unit
         if (!this.canPurchaseUnit(unitType)) {
+          // Play insufficient resources sound
+          const soundEntity = engine.addEntity()
+          AudioSource.create(soundEntity, {
+            audioClipUrl: 'assets/sounds/noResources.mp3',
+            loop: false,
+            playing: true,
+            volume: 0.8
+          })
+          
+          // Remove sound entity after playing
+          utils.timers.setTimeout(() => {
+            engine.removeEntity(soundEntity)
+          }, 3000) // Increased to 3 seconds to allow full sound to play
+          
           player.gameController.uiController.displayAnnouncement(
             'Insufficient resources for continuous placement!',
             Color4.Red(),
@@ -390,20 +404,24 @@ export class PurchaseMenu {
           return
         }
 
-        // Deduct resources only when actually placing the unit
-        const unitDef = UNIT_DEFINITIONS[unitType]
-        if (typeof unitDef.cost === 'number') {
-          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
-        } else {
-          // Multi-resource cost structure (fighter)
-          player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
-          player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
-        }
-
         // Handle different unit types
         if (unitType === 'lumberjack') {
           const availableTrees = this.getAllAvailableTrees(playerPos)
           if (availableTrees.length === 0) {
+            // Play invalid placement sound
+            const soundEntity = engine.addEntity()
+            AudioSource.create(soundEntity, {
+              audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+              loop: false,
+              playing: true,
+              volume: 0.8
+            })
+            
+            // Remove sound entity after playing
+            utils.timers.setTimeout(() => {
+              engine.removeEntity(soundEntity)
+            }, 2000)
+            
             player.gameController.uiController.displayAnnouncement(
               'No available trees nearby! Move closer to trees.',
               Color4.Red(),
@@ -441,6 +459,16 @@ export class PurchaseMenu {
             selectedTree.z + offsetZ
           )
 
+          // Deduct resources only after successful validation
+          const unitDef = UNIT_DEFINITIONS[unitType]
+          if (typeof unitDef.cost === 'number') {
+            player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+          } else {
+            // Multi-resource cost structure (fighter)
+            player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+            player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
+          }
+          
           this.placeLumberjack(placementPos, selectedTree)
         } else if (unitType === 'fighter') {
           const angle = Math.random() * Math.PI * 2
@@ -453,10 +481,34 @@ export class PurchaseMenu {
             playerPos.z + offsetZ
           )
 
+          // Deduct resources only after successful validation
+          const unitDef = UNIT_DEFINITIONS[unitType]
+          if (typeof unitDef.cost === 'number') {
+            player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+          } else {
+            // Multi-resource cost structure (fighter)
+            player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+            player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
+          }
+          
           this.placeFighter(placementPos)
         } else if (unitType === 'miner') {
           const availableRocks = this.getAllAvailableRocks(playerPos)
           if (availableRocks.length === 0) {
+            // Play invalid placement sound
+            const soundEntity = engine.addEntity()
+            AudioSource.create(soundEntity, {
+              audioClipUrl: 'assets/sounds/invalidplacement.mp3',
+              loop: false,
+              playing: true,
+              volume: 0.8
+            })
+            
+            // Remove sound entity after playing
+            utils.timers.setTimeout(() => {
+              engine.removeEntity(soundEntity)
+            }, 2000)
+            
             player.gameController.uiController.displayAnnouncement(
               'No available rocks nearby! Move closer to rocks.',
               Color4.Red(),
@@ -494,6 +546,16 @@ export class PurchaseMenu {
             selectedRock.z + offsetZ
           )
 
+          // Deduct resources only after successful validation
+          const unitDef = UNIT_DEFINITIONS[unitType]
+          if (typeof unitDef.cost === 'number') {
+            player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+          } else {
+            // Multi-resource cost structure (fighter)
+            player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+            player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
+          }
+          
           this.placeMiner(placementPos, selectedRock)
         }
       }
@@ -1208,6 +1270,18 @@ export class PurchaseMenu {
     }
   }
 
+  private getResourcePerMinute(unitType: UnitType): string {
+    const unitDef = UNIT_DEFINITIONS[unitType]
+    if (unitType === 'lumberjack') {
+      const perMinute = Math.round((unitDef.harvestAmount * 60000) / unitDef.harvestInterval)
+      return `${perMinute} wood/min`
+    } else if (unitType === 'miner') {
+      const perMinute = Math.round((unitDef.harvestAmount * 60000) / unitDef.harvestInterval)
+      return `${perMinute} stone/min`
+    }
+    return ''
+  }
+
   private getAllAvailableRocks(playerPosition: Vector3): Vector3[] {
     const player = Player.getInstanceOrNull()
     if (!player) return []
@@ -1459,7 +1533,7 @@ export class PurchaseMenu {
           <UiEntity
             uiTransform={{
               width: '90%',
-              height: '350px',
+              height: '320px', // Increased from 280px to accommodate larger cards
               margin: { top: '100px', left: '5%' },
               positionType: 'absolute'
             }}
@@ -1480,10 +1554,10 @@ export class PurchaseMenu {
                   key={unitDef.type}
                   uiTransform={{
                     width: '45%',
-                    height: '160px',
+                    height: '140px', // Increased from 120px for better text spacing
                     positionType: 'absolute',
                     position: { 
-                      top: `${Math.floor(index / 2) * 180}px`, 
+                      top: `${Math.floor(index / 2) * 160}px`, // Increased spacing from 140px
                       left: index % 2 === 0 ? '5%' : '52%' 
                     }
                   }}
@@ -1525,7 +1599,7 @@ export class PurchaseMenu {
                       width: '70%',
                       height: '25px',
                       positionType: 'absolute',
-                      position: { left: '70px', top: '20px' }
+                      position: { left: '70px', top: '15px' } // Moved up from 20px
                     }}
                   />
 
@@ -1553,11 +1627,27 @@ export class PurchaseMenu {
                     textAlign="middle-left"
                     uiTransform={{
                       width: '85%',
-                      height: '30px',
+                      height: '20px', // Reduced height to prevent overlap
                       positionType: 'absolute',
-                      position: { left: '10px', top: '68px' }
+                      position: { left: '10px', top: '75px' } // Moved down to give more space
                     }}
                   />
+
+                  {/* Resource Production Rate - only show for lumberjack and miner */}
+                  {(unitDef.type === 'lumberjack' || unitDef.type === 'miner') && (
+                    <Label
+                      value={this.getResourcePerMinute(unitDef.type)}
+                      fontSize={11}
+                      color={Color4.create(0.2, 0.9, 0.2, 1.0)} // Green color for production rate
+                      textAlign="middle-left"
+                      uiTransform={{
+                        width: '85%',
+                        height: '18px',
+                        positionType: 'absolute',
+                        position: { left: '10px', top: '100px' } // Position between description and fighter stats
+                      }}
+                    />
+                  )}
 
                   {/* Fighter Stats - only show for fighter */}
                   {unitDef.type === 'fighter' && (
@@ -1570,54 +1660,12 @@ export class PurchaseMenu {
                         width: '85%',
                         height: '18px',
                         positionType: 'absolute',
-                        position: { left: '10px', top: '98px' }
+                        position: { left: '10px', top: '110px' } // Moved down to prevent overlap with description
                       }}
                     />
                   )}
 
-                  {/* Purchase Button */}
-                  <UiEntity
-                    uiTransform={{
-                      width: '90%',
-                      height: '30px',
-                      positionType: 'absolute',
-                      position: { left: '5%', top: '132px' }
-                    }}
-                    uiBackground={{
-                      color: canPurchase 
-                        ? Color4.create(0.1, 0.7, 0.1, 1.0)  // Brighter green
-                        : Color4.create(0.5, 0.5, 0.5, 1.0)  // Gray when disabled
-                    }}
-                    onMouseDown={() => {
-                      if (canPurchase) {
-                        // Play button click sound
-                        const soundEntity = engine.addEntity()
-                        AudioSource.create(soundEntity, {
-                          audioClipUrl: 'assets/sounds/buttonclick.mp3',
-                          loop: false,
-                          playing: true
-                        })
-                        
-                        // Remove sound entity after playing
-                        utils.timers.setTimeout(() => {
-                          engine.removeEntity(soundEntity)
-                        }, 1000)
-                        
-                        this.purchaseUnit(unitDef.type)
-                      }
-                    }}
-                  >
-                    <Label
-                      value={canPurchase ? "PURCHASE" : "INSUFFICIENT RESOURCES"}
-                      fontSize={12}
-                      color={Color4.White()}
-                      textAlign="middle-center"
-                      uiTransform={{
-                        width: '100%',
-                        height: '100%'
-                      }}
-                    />
-                  </UiEntity>
+                  {/* Purchase button removed - clicking the card handles selection and placement */}
                 </UiEntity>
                 )
               })
