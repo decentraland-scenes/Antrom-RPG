@@ -306,6 +306,8 @@ export class PurchaseMenu {
   public selectedUnit: UnitType | null = null
   public isPlacing: boolean = false
   public placingUnitType: UnitType | null = null
+  public continuousPlacementMode: boolean = false
+  public continuousPlacementUnit: UnitType | null = null
   private placementSystem: (() => void) | null = null
 
   constructor() {
@@ -319,20 +321,15 @@ export class PurchaseMenu {
 
   hide(): void {
     this.isVisible = false
-    this.selectedUnit = null
-    this.isPlacing = false
-    this.placingUnitType = null
-    
-    // Clean up placement system if it exists
-    if (this.placementSystem) {
-      engine.removeSystem(this.placementSystem)
-      this.placementSystem = null
-    }
+    this.clearPlacementState()
+    console.log('Menu closed, placement state cleared')
   }
 
   private clearPlacementState(): void {
     this.isPlacing = false
     this.placingUnitType = null
+    this.continuousPlacementMode = false
+    this.continuousPlacementUnit = null
     
     // Clean up placement system if it exists
     if (this.placementSystem) {
@@ -341,9 +338,193 @@ export class PurchaseMenu {
     }
   }
 
+  private startContinuousPlacement(unitType: UnitType): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    // Clean up any existing placement system
+    if (this.placementSystem) {
+      engine.removeSystem(this.placementSystem)
+      this.placementSystem = null
+    }
+
+    this.isPlacing = true
+    this.placingUnitType = unitType
+    // Don't hide the menu - keep it open for continuous placement
+
+    // Show instruction to player
+    player.gameController.uiController.displayAnnouncement(
+      `Click to place ${unitType}s continuously! Click the card again to stop.`,
+      Color4.Blue(),
+      3000
+    )
+
+    let placementActive = false
+    let lastClickPosition: Vector3 | null = null
+
+    utils.timers.setTimeout(() => {
+      placementActive = true
+      console.log('Continuous placement system now active for:', unitType)
+    }, 1000) // 1 second delay
+
+    this.placementSystem = () => {
+      if (this.isPlacing && this.placingUnitType === unitType && placementActive && 
+          this.continuousPlacementMode && this.continuousPlacementUnit === unitType &&
+          inputSystem.isTriggered(InputAction.IA_POINTER, PointerEventType.PET_DOWN)) {
+        
+        const input = inputSystem.getInputCommand(InputAction.IA_POINTER, PointerEventType.PET_DOWN)
+        if (input && input.hit && input.hit.position) {
+          lastClickPosition = input.hit.position
+        }
+
+        const playerPos = Transform.get(engine.PlayerEntity).position
+
+        // Check if player can afford the unit
+        if (!this.canPurchaseUnit(unitType)) {
+          player.gameController.uiController.displayAnnouncement(
+            'Insufficient resources for continuous placement!',
+            Color4.Red(),
+            2000
+          )
+          this.clearPlacementState()
+          return
+        }
+
+        // Deduct resources only when actually placing the unit
+        const unitDef = UNIT_DEFINITIONS[unitType]
+        if (typeof unitDef.cost === 'number') {
+          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+        } else {
+          // Multi-resource cost structure (fighter)
+          player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+          player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
+        }
+
+        // Handle different unit types
+        if (unitType === 'lumberjack') {
+          const availableTrees = this.getAllAvailableTrees(playerPos)
+          if (availableTrees.length === 0) {
+            player.gameController.uiController.displayAnnouncement(
+              'No available trees nearby! Move closer to trees.',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          if (!lastClickPosition) {
+            player.gameController.uiController.displayAnnouncement(
+              'Could not detect click position. Try again.',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          const selectedTree = this.findClickedTree(lastClickPosition)
+          if (!selectedTree) {
+            player.gameController.uiController.displayAnnouncement(
+              'Click directly on a tree to assign lumberjack!',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          const angle = Math.random() * Math.PI * 2
+          const distance = 2 + Math.random() * 2
+          const offsetX = Math.cos(angle) * distance
+          const offsetZ = Math.sin(angle) * distance
+          const placementPos = Vector3.create(
+            selectedTree.x + offsetX,
+            selectedTree.y - 0.5,
+            selectedTree.z + offsetZ
+          )
+
+          this.placeLumberjack(placementPos, selectedTree)
+        } else if (unitType === 'fighter') {
+          const angle = Math.random() * Math.PI * 2
+          const distance = 2 + Math.random() * 2
+          const offsetX = Math.cos(angle) * distance
+          const offsetZ = Math.sin(angle) * distance
+          const placementPos = Vector3.create(
+            playerPos.x + offsetX,
+            playerPos.y,
+            playerPos.z + offsetZ
+          )
+
+          this.placeFighter(placementPos)
+        } else if (unitType === 'miner') {
+          const availableRocks = this.getAllAvailableRocks(playerPos)
+          if (availableRocks.length === 0) {
+            player.gameController.uiController.displayAnnouncement(
+              'No available rocks nearby! Move closer to rocks.',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          if (!lastClickPosition) {
+            player.gameController.uiController.displayAnnouncement(
+              'Could not detect click position. Try again.',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          const selectedRock = this.findClickedRock(lastClickPosition)
+          if (!selectedRock) {
+            player.gameController.uiController.displayAnnouncement(
+              'Click directly on a rock to assign miner!',
+              Color4.Red(),
+              2000
+            )
+            return
+          }
+
+          const angle = Math.random() * Math.PI * 2
+          const distance = 2 + Math.random() * 2
+          const offsetX = Math.cos(angle) * distance
+          const offsetZ = Math.sin(angle) * distance
+          const placementPos = Vector3.create(
+            selectedRock.x + offsetX,
+            selectedRock.y - 0.5,
+            selectedRock.z + offsetZ
+          )
+
+          this.placeMiner(placementPos, selectedRock)
+        }
+      }
+    }
+    engine.addSystem(this.placementSystem)
+  }
+
   selectUnit(unitType: UnitType): void {
-    this.selectedUnit = unitType
-    console.log('Selected unit:', unitType)
+    // If clicking the same unit, toggle continuous placement mode
+    if (this.selectedUnit === unitType) {
+      if (this.continuousPlacementMode && this.continuousPlacementUnit === unitType) {
+        // Turn off continuous placement
+        this.continuousPlacementMode = false
+        this.continuousPlacementUnit = null
+        this.clearPlacementState()
+        console.log('Continuous placement disabled for:', unitType)
+      } else {
+        // Turn on continuous placement
+        this.continuousPlacementMode = true
+        this.continuousPlacementUnit = unitType
+        this.startContinuousPlacement(unitType)
+        console.log('Continuous placement enabled for:', unitType)
+      }
+    } else {
+      // Select new unit and enable continuous placement
+      this.selectedUnit = unitType
+      this.continuousPlacementMode = true
+      this.continuousPlacementUnit = unitType
+      this.startContinuousPlacement(unitType)
+      console.log('Selected unit for continuous placement:', unitType)
+    }
     
     // Play button click sound
     const soundEntity = engine.addEntity()
@@ -369,7 +550,7 @@ export class PurchaseMenu {
     if (typeof unitDef.cost === 'number') {
       return player.inventory.getItemCount(ITEM_TYPES.COIN) >= unitDef.cost
     } else {
-      // Fighter cost structure
+      // Multi-resource cost structure (fighter and miner)
       return player.inventory.getItemCount(ITEM_TYPES.TREE) >= unitDef.cost.wood && 
              player.inventory.getItemCount(ITEM_TYPES.ROCK) >= unitDef.cost.rock
     }
@@ -421,24 +602,12 @@ export class PurchaseMenu {
           return
         }
         
-        // Only deduct resources if we can actually place the unit
-        if (typeof unitDef.cost === 'number') {
-          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
-        }
         this.startLumberjackPlacement()
       } else if (unitType === 'fighter') {
         // Check if we can actually place a fighter before deducting resources
         const playerPos = Transform.get(engine.PlayerEntity).position
         
         // Allow fighter placement without requiring enemies - tower defense strategy
-        // Only deduct resources if we can actually place the unit
-        if (typeof unitDef.cost === 'number') {
-          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
-        } else {
-          // Fighter cost structure
-          player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
-          player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
-        }
         this.startFighterPlacement()
       } else if (unitType === 'miner') {
         // Check if we can actually place a miner before deducting gold
@@ -468,10 +637,6 @@ export class PurchaseMenu {
           return
         }
         
-        // Only deduct resources if we can actually place the unit
-        if (typeof unitDef.cost === 'number') {
-          player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
-        }
         this.startMinerPlacement()
       // } else if (unitType === 'farmer') {
       //   // Check if we can actually place a farmer before deducting gold
@@ -542,7 +707,7 @@ export class PurchaseMenu {
 
     this.isPlacing = true
     this.placingUnitType = 'lumberjack'
-    this.isVisible = false
+    // Don't hide the menu - keep it open for continuous placement
 
     player.gameController.uiController.displayAnnouncement(
       'Click on a tree to assign lumberjack!',
@@ -634,7 +799,11 @@ export class PurchaseMenu {
     if (!player) return
 
     player.addLumberjack(position, treePosition)
-    this.hide()
+    
+    // Only hide menu if not in continuous placement mode
+    if (!this.continuousPlacementMode) {
+      this.hide()
+    }
     
     // Play lumberjack deployment sound
     const soundEntity = engine.addEntity()
@@ -650,12 +819,7 @@ export class PurchaseMenu {
       engine.removeEntity(soundEntity)
     }, 3000)
     
-    // Show success message
-    player.gameController.uiController.displayAnnouncement(
-      'Lumberjack deployed!',
-      Color4.Green(),
-      2000
-    )
+    // Show success message - removed to reduce spam in continuous mode
   }
 
   private startFighterPlacement(): void {
@@ -670,7 +834,7 @@ export class PurchaseMenu {
 
     this.isPlacing = true
     this.placingUnitType = 'fighter'
-    this.isVisible = false
+    // Don't hide the menu - keep it open for continuous placement
     
     // Create placement system for fighter
     this.placementSystem = () => {
@@ -702,7 +866,11 @@ export class PurchaseMenu {
     if (!player) return
 
     player.addFighter(position)
-    this.hide()
+    
+    // Only hide menu if not in continuous placement mode
+    if (!this.continuousPlacementMode) {
+      this.hide()
+    }
     
     // Play fighter deployment sound
     const soundEntity = engine.addEntity()
@@ -733,7 +901,7 @@ export class PurchaseMenu {
 
     this.isPlacing = true
     this.placingUnitType = 'miner'
-    this.isVisible = false
+    // Don't hide the menu - keep it open for continuous placement
     
     // Show instruction to player
     player.gameController.uiController.displayAnnouncement(
@@ -838,7 +1006,11 @@ export class PurchaseMenu {
     if (!player) return
 
     player.addMiner(position, rockPosition)
-    this.hide()
+    
+    // Only hide menu if not in continuous placement mode
+    if (!this.continuousPlacementMode) {
+      this.hide()
+    }
     
     // Play miner deployment sound
     const soundEntity = engine.addEntity()
@@ -854,12 +1026,7 @@ export class PurchaseMenu {
       engine.removeEntity(soundEntity)
     }, 3000)
     
-    // Show success message
-    player.gameController.uiController.displayAnnouncement(
-      'Miner deployed!',
-      Color4.Green(),
-      2000
-    )
+    // Show success message - removed to reduce spam in continuous mode
   }
 
   // private startFarmerPlacement(): void {
@@ -1304,6 +1471,7 @@ export class PurchaseMenu {
               return Object.values(UNIT_DEFINITIONS).map((unitDef, index) => {
                 const canPurchase = this.canPurchaseUnit(unitDef.type)
                 const isSelected = this.selectedUnit === unitDef.type
+                const isContinuousPlacement = this.continuousPlacementMode && this.continuousPlacementUnit === unitDef.type
                 
                 console.log(`Rendering unit ${unitDef.name} at index ${index}`)
                 
@@ -1322,9 +1490,11 @@ export class PurchaseMenu {
                   uiBackground={{
                     textureMode: 'stretch',
                     texture: {
-                      src: isSelected 
+                      src: isContinuousPlacement 
                         ? 'assets/images/unitPurchase/frames/unit_card_frame.png'
-                        : 'assets/images/unitPurchase/frames/unit_card_background.png'
+                        : isSelected 
+                          ? 'assets/images/unitPurchase/frames/unit_card_background.png'
+                          : 'assets/images/unitPurchase/frames/unit_card_background.png'
                     }
                   }}
                   onMouseDown={() => this.selectUnit(unitDef.type)}
@@ -1383,9 +1553,9 @@ export class PurchaseMenu {
                     textAlign="middle-left"
                     uiTransform={{
                       width: '85%',
-                      height: '25px',
+                      height: '30px',
                       positionType: 'absolute',
-                      position: { left: '10px', top: '70px' }
+                      position: { left: '10px', top: '68px' }
                     }}
                   />
 
@@ -1393,14 +1563,14 @@ export class PurchaseMenu {
                   {unitDef.type === 'fighter' && (
                     <Label
                       value={`HP: ${this.getFighterStats().health} | ATK: ${this.getFighterStats().attack}`}
-                      fontSize={10}
+                      fontSize={11}
                       color={Color4.create(0.8, 0.8, 0.2, 1.0)}
                       textAlign="middle-left"
                       uiTransform={{
                         width: '85%',
-                        height: '15px',
+                        height: '18px',
                         positionType: 'absolute',
-                        position: { left: '10px', top: '95px' }
+                        position: { left: '10px', top: '98px' }
                       }}
                     />
                   )}
@@ -1411,7 +1581,7 @@ export class PurchaseMenu {
                       width: '90%',
                       height: '30px',
                       positionType: 'absolute',
-                      position: { left: '5%', top: '125px' }
+                      position: { left: '5%', top: '132px' }
                     }}
                     uiBackground={{
                       color: canPurchase 
