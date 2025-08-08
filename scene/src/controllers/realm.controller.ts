@@ -6,6 +6,7 @@ import { entityController } from '../realms/entityController'
 import { MinersCave } from '../realms/minerscave'
 import { type RealmType, type Realm } from '../realms/types'
 import { type GameController } from './game.controller'
+import * as utils from '@dcl-sdk/utils'
 
 export class RealmController {
   public currentRealm: Realm | null = null
@@ -41,7 +42,21 @@ export class RealmController {
   }
 
   cleanUpScene(): void {
-    this.currentRealm?.removeAllEntities()
+    console.log('Cleaning up scene...')
+
+    // Remove all entities from current realm
+    if (this.currentRealm) {
+      this.currentRealm.removeAllEntities()
+    }
+
+    // Clear entity controller
+    entityController.clean()
+
+    // Add a small delay to ensure all entities are properly removed
+    utils.timers.setTimeout(() => {
+      console.log('Scene cleanup completed')
+    }, 50)
+
     this.currentRealm = null
   }
 }

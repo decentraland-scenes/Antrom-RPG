@@ -24,6 +24,7 @@ import { monsterModifiers } from './skillEffects'
 import { entityController } from '../realms/entityController'
 import { triggerSceneEmote } from '~system/RestrictedActions'
 import { ROAMING_CONFIGS, createPatrolRoute } from './monsterRoaming'
+import { safeAddTrigger } from '../controllers/game.controller'
 
 export class MonsterMobAuto extends GenericMonster {
   static globalHasSkill: boolean = true
@@ -187,7 +188,7 @@ export class MonsterMobAuto extends GenericMonster {
     Transform.create(this.rangeAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.rangeAttackTrigger)
     VisibilityComponent.create(this.rangeAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
+    safeAddTrigger(
       this.rangeAttackTrigger,
       utils.NO_LAYERS,
       utils.LAYER_1,
@@ -216,7 +217,7 @@ export class MonsterMobAuto extends GenericMonster {
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
+    safeAddTrigger(
       this.engageAttackTrigger,
       1,
       1,
@@ -277,9 +278,61 @@ export class MonsterMobAuto extends GenericMonster {
     )
 
     utils.timers.setTimeout(() => {
-      entityController.removeEntity(this.entity)
-      entityController.removeEntity(this.rangeAttackTrigger)
-      entityController.removeEntity(this.engageAttackTrigger)
+      // Reset trigger entities in place instead of removing them
+      try {
+        // Reset range attack trigger
+        const rangeTransform = Transform.get(this.rangeAttackTrigger)
+        if (rangeTransform) {
+          Transform.getMutable(this.rangeAttackTrigger).position =
+            Vector3.create(1000, 1000, 1000)
+          try {
+            const visibility = VisibilityComponent.get(this.rangeAttackTrigger)
+            if (visibility) {
+              VisibilityComponent.getMutable(this.rangeAttackTrigger).visible =
+                false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+
+        // Reset engage attack trigger
+        const engageTransform = Transform.get(this.engageAttackTrigger)
+        if (engageTransform) {
+          Transform.getMutable(this.engageAttackTrigger).position =
+            Vector3.create(1000, 1000, 1000)
+          try {
+            const visibility = VisibilityComponent.get(this.engageAttackTrigger)
+            if (visibility) {
+              VisibilityComponent.getMutable(this.engageAttackTrigger).visible =
+                false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+
+        // Reset main entity
+        const mainTransform = Transform.get(this.entity)
+        if (mainTransform) {
+          Transform.getMutable(this.entity).position = Vector3.create(
+            1000,
+            1000,
+            1000
+          )
+          try {
+            const visibility = VisibilityComponent.get(this.entity)
+            if (visibility) {
+              VisibilityComponent.getMutable(this.entity).visible = false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Error resetting monster entities in place:', error)
+      }
+
       super.cleanup()
       this.isDead = true
     }, 5 * 1000)
@@ -301,8 +354,42 @@ export class MonsterMobAuto extends GenericMonster {
 
     super.cleanup()
     if (this.rangeAttackTrigger != null) {
-      entityController.removeEntity(this.rangeAttackTrigger)
-      entityController.removeEntity(this.engageAttackTrigger)
+      // Reset trigger entities in place instead of removing them
+      try {
+        // Reset range attack trigger
+        const rangeTransform = Transform.get(this.rangeAttackTrigger)
+        if (rangeTransform) {
+          Transform.getMutable(this.rangeAttackTrigger).position =
+            Vector3.create(1000, 1000, 1000)
+          try {
+            const visibility = VisibilityComponent.get(this.rangeAttackTrigger)
+            if (visibility) {
+              VisibilityComponent.getMutable(this.rangeAttackTrigger).visible =
+                false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+
+        // Reset engage attack trigger
+        const engageTransform = Transform.get(this.engageAttackTrigger)
+        if (engageTransform) {
+          Transform.getMutable(this.engageAttackTrigger).position =
+            Vector3.create(1000, 1000, 1000)
+          try {
+            const visibility = VisibilityComponent.get(this.engageAttackTrigger)
+            if (visibility) {
+              VisibilityComponent.getMutable(this.engageAttackTrigger).visible =
+                false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Error resetting trigger entities in onDead:', error)
+      }
     }
     utils.timers.setTimeout(() => {
       this.isDeadOnce()

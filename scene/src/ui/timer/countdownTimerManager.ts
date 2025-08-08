@@ -157,8 +157,15 @@ export class CountdownTimerManager {
   }
 
   public initializeTimerSystem(): void {
+    console.log(
+      'Initializing timer system, current timerSystem:',
+      this.timerSystem
+    )
     if (!this.timerSystem) {
+      console.log('Starting timer system')
       this.startTimerSystem()
+    } else {
+      console.log('Timer system already running, skipping initialization')
     }
   }
 

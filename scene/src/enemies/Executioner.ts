@@ -19,6 +19,7 @@ import { ROAMING_CONFIGS, MonsterRoaming } from './monsterRoaming'
 import { MonsterAttack } from './monsterAttack'
 import { MonsterAttackRanged } from './monsterAttackRanged'
 import * as utils from '@dcl-sdk/utils'
+import { safeAddTrigger } from '../controllers/game.controller'
 
 function getRandomIntRange(min: number, max: number): number {
   min = Math.ceil(min)
@@ -912,7 +913,7 @@ export default class Executioner extends MonsterMobAuto {
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
+    safeAddTrigger(
       this.engageAttackTrigger,
       1,
       1,

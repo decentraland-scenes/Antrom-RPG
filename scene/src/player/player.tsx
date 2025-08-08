@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/strict-boolean-expressions */
 /* eslint-disable @typescript-eslint/ban-types */
-import { engine, inputSystem, PointerEventType, type Entity, Transform, GltfContainer, AudioSource } from '@dcl/sdk/ecs'
+import { engine, inputSystem, PointerEventType, type Entity, Transform, GltfContainer, AudioSource, VisibilityComponent } from '@dcl/sdk/ecs'
 import { Color4, Vector3, Quaternion } from '@dcl/sdk/math'
 import ReactEcs from '@dcl/sdk/react-ecs'
 import { getPlayer } from '@dcl/sdk/src/players'
@@ -824,5 +824,86 @@ export class Player extends Character {
     for (const i of loot) {
       this.inventory.incrementItem(i.type, i.value)
     }
+  }
+
+  // Clear all deployed units (for game restart)
+  clearAllDeployedUnits(): void {
+    console.log('Clearing all deployed units')
+    
+    // Clear lumberjacks - reset in place instead of removing
+    for (const lumberjack of this.lumberjacks) {
+      try {
+        // Reset the entity position instead of removing it
+        const transform = Transform.get(lumberjack.entity)
+        if (transform) {
+          Transform.getMutable(lumberjack.entity).position = Vector3.create(1000, 1000, 1000)
+          
+          // Make entity invisible
+          try {
+            const visibility = VisibilityComponent.get(lumberjack.entity)
+            if (visibility) {
+              VisibilityComponent.getMutable(lumberjack.entity).visible = false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Lumberjack entity already processed:', error)
+      }
+    }
+    this.lumberjacks = []
+    this.occupiedTrees.clear()
+    
+    // Clear fighters - reset in place instead of removing
+    for (const fighter of this.fighters) {
+      try {
+        // Reset the entity position instead of removing it
+        const transform = Transform.get(fighter.entity)
+        if (transform) {
+          Transform.getMutable(fighter.entity).position = Vector3.create(1000, 1000, 1000)
+          
+          // Make entity invisible
+          try {
+            const visibility = VisibilityComponent.get(fighter.entity)
+            if (visibility) {
+              VisibilityComponent.getMutable(fighter.entity).visible = false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Fighter entity already processed:', error)
+      }
+    }
+    this.fighters = []
+    
+    // Clear miners - reset in place instead of removing
+    for (const miner of this.miners) {
+      try {
+        // Reset the entity position instead of removing it
+        const transform = Transform.get(miner.entity)
+        if (transform) {
+          Transform.getMutable(miner.entity).position = Vector3.create(1000, 1000, 1000)
+          
+          // Make entity invisible
+          try {
+            const visibility = VisibilityComponent.get(miner.entity)
+            if (visibility) {
+              VisibilityComponent.getMutable(miner.entity).visible = false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Miner entity already processed:', error)
+      }
+    }
+    this.miners = []
+    this.occupiedRocks.clear()
+    
+    console.log('All deployed units cleared (reset in place)')
   }
 }

@@ -16,6 +16,7 @@ import MonsterMobAuto from './monsterMobAuto'
 import Executioner from './Executioner'
 import * as utils from '@dcl-sdk/utils'
 import { CountdownTimerManager } from '../ui/timer/countdownTimerManager'
+import { safeAddTrigger } from '../controllers/game.controller'
 
 export default class GargoyleFountain extends MonsterMobAuto {
   shapeFile = 'assets/models/gargoyle_fountain.glb'
@@ -214,7 +215,7 @@ export default class GargoyleFountain extends MonsterMobAuto {
     Transform.create(this.engageAttackTrigger, { parent: this.entity })
     MeshRenderer.setBox(this.engageAttackTrigger)
     VisibilityComponent.create(this.engageAttackTrigger, { visible: false })
-    utils.triggers.addTrigger(
+    safeAddTrigger(
       this.engageAttackTrigger,
       1,
       1,
@@ -261,17 +262,18 @@ export default class GargoyleFountain extends MonsterMobAuto {
       this.triggerGameOver()
     }, 2000) // 2 seconds for destruction animation
 
-    // Remove the gargoyle fountain after destruction animation
-    utils.timers.setTimeout(() => {
-      console.log('Gargoyle Fountain destroyed, removing entity')
-      engine.removeEntity(this.entity)
-    }, 3000) // 3 seconds for destruction animation
+    // Don't remove the gargoyle fountain entity - just keep it in place to prevent trigger errors
+    console.log(
+      'Gargoyle Fountain destroyed, keeping entity in place to prevent trigger errors'
+    )
   }
 
   private triggerGameOver(): void {
     const player = Player.getInstanceOrNull()
-    if (!player) return // Set game over state
-    ;(player.gameController as any).isGameOver = true
+    if (!player) return
+
+    // Set game over state
+    player.gameController.isGameOver = true
 
     // Display game over announcement
     if (player.gameController.uiController) {
@@ -363,6 +365,12 @@ export default class GargoyleFountain extends MonsterMobAuto {
 
   private startExecutionerSpawningSystem(): void {
     console.log('Starting new executioner spawning system')
+
+    // Prevent multiple spawning systems from running
+    if (this.spawnCycleTimer || this.spawnInterval) {
+      console.log('Executioner spawning system already running, skipping')
+      return
+    }
 
     // Initialize the countdown timer manager and reset it
     CountdownTimerManager.getInstance().resetTimer()

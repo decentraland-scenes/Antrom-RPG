@@ -195,10 +195,13 @@ function GameOverScreen(): ReactEcs.JSX.Element {
   }
 
   // Check if game is over
-  const isGameOver = (player.gameController as any).isGameOver
+  const isGameOver = player.gameController.isGameOver
+  console.log('GameOverScreen: isGameOver =', isGameOver)
   if (!isGameOver) {
     return <UiEntity />
   }
+
+  console.log('GameOverScreen: Rendering game over screen')
 
   return (
     <UiEntity
@@ -252,19 +255,38 @@ function GameOverScreen(): ReactEcs.JSX.Element {
         />
       </UiEntity>
 
-      {/* Restart Message */}
+      {/* Start Button */}
       <UiEntity
         uiTransform={{
           positionType: 'absolute',
-          position: { top: canvasInfo.height * 0.6, left: 0 },
-          width: canvasInfo.width,
-          height: 40
+          position: { top: canvasInfo.height * 0.6, left: canvasInfo.width * 0.3 },
+          width: canvasInfo.width * 0.4,
+          height: 60
+        }}
+        uiBackground={{
+          color: Color4.create(0.2, 0.8, 0.2, 1.0)
+        }}
+        onMouseDown={() => {
+          console.log('Start button clicked!')
+          const player = Player.getInstanceOrNull()
+          if (player) {
+            console.log('Player found, calling restartGame')
+            // Show feedback message
+            player.gameController.uiController.displayAnnouncement(
+              'Restarting game...',
+              Color4.Green(),
+              2000
+            )
+            player.gameController.restartGame()
+          } else {
+            console.log('No player found when clicking start button')
+          }
         }}
       >
         <Label
-          value="Refresh the page to restart the game"
-          fontSize={18}
-          color={Color4.Yellow()}
+          value="START NEW GAME"
+          fontSize={24}
+          color={Color4.White()}
           textAlign="middle-center"
           uiTransform={{
             width: '100%',
@@ -860,13 +882,53 @@ function MainHud({
       {/* Rules Screen - rendered on top when game hasn't started */}
       <PlayButton 
         isVisible={PlayButtonManager.getInstance().getIsVisible()}
-        onPlayClicked={() => PlayButtonManager.getInstance().dismissRules()}
+        onPlayClicked={() => {
+          console.log('Play button clicked - starting game')
+          try {
+            PlayButtonManager.getInstance().startGame()
+            PlayButtonManager.getInstance().dismissRules()
+            console.log('Play button startGame() completed successfully')
+          } catch (error) {
+            console.error('Error in play button click:', error)
+          }
+        }}
       />
 
 
 
       {/* Game Over Screen - rendered on top when game is over */}
       <GameOverScreen />
+      
+      {/* Temporary test button for debugging */}
+      <UiEntity
+        uiTransform={{
+          positionType: 'absolute',
+          position: { top: 10, left: 10 },
+          width: 100,
+          height: 40
+        }}
+        uiBackground={{
+          color: Color4.create(1, 0, 0, 0.8)
+        }}
+        onMouseDown={() => {
+          console.log('Test button clicked - triggering game over')
+          const player = Player.getInstanceOrNull()
+          if (player) {
+            player.gameController.isGameOver = true
+          }
+        }}
+      >
+        <Label
+          value="TEST GAME OVER"
+          fontSize={12}
+          color={Color4.White()}
+          textAlign="middle-center"
+          uiTransform={{
+            width: '100%',
+            height: '100%'
+          }}
+        />
+      </UiEntity>
     </Canvas>
   )
 }
