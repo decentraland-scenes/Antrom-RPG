@@ -209,6 +209,9 @@ export class GameController {
 
         // Clear all deployed units (lumberjacks, fighters, miners)
         player.clearAllDeployedUnits()
+
+        // Reset inventory to initial state
+        player.resetInventory()
       }
 
       // Clear executioners by moving them far away (instead of removing them)

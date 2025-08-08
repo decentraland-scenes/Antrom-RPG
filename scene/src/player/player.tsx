@@ -906,4 +906,17 @@ export class Player extends Character {
     
     console.log('All deployed units cleared (reset in place)')
   }
+
+  // Reset inventory to initial state (for game restart)
+  resetInventory(): void {
+    console.log('Resetting inventory to initial state')
+    
+    // Clear all inventory items
+    this.inventory.inventory = {}
+    
+    // Set initial resources
+    this.inventory.setItem(ITEM_TYPES.COIN, 500)
+    
+    console.log('Inventory reset to initial state')
+  }
 }
