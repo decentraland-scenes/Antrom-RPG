@@ -206,6 +206,9 @@ export class GameController {
       if (player) {
         player.refillHealthBar(1, false)
         setPlayerPosition(-22.21, 5.43, -26.53)
+
+        // Clear all deployed units (lumberjacks, fighters, miners)
+        player.clearAllDeployedUnits()
       }
 
       // Clear executioners by moving them far away (instead of removing them)
