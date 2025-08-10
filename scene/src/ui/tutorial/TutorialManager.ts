@@ -4,6 +4,7 @@ import { GameController } from '../../controllers/game.controller'
 import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { CountdownTimerManager } from '../timer/countdownTimerManager'
 import * as utils from '@dcl-sdk/utils'
+import { setPlayerPosition } from '../../utils/engine'
 
 export interface TutorialStep {
   id: string
@@ -238,6 +239,9 @@ export class TutorialManager {
     this.isActive = false
     this.currentStepIndex = 0
 
+    // Reset everything for clean game start
+    this.resetGameState()
+
     // Show the timer again when tutorial ends
     const timerManager = CountdownTimerManager.getInstance()
     timerManager.showTimer()
@@ -261,11 +265,34 @@ export class TutorialManager {
     this.isActive = false
     this.currentStepIndex = 0
 
+    // Reset everything for clean game start
+    this.resetGameState()
+
     // Show the timer again when tutorial is skipped
     const timerManager = CountdownTimerManager.getInstance()
     timerManager.showTimer()
 
     // No announcement needed since we have a proper tutorial UI
+  }
+
+  private resetGameState(): void {
+    console.log('Resetting game state for clean start after tutorial')
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      // Reset inventory to initial state
+      player.resetInventory()
+
+      // Clear all deployed units
+      player.clearAllDeployedUnits()
+
+      // Reset player position
+      setPlayerPosition(-22.21, 5.43, -26.53)
+
+      // Refill health
+      player.refillHealthBar(1, false)
+
+      console.log('Game state reset complete - ready for clean start')
+    }
   }
 
   restartTutorial(): void {

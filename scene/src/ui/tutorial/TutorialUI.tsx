@@ -57,14 +57,14 @@ export function TutorialUI({ isVisible }: TutorialUIProps): ReactEcs.JSX.Element
 
   return (
     <Canvas>
-      {/* Main Tutorial Container */}
+      {/* Main Tutorial Container - positioned above tower upgrade menu */}
       <UiEntity
         uiTransform={{
           width: '500px',
           height: '400px',
           positionType: 'absolute',
-          position: { left: '50%', top: '50%' },
-          margin: { left: '-250px', top: '-200px' }
+          position: { right: '120px', top: '35%' },
+          margin: { top: '-200px' }
         }}
         uiBackground={{
           textureMode: 'stretch',

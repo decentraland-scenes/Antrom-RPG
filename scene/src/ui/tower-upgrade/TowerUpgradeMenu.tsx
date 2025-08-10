@@ -23,7 +23,7 @@ export const TOWER_UPGRADE_DEFINITIONS: Record<TowerUpgradeType, TowerUpgradeDef
     name: 'Tower Health',
     cost: 100,
     description: 'Increases tower health by 10,000',
-    iconPath: 'assets/images/tower_health.png',
+    iconPath: 'assets/images/towerUpgradePurchace/tower_health.png',
     effect: '+10,000 HP'
   },
   defense: {
@@ -31,7 +31,7 @@ export const TOWER_UPGRADE_DEFINITIONS: Record<TowerUpgradeType, TowerUpgradeDef
     name: 'Tower Defense',
     cost: 200,
     description: 'Reinforces tower defenses, slowing enemy spawn cycles',
-    iconPath: 'assets/images/tower_defense.png',
+    iconPath: 'assets/images/towerUpgradePurchace/tower_defense.png',
     effect: '-30s Spawn Time'
   },
   regeneration: {
@@ -39,7 +39,7 @@ export const TOWER_UPGRADE_DEFINITIONS: Record<TowerUpgradeType, TowerUpgradeDef
     name: 'Tower Regeneration',
     cost: { wood: 150, rock: 100 },
     description: 'Adds healing crystals that slowly restore tower health',
-    iconPath: 'assets/images/tower_regen.png',
+    iconPath: 'assets/images/towerUpgradePurchace/tower_regen.png',
     effect: '+500 HP/30s'
   },
   armor: {
@@ -47,7 +47,7 @@ export const TOWER_UPGRADE_DEFINITIONS: Record<TowerUpgradeType, TowerUpgradeDef
     name: 'Tower Armor',
     cost: 300,
     description: 'Reinforces tower with stone armor, reducing incoming damage',
-    iconPath: 'assets/images/tower_armor.png',
+    iconPath: 'assets/images/towerUpgradePurchace/tower_armor.png',
     effect: '-25% Damage'
   }
 }

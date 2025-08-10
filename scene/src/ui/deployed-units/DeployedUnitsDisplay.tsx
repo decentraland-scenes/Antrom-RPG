@@ -111,7 +111,7 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
       health: mage.health,
       maxHealth: mage.maxHealth,
       isDead: mage.isDead,
-      iconPath: 'assets/images/unitPurchase/icons/mage_icon.png',
+                      iconPath: 'assets/images/pfp/druid.png',
       name: 'Mage'
     })
   })

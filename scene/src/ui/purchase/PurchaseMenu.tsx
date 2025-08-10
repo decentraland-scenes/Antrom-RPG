@@ -1305,7 +1305,7 @@ export class PurchaseMenu {
       case 'fighter':
         return 'assets/images/unitPurchase/icons/fighter_icon.png'
       case 'mage':
-        return 'assets/images/unitPurchase/icons/mage_icon.png'
+        return 'assets/images/pfp/druid.png'
       default:
         return ''
     }
