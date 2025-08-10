@@ -6,6 +6,7 @@ import { Player } from '../../player/player'
 import { Fighter } from '../../units/Fighter'
 import { Lumberjack } from '../../units/Lumberjack'
 import { Miner } from '../../units/Miner'
+import { Mage } from '../../units/Mage'
 // import { Farmer } from '../../units/Farmer' // Commented out
 
 interface DeployedUnitsDisplayProps {
@@ -13,7 +14,7 @@ interface DeployedUnitsDisplayProps {
 }
 
 interface UnitDisplayData {
-  type: 'fighter' | 'lumberjack' | 'miner' | 'farmer'
+  type: 'fighter' | 'lumberjack' | 'miner' | 'farmer' | 'mage'
   health: number
   maxHealth: number
   isDead: boolean
@@ -39,7 +40,10 @@ function formatNumber(num: number): string {
 }
 
 export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): ReactEcs.JSX.Element | null {
-  console.log('DeployedUnitsDisplay: isVisible =', isVisible)
+  // Force frequent updates by using current time
+  const updateKey = Math.floor(Date.now() / 100) // Update every 100ms
+  
+  console.log('DeployedUnitsDisplay: isVisible =', isVisible, 'updateKey =', updateKey)
   
   if (!isVisible) return null
 
@@ -97,6 +101,18 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
       name: 'Miner',
       resourcesHarvested: miner.totalRockHarvested,
       resourceType: 'Rock'
+    })
+  })
+
+  // Add mages (with health system like fighters)
+  player.mages.forEach((mage: Mage) => {
+    deployedUnits.push({
+      type: 'mage',
+      health: mage.health,
+      maxHealth: mage.maxHealth,
+      isDead: mage.isDead,
+      iconPath: 'assets/images/unitPurchase/icons/mage_icon.png',
+      name: 'Mage'
     })
   })
 
@@ -213,7 +229,7 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
             {/* Health Bar Fill or Resource Progress */}
             <UiEntity
               uiTransform={{
-                width: unit.type === 'fighter' 
+                width: unit.type === 'fighter' || unit.type === 'mage'
                   ? `${(unit.health / unit.maxHealth) * 60}%`
                   : unit.resourcesHarvested !== undefined && unit.resourcesHarvested > 0
                     ? `${Math.min(60, (unit.resourcesHarvested / 100) * 60)}%` // Scale based on resources harvested (TODO: Update when resource limits are implemented)
@@ -223,7 +239,7 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
                 position: { left: 60, top: 30 }
               }}
               uiBackground={{ 
-                color: unit.type === 'fighter'
+                color: unit.type === 'fighter' || unit.type === 'mage'
                   ? (unit.isDead 
                       ? Color4.Red() 
                       : unit.health / unit.maxHealth > 0.5 
@@ -238,7 +254,7 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
             {/* Health Text or Resource Text */}
             <Label
               value={
-                unit.type === 'fighter' 
+                unit.type === 'fighter' || unit.type === 'mage'
                   ? `${formatNumber(Math.max(0, unit.health))}/${formatNumber(unit.maxHealth)}`
                   : unit.resourcesHarvested !== undefined && unit.resourceType
                     ? `${formatNumber(unit.resourcesHarvested)} ${unit.resourceType}`
@@ -257,9 +273,9 @@ export function DeployedUnitsDisplay({ isVisible }: DeployedUnitsDisplayProps): 
 
             {/* Status Indicator */}
             <Label
-              value={unit.isDead ? 'DEAD' : unit.type === 'fighter' ? 'ALIVE' : 'WORKING'}
+              value={unit.isDead ? 'DEAD' : unit.type === 'fighter' || unit.type === 'mage' ? 'ALIVE' : 'WORKING'}
               fontSize={10}
-              color={unit.isDead ? Color4.Red() : unit.type === 'fighter' ? Color4.Green() : Color4.Blue()}
+              color={unit.isDead ? Color4.Red() : unit.type === 'fighter' || unit.type === 'mage' ? Color4.Green() : Color4.Blue()}
               textAlign="middle-right"
               uiTransform={{
                 width: '25%',

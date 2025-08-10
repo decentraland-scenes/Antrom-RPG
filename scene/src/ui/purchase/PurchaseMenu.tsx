@@ -9,7 +9,7 @@ import * as utils from '@dcl-sdk/utils'
 import { InputAction, PointerEventType, inputSystem } from '@dcl/sdk/ecs'
 import { TutorialManager } from '../tutorial/TutorialManager'
 
-export type UnitType = 'lumberjack' | 'miner' | 'fighter' // 'farmer' commented out
+export type UnitType = 'lumberjack' | 'miner' | 'fighter' | 'mage' // 'farmer' commented out
 
 export interface UnitDefinition {
   type: UnitType
@@ -67,6 +67,17 @@ export const UNIT_DEFINITIONS: Record<UnitType, UnitDefinition> = {
     range: 7,
     description: 'Attacks nearby enemies automatically. Places near player.',
     modelPath: 'assets/models/KnightSword.glb'
+  },
+  mage: {
+    type: 'mage',
+    name: 'Mage',
+    cost: { wood: 75, rock: 75 },
+    resourceType: 'Magic',
+    harvestAmount: 0,
+    harvestInterval: 3000,
+    range: 8,
+    description: 'Uses magic to attack enemies and heal fighters. Places near player.',
+    modelPath: 'assets/models/Alchemist.glb'
   }
 }
 
@@ -558,6 +569,28 @@ export class PurchaseMenu {
           }
           
           this.placeMiner(placementPos, selectedRock)
+        } else if (unitType === 'mage') {
+          const angle = Math.random() * Math.PI * 2
+          const distance = 2 + Math.random() * 2
+          const offsetX = Math.cos(angle) * distance
+          const offsetZ = Math.sin(angle) * distance
+          const placementPos = Vector3.create(
+            playerPos.x + offsetX,
+            playerPos.y,
+            playerPos.z + offsetZ
+          )
+
+          // Deduct resources only after successful validation
+          const unitDef = UNIT_DEFINITIONS[unitType]
+          if (typeof unitDef.cost === 'number') {
+            player.inventory.incrementItem(ITEM_TYPES.COIN, -unitDef.cost)
+          } else {
+            // Multi-resource cost structure (mage)
+            player.inventory.incrementItem(ITEM_TYPES.TREE, -unitDef.cost.wood)
+            player.inventory.incrementItem(ITEM_TYPES.ROCK, -unitDef.cost.rock)
+          }
+          
+          this.placeMage(placementPos)
         }
       }
     }
@@ -1121,6 +1154,34 @@ export class PurchaseMenu {
     // Show success message - removed to reduce spam in continuous mode
   }
 
+  private placeMage(position: Vector3): void {
+    const player = Player.getInstanceOrNull()
+    if (!player) return
+
+    player.addMage(position)
+    
+    // Only hide menu if not in continuous placement mode
+    if (!this.continuousPlacementMode) {
+      this.hide()
+    }
+    
+    // Play mage deployment sound (using knight sound for now)
+    const soundEntity = engine.addEntity()
+    AudioSource.create(soundEntity, {
+      audioClipUrl: this.getRandomKnightSound(),
+      loop: false,
+      playing: true,
+      volume: 1.0
+    })
+    
+    // Remove sound entity after playing
+    utils.timers.setTimeout(() => {
+      engine.removeEntity(soundEntity)
+    }, 3000)
+    
+    // Show success message - removed to reduce spam in continuous mode
+  }
+
   // private startFarmerPlacement(): void {
   //   const player = Player.getInstanceOrNull()
   //   if (!player) return
@@ -1243,6 +1304,8 @@ export class PurchaseMenu {
       //   return 'assets/images/unitPurchase/icons/farmer_icon.png'
       case 'fighter':
         return 'assets/images/unitPurchase/icons/fighter_icon.png'
+      case 'mage':
+        return 'assets/images/unitPurchase/icons/mage_icon.png'
       default:
         return ''
     }

@@ -27,6 +27,7 @@ import { ScreenFlashManager } from '../ui/screenFlash'
 import { Lumberjack } from '../units/Lumberjack'
 import { Fighter } from '../units/Fighter'
 import { Miner } from '../units/Miner'
+import { Mage } from '../units/Mage'
 // import { Farmer } from '../units/Farmer' // Commented out
 
 // health increase by 10%
@@ -136,6 +137,15 @@ export class Player extends Character {
   public minerHarvestInterval: number = 4000 // 4 seconds in milliseconds
   public minerRange: number = 5
   public occupiedRocks: Set<string> = new Set() // Track which rocks have miners
+
+  // Mage units
+  public mages: Mage[] = []
+  public mageCost: { wood: number; rock: number } = { wood: 75, rock: 75 }
+  public mageAttackDamage: number = 25
+  public mageAttackInterval: number = 5000 // 5 seconds between attacks
+  public mageAttackRange: number = 8
+  public mageHealInterval: number = 8000 // 8 seconds between heals
+  public mageHealRange: number = 10
 
   // Farmer management - Commented out
   // public farmers: Farmer[] = []
@@ -513,6 +523,43 @@ export class Player extends Character {
     }
   }
 
+  // Mage methods
+  canPurchaseMage(): boolean {
+    const woodCount = this.inventory.getItemCount(ITEM_TYPES.TREE)
+    const rockCount = this.inventory.getItemCount(ITEM_TYPES.ROCK)
+    return woodCount >= this.mageCost.wood && rockCount >= this.mageCost.rock
+  }
+
+  purchaseMage(): boolean {
+    if (!this.canPurchaseMage()) {
+      return false
+    }
+    
+    this.inventory.incrementItem(ITEM_TYPES.TREE, -this.mageCost.wood)
+    this.inventory.incrementItem(ITEM_TYPES.ROCK, -this.mageCost.rock)
+    return true
+  }
+
+  addMage(position: Vector3): void {
+    console.log('Player.addMage called with position:', position)
+    
+    // Create new Mage instance
+    const mage = new Mage(position)
+    mage.place(position)
+    
+    // Add to mages array
+    this.mages.push(mage)
+    
+    console.log('Mage created and added to player.mages array, total count:', this.mages.length)
+  }
+
+  updateMages(): void {
+    // Update each mage (they handle their own combat and healing logic)
+    for (const mage of this.mages) {
+      mage.update()
+    }
+  }
+
   // Farmer methods - Commented out
   // canPurchaseFarmer(): boolean {
   //   return this.inventory.getItemCount(ITEM_TYPES.COIN) >= this.farmerCost
@@ -771,6 +818,9 @@ export class Player extends Character {
     // Update miners
     this.updateMiners()
     
+    // Update mages
+    this.updateMages()
+    
     // Update farmers - Commented out
     // this.updateFarmers()
   }
@@ -903,6 +953,30 @@ export class Player extends Character {
     }
     this.miners = []
     this.occupiedRocks.clear()
+    
+    // Clear mages - reset in place instead of removing
+    for (const mage of this.mages) {
+      try {
+        // Reset the entity position instead of removing it
+        const transform = Transform.get(mage.entity)
+        if (transform) {
+          Transform.getMutable(mage.entity).position = Vector3.create(1000, 1000, 1000)
+          
+          // Make entity invisible
+          try {
+            const visibility = VisibilityComponent.get(mage.entity)
+            if (visibility) {
+              VisibilityComponent.getMutable(mage.entity).visible = false
+            }
+          } catch (error) {
+            // Entity might not have visibility component, that's okay
+          }
+        }
+      } catch (error) {
+        console.log('Mage entity already processed:', error)
+      }
+    }
+    this.mages = []
     
     console.log('All deployed units cleared (reset in place)')
   }

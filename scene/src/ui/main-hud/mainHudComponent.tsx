@@ -882,8 +882,8 @@ function MainHud({
 
 
 
-      {/* Deployed Units Display */}
-      <DeployedUnitsDisplay isVisible={true} />
+              {/* Deployed Units Display */}
+        <DeployedUnitsDisplay isVisible={true} />
 
       {/* Rules Screen - rendered on top when game hasn't started */}
       <PlayButton 
