@@ -372,8 +372,8 @@ export default class GargoyleFountain extends MonsterMobAuto {
       return
     }
 
-    // Initialize the countdown timer manager and reset it
-    CountdownTimerManager.getInstance().resetTimer()
+    // Don't reset timer here - it should only be reset when game actually starts
+    // CountdownTimerManager.getInstance().resetTimer()
 
     // Schedule the first spawn cycle after initial delay
     this.spawnCycleTimer = utils.timers.setTimeout(() => {

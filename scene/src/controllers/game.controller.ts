@@ -7,6 +7,7 @@ import { Player } from '../player/player'
 import { setPlayerPosition } from '../utils/engine'
 import { CountdownTimerManager } from '../ui/timer/countdownTimerManager'
 import { PlayButtonManager } from '../ui/play-button/PlayButtonManager'
+import { TutorialManager } from '../ui/tutorial/TutorialManager'
 import * as utils from '@dcl-sdk/utils'
 import { engine, Transform, VisibilityComponent } from '@dcl/sdk/ecs'
 import { Color4, Vector3 } from '@dcl/sdk/math'
@@ -158,6 +159,7 @@ export class GameController {
   dialogs: Dialogs
   npcs: NPCs
   sendWearable: SendWearable
+  tutorialManager: TutorialManager
   isGameOver: boolean = false
 
   constructor() {
@@ -166,6 +168,13 @@ export class GameController {
     this.dialogs = new Dialogs(this)
     this.npcs = new NPCs(this)
     this.sendWearable = new SendWearable(this)
+
+    // Initialize tutorial manager
+    this.tutorialManager = TutorialManager.getInstance()
+    this.tutorialManager.setGameController(this)
+
+    // Add tutorial checking system
+    engine.addSystem(this.checkTutorialProgress.bind(this))
   }
 
   restartGame(): void {
@@ -234,12 +243,8 @@ export class GameController {
         }
       }
 
-      // Start the game immediately
-      utils.timers.setTimeout(() => {
-        console.log('Starting fresh game...')
-        const playButtonManager = PlayButtonManager.getInstance()
-        playButtonManager.startGame()
-      }, 1000)
+      // Don't start the game automatically - let player click OK button
+      console.log('Game reset completed - waiting for player to click OK')
 
       console.log('Simple reset completed successfully')
     } catch (error) {
@@ -285,6 +290,11 @@ export class GameController {
       executioners.length = 0
       console.log('All executioners moved far away')
     }
+  }
+
+  private checkTutorialProgress(): void {
+    // Check tutorial progress every frame
+    this.tutorialManager.checkStepCompletion()
   }
 }
 

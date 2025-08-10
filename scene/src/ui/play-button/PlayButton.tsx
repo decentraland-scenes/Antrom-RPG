@@ -2,14 +2,20 @@ import ReactEcs, { Label, UiEntity } from '@dcl/sdk/react-ecs'
 import { Color4 } from '@dcl/sdk/math'
 import { engine, AudioSource } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
+import { TutorialManager } from '../tutorial/TutorialManager'
 
 export interface PlayButtonProps {
   isVisible: boolean
   onPlayClicked: () => void
+  onTutorialClicked: () => void
 }
 
-export function PlayButton({ isVisible, onPlayClicked }: PlayButtonProps): ReactEcs.JSX.Element | null {
+export function PlayButton({ isVisible, onPlayClicked, onTutorialClicked }: PlayButtonProps): ReactEcs.JSX.Element | null {
   if (!isVisible) return null
+  
+  // Hide play button when tutorial is active
+  const tutorialManager = TutorialManager.getInstance()
+  if (tutorialManager.isTutorialActive()) return null
 
   return (
     <UiEntity
@@ -96,7 +102,7 @@ export function PlayButton({ isVisible, onPlayClicked }: PlayButtonProps): React
             width: '80%',
             height: '70px',
             positionType: 'absolute',
-            position: { left: '10%', top: '500px' }
+            position: { left: '10%', top: '450px' }
           }}
           uiBackground={{ color: Color4.create(0.1, 0.7, 0.1, 1.0) }}
           onMouseDown={() => {
@@ -120,6 +126,45 @@ export function PlayButton({ isVisible, onPlayClicked }: PlayButtonProps): React
           <Label
             value="OK"
             fontSize={24}
+            color={Color4.White()}
+            textAlign="middle-center"
+            uiTransform={{
+              width: '100%',
+              height: '100%'
+            }}
+          />
+        </UiEntity>
+
+        {/* Tutorial Button */}
+        <UiEntity
+          uiTransform={{
+            width: '80%',
+            height: '50px',
+            positionType: 'absolute',
+            position: { left: '10%', top: '540px' }
+          }}
+          uiBackground={{ color: Color4.create(0.2, 0.2, 0.8, 1.0) }}
+          onMouseDown={() => {
+            // Button click sound
+            const soundEntity = engine.addEntity()
+            AudioSource.create(soundEntity, {
+              audioClipUrl: 'assets/sounds/buttonclick.mp3',
+              loop: false,
+              playing: true
+            })
+            
+            // Remove sound entity after playing
+            utils.timers.setTimeout(() => {
+              engine.removeEntity(soundEntity)
+            }, 1000)
+            
+            // Call the tutorial clicked callback
+            onTutorialClicked()
+          }}
+        >
+          <Label
+            value="TUTORIAL"
+            fontSize={20}
             color={Color4.White()}
             textAlign="middle-center"
             uiTransform={{

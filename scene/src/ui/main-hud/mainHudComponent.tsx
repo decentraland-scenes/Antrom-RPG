@@ -26,6 +26,8 @@ import CountdownTimer from '../timer/countdownTimer'
 import { CountdownTimerManager } from '../timer/countdownTimerManager'
 import { PlayButton } from '../play-button/PlayButton'
 import { PlayButtonManager } from '../play-button/PlayButtonManager'
+import { TutorialUI } from '../tutorial/TutorialUI'
+import { TutorialManager } from '../tutorial/TutorialManager'
 
 // Number formatting function to abbreviate large numbers
 function formatNumber(num: number): string {
@@ -50,6 +52,7 @@ type MainHudProps = {
   showInventory: () => void
   showLumberjack: () => void
   showTowerUpgrade: () => void
+  showTutorial: () => void
   openLink: (arg: string) => void
   characterRace: CharacterRaces
   characterClass: CharacterClasses
@@ -446,6 +449,7 @@ function MainHud({
   showInventory,
   showLumberjack,
   showTowerUpgrade,
+  showTutorial,
   openLink,
   characterAlliance,
   characterRace,
@@ -876,6 +880,8 @@ function MainHud({
         textAlign="middle-center"
       />
 
+
+
       {/* Deployed Units Display */}
       <DeployedUnitsDisplay isVisible={true} />
 
@@ -892,12 +898,19 @@ function MainHud({
             console.error('Error in play button click:', error)
           }
         }}
+        onTutorialClicked={() => {
+          console.log('Tutorial button clicked from play screen')
+          showTutorial()
+        }}
       />
 
 
 
       {/* Game Over Screen - rendered on top when game is over */}
       <GameOverScreen />
+      
+      {/* Tutorial UI */}
+      <TutorialUI isVisible={TutorialManager.getInstance().isTutorialActive()} />
       
       {/* Temporary test button for debugging */}
       <UiEntity

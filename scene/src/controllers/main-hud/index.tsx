@@ -36,6 +36,9 @@ export class MainHudController {
           showTowerUpgrade={() => {
             this.showTowerUpgrade()
           }}
+          showTutorial={() => {
+            this.showTutorial()
+          }}
           characterRace={player.race}
           characterClass={player.class}
           characterAlliance={player.alliance}
@@ -105,6 +108,17 @@ export class MainHudController {
       
       console.log('MainHudController: Player found, showing tower upgrade menu')
       player.gameController.uiController.towerUpgradeMenu.show()
+    } else {
+      console.log('MainHudController: No player found')
+    }
+  }
+
+  showTutorial(): void {
+    console.log('MainHudController.showTutorial() called')
+    const player = Player.getInstanceOrNull()
+    if (player) {
+      console.log('MainHudController: Starting tutorial')
+      player.gameController.tutorialManager.startTutorial()
     } else {
       console.log('MainHudController: No player found')
     }

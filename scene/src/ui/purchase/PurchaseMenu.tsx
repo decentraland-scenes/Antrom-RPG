@@ -7,6 +7,7 @@ import { ITEM_TYPES } from '../../inventory/playerInventoryMap'
 import { AudioSource } from '@dcl/sdk/ecs'
 import * as utils from '@dcl-sdk/utils'
 import { InputAction, PointerEventType, inputSystem } from '@dcl/sdk/ecs'
+import { TutorialManager } from '../tutorial/TutorialManager'
 
 export type UnitType = 'lumberjack' | 'miner' | 'fighter' // 'farmer' commented out
 
@@ -564,6 +565,17 @@ export class PurchaseMenu {
   }
 
   selectUnit(unitType: UnitType): void {
+    // Check if tutorial is active and this is the expected action
+    const tutorialManager = TutorialManager.getInstance()
+    if (tutorialManager.isTutorialActive()) {
+      const currentStep = tutorialManager.getCurrentStep()
+      if (currentStep?.requiredAction === 'select_lumberjack' && unitType === 'lumberjack') {
+        console.log('Tutorial: Lumberjack selected')
+      } else if (currentStep?.requiredAction === 'deploy_fighter' && unitType === 'fighter') {
+        console.log('Tutorial: Fighter selected')
+      }
+    }
+
     // If clicking the same unit, toggle continuous placement mode
     if (this.selectedUnit === unitType) {
       if (this.continuousPlacementMode && this.continuousPlacementUnit === unitType) {
@@ -862,6 +874,15 @@ export class PurchaseMenu {
 
     player.addLumberjack(position, treePosition)
     
+    // Check if tutorial is active and this completes a step
+    const tutorialManager = TutorialManager.getInstance()
+    if (tutorialManager.isTutorialActive()) {
+      const currentStep = tutorialManager.getCurrentStep()
+      if (currentStep?.requiredAction === 'place_lumberjack') {
+        console.log('Tutorial: Lumberjack placed successfully')
+      }
+    }
+    
     // Only hide menu if not in continuous placement mode
     if (!this.continuousPlacementMode) {
       this.hide()
@@ -928,6 +949,15 @@ export class PurchaseMenu {
     if (!player) return
 
     player.addFighter(position)
+    
+    // Check if tutorial is active and this completes a step
+    const tutorialManager = TutorialManager.getInstance()
+    if (tutorialManager.isTutorialActive()) {
+      const currentStep = tutorialManager.getCurrentStep()
+      if (currentStep?.requiredAction === 'deploy_fighter') {
+        console.log('Tutorial: Fighter deployed successfully')
+      }
+    }
     
     // Only hide menu if not in continuous placement mode
     if (!this.continuousPlacementMode) {
