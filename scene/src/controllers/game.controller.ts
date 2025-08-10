@@ -236,12 +236,19 @@ export class GameController {
           gargoyleFountain.isDeadAnimation = false
           gargoyleFountain.currentScale = gargoyleFountain.initialScale
           gargoyleFountain.lastHealthPercent = 100
+          // Reset spawn cycle interval to base value (3 minutes)
+          gargoyleFountain.spawnCycleInterval = 3 * 60 * 1000
           console.log(
             'Gargoyle fountain reset - Health:',
-            gargoyleFountain.health
+            gargoyleFountain.health,
+            'Spawn interval:',
+            gargoyleFountain.spawnCycleInterval
           )
         }
       }
+
+      // Reset tower upgrade menu
+      this.uiController.towerUpgradeMenu.reset()
 
       // Don't start the game automatically - let player click OK button
       console.log('Game reset completed - waiting for player to click OK')

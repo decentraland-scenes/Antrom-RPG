@@ -405,7 +405,12 @@ export default class GargoyleFountain extends MonsterMobAuto {
         this.spawnInterval = null
       }
 
-      // Schedule next spawn cycle in 3 minutes
+      // Schedule next spawn cycle using current interval (may be modified by upgrades)
+      console.log(
+        `Scheduling next spawn cycle in ${
+          this.spawnCycleInterval / 1000
+        } seconds`
+      )
       this.spawnCycleTimer = utils.timers.setTimeout(() => {
         this.startSpawnCycle()
       }, this.spawnCycleInterval)
